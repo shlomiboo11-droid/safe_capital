@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | עסקאות</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/shared.css" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#e5e2e1",
+              "surface-container-highest": "#e4e2df",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "primary-fixed-dim": "#adc8f2",
+              "on-primary-fixed": "#001c39",
+              "on-secondary-fixed": "#40010b",
+              "secondary-fixed": "#ffdada",
+              "surface-container-low": "#f5f3f0",
+              "on-primary-fixed-variant": "#2d486b",
+              "on-tertiary-fixed": "#1c1b1b",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#8aa4cc",
+              "on-tertiary-fixed-variant": "#474746",
+              "error-container": "#ffdad6",
+              "surface-container": "#efeeeb",
+              "surface-container-lowest": "#ffffff",
+              "background": "#fbf9f6",
+              "surface": "#fbf9f6",
+              "primary-fixed": "#d3e3ff",
+              "inverse-on-surface": "#f2f0ed",
+              "tertiary-fixed-dim": "#c8c6c5",
+              "tertiary": "#242423",
+              "surface-variant": "#e4e2df",
+              "surface-tint": "#456084",
+              "inverse-surface": "#30312f",
+              "surface-bright": "#fbf9f6",
+              "outline": "#74777f",
+              "on-error-container": "#93000a",
+              "primary": "#022445",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#dbdad7",
+              "secondary-fixed-dim": "#ffb3b4",
+              "on-secondary-container": "#792b31",
+              "on-background": "#1b1b1f",
+              "on-tertiary-container": "#a4a2a2",
+              "on-surface-variant": "#43474e",
+              "primary-container": "#1e3a5c",
+              "secondary-container": "#ff9599",
+              "on-primary": "#ffffff",
+              "inverse-primary": "#adc8f2",
+              "on-secondary-fixed-variant": "#7a2d33",
+              "tertiary-container": "#393939",
+              "outline-variant": "#c4c6cf",
+              "on-surface": "#1b1b1f",
+              "surface-container-high": "#eae8e5",
+              "secondary": "#984349",
+              "whatsapp": "#25D366"
+            },
+            fontFamily: {
+              "headline": ["Heebo", "sans-serif"],
+              "body": ["Heebo", "sans-serif"],
+              "label": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(251, 249, 246, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Deal summary row */
+        .deal-summary-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            direction: rtl;
+        }
+        .deal-summary-row .deal-num {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #022445;
+            min-width: 2.5rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .deal-summary-row .deal-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #022445;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .deal-summary-row .deal-status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .deal-status-badge.property-status {
+            background: rgba(2, 36, 69, 0.08);
+            color: #022445;
+        }
+        .deal-status-badge.fundraising-status {
+            background: rgba(152, 67, 73, 0.1);
+            color: #984349;
+        }
+        .deal-summary-row .deal-value {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.9375rem;
+            color: #1b1b1f;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .deal-summary-row .deal-profit {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 0.9375rem;
+            color: #984349;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .deal-summary-row .deal-thumb {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .deal-summary-row .deal-arrow-wrap {
+            margin-inline-start: auto;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .deal-summary-row .deal-arrow-wrap:hover {
+            opacity: 0.8;
+        }
+        .deal-arrow-label {
+            font-family: 'Heebo', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #984349;
+            white-space: nowrap;
+        }
+        /* Mobile: stack deal summary */
+        @media (max-width: 767px) {
+            .deal-summary-row {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .deal-summary-row .deal-meta-fields {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                width: 100%;
+                order: 10;
+            }
+        }
+        @media (min-width: 768px) {
+            .deal-summary-row .deal-meta-fields {
+                display: contents;
+            }
+        }
+
+        /* Tooltip styles */
+        .tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background: rgba(2, 36, 69, 0.1);
+            color: #022445;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            vertical-align: middle;
+            margin-right: 0.375rem;
+            border: none;
+            line-height: 1;
+        }
+        .tooltip-popup {
+            position: absolute;
+            bottom: calc(100% + 0.75rem);
+            right: 50%;
+            transform: translateX(50%);
+            background: #fff;
+            color: #1b1b1f;
+            padding: 0.875rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            font-size: 0.8125rem;
+            line-height: 1.7;
+            width: 280px;
+            z-index: 50;
+            text-align: right;
+        }
+        .tooltip-popup::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            border: 6px solid transparent;
+            border-top-color: #fff;
+        }
+
+        /* Cost category accordion */
+        .cost-category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.875rem 0;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(196, 198, 207, 0.2);
+            transition: background 0.15s;
+        }
+        .cost-category-header:hover {
+            background: rgba(2, 36, 69, 0.02);
+        }
+        .cost-category-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .cost-category-items.open {
+            max-height: 500px;
+        }
+        .cost-category-arrow {
+            transition: transform 0.3s ease;
+        }
+        .cost-category-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Deal expanded panel */
+        .deal-expanded {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 1.5rem;
+        }
+        .deal-expanded.open {
+            max-height: 9999px;
+            padding: 2rem 1.5rem 3rem;
+        }
+
+        /* Deal arrow rotation on open */
+        .deal-arrow {
+            transition: transform 0.3s ease;
+        }
+        .deal-arrow.open {
+            transform: rotate(180deg);
+        }
+
+    </style>
+</head>
+<body class="bg-background text-on-background font-body">
+<!-- TopNavBar -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+<div class="nav-links">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html" class="active">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+</div>
+<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+</div>
+<div class="mobile-nav">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html" class="active">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+</div>
+</nav>
+<main class="pt-24 pb-20 max-w-7xl mx-auto px-6 md:px-12">
+<!-- Header Section -->
+<header class="mb-12">
+<h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-8 font-headline">העסקאות שלנו</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">עסקאות שהושלמו</p>
+<h3 class="text-secondary text-4xl font-bold font-label">4</h3>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">הון שגויס</p>
+<h3 class="text-secondary text-4xl font-bold font-label">$2.1M</h3>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+<p class="text-on-surface-variant text-sm font-medium mb-1">תשואה ממוצעת</p>
+<h3 class="text-secondary text-4xl font-bold font-label">19.2%</h3>
+</div>
+</div>
+</header>
+<!-- Deals Accordion List — rendered dynamically by js/deals.js -->
+<section>
+<div id="deals-container" class="space-y-4">
+<!-- Loading, empty, and error states are injected here by deals.js -->
+<!-- Deal cards are rendered here once data loads from http://localhost:3000/api/public/deals -->
+</div>
+</section>
+<!-- Bottom CTA -->
+<section class="mt-24 bg-primary rounded-2xl p-12 text-center text-on-primary">
+<h2 class="text-3xl font-extrabold mb-4">רוצים להצטרף לעסקה הבאה?</h2>
+<p class="text-on-primary-container mb-8 max-w-xl mx-auto">הצטרפו לקבוצת הוואטסאפ השקטה שלנו וקבלו עדכונים ראשונים על כל עסקה חדשה שיוצאת לדרך</p>
+<a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer" class="bg-whatsapp text-white px-8 py-4 rounded-xl font-bold text-xl flex items-center gap-3 mx-auto hover:opacity-90 active:scale-95 transition-all w-fit">
+<span>שלחו לנו הודעה בוואטסאפ</span>
+<span class="material-symbols-outlined" data-weight="fill">chat</span>
+</a>
+</section>
+</main>
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-links"><h4>ניווט מהיר</h4>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+</div>
+<div class="footer-links"><h4>מידע נוסף</h4>
+<a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+</div>
+<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+<div class="footer-brand">
+<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+</div></div>
+<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+</footer>
+<script src="js/shared.js"></script>
+<script src="js/deals.js?v=2"></script>
+<script>
+// Cost category accordion toggle — called from dynamically rendered HTML
+function toggleCostCategory(header) {
+    const items = header.nextElementSibling;
+    const arrow = header.querySelector('.cost-category-arrow');
+    items.classList.toggle('open');
+    arrow.classList.toggle('open');
+}
+</script>
+</body></html>

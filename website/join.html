@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | איך מצטרפים?</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/shared.css" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#792b31",
+                        "background": "#fbf9f6",
+                        "on-primary-fixed-variant": "#2d486b",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-secondary-fixed": "#40010b",
+                        "surface": "#fbf9f6",
+                        "on-primary-container": "#8aa4cc",
+                        "surface-container-highest": "#e4e2df",
+                        "tertiary": "#242423",
+                        "surface-container-high": "#eae8e5",
+                        "primary-fixed": "#d3e3ff",
+                        "surface-variant": "#e4e2df",
+                        "primary-fixed-dim": "#adc8f2",
+                        "inverse-on-surface": "#f2f0ed",
+                        "on-background": "#1b1b1f",
+                        "outline-variant": "#c4c6cf",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#fbf9f6",
+                        "primary": "#022445",
+                        "on-primary-fixed": "#001c39",
+                        "surface-tint": "#456084",
+                        "secondary": "#984349",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#a4a2a2",
+                        "surface-container-low": "#f5f3f0",
+                        "secondary-container": "#ff9599",
+                        "primary-container": "#1e3a5c",
+                        "inverse-primary": "#adc8f2",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "secondary-fixed-dim": "#ffb3b4",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-dim": "#dbdad7",
+                        "on-surface": "#1b1b1f",
+                        "tertiary-container": "#393939",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#7a2d33",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#ffdada",
+                        "outline": "#74777f",
+                        "surface-container": "#efeeeb",
+                        "inverse-surface": "#30312f",
+                        "whatsapp": "#25D366"
+                    },
+                    fontFamily: {
+                        "headline": ["Heebo"],
+                        "body": ["Heebo"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Heebo', sans-serif; background-color: #fbf9f6; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .step-line::before { content: ''; position: absolute; top: 0; bottom: 0; right: 50%; transform: translateX(50%); width: 2px; background: #c4c6cf; opacity: 0.3; z-index: 0; }
+        @media (max-width: 768px) { .step-line::before { right: 2rem; } }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopNavBar -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+<div class="nav-links">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html" class="active">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+</div>
+<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+</div>
+<div class="mobile-nav">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html" class="active">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+</div>
+</nav>
+<!-- Page Hero -->
+<header class="pt-24 pb-16 px-6 text-center max-w-4xl mx-auto">
+<h1 class="text-5xl md:text-6xl font-extrabold text-primary mb-6 tracking-tight">איך מצטרפים?</h1>
+<p class="text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+            תהליך הצטרפות פשוט, שקוף ומאובטח. אנחנו כאן כדי ללוות אתכם צעד אחר צעד בדרך להשקעה חכמה ובטוחה.
+        </p>
+</header>
+<!-- Sticky Step Progress Bar -->
+<div id="step-progress-bar" class="step-progress-bar">
+<div class="step-progress-inner max-w-2xl mx-auto">
+<div class="step-progress-line-bg"></div>
+<div class="step-progress-line-fill" id="progress-line-fill"></div>
+<div class="step-progress-circle active" data-step="1">
+<div class="step-circle-num">1</div>
+<span class="step-circle-label">קבוצה</span>
+</div>
+<div class="step-progress-circle" data-step="2">
+<div class="step-circle-num">2</div>
+<span class="step-circle-label">כנס</span>
+</div>
+<div class="step-progress-circle" data-step="3">
+<div class="step-circle-num">3</div>
+<span class="step-circle-label">חתימה</span>
+</div>
+<div class="step-progress-circle" data-step="4">
+<div class="step-circle-num">4</div>
+<span class="step-circle-label">עדכונים</span>
+</div>
+<div class="step-progress-circle" data-step="5">
+<div class="step-circle-num">5</div>
+<span class="step-circle-label">רווחים</span>
+</div>
+<div class="step-progress-circle" data-step="6">
+<div class="step-circle-num">6</div>
+<span class="step-circle-label">מס</span>
+</div>
+</div>
+</div>
+<!-- Vertical Timeline -->
+<main class="max-w-[900px] mx-auto px-6 pb-24 relative step-line">
+<!-- Step 1 -->
+<section id="step-section-1" class="relative mb-24 md:pr-12 md:mr-[50%] group">
+<div class="hidden md:block absolute top-6 -right-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-primary">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 01</span>
+<h2 class="text-2xl font-bold text-primary mb-4">מצטרפים לקבוצת הווצאפ השקטה</h2>
+<p class="text-on-surface-variant mb-6 leading-relaxed">הדרך הטובה ביותר להישאר מעודכנים. בקבוצה תקבלו נתוני עסקאות בזמן אמת, מגמות כלכליות ועדכונים על כנסי משקיעים קרובים</p>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="show_chart">show_chart</span></div>
+<p class="text-xs font-bold">התקדמות עסקאות</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="trending_up">trending_up</span></div>
+<p class="text-xs font-bold">מגמות שוק</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span></div>
+<p class="text-xs font-bold">מועדי כנסים</p>
+</div>
+</div>
+<button class="w-full bg-whatsapp text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                    הצטרפות לקבוצת הווצאפ
+                </button>
+</div>
+</section>
+<!-- Step 2 -->
+<section id="step-section-2" class="relative mb-24 md:pl-12 md:ml-[50%] group">
+<div class="hidden md:block absolute top-6 -left-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-l-4 border-primary">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 02</span>
+<h2 class="text-2xl font-bold text-primary mb-4">מגיעים לכנס גיוס משקיעים</h2>
+<p class="text-on-surface-variant mb-6 leading-relaxed">צלילה לעומק הפרטים הקטנים. ללא כל התחייבות, תוכלו לשמוע על המודל העסקי, להכיר את השותפים ולשאול את כל השאלות החשובות</p>
+<div class="grid grid-cols-3 gap-4">
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="query_stats">query_stats</span></div>
+<p class="text-xs font-bold">תחזית העסקה</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="forum">forum</span></div>
+<p class="text-xs font-bold">מקום לשאלות</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="visibility">visibility</span></div>
+<p class="text-xs font-bold">שקיפות מלאה</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 3 -->
+<section id="step-section-3" class="relative mb-24 md:pr-12 md:mr-[50%] group">
+<div class="hidden md:block absolute top-6 -right-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-primary">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 03</span>
+<h2 class="text-2xl font-bold text-primary mb-6">חתימה והעברת ההשקעה</h2>
+<div class="grid grid-cols-3 gap-4">
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="corporate_fare">corporate_fare</span></div>
+<p class="text-xs font-bold">רישום בעלות (LLC)</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="draw">draw</span></div>
+<p class="text-xs font-bold">חתימה על הסכם השקעה</p>
+</div>
+<div class="step-feature-item">
+<div class="step-feature-icon"><span class="material-symbols-outlined" data-icon="account_balance">account_balance</span></div>
+<p class="text-xs font-bold">העברה בנקאית לחשבון נאמנות</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 4 -->
+<section id="step-section-4" class="relative mb-24 md:pl-12 md:ml-[50%] group">
+<div class="hidden md:block absolute top-6 -left-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-l-4 border-primary overflow-hidden">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 04</span>
+<h2 class="text-2xl font-bold text-primary mb-4">עדכונים שוטפים מהשטח</h2>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="p-4 bg-surface-container flex flex-col items-center gap-2 rounded-lg text-center">
+<span class="material-symbols-outlined text-primary" data-icon="architecture">architecture</span>
+<span class="text-xs">התקדמות בבנייה</span>
+</div>
+<div class="p-4 bg-surface-container flex flex-col items-center gap-2 rounded-lg text-center">
+<span class="material-symbols-outlined text-primary" data-icon="photo_camera">photo_camera</span>
+<span class="text-xs">צילומים מהשטח</span>
+</div>
+<div class="p-4 bg-surface-container flex flex-col items-center gap-2 rounded-lg text-center">
+<span class="material-symbols-outlined text-primary" data-icon="flag">flag</span>
+<span class="text-xs">עדכונים חשובים</span>
+</div>
+<div class="p-4 bg-surface-container flex flex-col items-center gap-2 rounded-lg text-center">
+<span class="material-symbols-outlined text-primary" data-icon="exit_to_app">exit_to_app</span>
+<span class="text-xs">מוכנות לאקזיט</span>
+</div>
+</div>
+<div class="relative rounded-2xl border-4 border-primary/10 overflow-hidden h-40">
+<img class="w-full h-full object-cover grayscale" data-alt="Close-up of a high-end smartphone screen showing a real estate development group chat with architectural renders and progress bars." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL3U5D1kYjXDkrj84En_PPLc9YV8SDu_WQ9xwm16TDrrRNC2jMnuu4qjwPvvl_b15qfAqKQvBjW6sXGG1kCq-zXRGMOfFi5Lg5cB97xv9r3P18snCSYoQ5pFZHfM5GbfGKKtpjUDybsSUQ_qnat0jYemJ92dTI907vM7iyfkopse3CJsvbY54DAj5GICeI2Ozyp2WA5ydvJBq4GjmfYCdMJmURuc4mK0gsQiASxklIEwWXC00Pmmge3FCEvWDH_ATpAN8Augy8LfCW"/>
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center">
+<span class="bg-white/90 px-4 py-2 rounded-full text-xs font-bold text-primary">הקבוצה שלכם בשטח</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 5 -->
+<section id="step-section-5" class="relative mb-24 md:pr-12 md:mr-[50%] group">
+<div class="hidden md:block absolute top-6 -right-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-secondary">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 05</span>
+<h2 class="text-2xl font-bold text-primary mb-4">זמן לקצור, סיום עסקה</h2>
+<div class="bg-secondary/5 border-l-4 border-secondary p-4 mb-6">
+<p class="text-secondary font-bold">המשקיעים מקבלים את חלקם לפני כולם (Investor Priority)</p>
+</div>
+<div class="flex items-baseline gap-2 mb-8">
+<span class="text-6xl font-extrabold text-secondary font-label">20%</span>
+<span class="text-on-surface-variant font-bold">יעד תשואה מקסימלי</span>
+</div>
+<div class="bg-primary/5 border border-primary/20 rounded-xl p-5 mb-6">
+<p class="text-primary font-bold text-base mb-2">הבחירה בידיים שלכם:</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">בסיום העסקה, אתם בוחרים מה לעשות עם הרווחים: <strong class="text-primary">למשוך את הכסף לחשבון הבנק שלכם</strong>, או <strong class="text-secondary">להשקיע אותו בנכס חדש ולהתגלגל לעוד עסקה</strong> עם פוטנציאל רווח נוסף</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 border-2 border-secondary bg-secondary/5 rounded-lg text-center cursor-pointer transition-all hover:bg-secondary/10">
+<span class="material-symbols-outlined text-secondary block mb-2" data-icon="refresh">refresh</span>
+<span class="font-bold text-sm">השקעה מחדש</span>
+<p class="text-xs text-on-surface-variant mt-1">להתגלגל לעסקה הבאה</p>
+</div>
+<div class="p-4 border-2 border-primary bg-primary/5 rounded-lg text-center cursor-pointer transition-all hover:bg-primary/10">
+<span class="material-symbols-outlined text-primary block mb-2" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-bold text-sm">משיכת רווחים</span>
+<p class="text-xs text-on-surface-variant mt-1">העברה ישירה לחשבונכם</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 6 -->
+<section id="step-section-6" class="relative md:pl-12 md:ml-[50%] group">
+<div class="hidden md:block absolute top-6 -left-3 w-6 h-6 rounded-full bg-primary border-4 border-background z-10"></div>
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-l-4 border-primary">
+<span class="text-secondary font-bold font-label uppercase tracking-widest text-sm mb-2 block">שלב 06</span>
+<h2 class="text-2xl font-bold text-primary mb-4">תשלום מס, פעם בשנה</h2>
+<p class="text-on-surface-variant mb-6 leading-relaxed">אנחנו מספקים את כל האישורים הנדרשים לדיווח לרשויות המס. תהליך פשוט וליווי צמוד</p>
+<div class="flex flex-wrap gap-4 mb-8">
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full text-xs font-bold">
+<span class="material-symbols-outlined text-primary text-base" data-icon="description">description</span>
+                        דוח 1040NR
+                    </div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 rounded-full text-xs font-bold">
+<span class="material-symbols-outlined text-primary text-base" data-icon="verified_user">verified_user</span>
+                        אמנת מס ארה"ב-ישראל
+                    </div>
+</div>
+<div class="space-y-3">
+<div class="tax-accordion-item">
+<button class="tax-accordion-btn bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-between w-full hover:bg-primary-container transition-colors" onclick="toggleTaxAccordion(this)">
+<span>כמה מס אני אשלם?</span>
+<span class="material-symbols-outlined tax-accordion-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="tax-accordion-panel">
+<p class="text-on-surface-variant text-sm leading-relaxed">שיעור המס על רווחי הון מנדל"ן בארה"ב למשקיע זר עומד על כ-15%-20% בהתאם לאמנת המס בין ישראל לארה"ב. אנחנו מספקים תחשיב מדויק לכל עסקה כדי שתדעו מראש בדיוק כמה תשלמו</p>
+</div>
+</div>
+<div class="tax-accordion-item">
+<button class="tax-accordion-btn bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-between w-full hover:bg-primary-container transition-colors" onclick="toggleTaxAccordion(this)">
+<span>איך מדווחים למס הכנסה?</span>
+<span class="material-symbols-outlined tax-accordion-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="tax-accordion-panel">
+<p class="text-on-surface-variant text-sm leading-relaxed">הדיווח מתבצע באמצעות טופס 1040NR שמוגש ל-IRS בארה"ב, ובמקביל דיווח לרשות המסים בישראל. אנחנו מכינים את כל המסמכים הנדרשים ומעבירים אותם אליכם מוכנים להגשה</p>
+</div>
+</div>
+<div class="tax-accordion-item">
+<button class="tax-accordion-btn bg-primary text-on-primary px-6 py-3 rounded-lg font-bold text-sm flex items-center justify-between w-full hover:bg-primary-container transition-colors" onclick="toggleTaxAccordion(this)">
+<span>ליווי מקצועי במיסוי</span>
+<span class="material-symbols-outlined tax-accordion-icon transition-transform duration-300">expand_more</span>
+</button>
+<div class="tax-accordion-panel">
+<p class="text-on-surface-variant text-sm leading-relaxed">אנחנו עובדים עם רואי חשבון המתמחים במיסוי בינלאומי ובנדל"ן אמריקאי. כל משקיע מקבל ליווי אישי בתהליך הדיווח, כולל תכנון מס אופטימלי וניצול אמנת המס ישראל-ארה"ב</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Summary Stats -->
+<section class="bg-surface-container-low py-20 px-6">
+<div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+<div>
+<span class="text-5xl font-black text-primary font-label block mb-2">6</span>
+<p class="text-on-surface-variant font-bold uppercase tracking-widest text-sm">שלבים פשוטים</p>
+</div>
+<div>
+<span class="text-5xl font-black text-secondary font-label block mb-2">20%</span>
+<p class="text-on-surface-variant font-bold uppercase tracking-widest text-sm">יעד תשואה</p>
+</div>
+<div>
+<span class="text-5xl font-black text-primary font-label block mb-2">100%</span>
+<p class="text-on-surface-variant font-bold uppercase tracking-widest text-sm">ליווי וביטחון</p>
+</div>
+</div>
+</section>
+<!-- Bottom CTA -->
+<section class="bg-primary py-24 px-6 text-center text-on-primary relative overflow-hidden">
+<div class="absolute inset-0 opacity-10">
+<img class="w-full h-full object-cover" data-alt="Sophisticated black and white architectural detail of a skyscraper with sharp geometric patterns and reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqf4OKwR4cIob-vcY4S3ugIfarDwO4LfI-gXtBVjXhDVIwKSTk5P8U_s3GfXXI3PxekLfcmKeod8XB4V42EXsc3yoEP3xjzjtQA5T6tmeqtknuth3e0QNEml4QHp1xuaNPNkKbyL_EiYkg7agsNvMWrgJL2bNZtkoVzFWCGn9jgcRj4Oj18-6ce-e31p-KxhK3O3jBjr83bU5V10HnOuALyAHUPNxYZbS0pALQaGclya4EX-iOCBtcqVGBwBnFhP-H6fzygbLwnJ9h"/>
+</div>
+<div class="relative z-10 max-w-2xl mx-auto">
+<h2 class="text-4xl md:text-5xl font-extrabold mb-8">מוכנים לצאת לדרך?</h2>
+<p class="text-on-primary-container mb-12 text-xl">הצטרפו למאות משקיעים שכבר נהנים מביטחון כלכלי וצמיחה אמיתית</p>
+<button class="bg-whatsapp text-white px-10 py-5 rounded-xl text-xl font-bold flex items-center justify-center gap-3 mx-auto hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                דברו איתנו בווצאפ עכשיו
+            </button>
+</div>
+</section>
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-links"><h4>ניווט מהיר</h4>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+</div>
+<div class="footer-links"><h4>מידע נוסף</h4>
+<a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+</div>
+<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+<div class="footer-brand">
+<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+</div></div>
+<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+</footer>
+<canvas id="confetti-canvas"></canvas>
+<script src="js/shared.js"></script>
+<script src="js/join.js"></script>
+</body>
+</html>

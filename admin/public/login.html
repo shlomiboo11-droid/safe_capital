@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>התחברות | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen flex items-center justify-center font-heebo">
+
+  <div class="w-full max-w-md px-6">
+    <!-- Logo -->
+    <div class="text-center mb-10">
+      <img src="/images/logo.svg" alt="Safe Capital" class="h-12 w-auto mx-auto mb-4" style="max-width: 160px;" onerror="this.style.display='none'">
+      <h1 class="text-2xl font-bold text-primary">Safe Capital</h1>
+      <p class="text-sm text-gray-500 mt-1">דאשבורד ניהול עסקאות</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="card p-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-6">התחברות למערכת</h2>
+
+      <form id="loginForm" class="space-y-5">
+        <!-- Email -->
+        <div>
+          <label class="form-label" for="email">אימייל</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input ltr"
+            placeholder="admin@safecapital.co.il"
+            required
+            autocomplete="email"
+            dir="ltr"
+          >
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="form-label" for="password">סיסמה</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input ltr"
+              placeholder="********"
+              required
+              autocomplete="current-password"
+              dir="ltr"
+            >
+            <button type="button" id="togglePassword" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div id="loginError" class="hidden text-sm text-red-600 bg-red-50 p-3 rounded-lg"></div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary w-full py-3 text-base" id="loginBtn">
+          <span id="loginText">כניסה</span>
+          <span id="loginSpinner" class="hidden">
+            <svg class="animate-spin h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-gray-400 mt-6">&copy; Safe Capital 2026. All rights reserved.</p>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // If already logged in, redirect
+    if (typeof API !== 'undefined' && API.isLoggedIn()) {
+      window.location.href = '/';
+    }
+
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', () => {
+      const pwd = document.getElementById('password');
+      const icon = document.querySelector('#togglePassword .material-symbols-outlined');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        pwd.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        errorDiv.textContent = 'יש למלא אימייל וסיסמה';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      if (typeof API === 'undefined') {
+        errorDiv.textContent = 'שגיאת טעינה — נסה לרענן את הדף';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      // Show loading
+      loginBtn.disabled = true;
+      loginText.classList.add('hidden');
+      loginSpinner.classList.remove('hidden');
+
+      try {
+        const data = await API.post('/auth/login', { email, password });
+        API.setToken(data.token);
+        API.setUser(data.user);
+        window.location.href = '/';
+      } catch (err) {
+        errorDiv.textContent = err.message === 'Invalid credentials'
+          ? 'אימייל או סיסמה שגויים'
+          : err.message === 'Access denied'
+          ? 'אין לך הרשאה לגשת למערכת'
+          : 'שגיאה בהתחברות. נסה שוב.';
+        errorDiv.classList.remove('hidden');
+      } finally {
+        loginBtn.disabled = false;
+        loginText.classList.remove('hidden');
+        loginSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

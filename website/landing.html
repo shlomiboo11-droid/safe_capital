@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | סייף קפיטל - השקעות נדל"ן בארה"ב למשקיע הישראלי</title>
+<meta name="description" content="עסקאות נדל&quot;ן קצרות טווח בארה&quot;ב עם תשואה של עד 20%. השקעה מינימלית $50,000. שקיפות מלאה, ניהול מקצועי, ללא ניהול עצמי."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/shared.css?v=4" rel="stylesheet"/>
+
+<style>
+/* ===== CSS Custom Properties ===== */
+:root {
+  --color-bg: #fbf9f6;
+  --color-surface: #fbf9f6;
+  --color-white: #ffffff;
+  --color-primary: #022445;
+  --color-primary-dark: #1e3a5c;
+  --color-secondary: #984349;
+  --color-text: #1b1c1a;
+  --color-text-muted: #43474e;
+  --color-whatsapp: #25D366;
+  --font-hebrew: 'Heebo', sans-serif;
+  --font-numbers: 'Inter', sans-serif;
+  --shadow-ambient: 0 8px 24px rgba(27,28,26,0.04);
+}
+
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Hero Entrance Animations ===== */
+.hero-text {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.hero-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hero-subtitle { transition-delay: 0.2s; }
+.hero-ctas { transition-delay: 0.4s; }
+
+/* ===== Hero Full-Screen Video ===== */
+.hero-video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+  background: #fbf9f6;
+}
+.scroll-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+  background: #fbf9f6;
+  transform: scale(0.88);
+  transform-origin: left center;
+}
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    /* Subtle text backdrop — very light wash behind text area */
+    radial-gradient(
+      ellipse 50% 60% at 75% 45%,
+      rgba(251,249,246,0.25) 0%,
+      transparent 100%
+    ),
+    /* Right fade — covers image edge and fades behind text */
+    linear-gradient(
+      to left,
+      #fbf9f6 0%,
+      #fbf9f6 18%,
+      rgba(251,249,246,0.95) 28%,
+      rgba(251,249,246,0.7) 40%,
+      rgba(251,249,246,0.3) 52%,
+      transparent 68%
+    ),
+    /* Bottom fade — solid cream that fully covers the image edge */
+    linear-gradient(
+      to top,
+      #fbf9f6 0%,
+      #fbf9f6 5%,
+      rgba(251,249,246,0.95) 12%,
+      rgba(251,249,246,0.5) 25%,
+      transparent 40%
+    );
+}
+
+/* Bottom fade on hero itself — stays visible during scroll */
+#hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, #fbf9f6, transparent);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Sections after hero cover the fixed video */
+#hero ~ * {
+  position: relative;
+  z-index: 2;
+}
+
+.scroll-panel {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.scroll-panel-inner {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.scroll-panel-inner.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Progress dots */
+.video-progress {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.video-progress.visible { opacity: 1; }
+.video-progress-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(2,36,69,0.2);
+  transition: background 0.3s, transform 0.3s;
+}
+.video-progress-dot.active {
+  background: #984349;
+  transform: scale(1.4);
+}
+
+/* Panel step badge */
+.panel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #984349;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+.panel-badge::before {
+  content: '';
+  display: block;
+  width: 24px; height: 2px;
+  background: #984349;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .hero-video-bg { display: none; }
+  .hero-vignette { display: none; }
+  .scroll-panel { min-height: auto; padding: 2rem 1.5rem; }
+  .scroll-panel:first-child { min-height: 70vh; padding-top: 5rem; }
+  .scroll-panel-inner { opacity: 1; transform: none; }
+  .hero-mobile-video {
+    width: 100%;
+    border-radius: 0.75rem;
+  }
+  .video-progress { display: none; }
+}
+
+/* ===== Scroll Fade-in ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Before/After Slider ===== */
+.ba-container {
+  position: relative;
+  overflow: hidden;
+  cursor: col-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 0.75rem;
+}
+.ba-before, .ba-after {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.ba-after {
+  clip-path: inset(0 50% 0 0);
+}
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #fff;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+}
+.ba-handle-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: col-resize;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-size: 0.75rem;
+  color: #43474e;
+  font-family: var(--font-numbers);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.ba-label {
+  position: absolute;
+  bottom: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  backdrop-filter: blur(4px);
+  z-index: 5;
+}
+.ba-label-before { right: 1rem; background: rgba(0,0,0,0.5); }
+.ba-label-after { left: 1rem; background: rgba(152,67,73,0.8); }
+
+/* ===== Step Flow Connectors ===== */
+.flow-connector-h {
+  width: 60px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #c4c6cf 0, #c4c6cf 6px, transparent 6px, transparent 12px);
+}
+.flow-connector-v {
+  width: 2px;
+  height: 40px;
+  background: repeating-linear-gradient(180deg, #c4c6cf 0, #c4c6cf 6px, transparent 6px, transparent 12px);
+  margin: 0 auto;
+}
+
+/* ===== FAQ Accordion (landing-specific) ===== */
+.landing-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding-top: 0;
+}
+.landing-faq-answer.open {
+  max-height: 600px;
+  padding-top: 1rem;
+}
+.landing-faq-item.open {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+}
+.landing-faq-chevron {
+  transition: transform 0.3s ease;
+}
+.landing-faq-item.open .landing-faq-chevron {
+  transform: rotate(180deg);
+}
+
+/* ===== WhatsApp Sticky FAB ===== */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 40;
+  width: 60px;
+  height: 60px;
+  border-radius: 9999px;
+  background: rgba(37,211,102,0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.2s ease;
+}
+.whatsapp-fab.visible {
+  opacity: 1;
+  pointer-events: auto;
+  animation: bounceIn 0.5s ease-out;
+}
+.whatsapp-fab:hover {
+  transform: scale(1.1);
+}
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== WhatsApp CTA glow ===== */
+
+/* ===== Sequential Step Reveal ===== */
+.step-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.step-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.flow-connector-h, .flow-connector-v {
+  opacity: 0;
+  transition: opacity 0.5s ease-out 0.3s;
+}
+.flow-connector-h.visible, .flow-connector-v.visible {
+  opacity: 1;
+}
+</style>
+
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode:"class",
+  theme: {
+    extend: {
+      colors: {
+"background":"#fbf9f6",
+"surface":"#fbf9f6",
+"surface-container-low":"#fbf9f6",
+"surface-container-lowest":"#ffffff",
+"primary":"#022445",
+"primary-container":"#1e3a5c",
+"secondary":"#984349",
+"on-primary":"#ffffff",
+"on-surface":"#1b1b1f",
+"on-surface-variant":"#43474e",
+"outline-variant":"#c4c6cf",
+"whatsapp":"#25D366"
+      },
+      fontFamily: {
+"headline": ["Heebo"],
+"body": ["Heebo"],
+"label": ["Inter"]
+      },
+      borderRadius: {"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},
+    },
+  },
+}
+</script>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- ============================================================ -->
+<!-- NAV                                                           -->
+<!-- ============================================================ -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+<div class="nav-links">
+<a href="index.html" class="active">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+</div>
+<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+</div>
+<div class="mobile-nav">
+<a href="index.html" class="active">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+</div>
+</nav>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 1: HERO                                               -->
+<!-- ============================================================ -->
+<section id="hero" class="relative bg-background">
+
+<!-- Full-screen video background -->
+<div class="hero-video-bg">
+  <img class="scroll-frame" src="frames/frame-01.jpg" alt="">
+  <div class="hero-vignette"></div>
+</div>
+
+<!-- Scroll panels over video -->
+<div class="relative z-10">
+
+  <!-- Panel 1: Hero Headline -->
+  <div class="scroll-panel" data-panel="0">
+    <div class="max-w-[1200px] ml-auto px-6 md:pr-[84px] w-full">
+      <div class="scroll-panel-inner md:w-[55%] md:ml-auto text-right active">
+        <h1 class="font-headline font-extrabold leading-tight mb-6">
+          <span class="block text-3xl md:text-4xl lg:text-5xl md:whitespace-nowrap"><span class="text-primary">הכסף שלך </span><span class="text-secondary">עובד בשבילך?</span></span>
+          <span class="block text-3xl md:text-4xl lg:text-[2.8rem] md:whitespace-nowrap"><span class="text-primary">או שאתה עובד </span><span class="text-primary opacity-50">בשביל הכסף?</span></span>
+        </h1>
+        <div class="text-lg md:text-xl leading-relaxed mb-10 max-w-xl space-y-1">
+          <p class="text-on-surface-variant">השקעות נדל"ן קצרות בארה"ב</p>
+          <p class="font-label font-bold text-secondary">עד 20% רווח</p>
+          <p class="font-label font-bold text-secondary">עד שנה מרגע השיפוץ למכירה</p>
+          <p class="text-on-surface-variant">אנחנו מנהלים הכל</p>
+        </div>
+        <div class="flex flex-col sm:flex-row-reverse gap-4 items-start sm:items-center">
+          <a href="properties.html" class="inline-block text-white font-bold text-lg px-8 py-4 rounded-lg hover:opacity-90 active:scale-[0.97] transition-all" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">צפו בעסקאות הזמינות</a>
+          <a href="#method" class="inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-4 rounded-lg hover:bg-secondary/5 transition-all scroll-link">איך זה עובד?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll spacer for video animation -->
+  <div class="hidden md:block" style="height:35vh"></div>
+
+</div>
+
+<!-- Mobile: autoplay video below hero -->
+<div class="md:hidden px-6 pb-12">
+  <video class="hero-mobile-video" autoplay muted loop playsinline>
+    <source src="website_media/renovation_horizontal.mp4" type="video/mp4">
+  </video>
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 2: PAIN                                               -->
+<!-- ============================================================ -->
+<section class="bg-background py-20 md:py-24">
+<div class="max-w-[900px] mx-auto px-8 text-center">
+
+<h2 class="mb-10">
+  <span class="font-extrabold text-4xl md:text-[2.5rem] leading-tight"><span class="text-primary">הכסף שלנו </span><span class="text-secondary">שווה פחות</span><span class="text-primary"> בכל יום שעובר</span></span>
+</h2>
+
+<div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
+  <p class="">האינפלציה שוחקת אותו, ואם אנחנו לא רוצים להיות <strong class="text-secondary">"עבדים"</strong> של העבודה שלנו, אנחנו חייבים להשקיע</p>
+  <p class="leading-relaxed">שוק ההון נותן תשואות נחמדות, <strong class="text-primary">אבל הנדל"ן בארץ כבר מזמן לא בצד של המשקיע הקטן</strong><br>בישראל אתה צריך הון עצמי מטורף בשביל לקבל תשואה של כמה <span class="font-label font-bold text-secondary">אחוזים בודדים</span> בשנה, במקרה הטוב</p>
+  <p class="font-bold text-primary text-xl mt-4">לנו זה לא הספיק</p>
+  <p class="font-bold text-xl -mt-2"><span class="text-primary">חיפשנו דרך לראות רווחים משמעותיים יותר, </span><span class="text-secondary">ובזמן קצר הרבה יותר</span></p>
+</div>
+
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 3: METHOD (Vision + Transition + Birmingham + Steps)  -->
+<!-- ============================================================ -->
+<section id="method" class="bg-background py-20 md:py-24 px-8">
+<div class="max-w-[1200px] mx-auto">
+
+<!-- Part A: Founder's Vision -->
+<div class="max-w-[800px] mx-auto mb-20 text-center">
+  <h2 class="text-primary font-extrabold text-3xl mb-10">למה הקמנו את סייף קפיטל?</h2>
+  <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
+    <p>כי אנחנו מאמינים שכסף מייצר <strong class="text-primary">שקט נפשי,</strong> ואנחנו רוצים לחיות את החיים שלנו בשקט<br>רצינו אפיק השקעה רציני, לא כזה של <span class="font-label font-bold text-secondary">10%</span> בשנה, כי זה פשוט לא מקדם אותנו מספיק מהר</p>
+    <p>הקמנו את החברה כי ראינו יותר מדי אנשים שעובדים קשה, חוסכים שקל לשקל, ומגלים בסוף שהבנק או המדינה <strong class="text-secondary">לוקחים להם הכל</strong></p>
+    <p><strong class="text-primary">אנחנו מאמינים בשותפות אמיתית:</strong> אם אתם לא מרוויחים <span class="font-extrabold text-secondary text-xl">גם אנחנו לא</span></p>
+    <p>לכן אנחנו תמיד שמים את הכסף האישי שלנו באותן עסקאות <strong class="text-primary underline decoration-1 underline-offset-4">יחד איתכם</strong></p>
+  </div>
+</div>
+
+<!-- Close method section temporarily for full-width transition -->
+</div>
+</section>
+
+<!-- Part B: Transition Statement — Gradient navy background, blends into zoom -->
+<section class="py-16 md:py-20 pb-0 md:pb-0" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
+<div class="text-center max-w-[700px] mx-auto px-6 pb-16 md:pb-20">
+  <h2 class="font-extrabold text-4xl md:text-[2.5rem] leading-tight mb-6">
+    <span class="block text-white">הגיע הזמן שהכסף</span>
+    <span class="block text-white" style="transition-delay:0.2s">יתחיל לייצר לכם</span>
+    <span class="block text-secondary" style="transition-delay:0.5s">עוד כסף.</span>
+  </h2>
+  <p class="text-white/80 text-lg leading-relaxed" style="transition-delay:0.7s">אנחנו פותחים לישראלים דלת להשקעות <strong class="text-white">"פליפ"</strong> (קונים, משפצים ומוכרים) בתוך <span class="font-label font-bold text-secondary">6 עד 12 חודשים</span> בבירמינגהם, אלבמה</p>
+</div>
+</section>
+
+<!-- Continue method section -->
+<section class="bg-background py-20 md:py-24 px-8">
+<div class="max-w-[1200px] mx-auto">
+
+<!-- Part C: Birmingham -->
+<div class="max-w-[1010px] mx-auto mb-20 text-center">
+  <h3 class="font-extrabold text-3xl text-primary mb-3">למה בירמינגהם?</h3>
+  <p class="text-on-surface-variant font-bold text-lg mb-10">כי אנחנו מחפשים איפה הכי משתלם להשקיע, <span class="text-secondary">והעיר הזו עונה על כל הדרישות</span></p>
+
+  <!-- Info cards grid -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
+
+    <!-- 1. מרכז רפואי — צלב רפואי -->
+    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
+      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מרכז רפואי">
+          <path d="M12 7v4" stroke="#984349"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4" stroke="#984349"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/>
+        </svg>
+      </div>
+      <p class="font-bold text-primary text-sm mb-2">מרכז רפואי מוביל</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed"><span class="font-label font-bold text-secondary">UAB Hospital</span> רביעי בגודלו בארה"ב, 2 מיליון מטופלים בשנה</p>
+    </div>
+
+    <!-- 2. כלכלה יציבה — גרף עולה -->
+    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
+      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="כלכלה יציבה">
+          <path d="M16 7h6v6" stroke="#984349"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+        </svg>
+      </div>
+      <p class="font-bold text-primary text-sm mb-2">כלכלה יציבה ומגוונת</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed">אבטלה <span class="font-label font-bold text-secondary">2.2%</span> בלבד. UAB מעסיקה 28,000 איש</p>
+    </div>
+
+    <!-- 3. ביוטכנולוגיה — מיקרוסקופ/מבחנה -->
+    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
+      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מרכז ביוטכנולוגיה">
+          <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094" stroke="#984349"/><path d="M8.5 2h7"/>
+        </svg>
+      </div>
+      <p class="font-bold text-primary text-sm mb-2">מרכז ביוטכנולוגיה פדרלי</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed">אחד מ-<span class="font-label font-bold text-secondary">31 Tech Hubs</span> בארה"ב. 100+ סטארטאפים פעילים</p>
+    </div>
+
+    <!-- 4. מטרו בצמיחה — בניינים עולים -->
+    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
+      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מטרו בצמיחה">
+          <path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3" stroke="#984349"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/>
+        </svg>
+      </div>
+      <p class="font-bold text-primary text-sm mb-2">מטרו בצמיחה</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed"><span class="font-label font-bold text-secondary">879,000</span> תושבים, צמיחה של 5,700 בשנה האחרונה</p>
+    </div>
+
+    <!-- 5. מיסוי ידידותי — מטבע עם V -->
+    <div class="bg-white rounded-xl p-5 col-span-2 md:col-span-1" style="box-shadow:var(--shadow-ambient)">
+      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
+        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מיסוי ידידותי">
+          <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m15 9-6 6" stroke="#984349"/><path d="M9 9h.01"/><path d="M15 15h.01"/>
+        </svg>
+      </div>
+      <p class="font-bold text-primary text-sm mb-2">מיסוי ידידותי למשקיע</p>
+      <p class="text-on-surface-variant text-sm leading-relaxed">מס נכס <span class="font-label font-bold text-secondary">$919</span> בשנה. ממוצע ארצי: $2,400</p>
+    </div>
+
+  </div>
+
+  <div class="space-y-4 text-lg text-on-surface-variant leading-relaxed max-w-[800px] mx-auto">
+    <p>אנחנו פועלים רק ב<strong class="text-secondary">שכונות יוקרה</strong> ובאזורים שליד <strong class="text-primary">בתי חולים גדולים ואוניברסיטאות</strong></p>
+    <p>אלו מקומות ש<strong class="text-primary">תמיד יש בהם ביקוש גבוה</strong> ואין מספיק בתים למכירה, מה ששומר על ערך הנכס וגורם לו <strong class="text-secondary">להימכר מהר</strong></p>
+  </div>
+</div>
+
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- HOUSE FLIP: Scroll-driven renovation animation + Method overlay -->
+<!-- ============================================================ -->
+<section id="house-flip-section" class="relative" style="height:300vh;background:#fbf9f6">
+  <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#fbf9f6">
+
+    <!-- Method overlay (top portion) -->
+    <div class="relative z-10 pt-32 md:pt-36 pb-6" style="background:#fbf9f6">
+      <div class="max-w-[1000px] mx-auto px-8">
+        <h3 class="font-extrabold text-3xl text-primary mb-3 text-center">איך אנחנו מייצרים כסף?</h3>
+        <p class="text-on-surface-variant font-bold text-lg mb-8 text-center">השיטה שלנו</p>
+
+        <!-- Desktop: horizontal flow -->
+        <div class="hidden md:flex items-start justify-center gap-0">
+          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מתחת למחיר השוק">
+                <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/><path d="M8 11h6" stroke="#984349"/><path d="M11 8v6" stroke="#984349"/>
+              </svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">01</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">בוחרים בפינצטה</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">מוצאים בתים <strong class="text-secondary">מתחת למחיר השוק</strong> בשכונות הכי מבוקשות</p>
+          </div>
+          <div class="flex items-center pt-12"><div class="flow-connector-h"></div></div>
+          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="משפצים מהר">
+                <path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4" stroke="#984349"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>
+              </svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">02</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">משפצים מהר</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">הופכים את הבית ל<strong class="text-secondary">הכי יפה בשכונה</strong> בעזרת הצוותים שלנו בשטח</p>
+          </div>
+          <div class="flex items-center pt-12"><div class="flow-connector-h"></div></div>
+          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מכירה ברווח">
+                <circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" stroke="#984349"/><path d="M12 18V6" stroke="#984349"/>
+              </svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">03</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">מוכרים ברווח</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">מכיוון שהשכונה יוקרתית ויש ביקוש, הבית נמכר מהר ו<strong class="text-secondary">במחיר גבוה הרבה יותר</strong> ממה שקנינו</p>
+          </div>
+        </div>
+
+        <!-- Mobile: vertical flow -->
+        <div class="flex md:hidden flex-col items-center gap-0">
+          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מתחת למחיר השוק"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/><path d="M8 11h6" stroke="#984349"/><path d="M11 8v6" stroke="#984349"/></svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">01</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">בוחרים בפינצטה</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">מוצאים בתים <strong class="text-secondary">מתחת למחיר השוק</strong> בשכונות הכי מבוקשות</p>
+          </div>
+          <div class="flow-connector-v"></div>
+          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="משפצים מהר"><path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4" stroke="#984349"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/></svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">02</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">משפצים מהר</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">הופכים את הבית ל<strong class="text-secondary">הכי יפה בשכונה</strong> בעזרת הצוותים שלנו בשטח</p>
+          </div>
+          <div class="flow-connector-v"></div>
+          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
+            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
+              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מכירה ברווח"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" stroke="#984349"/><path d="M12 18V6" stroke="#984349"/></svg>
+            </div>
+            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">03</span>
+            <h4 class="font-bold text-xl text-primary mt-2 mb-2">מוכרים ברווח</h4>
+            <p class="text-on-surface-variant text-sm leading-relaxed">מכיוון שהשכונה יוקרתית ויש ביקוש, הבית נמכר מהר ו<strong class="text-secondary">במחיר גבוה הרבה יותר</strong> ממה שקנינו</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animation frame (full screen behind method) -->
+    <img id="house-frame" src="frames-house/frame-0000.jpg" alt="אנימציית שיפוץ בית" style="position:absolute;bottom:0;left:4.5%;width:90%;height:70%;object-fit:contain;object-position:center bottom;z-index:0">
+
+  </div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 4: BEFORE / AFTER                                     -->
+<!-- ============================================================ -->
+<section class="bg-background py-20 md:py-24">
+<div class="max-w-[1200px] mx-auto px-6">
+
+<h2 class="text-3xl md:text-4xl font-extrabold text-center mb-16">
+  <span class="text-primary">התוצאות </span><span class="text-secondary">בשטח</span>
+</h2>
+
+<!-- Live deal cards from admin API -->
+<div id="landing-deals" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+
+<!-- Fallback: shown if API fails or no deals -->
+<div id="static-results" class="text-center text-on-surface-variant py-8" style="display:none">
+  <p>עסקאות יעודכנו בקרוב</p>
+</div>
+
+<div class="text-center mt-10">
+  <a href="properties.html" class="inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-3 rounded-lg hover:bg-secondary/5 transition-all">צפו בכל העסקאות</a>
+</div>
+
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 5: TRUST CARDS                                        -->
+<!-- ============================================================ -->
+<section class="bg-background py-20 md:py-24">
+<div class="max-w-[1200px] mx-auto px-6">
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+  <!-- Card 1: Investors First -->
+  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
+    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="אתם מרוויחים ראשונים">
+        <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/>
+        <path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/>
+        <path d="M18 9h1.5a1 1 0 0 0 0-5H18"/>
+        <path d="M4 22h16"/>
+        <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" stroke="#984349"/>
+        <path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-right mb-3">
+      <span class="text-primary">אתם מרוויחים </span><span class="text-secondary">ראשונים</span>
+    </h3>
+    <p class="text-on-surface-variant leading-relaxed text-right">המשקיעים מקבלים את הרווח שלהם לפני כולם (<span class="font-label font-bold text-secondary">עד 20%</span>). אנחנו מקבלים את החלק שלנו רק מהשקל שאחריכם</p>
+  </div>
+
+  <!-- Card 2: Skin in the Game -->
+  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
+    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="הכסף שלנו שם איתכם">
+        <path d="m11 17 2 2a1 1 0 1 0 3-3"/>
+        <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
+        <path d="m21 3 1 11h-2" stroke="#984349"/>
+        <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" stroke="#984349"/>
+        <path d="M3 4h8"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-right mb-3">
+      <span class="text-primary">הכסף שלנו </span><span class="text-secondary">שם איתכם</span>
+    </h3>
+    <p class="text-on-surface-variant leading-relaxed text-right">אנחנו משקיעים <strong class="text-primary">מהכיס הפרטי שלנו</strong> בכל עסקה. אנחנו שותפים מלאים לכל מה שקורה</p>
+  </div>
+
+  <!-- Card 3: Transparency -->
+  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
+    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="הכל שקוף">
+        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+        <circle cx="12" cy="12" r="3" stroke="#984349"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-right mb-3">
+      <span class="text-primary">הכל </span><span class="text-secondary">שקוף</span>
+    </h3>
+    <p class="text-on-surface-variant leading-relaxed text-right"><strong class="text-primary">קבוצת ווצאפ לכל עסקה ואזור אישי באפליקציה שלנו</strong> לכל משקיע. אתם מקבלים תמונות מהשיפוץ, מסמכים ועדכונים שוטפים מהשטח</p>
+  </div>
+
+  <!-- Card 4: Hassle-free -->
+  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
+    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="בלי כאבי ראש וניירת">
+        <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" stroke="#022445"/>
+        <path d="M15 4l1-1.5" stroke="#984349"/>
+        <path d="M18 6l1.5-1" stroke="#984349"/>
+        <path d="M17 2l.5 1" stroke="#984349"/>
+      </svg>
+    </div>
+    <h3 class="text-xl font-bold text-right mb-3">
+      <span class="text-primary">בלי כאבי ראש </span><span class="text-secondary">וניירת</span>
+    </h3>
+    <p class="text-on-surface-variant leading-relaxed text-right">אנחנו דואגים להכל, מהקנייה והשיפוץ ועד לדיווח ל<strong class="text-primary">מס הכנסה</strong> אתם רק מקבלים עדכונים</p>
+  </div>
+
+</div>
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 6: KEY METRICS                                        -->
+<!-- ============================================================ -->
+<section class="bg-background py-20 md:py-24">
+<div class="max-w-[1200px] mx-auto px-6">
+
+<div class="max-w-[720px] mx-auto text-center space-y-4">
+  <p class="text-lg text-on-surface-variant leading-relaxed">בזמן שאתם בשגרה, <strong class="text-primary">הבית שלכם עובר שיפוץ</strong></p>
+  <p class="text-lg text-on-surface-variant leading-relaxed">בלי להתעסק עם שוכרים או עורכי דין אתם ממשיכים בחיים שלכם – <strong class="text-secondary">אנחנו דואגים שהכסף יעבוד</strong></p>
+</div>
+
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 7: FAQ                                                -->
+<!-- ============================================================ -->
+<section class="bg-background py-20 md:py-24">
+<div class="max-w-[800px] mx-auto px-6">
+
+<h2 class="text-3xl md:text-4xl font-extrabold text-center mb-2">
+  <span class="text-primary">שאלות נפוצות</span>
+</h2>
+
+<div class="flex flex-col gap-6">
+
+  <!-- Q1 -->
+  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
+    <div class="flex justify-between items-center gap-4">
+      <h4 class="text-xl font-bold text-primary text-right flex-1">למה ארה"ב ולא ישראל?</h4>
+      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
+    </div>
+    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
+      <p>כי בישראל תצטרכו הון של <span class="font-label font-bold text-secondary">300 אלף ומשכנתא</span> כדי לקבל סכום שבארצות הברית אתם יכולים להרוויח ב<span class="font-label font-bold text-secondary">חצי שנה</span> עם הרבה פחות הון עצמי</p>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
+    <div class="flex justify-between items-center gap-4">
+      <h4 class="text-xl font-bold text-primary text-right flex-1">איך הכסף שלי מוגן?</h4>
+      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
+    </div>
+    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
+      <p>הנכס רשום על חברה (<span class="font-label font-bold text-primary">LLC</span>) שאתם בעלים בה. בנוסף, חברה חיצונית בודקת כל עסקה שלנו. והכי חשוב: אנחנו מרוויחים רק <strong class="text-secondary">אחרי שאתם קיבלתם את שלכם</strong></p>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
+    <div class="flex justify-between items-center gap-4">
+      <h4 class="text-xl font-bold text-primary text-right flex-1">מה עם המיסים? זה לא מסובך?</h4>
+      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
+    </div>
+    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
+      <p><strong class="text-primary">ממש לא.</strong> אנחנו מלווים אתכם בכל שלב, פותחים עבורכם את החברה, דואגים לדוח השנתי ומפנים אתכם לרו"ח מומחה למיסוי אמריקאי כדי שלא תשלמו מס פעמיים. <strong class="text-primary">הכל מסודר ופשוט</strong></p>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
+    <div class="flex justify-between items-center gap-4">
+      <h4 class="text-xl font-bold text-primary text-right flex-1">זה נשמע"טוב מדי", איפה הקאץ'?</h4>
+      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
+    </div>
+    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
+      <p>אין קאץ', יש <span class="font-extrabold text-secondary">שקיפות.</span> אתם מוזמנים להצטרף לקבוצה שלנו, לדבר עם אנשים שכבר השקיעו וקיבלו את הכסף לחשבון, ולראות את הנתונים בעיניים</p>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
+    <div class="flex justify-between items-center gap-4">
+      <h4 class="text-xl font-bold text-primary text-right flex-1">זה באמת יקרב אותי לחופש כלכלי?</h4>
+      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
+    </div>
+    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
+      <p>עסקה אחת? כנראה שלא. אבל המטרה היא להתגלגל מעסקה אחת לעסקה הבאה. זו הדרך הכי מהירה לגרום לכסף שלכם לצמוח כדי שתוכלו <strong class="text-secondary">לישון בשקט בעתיד</strong></p>
+    </div>
+  </div>
+
+</div>
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- SECTION 8: FINAL CTA                                          -->
+<!-- ============================================================ -->
+<section class="py-20 md:py-28" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
+<div class="max-w-[900px] mx-auto px-6 text-center">
+
+<h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-8">
+  <span class="text-white">אל תפספסו </span><span class="text-secondary">את ההזדמנות הבאה</span>
+</h2>
+
+<div class="max-w-[720px] mx-auto space-y-6 mb-12">
+  <p class="text-white/90 text-lg leading-relaxed">עסקאות טובות בשכונות יוקרה <strong class="text-white">נסגרות תוך ימים בודדים</strong></p>
+  <p class="text-white/80 text-lg leading-relaxed">בכל חודש שהכסף שלכם מחכה בבנק, אתם מוותרים על רווח <strong class="text-secondary">שיכול היה כבר להיות שלכם</strong></p>
+  <p class="text-white/90 text-lg leading-relaxed">מעל <span class="font-label font-bold text-secondary text-2xl">100 משקיעים</span> <strong class="text-white">כבר בפנים</strong>, אל תהיו אלו שיגידו בעוד שנה <span class="text-secondary">"חבל שלא התחלתי אז"</span></p>
+</div>
+
+<!-- 3 Steps -->
+<div class="flex flex-col md:flex-row gap-8 mb-16 justify-center">
+  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
+    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-lg">1</span>
+    </div>
+    <p class="text-white/90 leading-relaxed pt-2 md:text-center">הצטרפו לקבוצת הווצאפ השקטה<br>(זה בחינם)</p>
+  </div>
+  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
+    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-lg">2</span>
+    </div>
+    <p class="text-white/90 leading-relaxed pt-2 md:text-center">בואו לכנס המשקיעים הקרוב<br>ושמעו את כל הפרטים</p>
+  </div>
+  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
+    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-lg">3</span>
+    </div>
+    <p class="text-white/90 leading-relaxed pt-2 md:text-center">תחליטו אם מתאים לכם להצטרף<br>לעסקה הבאה</p>
+  </div>
+</div>
+
+<!-- Closing line -->
+<p class="text-2xl md:text-3xl font-bold mb-12">
+  <span class="text-white">בנו לעצמכם עתיד פיננסי </span><span class="text-secondary">חכם יותר </span><span class="text-white">עם סייף קפיטל</span>
+</p>
+
+<!-- CTAs -->
+<div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+  <a href="https://wa.me/972501234567" target="_blank" class="wa-glow inline-flex items-center gap-3 bg-whatsapp text-white font-bold text-lg px-10 py-5 rounded-xl hover:opacity-90 active:scale-[0.97] transition-all">
+    <svg viewBox="0 0 24 24" class="w-6 h-6 flex-shrink-0" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    הצטרפו לקבוצת הווצאפ לעדכונים
+  </a>
+</div>
+
+</div>
+</section>
+
+
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-links"><h4>ניווט מהיר</h4>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+</div>
+<div class="footer-links"><h4>מידע נוסף</h4>
+<a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+</div>
+<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+<div class="footer-brand">
+<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+</div></div>
+<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+</footer>
+
+
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- ALL JAVASCRIPT (embedded)                                     -->
+<!-- ============================================================ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ===== 1. Mobile Menu Toggle ===== */
+  var menuBtn = document.querySelector('.mobile-menu-btn');
+  var mobileNav = document.querySelector('.mobile-nav');
+  if (menuBtn && mobileNav) {
+    menuBtn.addEventListener('click', function() {
+      mobileNav.classList.toggle('open');
+      var isOpen = mobileNav.classList.contains('open');
+      menuBtn.querySelector('.material-symbols-outlined').textContent = isOpen ? 'close' : 'menu';
+    });
+    /* Close on link click */
+    mobileNav.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        mobileNav.classList.remove('open');
+        menuBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
+      });
+    });
+  }
+
+  /* ===== 2. Intersection Observer for .===== */
+  var fadeEls = document.querySelectorAll('.fade-in');
+  if ('IntersectionObserver' in window) {
+    var fadeObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    fadeEls.forEach(function(el) { fadeObs.observe(el); });
+  } else {
+    fadeEls.forEach(function(el) { el.classList.add('visible'); });
+  }
+
+  /* ===== 3. Hero Entrance (staggered on load) ===== */
+  window.addEventListener('load', function() {
+    var heroTexts = document.querySelectorAll('.hero-text');
+    heroTexts.forEach(function(el, i) {
+      setTimeout(function() {
+        el.classList.add('visible');
+      }, 100 + i * 200);
+    });
+  });
+
+  /* ===== 3b. Scroll-Driven Frames ===== */
+  var heroEl = document.getElementById('hero');
+  var frameImg = document.querySelector('.scroll-frame');
+
+  if (frameImg && heroEl) {
+    var TOTAL_FRAMES = 88;
+    var frameImages = [];
+    var framesLoaded = 0;
+    var lastFrame = -1;
+
+    /* Preload all frame images */
+    for (var f = 1; f <= TOTAL_FRAMES; f++) {
+      (function(idx) {
+        var img = new Image();
+        img.onload = function() { framesLoaded++; };
+        img.src = 'frames/frame-' + (idx < 10 ? '0' : '') + idx + '.jpg';
+        frameImages[idx - 1] = img;
+      })(f);
+    }
+
+    function updateScrollVideo() {
+      if (!framesLoaded) return;
+      var rect = heroEl.getBoundingClientRect();
+      var totalScroll = heroEl.offsetHeight - window.innerHeight;
+      if (totalScroll <= 0) return;
+      var progress = Math.max(0, Math.min(1, -rect.top / totalScroll));
+      var fi = Math.min(Math.floor(progress * TOTAL_FRAMES), TOTAL_FRAMES - 1);
+      if (fi !== lastFrame && frameImages[fi] && frameImages[fi].complete) {
+        frameImg.src = frameImages[fi].src;
+        lastFrame = fi;
+      }
+    }
+
+    var videoBg = document.querySelector('.hero-video-bg');
+
+    var scrollTicking = false;
+    window.addEventListener('scroll', function() {
+      if (!scrollTicking) {
+        requestAnimationFrame(function() {
+          updateScrollVideo();
+          /* Hide fixed video when hero scrolls out */
+          var heroRect = heroEl.getBoundingClientRect();
+          if (videoBg) {
+            videoBg.style.display = heroRect.bottom > 0 ? '' : 'none';
+          }
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ===== 4. Step Card Sequential Reveal ===== */
+  var stepCards = document.querySelectorAll('.step-card');
+  var connectors = document.querySelectorAll('.flow-connector-h, .flow-connector-v');
+  if ('IntersectionObserver' in window && stepCards.length) {
+    var stepObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          /* Reveal all steps and connectors sequentially */
+          stepCards.forEach(function(card, i) {
+            setTimeout(function() {
+              card.classList.add('visible');
+            }, i * 400);
+            /* Show connector after card (connector i appears between card i and i+1) */
+            if (connectors[i]) {
+              setTimeout(function() {
+                connectors[i].classList.add('visible');
+              }, i * 400 + 250);
+            }
+          });
+          stepObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    stepObs.observe(stepCards[0]);
+  }
+
+  /* ===== 5. Counter Animation ===== */
+  var counters = document.querySelectorAll('.counter');
+  var counterAnimated = false;
+
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animateCounter(el) {
+    var target = parseFloat(el.dataset.target);
+    var prefix = el.dataset.prefix || '';
+    var suffix = el.dataset.suffix || '';
+    var isDecimal = el.dataset.decimal === 'true';
+    var duration = 2000;
+    var start = performance.now();
+
+    function tick(now) {
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = easeOutCubic(progress);
+      var current = eased * target;
+      if (isDecimal) {
+        el.textContent = prefix + current.toFixed(1) + suffix;
+      } else {
+        el.textContent = prefix + Math.round(current) + suffix;
+      }
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  if ('IntersectionObserver' in window && counters.length) {
+    var metricsSection = document.getElementById('metrics');
+    if (metricsSection) {
+      var counterObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !counterAnimated) {
+            counterAnimated = true;
+            counters.forEach(function(c) { animateCounter(c); });
+            counterObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      counterObs.observe(metricsSection);
+    }
+  }
+
+  /* ===== 6. Before/After Slider ===== */
+  document.querySelectorAll('[data-ba]').forEach(function(container) {
+    var afterEl = container.querySelector('.ba-after');
+    var handle = container.querySelector('.ba-handle');
+    if (!afterEl || !handle) return;
+    var isDragging = false;
+
+    function updateSlider(clientX) {
+      var rect = container.getBoundingClientRect();
+      var x = clientX - rect.left;
+      var pct = Math.max(0, Math.min(x / rect.width, 1));
+      /* In RTL, clip-path inset: top right bottom left */
+      afterEl.style.clipPath = 'inset(0 ' + ((1 - pct) * 100) + '% 0 0)';
+      handle.style.left = (pct * 100) + '%';
+    }
+
+    container.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      updateSlider(e.clientX);
+      e.preventDefault();
+    });
+    container.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      updateSlider(e.touches[0].clientX);
+    }, { passive: true });
+
+    document.addEventListener('mousemove', function(e) {
+      if (isDragging) updateSlider(e.clientX);
+    });
+    document.addEventListener('touchmove', function(e) {
+      if (isDragging) updateSlider(e.touches[0].clientX);
+    }, { passive: true });
+
+    document.addEventListener('mouseup', function() { isDragging = false; });
+    document.addEventListener('touchend', function() { isDragging = false; });
+  });
+
+  /* ===== 7. FAQ Accordion ===== */
+  document.querySelectorAll('.landing-faq-item').forEach(function(item) {
+    function toggle() {
+      var isOpen = item.classList.contains('open');
+      /* Close all others */
+      document.querySelectorAll('.landing-faq-item.open').forEach(function(other) {
+        if (other !== item) {
+          other.classList.remove('open');
+          other.setAttribute('aria-expanded', 'false');
+          var a = other.querySelector('.landing-faq-answer');
+          if (a) a.classList.remove('open');
+        }
+      });
+      /* Toggle current */
+      if (isOpen) {
+        item.classList.remove('open');
+        item.setAttribute('aria-expanded', 'false');
+        item.querySelector('.landing-faq-answer').classList.remove('open');
+      } else {
+        item.classList.add('open');
+        item.setAttribute('aria-expanded', 'true');
+        item.querySelector('.landing-faq-answer').classList.add('open');
+      }
+    }
+    item.addEventListener('click', toggle);
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+
+  /* ===== 8. WhatsApp FAB Visibility ===== */
+  var heroSection = document.getElementById('hero');
+  var fab = document.querySelector('.whatsapp-fab');
+  if (heroSection && fab && 'IntersectionObserver' in window) {
+    var fabObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          fab.classList.remove('visible');
+        } else {
+          fab.classList.add('visible');
+        }
+      });
+    }, { threshold: 0 });
+    fabObs.observe(heroSection);
+  }
+
+  /* ===== 9. Smooth Scroll for internal links ===== */
+  document.querySelectorAll('.scroll-link').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      var href = this.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        var target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  });
+
+
+  /* ===== 11. House Flip Scroll Animation ===== */
+  var houseSection = document.getElementById('house-flip-section');
+  var houseFrame = document.getElementById('house-frame');
+
+  if (houseSection && houseFrame) {
+    var HOUSE_TOTAL = 192;
+    var houseImages = [];
+    var houseLoaded = 0;
+    var lastHouseFrame = -1;
+
+    for (var h = 0; h < HOUSE_TOTAL; h++) {
+      (function(idx) {
+        var img = new Image();
+        img.onload = function() { houseLoaded++; };
+        var padded = String(idx).padStart(4, '0');
+        img.src = 'frames-house/frame-' + padded + '.jpg';
+        houseImages[idx] = img;
+      })(h);
+    }
+
+    var houseTicking = false;
+    window.addEventListener('scroll', function() {
+      if (!houseTicking) {
+        requestAnimationFrame(function() {
+          if (!houseLoaded) { houseTicking = false; return; }
+          var rect = houseSection.getBoundingClientRect();
+          var totalScroll = houseSection.offsetHeight - window.innerHeight;
+          if (totalScroll <= 0) { houseTicking = false; return; }
+          var progress = Math.max(0, Math.min(1, -rect.top / totalScroll));
+          var fi = Math.min(Math.floor(progress * HOUSE_TOTAL), HOUSE_TOTAL - 1);
+          if (fi !== lastHouseFrame && houseImages[fi] && houseImages[fi].complete) {
+            houseFrame.src = houseImages[fi].src;
+            lastHouseFrame = fi;
+          }
+          houseTicking = false;
+        });
+        houseTicking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ===== 12. Live Deals from Admin API ===== */
+  var DEALS_API = 'http://localhost:3000/api/public/deals';
+  var dealsContainer = document.getElementById('landing-deals');
+  var staticResults = document.getElementById('static-results');
+
+  var FUNDRAISING_LABELS = {
+    upcoming: 'גיוס קרוב',
+    active: 'גיוס בעיצומו',
+    completed: 'גיוס הושלם',
+    closed: 'גיוס סגור'
+  };
+
+  var FUNDRAISING_COLORS = {
+    upcoming: 'bg-primary/10 text-primary',
+    active: 'bg-secondary/10 text-secondary',
+    completed: 'bg-green-100 text-green-700',
+    closed: 'bg-primary/10 text-primary'
+  };
+
+  function fmtUSD(val) {
+    if (!val) return '—';
+    var n = parseFloat(val);
+    if (isNaN(n)) return '—';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  var ADMIN_BASE = 'http://localhost:3000';
+
+  function getDealThumb(deal) {
+    if (deal.thumbnail_url) return ADMIN_BASE + deal.thumbnail_url;
+    if (deal.images && deal.images.length) {
+      var prio = ['after', 'rendering', 'before', 'gallery'];
+      for (var p = 0; p < prio.length; p++) {
+        for (var i = 0; i < deal.images.length; i++) {
+          if (deal.images[i].category === prio[p]) return ADMIN_BASE + deal.images[i].image_url;
+        }
+      }
+      return ADMIN_BASE + deal.images[0].image_url;
+    }
+    return '';
+  }
+
+  function renderDealCard(deal) {
+    var thumb = getDealThumb(deal);
+    var statusLabel = FUNDRAISING_LABELS[deal.fundraising_status] || deal.fundraising_status;
+    var statusColor = FUNDRAISING_COLORS[deal.fundraising_status] || 'bg-primary/10 text-primary';
+    var profit = deal.expected_profit ? fmtUSD(deal.expected_profit) : null;
+
+    var thumbHtml = thumb
+      ? '<img class="w-full h-full object-cover" src="' + thumb + '" alt="' + (deal.name || '') + '" loading="lazy" crossorigin="anonymous" onerror="this.style.display=\'none\'">'
+      : '<div class="w-full h-full flex items-center justify-center bg-background"><span class="material-symbols-outlined text-on-surface-variant text-4xl" style="font-variation-settings:\'FILL\' 0,\'wght\' 300">home</span></div>';
+
+    var duration = (deal.project_duration || '').replace('months', 'חודשים').replace('month', 'חודשים');
+
+    var profitHtml = profit
+      ? '<div class="mt-3 pt-3 flex justify-between items-center" style="border-top:1px solid rgba(67,71,78,0.1)">' +
+          '<div class="text-center"><span class="font-label font-bold text-secondary text-lg block">' + profit + '</span><span class="text-xs text-on-surface-variant">רווח צפוי</span></div>' +
+          '<div class="text-center"><span class="font-label font-bold text-primary text-lg block">' + duration + '</span><span class="text-xs text-on-surface-variant">משך הפרויקט</span></div>' +
+        '</div>'
+      : '';
+
+    return '<div class="bg-white rounded-xl overflow-hidden fade-in" style="box-shadow:var(--shadow-ambient)">' +
+      '<div style="aspect-ratio:16/10" class="overflow-hidden">' + thumbHtml + '</div>' +
+      '<div class="p-5">' +
+        '<div class="flex items-center gap-2 mb-3">' +
+          '<span class="text-xs font-bold px-3 py-1 rounded-full ' + statusColor + '">' + statusLabel + '</span>' +
+          '<span class="text-xs font-label font-bold text-secondary">' + (deal.fundraising_percent || 0) + '% גויס</span>' +
+        '</div>' +
+        '<div class="w-full h-1.5 rounded-full bg-primary/10 mb-3"><div class="h-full rounded-full bg-secondary" style="width:' + Math.min(deal.fundraising_percent || 0, 100) + '%"></div></div>' +
+        '<h3 class="font-bold text-primary text-lg mb-3">' + (deal.name || deal.full_address || '') + '</h3>' +
+        '<div class="grid grid-cols-2 gap-3 text-sm">' +
+          '<div><p class="text-on-surface-variant text-xs font-bold mb-1">מחיר רכישה</p><p class="font-label font-bold text-secondary">' + fmtUSD(deal.purchase_price) + '</p></div>' +
+          '<div><p class="text-on-surface-variant text-xs font-bold mb-1">' + (deal.property_status === 'sold' ? 'מחיר מכירה' : 'שווי צפוי לאחר שיפוץ') + '</p><p class="font-label font-bold text-primary">' + fmtUSD(deal.property_status === 'sold' ? (deal.actual_sale_price || deal.expected_sale_price) : (deal.arv || deal.expected_sale_price)) + '</p></div>' +
+        '</div>' +
+        profitHtml +
+      '</div>' +
+    '</div>';
+  }
+
+  if (dealsContainer) {
+    var dealsRetries = 0;
+    function loadDeals() {
+      fetch(DEALS_API)
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          if (!data.deals || data.deals.length === 0) {
+            if (staticResults) staticResults.style.display = '';
+            return;
+          }
+          var cards = data.deals.slice(0, 3);
+          dealsContainer.innerHTML = cards.map(renderDealCard).join('');
+          dealsContainer.querySelectorAll('.fade-in').forEach(function(el) {
+            el.classList.add('visible');
+          });
+          if (staticResults) staticResults.style.display = 'none';
+        })
+        .catch(function() {
+          dealsRetries++;
+          if (dealsRetries < 3) {
+            setTimeout(loadDeals, 3000);
+          } else {
+            if (staticResults) staticResults.style.display = '';
+          }
+        });
+    }
+    loadDeals();
+  }
+
+})();
+</script>
+
+</body>
+</html>

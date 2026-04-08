@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יצירת עסקה חדשה | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+  <style>
+    .upload-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: #022445;
+      background: rgba(2, 36, 69, 0.03);
+    }
+    .upload-zone.has-file {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .doc-type-card {
+      border: 1px solid #eae8e5;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      transition: all 0.15s;
+      background: #fff;
+    }
+    .doc-type-card:hover {
+      border-color: #022445;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .doc-type-card.uploaded {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      border: 2px solid #d1d5db;
+      color: #9ca3af;
+      background: #fff;
+      transition: all 0.2s;
+    }
+    .step-dot.active {
+      border-color: #022445;
+      background: #022445;
+      color: #fff;
+    }
+    .step-dot.completed {
+      border-color: #16a34a;
+      background: #16a34a;
+      color: #fff;
+    }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #d1d5db;
+      transition: background 0.2s;
+    }
+    .step-line.completed {
+      background: #16a34a;
+    }
+    .confidence-high { background: #dcfce7; color: #166534; }
+    .confidence-medium { background: #fef9c3; color: #854d0e; }
+    .confidence-low { background: #fef2f2; color: #991b1b; }
+    .field-row {
+      display: grid;
+      grid-template-columns: 200px 1fr auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .field-row:last-child { border-bottom: none; }
+    .extraction-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e5e7eb;
+      border-top-color: #022445;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .big-spinner {
+      width: 48px;
+      height: 48px;
+      border-width: 3px;
+    }
+  </style>
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="flex items-center gap-3">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+        <span class="text-lg font-bold">Safe Capital</span>
+      </a>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Back + Header -->
+    <div class="flex items-center gap-4 mb-6">
+      <a href="/" class="text-gray-400 hover:text-primary transition">
+        <span class="material-symbols-outlined text-2xl">arrow_forward</span>
+      </a>
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900">יצירת עסקה חדשה</h1>
+        <p class="text-sm text-gray-500 mt-1">העלה 3 מסמכים והוסף קישור Zillow — המערכת תחלץ את הנתונים אוטומטית</p>
+      </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="flex items-center mb-8 px-4" id="stepIndicator">
+      <div class="step-indicator flex-1 flex items-center">
+        <div class="step-dot active" data-step="1">1</div>
+        <div class="step-line" data-line="1"></div>
+        <div class="step-dot" data-step="2">2</div>
+        <div class="step-line" data-line="2"></div>
+        <div class="step-dot" data-step="3">3</div>
+      </div>
+    </div>
+    <div class="flex justify-between mb-8 px-4 text-sm text-gray-500">
+      <span>העלאת מסמכים</span>
+      <span>חילוץ נתונים</span>
+      <span>סקירה ושמירה</span>
+    </div>
+
+    <!-- Step 1: Upload Documents -->
+    <div id="step1" class="wizard-page">
+      <div class="card p-6 mb-6">
+        <h2 class="text-lg font-bold mb-2">העלאת מסמכים</h2>
+        <p class="text-sm text-gray-500 mb-6">כל 4 שדות הם חובה. שאר המסמכים (תמונות, הדמיות, חוזה קבלן) יועלו מהטאבים הרלוונטיים בתוך עורך העסקה.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="docTypeGrid">
+          <!-- Document type cards will be rendered by JS -->
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <a href="/" class="btn btn-secondary">ביטול</a>
+        <button class="btn btn-primary" id="btnStartExtraction" disabled>
+          <span class="material-symbols-outlined text-sm">auto_awesome</span>
+          חלץ נתונים
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Extraction Processing -->
+    <div id="step2" class="wizard-page hidden">
+      <div class="card p-8 text-center">
+        <div class="extraction-spinner big-spinner mx-auto mb-4"></div>
+        <h2 class="text-lg font-bold mb-2">מחלץ נתונים...</h2>
+        <p class="text-sm text-gray-500 mb-6" id="extractionStatus">קורא מסמכים ומנתח נתונים באמצעות AI</p>
+        <div class="max-w-md mx-auto">
+          <div class="progress-bar">
+            <div class="progress-fill" id="extractionProgress" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="mt-6 text-sm text-gray-400" id="extractionLog"></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Review & Save -->
+    <div id="step3" class="wizard-page hidden">
+      <div id="reviewContent">
+        <!-- Will be populated by JS after extraction -->
+      </div>
+
+      <div class="flex justify-between mt-6">
+        <button class="btn btn-secondary" id="btnBackToUpload">
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          חזור להעלאה
+        </button>
+        <div class="flex gap-3">
+          <button class="btn btn-secondary" id="btnSaveAsNew">
+            <span class="material-symbols-outlined text-sm">save</span>
+            שמור כעסקה חדשה
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/deal-wizard.js"></script>
+</body>
+</html>

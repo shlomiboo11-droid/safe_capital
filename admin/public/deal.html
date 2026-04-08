@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עריכת עסקה | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Back + Header -->
+    <div class="flex items-center gap-4 mb-6">
+      <a href="/" class="text-gray-400 hover:text-primary transition" style="line-height:1;">
+        <span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span>
+      </a>
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900" id="dealTitle">טוען...</h1>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="badge badge-gray text-xs font-inter" id="dealNumber"></span>
+          <span class="badge" id="dealStatusBadge"></span>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-secondary btn-sm" onclick="deleteDeal()" title="מחק עסקה">
+          <span class="material-symbols-outlined text-sm">delete</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-container">
+      <div class="tab-nav mb-6">
+        <button class="tab-btn active" data-tab="property">פרטי נכס</button>
+        <button class="tab-btn" data-tab="financial">מחשבון פיננסי</button>
+        <button class="tab-btn" data-tab="renovation">תכנית שיפוץ</button>
+        <button class="tab-btn" data-tab="fundraising">גיוס הון</button>
+        <button class="tab-btn" data-tab="cashflow">תזרים מזומנים</button>
+        <button class="tab-btn" data-tab="images">תמונות</button>
+        <button class="tab-btn" data-tab="comps">נכסים דומים</button>
+        <button class="tab-btn" data-tab="documents">מסמכים</button>
+      </div>
+
+      <!-- Tab: Property Details -->
+      <div class="tab-content active" data-tab-content="property" id="tab-property"></div>
+
+      <!-- Tab: Financial Calculator -->
+      <div class="tab-content" data-tab-content="financial" id="tab-financial"></div>
+
+      <!-- Tab: Renovation Plan -->
+      <div class="tab-content" data-tab-content="renovation" id="tab-renovation"></div>
+
+      <!-- Tab: Fundraising -->
+      <div class="tab-content" data-tab-content="fundraising" id="tab-fundraising"></div>
+
+      <!-- Tab: Cashflow -->
+      <div class="tab-content" data-tab-content="cashflow" id="tab-cashflow"></div>
+
+      <!-- Tab: Images -->
+      <div class="tab-content" data-tab-content="images" id="tab-images"></div>
+
+      <!-- Tab: Comps -->
+      <div class="tab-content" data-tab-content="comps" id="tab-comps"></div>
+
+      <!-- Tab: Documents -->
+      <div class="tab-content" data-tab-content="documents" id="tab-documents"></div>
+    </div>
+  </main>
+
+  <!-- FAB Button: Quick Add Cashflow Entry -->
+  <button id="cashflowFab" class="fab-button" onclick="openQuickCashflow()" title="הוסף תנועה">
+    <span class="material-symbols-outlined">add</span>
+  </button>
+
+  <!-- Quick Cashflow Entry Modal -->
+  <div id="quickCashflowModal" class="modal-overlay hidden" onclick="if(event.target===this)closeQuickCashflow()">
+    <div class="modal-box" style="max-width: 28rem;">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold">הוספת תנועה מהירה</h2>
+        <button onclick="closeQuickCashflow()" class="text-gray-400 hover:text-gray-600">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <form id="quickCashflowForm" onsubmit="submitQuickCashflow(event)">
+        <!-- Amount: big prominent field -->
+        <div class="mb-5">
+          <label class="form-label text-base">סכום ($)</label>
+          <input type="text" inputmode="numeric" name="amount" data-currency="true"
+            class="form-input ltr text-2xl font-inter font-bold text-center py-4"
+            placeholder="0"
+            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)" required>
+        </div>
+
+        <!-- Type: Toggle buttons -->
+        <div class="mb-5">
+          <label class="form-label">סוג תנועה</label>
+          <div class="flex gap-2" id="qcf-type-toggle">
+            <button type="button" class="qcf-type-btn qcf-type-expense active" data-type="expense" onclick="setQuickCashflowType('expense')">
+              <span class="material-symbols-outlined text-sm">arrow_upward</span>
+              הוצאה
+            </button>
+            <button type="button" class="qcf-type-btn qcf-type-income" data-type="income" onclick="setQuickCashflowType('income')">
+              <span class="material-symbols-outlined text-sm">arrow_downward</span>
+              הכנסה
+            </button>
+          </div>
+          <input type="hidden" name="type" value="expense">
+        </div>
+
+        <!-- Category: only shown for expense -->
+        <div class="mb-4" id="qcf-category-wrapper">
+          <label class="form-label">קטגוריה</label>
+          <select name="category_id" class="form-select text-sm" id="qcf-category" onchange="updateQuickCostItems()">
+            <option value="">-- בחר קטגוריה --</option>
+          </select>
+        </div>
+
+        <!-- Sub-category: only shown for expense -->
+        <div class="mb-4" id="qcf-costitem-wrapper">
+          <label class="form-label">תת-קטגוריה (פריט)</label>
+          <select name="cost_item_id" class="form-select text-sm" id="qcf-costitem">
+            <option value="">-- ללא --</option>
+          </select>
+        </div>
+
+        <!-- Funding source: always shown -->
+        <div class="mb-4">
+          <label class="form-label">מקור מימון</label>
+          <select name="funding_source" class="form-select text-sm" required>
+            <option value="">-- בחר מקור --</option>
+            <option value="equity">הון עצמי (Equity)</option>
+            <option value="loan">הלוואה (Loan)</option>
+            <option value="sale">הכנסת מכירה (Sale)</option>
+            <option value="other">אחר</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+          <label class="form-label">תיאור</label>
+          <input type="text" name="description" class="form-input text-sm" placeholder="תיאור התנועה (אופציונלי)">
+        </div>
+
+        <!-- Date -->
+        <div class="mb-6">
+          <label class="form-label">תאריך</label>
+          <input type="date" name="date" class="form-input ltr text-sm" required>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" id="qcf-submit-btn" class="btn btn-primary w-full py-3 text-base">
+          <span class="material-symbols-outlined text-sm">save</span>
+          שמור תנועה
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/deal-tabs/timeline.js"></script>
+  <script src="/js/deal-tabs/property.js"></script>
+  <script src="/js/deal-tabs/financial.js"></script>
+  <script src="/js/deal-tabs/renovation.js"></script>
+  <script src="/js/deal-tabs/fundraising.js"></script>
+  <script src="/js/deal-tabs/cashflow.js"></script>
+  <script src="/js/deal-tabs/specs.js"></script>
+  <script src="/js/deal-tabs/images.js"></script>
+  <script src="/js/deal-tabs/comps.js"></script>
+  <script src="/js/deal-tabs/documents.js"></script>
+  <script src="/js/deal-edit.js"></script>
+</body>
+</html>

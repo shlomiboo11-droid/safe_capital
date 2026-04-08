@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media source files (too large for git)
+website_media/
+website/frames/
+website/frames-zoom/
+website/frames-house/
+
+# IDE
+.vscode/
+.idea/
+
+# Uploads (runtime data)
+admin/public/uploads/
+
+# Claude
+.claude/
+
+# Deal documents (sensitive)
+206mountain*/
+oxmoor/
+oxmoore/
+1513*
+
+# Large/sensitive files
+*.xlsx
+*.docx
+*.numbers
+*.pdf
+
+# Credentials
+supabase-credentials.txt
+
+# Source/design files
+google_stitch/
+landing_page_agents/
+marketing*/
+logo*/
+qa-plugin/
+prompt_*.md
+admin-dashboard-spec.md
+*-spec.md

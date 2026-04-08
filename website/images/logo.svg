@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" fill="none">
+  <defs>
+    <clipPath id="shield-clip">
+      <path d="M6 2 L62 2 C65 2 68 5 68 8 L68 38 C68 60 37 78 37 78 C37 78 6 60 6 38 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Shield shape filled navy -->
+  <path d="M6 2 L62 2 C65 2 68 5 68 8 L68 38 C68 60 37 78 37 78 C37 78 6 60 6 38 Z" fill="#022445"/>
+
+  <!-- S letter carved into the shield as a lighter path -->
+  <path d="
+    M 46 14
+    C 46 14, 44 10, 38 10
+    L 30 10
+    C 24 10, 20 14, 20 18
+    C 20 22, 24 26, 30 26
+    L 40 26
+    C 48 26, 52 31, 52 36
+    C 52 42, 47 47, 40 47
+    L 28 47
+    C 22 47, 18 44, 18 44
+  " fill="none" stroke="#F8F6F3" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Red building/columns inside upper-right of shield -->
+  <!-- Column group positioned in the top-right quadrant -->
+  <rect x="42" y="13" width="3.5" height="15" rx="0.5" fill="#984349"/>
+  <rect x="48" y="10" width="3.5" height="18" rx="0.5" fill="#984349"/>
+  <rect x="54" y="13" width="3.5" height="15" rx="0.5" fill="#984349"/>
+  <!-- Roof / pediment -->
+  <polygon points="40,13 59,13 49.5,7" fill="#984349"/>
+  <!-- Base line -->
+  <rect x="40" y="28" width="19" height="2.5" rx="0.5" fill="#984349"/>
+
+  <!-- "AFE" text in bold navy -->
+  <text x="80" y="60" font-family="'Inter', 'Montserrat', Arial, sans-serif" font-size="56" font-weight="800" fill="#022445" letter-spacing="-1">AFE</text>
+</svg>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | מדיניות פרטיות</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="css/shared.css" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Heebo', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .editorial-shadow {
+            box-shadow: 0 8px 24px -4px rgba(27, 28, 26, 0.04);
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .signature-gradient {
+            background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#792b31",
+                        "background": "#fbf9f6",
+                        "on-primary-fixed-variant": "#2d486b",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-secondary-fixed": "#40010b",
+                        "surface": "#fbf9f6",
+                        "on-primary-container": "#8aa4cc",
+                        "surface-container-highest": "#e4e2df",
+                        "tertiary": "#242423",
+                        "surface-container-high": "#eae8e5",
+                        "primary-fixed": "#d3e3ff",
+                        "surface-variant": "#e4e2df",
+                        "primary-fixed-dim": "#adc8f2",
+                        "inverse-on-surface": "#f2f0ed",
+                        "on-background": "#1b1b1f",
+                        "outline-variant": "#c4c6cf",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#fbf9f6",
+                        "primary": "#022445",
+                        "on-primary-fixed": "#001c39",
+                        "surface-tint": "#456084",
+                        "secondary": "#984349",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#a4a2a2",
+                        "surface-container-low": "#f5f3f0",
+                        "secondary-container": "#ff9599",
+                        "primary-container": "#1e3a5c",
+                        "inverse-primary": "#adc8f2",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "secondary-fixed-dim": "#ffb3b4",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-dim": "#dbdad7",
+                        "on-surface": "#1b1b1f",
+                        "tertiary-container": "#393939",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#7a2d33",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#ffdada",
+                        "outline": "#74777f",
+                        "surface-container": "#efeeeb",
+                        "inverse-surface": "#30312f"
+                    },
+                    fontFamily: {
+                        "headline": ["Heebo"],
+                        "body": ["Heebo"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top Navigation Shell -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+<div class="nav-links">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+</div>
+<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+</div>
+<div class="mobile-nav">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-6 min-h-screen">
+<div class="max-w-[780px] mx-auto">
+<!-- Header Section -->
+<header class="mb-16 text-right">
+<nav class="flex items-center gap-2 text-on-surface-variant text-sm mb-6 font-label">
+<a class="hover:text-primary transition-colors" href="index.html">Safe Capital</a>
+<span class="material-symbols-outlined text-xs">chevron_left</span>
+<span class="text-secondary font-medium">Privacy Policy</span>
+</nav>
+<h1 class="text-5xl md:text-6xl font-extrabold text-primary mb-8 leading-tight tracking-tight">
+                    מדיניות פרטיות
+                </h1>
+<p class="text-xl text-on-surface-variant leading-relaxed font-light">
+                    Safe Capital (סייף קפיטל) מתחייבת לשמור על פרטיותכם ועל אבטחת המידע האישי שלכם. מסמך זה מפרט את אופן האיסוף, השימוש וההגנה על המידע המתקבל דרך הפלטפורמות שלנו.
+                </p>
+<div class="mt-8 flex items-center gap-3 text-sm text-secondary font-medium bg-surface-container-low w-fit px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                    עודכן לאחרונה: מרץ 2026
+                </div>
+</header>
+<!-- Policy Content Block -->
+<div class="bg-surface-container-lowest p-8 md:p-12 rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-none relative overflow-hidden">
+<!-- Architectural Accent -->
+<div class="absolute top-0 right-0 w-1.5 h-32 bg-secondary"></div>
+<div class="space-y-12">
+<!-- Section 1 -->
+<section class="space-y-4">
+<h2 class="text-2xl font-bold text-primary flex items-center gap-3">
+<span class="text-secondary font-label text-lg">01.</span>
+                            כללי
+                        </h2>
+<div class="text-on-surface-variant leading-relaxed space-y-4">
+<p>מדיניות פרטיות זו חלה על כל השירותים הניתנים על ידי Safe Capital, לרבות אתר האינטרנט, אפליקציות המובייל ומערכות ניהול ההשקעות שלנו. השימוש בשירותים מהווה הסכמה לתנאים המפורטים כאן.</p>
+<p>אנו פועלים בהתאם לחוק הגנת הפרטיות, התשמ"א-1981 ולתקנות שהותקנו מכוחו, וכן בהתאם לסטנדרטים בינלאומיים של אבטחת מידע בתחום הפיננסי.</p>
+</div>
+</section>
+<!-- Section 2 -->
+<section class="space-y-4">
+<h2 class="text-2xl font-bold text-primary flex items-center gap-3">
+<span class="text-secondary font-label text-lg">02.</span>
+                            המידע שאנו אוספים
+                        </h2>
+<div class="text-on-surface-variant leading-relaxed">
+<p class="mb-4">כחלק מתהליך ההצטרפות והשירות השוטף, אנו עשויים לאסוף את סוגי המידע הבאים:</p>
+<ul class="space-y-3 list-none pr-0">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span><strong>פרטי זיהוי:</strong> שם מלא, מספר זהות, כתובת מגורים ופרטי התקשרות.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span><strong>מידע פיננסי:</strong> פרטי חשבון בנק, היסטוריית השקעות ומקורות הון, כנדרש על פי תקנות "הכר את הלקוח" (KYC).</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span><strong>מידע טכנולוגי:</strong> כתובת IP, סוג דפדפן, נתוני שימוש וזמני שהייה באתר באמצעות עוגיות (Cookies).</span>
+</li>
+</ul>
+</div>
+</section>
+<!-- Section 3 -->
+<section class="space-y-4">
+<h2 class="text-2xl font-bold text-primary flex items-center gap-3">
+<span class="text-secondary font-label text-lg">03.</span>
+                            כיצד אנו משתמשים במידע
+                        </h2>
+<div class="text-on-surface-variant leading-relaxed space-y-4">
+<p>המידע שנאסף משמש אותנו למטרות הבאות:</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+<div class="bg-surface-container-low p-6 rounded-lg">
+<span class="material-symbols-outlined text-primary mb-3">verified_user</span>
+<h4 class="font-bold text-primary mb-2">אימות וזיהוי</h4>
+<p class="text-sm">ניהול חשבון המשקיע וביצוע התאמות רגולטוריות הנדרשות בחוק.</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg">
+<span class="material-symbols-outlined text-primary mb-3">trending_up</span>
+<h4 class="font-bold text-primary mb-2">שיפור השירות</h4>
+<p class="text-sm">ניתוח נתונים לטובת טיוב הצעות הערך והתאמת עסקאות לצרכי המשקיע.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4 -->
+<section class="space-y-4">
+<h2 class="text-2xl font-bold text-primary flex items-center gap-3">
+<span class="text-secondary font-label text-lg">04.</span>
+                            אבטחת מידע
+                        </h2>
+<div class="text-on-surface-variant leading-relaxed">
+<p>סייף קפיטל מיישמת מערכות אבטחת מידע מתקדמות, הצפנת נתונים (SSL) ופרוטוקולי גישה מחמירים. הגישה למידע אישי מוגבלת לעובדים מורשים בלבד הזקוקים לו לצורך מתן השירות.</p>
+</div>
+</section>
+<!-- Contact Footer within Content -->
+<div class="mt-16 pt-12 border-t border-surface-variant">
+<div class="flex flex-col md:flex-row items-center justify-between gap-6">
+<div>
+<h3 class="text-lg font-bold text-primary">שאלות בנושא פרטיות?</h3>
+<p class="text-on-surface-variant">צוות הציות שלנו זמין עבורכם לכל הבהרה.</p>
+</div>
+<a class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-primary-container transition-colors" href="mailto:privacy@safecapital.co.il">
+<span class="material-symbols-outlined">mail</span>
+                                צרו קשר
+                            </a>
+</div>
+</div>
+</div>
+</div>
+<!-- Disclaimer Card -->
+<div class="mt-12 bg-secondary/5 border-r-4 border-secondary p-6 rounded-l-lg">
+<p class="text-sm text-secondary font-medium leading-relaxed">
+                    שימו לב: מסמך זה מנוסח בלשון זכר מטעמי נוחות בלבד, אך פונה לכל המינים באופן שווה. השקעה בנדל"ן כרוכה בסיכון ומומלץ להיוועץ עם מומחים לפני קבלת החלטות.
+                </p>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-links"><h4>ניווט מהיר</h4>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+</div>
+<div class="footer-links"><h4>מידע נוסף</h4>
+<a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+</div>
+<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+<div class="footer-brand">
+<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+</div></div>
+<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+</footer>
+<script src="js/shared.js"></script>
+</body></html>
