@@ -1,0 +1,408 @@
+/* Deal Detail Page — Additional Styles */
+
+/* Section card */
+.deal-section {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 8px rgba(27,28,26,0.04);
+}
+.deal-section-alt {
+  background: #f5f3f0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.deal-section-title {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #022445;
+  margin-bottom: 1rem;
+}
+
+/* Timeline */
+.portal-timeline {
+  position: relative;
+  padding-right: 2rem;
+}
+.portal-timeline::before {
+  content: '';
+  position: absolute;
+  right: 0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e5e7eb;
+}
+.timeline-step {
+  position: relative;
+  padding-bottom: 1.5rem;
+  padding-right: 1.5rem;
+}
+.timeline-step:last-child {
+  padding-bottom: 0;
+}
+.timeline-dot {
+  position: absolute;
+  right: calc(-1rem - 5px);
+  top: 0.25rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.timeline-dot.completed {
+  background: #16a34a;
+}
+.timeline-dot.active {
+  background: #022445;
+  box-shadow: 0 0 0 4px rgba(2,36,69,0.15);
+}
+.timeline-dot.pending {
+  background: #fff;
+  border: 2px solid #d1d5db;
+}
+.timeline-step-text {
+  font-size: 0.9375rem;
+  color: #43474e;
+}
+.timeline-step-text.completed {
+  color: #1b1c1a;
+  font-weight: 600;
+}
+.timeline-step-text.active {
+  color: #022445;
+  font-weight: 700;
+}
+.timeline-step-text.pending {
+  color: #9ca3af;
+}
+
+/* Plan vs Actual table */
+.plan-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.plan-table th {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #43474e;
+  padding: 0.75rem 0.5rem;
+  text-align: right;
+  background: #f5f3f0;
+}
+.plan-table th:first-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.plan-table th:last-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.plan-table td {
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9375rem;
+  color: #1b1c1a;
+}
+.plan-table tr:not(:last-child) td {
+  border-bottom: 1px solid #f0eee9;
+}
+.plan-table .num-cell {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  direction: ltr;
+  text-align: left;
+}
+.plan-table .total-row td {
+  font-weight: 700;
+  background: #faf8f5;
+}
+.plan-table .deviation {
+  color: #d97706;
+}
+
+/* Specs table */
+.specs-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.specs-table th {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #43474e;
+  padding: 0.75rem 0.5rem;
+  text-align: right;
+  background: #f5f3f0;
+}
+.specs-table th:first-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.specs-table th:last-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.specs-table td {
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9375rem;
+  color: #1b1c1a;
+}
+.specs-table tr:not(:last-child) td {
+  border-bottom: 1px solid #f0eee9;
+}
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+@media (min-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.gallery-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.gallery-img:hover {
+  opacity: 0.85;
+}
+.gallery-category-title {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1b1c1a;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.gallery-category-title:first-child {
+  margin-top: 0;
+}
+
+/* Lightbox */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lightbox-overlay.active {
+  opacity: 1;
+}
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: background 0.15s;
+}
+.lightbox-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: background 0.15s;
+}
+.lightbox-nav:hover {
+  background: rgba(255,255,255,0.3);
+}
+.lightbox-prev {
+  right: 1rem;
+}
+.lightbox-next {
+  left: 1rem;
+}
+
+/* Comp cards */
+.comp-card {
+  background: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 8px rgba(27,28,26,0.04);
+}
+.comp-card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+.comp-card-body {
+  padding: 1rem;
+}
+.comp-card-address {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: #1b1c1a;
+  margin-bottom: 0.5rem;
+}
+.comp-card-detail {
+  font-size: 0.8125rem;
+  color: #43474e;
+  margin-bottom: 0.25rem;
+}
+.comp-card-price {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: #984349;
+  font-size: 1.125rem;
+}
+
+/* Document list */
+.doc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+.doc-item:not(:last-child) {
+  border-bottom: 1px solid #f0eee9;
+}
+.doc-item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  background: #f5f3f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #43474e;
+}
+.doc-item-title {
+  flex: 1;
+  font-size: 0.9375rem;
+  color: #1b1c1a;
+  font-weight: 500;
+}
+.doc-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #022445;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.doc-download-btn:hover {
+  background: #f5f3f0;
+}
+
+/* Renovation plan */
+.renovation-summary {
+  background: #faf8f5;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #43474e;
+}
+.renovation-phase {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+}
+.renovation-phase:not(:last-child) {
+  border-bottom: 1px solid #f0eee9;
+}
+
+/* Investment status badges */
+.invest-status-committed {
+  background: #fff7ed;
+  color: #9a3412;
+}
+.invest-status-funded {
+  background: #dcfce7;
+  color: #166534;
+}
+.invest-status-returned {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* Empty state */
+.deal-empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #9ca3af;
+  font-size: 0.9375rem;
+}
+
+/* Key metrics grid */
+.key-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .key-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Comps grid */
+.comps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+@media (min-width: 768px) {
+  .comps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .comps-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

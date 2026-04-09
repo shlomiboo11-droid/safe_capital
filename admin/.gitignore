@@ -1,5 +1,5 @@
 node_modules/
 data/
-public/uploads/
+# public/uploads/ — tracked for Vercel
 .env
 .vercel

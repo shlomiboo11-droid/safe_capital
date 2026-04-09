@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אזור המשקיעים | Safe Capital</title>
+  <link rel="icon" type="image/png" href="/images/logo-half.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/css/portal.css" rel="stylesheet">
+  <style>
+    .login-card {
+      background: #ffffff;
+      border-radius: 0.75rem;
+      box-shadow: 0 8px 24px rgba(27,28,26,0.04);
+      padding: 2.5rem 2rem;
+    }
+    .login-btn {
+      background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
+      color: #fff; border: none; border-radius: 0.5rem;
+      padding: 0.875rem; font-size: 1rem; font-weight: 600;
+      font-family: 'Heebo', sans-serif;
+      cursor: pointer; transition: opacity 0.2s; width: 100%;
+    }
+    .login-btn:hover { opacity: 0.92; }
+    .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4" style="background: #fbf9f6;">
+
+  <div class="w-full" style="max-width: 400px;">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <img src="/images/logo-half.png" alt="Safe Capital" class="h-10 mx-auto mb-4">
+      <h1 class="text-2xl font-bold" style="color: #022445; font-family: 'Heebo', sans-serif;">אזור המשקיעים</h1>
+      <p class="text-sm mt-2" style="color: #43474e;">התחבר כדי לצפות בהשקעות שלך</p>
+    </div>
+
+    <!-- Login card -->
+    <div class="login-card">
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-semibold mb-1.5" style="color: #374151;" for="username">שם משתמש</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="portal-input ltr"
+            placeholder="שם משתמש"
+            required
+            autocomplete="username"
+            dir="ltr"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold mb-1.5" style="color: #374151;" for="password">סיסמה</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="portal-input ltr"
+              placeholder="סיסמה"
+              required
+              autocomplete="current-password"
+              dir="ltr"
+            >
+            <button type="button" id="togglePassword" class="absolute left-3 top-1/2 -translate-y-1/2" style="color: #74777f; background:none; border:none; cursor:pointer;">
+              <span class="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="loginError" class="hidden text-sm p-3 rounded-lg" style="background: #fef2f2; color: #991b1b;"></div>
+
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span id="loginText">התחבר</span>
+          <span id="loginSpinner" class="hidden">
+            <svg class="animate-spin h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span>מתחבר...</span>
+          </span>
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-sm mt-6" style="color: #74777f;">
+      שכחת סיסמה?
+      <a href="https://wa.me/972544594947" target="_blank" class="underline hover:no-underline" style="color: #022445;">צור קשר</a>
+    </p>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // If already logged in, redirect
+    if (PORTAL_API.getInvestor()) {
+      window.location.href = '/index.html';
+    }
+
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginText = document.getElementById('loginText');
+    const loginSpinner = document.getElementById('loginSpinner');
+
+    // Toggle password visibility
+    document.getElementById('togglePassword').addEventListener('click', () => {
+      const pwd = document.getElementById('password');
+      const icon = document.querySelector('#togglePassword .material-symbols-outlined');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        pwd.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.classList.add('hidden');
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        errorDiv.textContent = 'יש למלא שם משתמש וסיסמה';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginText.classList.add('hidden');
+      loginSpinner.classList.remove('hidden');
+
+      try {
+        await PORTAL_API.login(username, password);
+        window.location.href = '/index.html';
+      } catch (err) {
+        errorDiv.textContent = err.message === 'Invalid credentials'
+          ? 'שם משתמש או סיסמה שגויים'
+          : err.message || 'שגיאה בהתחברות. נסה שוב.';
+        errorDiv.classList.remove('hidden');
+      } finally {
+        loginBtn.disabled = false;
+        loginText.classList.remove('hidden');
+        loginSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
