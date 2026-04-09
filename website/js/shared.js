@@ -72,20 +72,29 @@ const PORTAL_URL = (window.location.hostname === 'localhost')
 
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
-    // Inject "אזור אישי" portal link into nav
-    const navLinks = document.querySelector('.site-nav .nav-links');
+    // Inject "אזור אישי" portal button next to "הצטרפו עכשיו"
+    const navCta = document.querySelector('.site-nav .nav-cta');
     const mobileNavEl = document.querySelector('.site-nav .mobile-nav');
-    if (navLinks) {
-        const portalLink = document.createElement('a');
-        portalLink.href = PORTAL_URL;
-        portalLink.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-left:4px;">person</span>אזור אישי';
-        portalLink.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
-        navLinks.appendChild(portalLink);
+    if (navCta) {
+        // Wrap CTA + portal button in a flex container so they stay grouped together
+        const btnGroup = document.createElement('div');
+        btnGroup.style.cssText = 'display:flex;align-items:center;gap:0.625rem;';
+        navCta.parentNode.insertBefore(btnGroup, navCta);
+
+        const portalBtn = document.createElement('a');
+        portalBtn.href = PORTAL_URL;
+        portalBtn.textContent = 'אזור אישי';
+        portalBtn.className = 'nav-portal-btn';
+        portalBtn.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;padding:calc(0.5rem - 2px) 1.25rem;border:2px solid #022445;border-radius:0.5rem;color:#022445;font-family:Heebo,sans-serif;font-weight:700;font-size:0.875rem;background:transparent;white-space:nowrap;transition:background 0.2s,color 0.2s;text-decoration:none;';
+        portalBtn.addEventListener('mouseenter', function() { this.style.background = '#022445'; this.style.color = '#fff'; });
+        portalBtn.addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = '#022445'; });
+        btnGroup.appendChild(portalBtn);
+        btnGroup.appendChild(navCta);
     }
     if (mobileNavEl) {
         const mobilePortalLink = document.createElement('a');
         mobilePortalLink.href = PORTAL_URL;
-        mobilePortalLink.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-left:4px;">person</span>אזור אישי';
+        mobilePortalLink.textContent = 'אזור אישי';
         // Insert before the CTA button
         const mobileCta = mobileNavEl.querySelector('.mobile-cta');
         if (mobileCta) {

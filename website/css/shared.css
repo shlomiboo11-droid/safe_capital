@@ -110,6 +110,7 @@ body {
 .site-nav .nav-cta:active { transform: scale(0.97); }
 @media (max-width: 767px) {
     .site-nav .nav-cta { display: none; }
+    .site-nav .nav-portal-btn { display: none; }
 }
 
 /* Mobile menu button */

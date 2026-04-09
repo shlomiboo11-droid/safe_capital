@@ -209,12 +209,12 @@ function renderGallery(images) {
         <div class="absolute inset-0 flex">
           ${beforeSrc ? `
           <div class="w-1/2 relative">
-            <img class="h-full w-full object-cover" src="${beforeSrc}" alt="לפני שיפוץ"/>
+            <img class="h-full w-full object-cover" src="${ADMIN_HOST + beforeSrc}" alt="לפני שיפוץ"/>
             <span class="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded">לפני</span>
           </div>` : ''}
           ${afterSrc ? `
           <div class="${beforeSrc ? 'w-1/2' : 'w-full'} relative ${beforeSrc ? 'border-r-4 border-white' : ''}">
-            <img class="h-full w-full object-cover" src="${afterSrc}" alt="אחרי שיפוץ (הדמיה)"/>
+            <img class="h-full w-full object-cover" src="${ADMIN_HOST + afterSrc}" alt="אחרי שיפוץ (הדמיה)"/>
             <span class="absolute bottom-4 left-4 bg-primary/80 text-white text-xs px-2 py-1 rounded">אחרי (הדמיה)</span>
           </div>` : ''}
         </div>
@@ -224,7 +224,7 @@ function renderGallery(images) {
   // Rendering gallery grid
   if (renderingImages.length > 0) {
     const renderingHtml = renderingImages.slice(0, 8).map(img => `
-      <img class="rounded-lg aspect-square object-cover" src="${img.image_url}" alt="${img.alt_text || 'הדמיה אדריכלית'}"/>`
+      <img class="rounded-lg aspect-square object-cover" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || 'הדמיה אדריכלית'}"/>`
     ).join('');
 
     html += `
@@ -371,7 +371,7 @@ function renderDealCard(deal, index) {
   const fundraisingLabel = FUNDRAISING_STATUS_LABELS[deal.fundraising_status] || deal.fundraising_status || '';
 
   const thumbHtml = deal.thumbnail_url
-    ? `<img class="deal-thumb" alt="${deal.name}" src="${deal.thumbnail_url}"/>`
+    ? `<img class="deal-thumb" alt="${deal.name}" src="${ADMIN_HOST + deal.thumbnail_url}"/>`
     : '';
 
   const arrowHtml = isExpandable
