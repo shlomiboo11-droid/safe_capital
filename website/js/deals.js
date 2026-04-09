@@ -316,18 +316,18 @@ function renderExpandedContent(deal) {
     </div>` : ''}
 
     <!-- Bottom CTA -->
-    <div class="border-t border-outline-variant/15 pt-12">
-      <div class="bg-surface-container rounded-xl p-8 md:p-12 text-center">
-        <p class="text-lg text-on-surface leading-relaxed">
+    <div class="pt-12">
+      <div class="rounded-xl p-8 md:p-12 text-center" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
+        <p class="text-lg text-white/90 leading-relaxed mb-6">
           מעוניינים להשקיע בעסקה הזו? רוצים לדעת מתי כנס המשקיעים הבא?
-          <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
-             class="inline-block mt-4 bg-whatsapp text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 active:scale-95 transition-all">
-            <span class="flex items-center gap-3 justify-center">
-              <span>לחצו כאן כדי להצטרף לקבוצת הווצאפ שלנו</span>
-              <span class="material-symbols-outlined" data-weight="fill">chat</span>
-            </span>
-          </a>
         </p>
+        <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
+           class="inline-block bg-whatsapp text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 active:scale-95 transition-all">
+          <span class="flex items-center gap-3 justify-center">
+            <span>לחצו כאן כדי להצטרף לקבוצת הווצאפ שלנו</span>
+            <span class="material-symbols-outlined" data-weight="fill">chat</span>
+          </span>
+        </a>
       </div>
     </div>`;
 }
