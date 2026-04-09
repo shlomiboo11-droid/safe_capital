@@ -288,6 +288,16 @@ CREATE TABLE IF NOT EXISTS deal_comp_images (
   sort_order  INTEGER DEFAULT 0
 );
 
+-- Site settings (key-value, editable from admin dashboard)
+CREATE TABLE IF NOT EXISTS site_settings (
+  key         TEXT PRIMARY KEY,
+  value       TEXT NOT NULL,
+  label       TEXT NOT NULL,
+  category    TEXT NOT NULL,
+  field_type  TEXT DEFAULT 'text',
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
     `);
     console.log('Database schema initialized.');
   } finally {

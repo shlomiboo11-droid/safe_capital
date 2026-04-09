@@ -176,4 +176,54 @@ router.get('/deals', async (req, res) => {
   }
 });
 
+// GET /api/public/settings — all site settings (no auth)
+router.get('/settings', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT key, value, category FROM site_settings ORDER BY category, key'
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Public settings error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /api/public/stats — computed deal statistics (no auth)
+router.get('/stats', async (req, res) => {
+  try {
+    const [dealsResult, raisedResult, roiResult] = await Promise.all([
+      pool.query(`SELECT COUNT(*) as count FROM deals WHERE property_status = 'sold'`),
+      pool.query(`SELECT COALESCE(SUM(amount), 0) as total FROM deal_investors`),
+      pool.query(`
+        SELECT AVG(
+          CASE WHEN actual_sale_price > 0 AND actual_purchase_price > 0
+          THEN ((actual_sale_price - actual_purchase_price) / actual_purchase_price) * 100
+          ELSE NULL END
+        ) as avg_roi
+        FROM deals
+        WHERE property_status = 'sold'
+          AND actual_sale_price > 0
+          AND actual_purchase_price > 0
+      `)
+    ]);
+
+    const totalDeals = parseInt(dealsResult.rows[0].count);
+    const totalRaised = parseFloat(raisedResult.rows[0].total);
+    const avgRoi = roiResult.rows[0].avg_roi ? parseFloat(roiResult.rows[0].avg_roi) : null;
+
+    res.json({
+      total_deals: totalDeals,
+      total_raised: totalRaised,
+      total_raised_display: totalRaised >= 1000000
+        ? `$${(totalRaised / 1000000).toFixed(1)}M`
+        : `$${Math.round(totalRaised).toLocaleString()}`,
+      avg_return: avgRoi ? `${avgRoi.toFixed(1)}%` : null
+    });
+  } catch (err) {
+    console.error('Public stats error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
