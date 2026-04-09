@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>בירמינגהם, אלבמה — פורטל המשקיע הישראלי | סייף קפיטל</title>
+<meta name="description" content="פורטל מידע מקיף על בירמינגהם, אלבמה — נתוני שוק, כלכלה, שכונות, השוואה לישראל וחדשות עדכניות לקהילת המשקיעים הישראלית.">
+<meta property="og:title" content="בירמינגהם, אלבמה — פורטל המשקיע הישראלי | סייף קפיטל">
+<meta property="og:description" content="נתונים, ניתוחים והזדמנויות בשוק הנדל״ן הצומח בדרום ארה״ב">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://safe-capital-il.vercel.app/birmingham.html">
+<link rel="canonical" href="https://safe-capital-il.vercel.app/birmingham.html">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/shared.css" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-secondary-container": "#792b31",
+        "background": "#fbf9f6",
+        "on-primary-fixed-variant": "#2d486b",
+        "on-tertiary-fixed": "#1c1b1b",
+        "on-secondary-fixed": "#40010b",
+        "surface": "#fbf9f6",
+        "on-primary-container": "#8aa4cc",
+        "surface-container-highest": "#e4e2df",
+        "tertiary": "#242423",
+        "surface-container-high": "#eae8e5",
+        "primary-fixed": "#d3e3ff",
+        "surface-variant": "#e4e2df",
+        "primary-fixed-dim": "#adc8f2",
+        "inverse-on-surface": "#f2f0ed",
+        "on-background": "#1b1b1f",
+        "outline-variant": "#c4c6cf",
+        "on-secondary": "#ffffff",
+        "surface-bright": "#fbf9f6",
+        "primary": "#022445",
+        "on-primary-fixed": "#001c39",
+        "surface-tint": "#456084",
+        "secondary": "#984349",
+        "tertiary-fixed-dim": "#c8c6c5",
+        "on-tertiary-container": "#a4a2a2",
+        "surface-container-low": "#f5f3f0",
+        "secondary-container": "#ff9599",
+        "primary-container": "#1e3a5c",
+        "inverse-primary": "#adc8f2",
+        "on-tertiary-fixed-variant": "#474746",
+        "on-error-container": "#93000a",
+        "surface-container-lowest": "#ffffff",
+        "on-surface-variant": "#43474e",
+        "secondary-fixed-dim": "#ffb3b4",
+        "error": "#ba1a1a",
+        "on-error": "#ffffff",
+        "tertiary-fixed": "#e5e2e1",
+        "surface-dim": "#dbdad7",
+        "on-surface": "#1b1b1f",
+        "tertiary-container": "#393939",
+        "error-container": "#ffdad6",
+        "on-primary": "#ffffff",
+        "on-secondary-fixed-variant": "#7a2d33",
+        "on-tertiary": "#ffffff",
+        "secondary-fixed": "#ffdada",
+        "outline": "#74777f",
+        "surface-container": "#efeeeb",
+        "inverse-surface": "#30312f",
+        "whatsapp": "#25D366"
+      },
+      fontFamily: {
+        "headline": ["Heebo", "sans-serif"],
+        "body": ["Heebo", "sans-serif"],
+        "label": ["Inter", "sans-serif"]
+      },
+      borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+    },
+  },
+};
+</script>
+<style>
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+/* Ticker animation */
+.ticker-scroll {
+  animation: ticker 45s linear infinite;
+}
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+/* Stat card fade-in */
+.fade-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Bar chart animation */
+.bar-fill {
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.bar-fill.animated {
+  /* width set via inline style */
+}
+/* Pillar card hover */
+.pillar-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pillar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(27,28,26,0.06);
+}
+/* Neighborhood card */
+.hood-card {
+  transition: transform 0.2s ease;
+}
+.hood-card:hover {
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade-card, .pillar-card, .hood-card { transition: none !important; transform: none !important; }
+  .fade-card { opacity: 1; }
+  .ticker-scroll { animation: none; }
+  .bar-fill { transition: none; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "בירמינגהם, אלבמה — פורטל המשקיע הישראלי",
+  "description": "פורטל מידע מקיף על בירמינגהם, אלבמה למשקיעים ישראלים",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Safe Capital",
+    "url": "https://safe-capital-il.vercel.app"
+  }
+}
+</script>
+</head>
+<body class="bg-background text-on-background font-body">
+<!-- TopNavBar -->
+<nav class="site-nav">
+<div class="nav-inner">
+<a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+<div class="nav-links">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="birmingham.html" class="active">בירמינגהם</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+</div>
+<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+</div>
+<div class="mobile-nav">
+<a href="index.html">עמוד הבית</a>
+<a href="properties.html">עסקאות</a>
+<a href="birmingham.html" class="active">בירמינגהם</a>
+<a href="join.html">איך מצטרפים</a>
+<a href="contact.html">צור קשר</a>
+<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+</div>
+</nav>
+
+<!-- ============================================ -->
+<!-- HERO SECTION -->
+<!-- ============================================ -->
+<section class="relative w-full min-h-[600px] md:min-h-[720px] overflow-hidden flex items-center" style="background: linear-gradient(135deg, #022445 0%, #1e3a5c 50%, #022445 100%);">
+<div class="absolute inset-0 opacity-10">
+  <div class="absolute top-0 left-0 w-96 h-96 bg-secondary rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-0 right-0 w-80 h-80 bg-primary-fixed rounded-full blur-[100px]"></div>
+</div>
+<div class="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-28 relative z-10 w-full">
+  <div class="text-white space-y-8 max-w-3xl">
+    <h1 class="text-4xl md:text-6xl lg:text-7xl font-headline font-extrabold tracking-tight leading-tight">בירמינגהם, אלבמה</h1>
+    <p class="text-lg md:text-xl text-white/75 font-light max-w-2xl leading-relaxed">פורטל הידע המלא למשקיע הישראלי — נתונים, ניתוחים והזדמנויות בשוק הנדל"ן הצומח ביותר בדרום ארה"ב</p>
+  </div>
+  <!-- Floating stat cards -->
+  <div class="flex flex-wrap gap-4 mt-12">
+    <div class="bg-white/10 backdrop-blur-md border border-white/10 px-6 py-4 rounded-xl flex items-center gap-3">
+      <div class="text-secondary font-bold text-2xl font-label">879K</div>
+      <div class="text-sm text-white/70 leading-tight">תושבים<br>במטרו</div>
+    </div>
+    <div class="bg-white/10 backdrop-blur-md border border-white/10 px-6 py-4 rounded-xl flex items-center gap-3">
+      <div class="text-secondary font-bold text-2xl font-label">2.2%</div>
+      <div class="text-sm text-white/70 leading-tight">שיעור<br>אבטלה</div>
+    </div>
+    <div class="bg-white/10 backdrop-blur-md border border-white/10 px-6 py-4 rounded-xl flex items-center gap-3">
+      <div class="text-secondary font-bold text-2xl font-label">$148K</div>
+      <div class="text-sm text-white/70 leading-tight">מחיר בית<br>חציוני</div>
+    </div>
+    <div class="bg-white/10 backdrop-blur-md border border-white/10 px-6 py-4 rounded-xl flex items-center gap-3">
+      <div class="text-secondary font-bold text-2xl font-label">$919</div>
+      <div class="text-sm text-white/70 leading-tight">מס נכס<br>שנתי חציוני</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- LIVE TICKER -->
+<!-- ============================================ -->
+<div class="bg-primary text-white py-3 overflow-hidden whitespace-nowrap">
+<div class="flex gap-12 ticker-scroll text-sm">
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> UAB — המעסיק הגדול באלבמה: 28,000 עובדים, השפעה כלכלית $12.1B</span>
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> אבטלה 2.2% — כמחצית מהממוצע הארצי (4.1%)</span>
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> מחיר בית חציוני $148K — 40% מתחת לממוצע הארצי</span>
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> מס נכס שנתי $919 בלבד — $1,481 פחות מהממוצע הארצי</span>
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> Regions Financial (Fortune 500) — מטה ראשי בבירמינגהם, 19,600 עובדים</span>
+  <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> Southern Research — 7 תרופות אנטי-סרטניות שאושרו ע"י FDA</span>
+</div>
+</div>
+
+<!-- ============================================ -->
+<!-- CITY AT A GLANCE -->
+<!-- ============================================ -->
+<section class="py-16 md:py-24 px-6 md:px-12">
+<div class="max-w-6xl mx-auto">
+  <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary mb-12">העיר במבט חטוף</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Large impact card -->
+    <div class="lg:col-span-7 bg-primary text-white rounded-2xl p-8 md:p-12 flex flex-col justify-between relative overflow-hidden min-h-[400px] fade-card">
+      <div class="relative z-10">
+        <span class="material-symbols-outlined text-4xl text-on-primary-container mb-4 block">local_hospital</span>
+        <h3 class="text-2xl md:text-3xl font-headline font-bold mb-4">מנוע הצמיחה המרכזי</h3>
+        <div class="text-5xl md:text-7xl font-label font-extrabold text-secondary-container">$12.1B</div>
+        <p class="text-lg text-on-primary-container mt-4 max-w-md leading-relaxed">ההשפעה הכלכלית השנתית של UAB — אוניברסיטת אלבמה בבירמינגהם. המעסיק הגדול במדינה, מרכז רפואי #1 באלבמה 12 שנים ברציפות.</p>
+      </div>
+      <a href="birmingham-info.html" class="mt-8 bg-white text-primary px-6 py-3 rounded-xl font-bold inline-flex items-center gap-2 hover:bg-secondary-fixed transition-colors w-fit relative z-10">
+        למידע נוסף
+        <span class="material-symbols-outlined text-sm">arrow_back</span>
+      </a>
+      <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-primary-container to-transparent opacity-40"></div>
+    </div>
+    <!-- Small data cards grid -->
+    <div class="lg:col-span-5 grid grid-cols-2 gap-4 md:gap-6">
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">trending_down</span>
+        <div class="text-2xl font-label font-extrabold text-primary">2.2%</div>
+        <p class="text-on-surface-variant text-xs mt-1">שיעור אבטלה</p>
+      </div>
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]" style="transition-delay:0.1s">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">home</span>
+        <div class="text-2xl font-label font-extrabold text-primary">$148K</div>
+        <p class="text-on-surface-variant text-xs mt-1">מחיר בית חציוני</p>
+      </div>
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]" style="transition-delay:0.2s">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">groups</span>
+        <div class="text-2xl font-label font-extrabold text-primary">1.1M</div>
+        <p class="text-on-surface-variant text-xs mt-1">אוכלוסיית המטרו</p>
+      </div>
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]" style="transition-delay:0.3s">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">savings</span>
+        <div class="text-2xl font-label font-extrabold text-primary">$919</div>
+        <p class="text-on-surface-variant text-xs mt-1">מס נכס שנתי חציוני</p>
+      </div>
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]" style="transition-delay:0.4s">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">payments</span>
+        <div class="text-2xl font-label font-extrabold text-primary">$46K</div>
+        <p class="text-on-surface-variant text-xs mt-1">הכנסה חציונית</p>
+      </div>
+      <div class="fade-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]" style="transition-delay:0.5s">
+        <span class="material-symbols-outlined text-secondary mb-3 block text-2xl">hub</span>
+        <div class="text-2xl font-label font-extrabold text-primary">Tech Hub</div>
+        <p class="text-on-surface-variant text-xs mt-1">הכרה פדרלית בביוטק</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- ECONOMIC PILLARS -->
+<!-- ============================================ -->
+<section class="bg-surface-container-low py-16 md:py-24 px-6 md:px-12">
+<div class="max-w-6xl mx-auto">
+  <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary mb-4">עמודי התווך של הכלכלה</h2>
+  <p class="text-on-surface-variant mb-12 max-w-2xl">שלושה מגזרים מרכזיים מניעים את כלכלת בירמינגהם ומבטיחים תעסוקה יציבה, ביקוש לדיור, ועמידות בפני משברים.</p>
+  <div class="space-y-6">
+    <!-- Pillar 1: Healthcare -->
+    <div class="pillar-card bg-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+      <div class="w-full md:w-1/3 h-48 md:h-56 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+        <div class="text-center p-6">
+          <span class="material-symbols-outlined text-6xl text-primary mb-3 block">local_hospital</span>
+          <span class="text-secondary font-bold text-sm tracking-widest">Medicine & Research</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-2xl font-headline font-bold text-primary mb-3">UAB Medicine — המעסיק הגדול במדינה</h3>
+        <p class="text-on-surface-variant leading-relaxed mb-4">מערכת הבריאות של אוניברסיטת אלבמה בבירמינגהם (UAB) היא המעסיק הגדול ביותר באלבמה עם למעלה מ-28,000 עובדים. בית החולים מדורג #1 באלבמה 12 שנים ברציפות (U.S. News), ומדורג ארצית ב-5 התמחויות כולל ראומטולוגיה (#11) ואף-אוזן-גרון (#14).</p>
+        <p class="text-on-surface-variant leading-relaxed mb-4">ההשפעה הכלכלית של UAB על המדינה מוערכת ב-$12.1 מיליארד בשנה, עם $780 מיליון בהוצאות מחקר. Forbes דירגה את UAB כ"מעסיק הגדול #1 בארה"ב" ב-2021. המוסד מייצר ביקוש קבוע לדיור באזור — מרופאים מתמחים ועד צוותי אחזקה.</p>
+        <a href="birmingham-info.html#economy" class="text-primary font-bold inline-flex items-center gap-1 hover:text-secondary transition-colors">
+          קרא עוד על הכלכלה
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+        </a>
+      </div>
+    </div>
+    <!-- Pillar 2: Finance -->
+    <div class="pillar-card bg-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row-reverse gap-6 md:gap-8 items-start shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+      <div class="w-full md:w-1/3 h-48 md:h-56 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+        <div class="text-center p-6">
+          <span class="material-symbols-outlined text-6xl text-primary mb-3 block">account_balance</span>
+          <span class="text-secondary font-bold text-sm tracking-widest">Finance & Banking</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-2xl font-headline font-bold text-primary mb-3">מרכז פיננסי של הדרום</h3>
+        <p class="text-on-surface-variant leading-relaxed mb-4">בירמינגהם היא מושב המטה של Regions Financial Corporation — חברת Fortune 500 (#433) עם הכנסות של $9.4 מיליארד ו-19,600 עובדים. Regions Bank מפעיל 1,300 סניפים ב-15 מדינות. לצד Regions, העיר מארחת את המטה של Protective Life, BCBS of Alabama, ומשרדי Wells Fargo.</p>
+        <p class="text-on-surface-variant leading-relaxed mb-4">המגזר הפיננסי מעסיק אלפי עובדים בשכר גבוה מהממוצע, מה שמייצר ביקוש לדיור איכותי ותעסוקה יציבה שאינה תלויה במחזורי ייצור.</p>
+        <a href="birmingham-info.html#economy" class="text-primary font-bold inline-flex items-center gap-1 hover:text-secondary transition-colors">
+          למידע נוסף
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+        </a>
+      </div>
+    </div>
+    <!-- Pillar 3: Technology -->
+    <div class="pillar-card bg-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+      <div class="w-full md:w-1/3 h-48 md:h-56 rounded-xl overflow-hidden bg-surface-container-low flex items-center justify-center">
+        <div class="text-center p-6">
+          <span class="material-symbols-outlined text-6xl text-primary mb-3 block">biotech</span>
+          <span class="text-secondary font-bold text-sm tracking-widest">Tech & Innovation</span>
+        </div>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-2xl font-headline font-bold text-primary mb-3">Innovation Depot ו-Tech Hub פדרלי</h3>
+        <p class="text-on-surface-variant leading-relaxed mb-4">Innovation Depot הוא אינקובטור טכנולוגי ללא מטרת רווח בשטח של 140,000 רגל רבוע (בניין Sears לשעבר), המארח עשרות חברות טכנולוגיה בתחומי SaaS, פינטק וביוטכנולוגיה. בירמינגהם הוכרה כ-Tech Hub פדרלי בתחום הביוטכנולוגיה.</p>
+        <p class="text-on-surface-variant leading-relaxed mb-4">Southern Research Institute, שנוסד ב-1941, הוא מכון מחקר שמדעניו פיתחו 7 תרופות אנטי-סרטניות שאושרו ע"י FDA, וביצעו מחקר בהיקף של $30 מיליון+ בנושא COVID-19 כולל שכלול remdesivir.</p>
+        <a href="birmingham-info.html#innovation" class="text-primary font-bold inline-flex items-center gap-1 hover:text-secondary transition-colors">
+          סקירת הטכנולוגיה
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- ISRAEL VS BIRMINGHAM COMPARISON TEASER -->
+<!-- ============================================ -->
+<section class="py-16 md:py-24 px-6 md:px-12">
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary mb-4 text-center">ישראל מול בירמינגהם — במספרים</h2>
+  <p class="text-on-surface-variant text-center mb-12 max-w-xl mx-auto">ההבדלים שמשנים את התמונה עבור המשקיע הישראלי</p>
+  <div class="bg-white p-8 md:p-12 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
+    <div class="space-y-10" id="comparison-bars">
+      <!-- Row 1: Home price -->
+      <div class="comparison-row">
+        <div class="flex justify-between mb-3 text-sm font-bold">
+          <span>מחיר נכס ממוצע</span>
+          <div class="flex gap-6">
+            <span class="text-secondary font-label">$148,000</span>
+            <span class="text-outline-variant font-label">$630,000</span>
+          </div>
+        </div>
+        <div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+          <div class="bar-fill h-full bg-secondary rounded-r-full" data-width="19%"></div>
+          <div class="bar-fill h-full bg-outline-variant" data-width="81%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-on-surface-variant">
+          <span>בירמינגהם</span>
+          <span>ישראל</span>
+        </div>
+      </div>
+      <!-- Row 2: Rental yield -->
+      <div class="comparison-row">
+        <div class="flex justify-between mb-3 text-sm font-bold">
+          <span>תשואת שכירות שנתית</span>
+          <div class="flex gap-6">
+            <span class="text-secondary font-label">8%-12%</span>
+            <span class="text-outline-variant font-label">2.5%-3.8%</span>
+          </div>
+        </div>
+        <div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+          <div class="bar-fill h-full bg-secondary rounded-r-full" data-width="75%"></div>
+          <div class="bar-fill h-full bg-outline-variant" data-width="25%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-on-surface-variant">
+          <span>בירמינגהם</span>
+          <span>ישראל</span>
+        </div>
+      </div>
+      <!-- Row 3: Purchase tax -->
+      <div class="comparison-row">
+        <div class="flex justify-between mb-3 text-sm font-bold">
+          <span>מס רכישה (נכס שני)</span>
+          <div class="flex gap-6">
+            <span class="text-secondary font-label">0%</span>
+            <span class="text-outline-variant font-label">8%</span>
+          </div>
+        </div>
+        <div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+          <div class="bar-fill h-full bg-secondary rounded-r-full" data-width="0%"></div>
+          <div class="bar-fill h-full bg-outline-variant" data-width="100%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-on-surface-variant">
+          <span>בירמינגהם</span>
+          <span>ישראל</span>
+        </div>
+      </div>
+      <!-- Row 4: Annual property tax -->
+      <div class="comparison-row">
+        <div class="flex justify-between mb-3 text-sm font-bold">
+          <span>מס נכס שנתי</span>
+          <div class="flex gap-6">
+            <span class="text-secondary font-label">$919</span>
+            <span class="text-outline-variant font-label">$3,300+</span>
+          </div>
+        </div>
+        <div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+          <div class="bar-fill h-full bg-secondary rounded-r-full" data-width="22%"></div>
+          <div class="bar-fill h-full bg-outline-variant" data-width="78%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-on-surface-variant">
+          <span>בירמינגהם</span>
+          <span>ישראל (ארנונה)</span>
+        </div>
+      </div>
+      <!-- Row 5: Transaction time -->
+      <div class="comparison-row">
+        <div class="flex justify-between mb-3 text-sm font-bold">
+          <span>זמן סגירת עסקה</span>
+          <div class="flex gap-6">
+            <span class="text-secondary font-label">30-45 יום</span>
+            <span class="text-outline-variant font-label">3-6 חודשים</span>
+          </div>
+        </div>
+        <div class="h-4 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+          <div class="bar-fill h-full bg-secondary rounded-r-full" data-width="20%"></div>
+          <div class="bar-fill h-full bg-outline-variant" data-width="80%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-on-surface-variant">
+          <span>בירמינגהם</span>
+          <span>ישראל</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-10 text-center">
+      <a href="birmingham-compare.html" class="bg-primary text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-primary-container transition-colors inline-block">לדוח ההשוואה המלא</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- NEIGHBORHOODS -->
+<!-- ============================================ -->
+<section class="py-16 md:py-24 bg-surface-container-low px-6 md:px-12">
+<div class="max-w-6xl mx-auto">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+    <div>
+      <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary">שכונות מפתח להשקעה</h2>
+      <p class="text-on-surface-variant mt-2">מיקוד באזורים עם פוטנציאל צמיחה והזדמנויות Flip</p>
+    </div>
+    <a href="birmingham-info.html#neighborhoods" class="text-primary font-bold inline-flex items-center gap-1 hover:text-secondary transition-colors">
+      לכל השכונות
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+    </a>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Woodlawn -->
+    <div class="hood-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-secondary">
+      <h3 class="text-xl font-headline font-bold text-primary mb-2">Woodlawn</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed mb-4">שכונה בהתחדשות עירונית פעילה, מחירי כניסה נמוכים ופוטנציאל צמיחה גבוה. פרויקטי פיתוח חדשים מושכים השקעות.</p>
+      <div class="flex justify-between items-center pt-3" style="border-top: 1px solid #f5f3f0;">
+        <span class="text-xs text-on-surface-variant">מחירים: $60K-$100K</span>
+        <span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+      </div>
+    </div>
+    <!-- Avondale -->
+    <div class="hood-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-secondary">
+      <h3 class="text-xl font-headline font-bold text-primary mb-2">Avondale</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed mb-4">שכונה "up-and-coming" עם סצנת מסעדות ובארים תוססת. אחת השכונות עם הפוטנציאל הגבוה ביותר ב-2025.</p>
+      <div class="flex justify-between items-center pt-3" style="border-top: 1px solid #f5f3f0;">
+        <span class="text-xs text-on-surface-variant">מגמה: עלייה</span>
+        <span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+      </div>
+    </div>
+    <!-- East Lake -->
+    <div class="hood-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-secondary">
+      <h3 class="text-xl font-headline font-bold text-primary mb-2">East Lake</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed mb-4">אזור עם פארקים ושטחים ירוקים שמושך משפחות. שיפורים בתשתיות ותחבורה מגבירים את האטרקטיביות.</p>
+      <div class="flex justify-between items-center pt-3" style="border-top: 1px solid #f5f3f0;">
+        <span class="text-xs text-on-surface-variant">מגמה: עלייה</span>
+        <span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+      </div>
+    </div>
+    <!-- Ensley -->
+    <div class="hood-card bg-white p-6 rounded-2xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] border-r-4 border-secondary">
+      <h3 class="text-xl font-headline font-bold text-primary mb-2">Ensley</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed mb-4">מחירי הכניסה הנמוכים ביותר באזור. שחזור מבנים היסטוריים ופרויקט CrossPlex Village מבשרים על תחייה.</p>
+      <div class="flex justify-between items-center pt-3" style="border-top: 1px solid #f5f3f0;">
+        <span class="text-xs text-on-surface-variant">מחירים: $30K-$80K</span>
+        <span class="material-symbols-outlined text-secondary text-sm">trending_up</span>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- NEWS PREVIEW -->
+<!-- ============================================ -->
+<section class="py-16 md:py-24 px-6 md:px-12">
+<div class="max-w-6xl mx-auto">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+    <div>
+      <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary">חדשות ועדכונים</h2>
+      <p class="text-on-surface-variant mt-2">עדכונים אחרונים שרלוונטיים למשקיע הישראלי</p>
+    </div>
+    <a href="birmingham-news.html" class="text-primary font-bold inline-flex items-center gap-1 hover:text-secondary transition-colors">
+      לכל החדשות
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+    </a>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Weekly Briefing sidebar -->
+    <div class="lg:col-span-4">
+      <div class="bg-primary text-white p-8 rounded-2xl h-full" id="weekly-briefing-preview">
+        <span class="inline-block px-4 py-1 bg-secondary rounded-full text-xs font-bold mb-6">סקירה שבועית</span>
+        <h3 class="text-2xl font-headline font-bold mb-4">סיכום שבועי למשקיע</h3>
+        <p class="text-on-primary-container mb-6 leading-relaxed">עדכוני שוק, פרויקטי תשתית חדשים, ומגמות שמשפיעות על ההשקעה שלכם באלבמה.</p>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3 py-3 border-b border-white/10">
+            <span class="text-xl font-bold opacity-30 font-label">01</span>
+            <p class="text-sm">$400M+ בפרויקטי פיתוח ב-Jefferson County</p>
+          </div>
+          <div class="flex items-center gap-3 py-3 border-b border-white/10">
+            <span class="text-xl font-bold opacity-30 font-label">02</span>
+            <p class="text-sm">Woodfin נבחר לקדנציה שלישית — יציבות שלטונית</p>
+          </div>
+          <div class="flex items-center gap-3 py-3">
+            <span class="text-xl font-bold opacity-30 font-label">03</span>
+            <p class="text-sm">15 פרויקטי פיתוח חדשים ב-2026</p>
+          </div>
+        </div>
+        <a href="birmingham-news.html" class="mt-6 text-white font-bold inline-flex items-center gap-1 hover:text-secondary-fixed transition-colors">
+          לסקירה המלאה
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+        </a>
+      </div>
+    </div>
+    <!-- Article cards -->
+    <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6" id="news-articles-grid">
+      <!-- Static fallback articles -->
+      <a href="birmingham-news.html" class="group block">
+        <div class="h-48 rounded-xl overflow-hidden mb-4 bg-surface-container-low flex items-center justify-center">
+          <span class="material-symbols-outlined text-5xl text-outline-variant">real_estate_agent</span>
+        </div>
+        <span class="text-secondary font-bold text-xs mb-1 block">שוק</span>
+        <h4 class="text-lg font-bold text-primary mb-2 leading-snug group-hover:text-secondary transition-colors">שוק הדיור יציב: עליית מחירים מתונה של 2.5%-6.5%</h4>
+        <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2">ימים ממוצעים בשוק עלו ל-35 יום, מה שמצביע על שוק מאוזן יותר עם יותר כוח קנייה למשקיעים.</p>
+      </a>
+      <a href="birmingham-news.html" class="group block">
+        <div class="h-48 rounded-xl overflow-hidden mb-4 bg-surface-container-low flex items-center justify-center">
+          <span class="material-symbols-outlined text-5xl text-outline-variant">construction</span>
+        </div>
+        <span class="text-secondary font-bold text-xs mb-1 block">תשתיות</span>
+        <h4 class="text-lg font-bold text-primary mb-2 leading-snug group-hover:text-secondary transition-colors">Coca-Cola UNITED בונה מטה חדש ב-$330M</h4>
+        <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2">פרויקט המטה החדש על אתר Stockham Valves לשעבר ייפתח ב-2027 וצפוי ליצור מאות משרות חדשות.</p>
+      </a>
+      <a href="birmingham-news.html" class="group block">
+        <div class="h-48 rounded-xl overflow-hidden mb-4 bg-surface-container-low flex items-center justify-center">
+          <span class="material-symbols-outlined text-5xl text-outline-variant">apartment</span>
+        </div>
+        <span class="text-secondary font-bold text-xs mb-1 block">שכונות</span>
+        <h4 class="text-lg font-bold text-primary mb-2 leading-snug group-hover:text-secondary transition-colors">גל התחדשות עירונית: מ-Woodlawn ועד Ensley</h4>
+        <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2">פרויקטים חדשים של פארקים, שדרוג רחובות ודיור בר-השגה משנים את פני השכונות.</p>
+      </a>
+      <a href="birmingham-news.html" class="group block">
+        <div class="h-48 rounded-xl overflow-hidden mb-4 bg-surface-container-low flex items-center justify-center">
+          <span class="material-symbols-outlined text-5xl text-outline-variant">biotech</span>
+        </div>
+        <span class="text-secondary font-bold text-xs mb-1 block">כלכלה</span>
+        <h4 class="text-lg font-bold text-primary mb-2 leading-snug group-hover:text-secondary transition-colors">8 מעסיקים מבירמינגהם ברשימת Forbes הטובים בארה"ב</h4>
+        <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2">ההכרה מחזקת את מעמד בירמינגהם כמרכז תעסוקה איכותי ויציב לטווח ארוך.</p>
+      </a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- NAVIGATION CARDS -->
+<!-- ============================================ -->
+<section class="bg-surface-container-low py-16 md:py-20 px-6 md:px-12">
+<div class="max-w-5xl mx-auto">
+  <h2 class="text-3xl md:text-4xl font-headline font-extrabold text-primary mb-8 text-center">גלו עוד</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <a href="birmingham-info.html" class="hood-card block bg-white rounded-xl p-8 shadow-[0_8px_24px_rgba(27,28,26,0.04)] text-right no-underline">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4 block">location_city</span>
+      <h3 class="text-xl font-extrabold font-headline text-primary mb-2">הכירו את בירמינגהם</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed">סקירה מקיפה — כלכלה, דמוגרפיה, מוסדות עוגן, תשתיות ושכונות</p>
+    </a>
+    <a href="birmingham-compare.html" class="hood-card block bg-white rounded-xl p-8 shadow-[0_8px_24px_rgba(27,28,26,0.04)] text-right no-underline">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4 block">balance</span>
+      <h3 class="text-xl font-extrabold font-headline text-primary mb-2">ישראל vs בירמינגהם</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed">מחירים, תשואות, מיסוי, בירוקרטיה — ההבדלים שמשנים את התמונה</p>
+    </a>
+    <a href="birmingham-news.html" class="hood-card block bg-white rounded-xl p-8 shadow-[0_8px_24px_rgba(27,28,26,0.04)] text-right no-underline">
+      <span class="material-symbols-outlined text-4xl text-primary mb-4 block">newspaper</span>
+      <h3 class="text-xl font-extrabold font-headline text-primary mb-2">חדשות ועדכונים</h3>
+      <p class="text-on-surface-variant text-sm leading-relaxed">סקירה שבועית, כתבות ניתוח ועדכונים מהשטח</p>
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- ============================================ -->
+<!-- INVESTMENT THESIS QUOTE -->
+<!-- ============================================ -->
+<section class="bg-primary py-20 md:py-28 px-6 md:px-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-96 h-96 bg-secondary opacity-10 rounded-full blur-[120px] -mr-48 -mt-48"></div>
+<div class="max-w-4xl mx-auto text-center relative z-10">
+  <span class="material-symbols-outlined text-secondary text-5xl mb-6 block" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+  <h2 class="text-2xl md:text-4xl font-headline font-bold text-white leading-relaxed">
+    "ההזדמנות הגדולה בבירמינגהם היא בנכסי Value-Add: רכישה ב-$80K, שיפוץ ממוקד ב-$20K, ומכירה בערך שוק של $140K+. עם אבטלה של 2.2%, מס נכס של $919 בשנה, ו-UAB שמעסיקה 28,000 איש — זה המקום שבו המספרים עדיין עובדים."
+  </h2>
+  <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+    <a href="join.html" class="bg-whatsapp text-white px-8 py-4 rounded-xl font-bold inline-flex items-center gap-2 hover:scale-105 transition-transform">
+      <span class="material-symbols-outlined">chat</span>
+      שיחה עם מומחה
+    </a>
+    <a href="join.html" class="text-white border border-white/30 px-8 py-4 rounded-xl font-bold hover:bg-white/5 transition-colors inline-block">
+      איך מצטרפים
+    </a>
+  </div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-links"><h4>ניווט מהיר</h4>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="birmingham.html">בירמינגהם</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+</div>
+<div class="footer-links"><h4>מידע נוסף</h4>
+<a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+</div>
+<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+<div class="footer-brand">
+<p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+</div></div>
+<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact"><span data-setting="email_info">info@safecapital.co.il</span> | <span data-setting="phone_footer">03-123-4567</span></span></div>
+</footer>
+
+<script src="js/shared.js"></script>
+<script src="js/settings.js"></script>
+<script>
+// Fade-in cards on scroll
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      fadeObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.fade-card').forEach(card => fadeObserver.observe(card));
+
+// Bar chart animation on scroll
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width;
+        bar.classList.add('animated');
+      });
+      barObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const compSection = document.getElementById('comparison-bars');
+if (compSection) barObserver.observe(compSection);
+
+// Load live articles from API (news preview)
+(async function loadNewsPreview() {
+  const ADMIN_HOST = (window.location.hostname === 'localhost')
+    ? 'http://localhost:3000'
+    : 'https://safe-capital-admin.vercel.app';
+  try {
+    const res = await fetch(ADMIN_HOST + '/api/public/articles?limit=4');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.articles || data.articles.length === 0) return;
+    const grid = document.getElementById('news-articles-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    data.articles.forEach(article => {
+      const card = document.createElement('a');
+      card.href = 'birmingham-article.html?slug=' + article.slug;
+      card.className = 'group block';
+      const catMap = { news: 'חדשות', market: 'שוק', neighborhood: 'שכונות', infrastructure: 'תשתיות' };
+      const catLabel = catMap[article.category] || 'חדשות';
+      card.innerHTML = `
+        <div class="h-48 rounded-xl overflow-hidden mb-4 bg-surface-container-low flex items-center justify-center">
+          ${article.thumbnail_url
+            ? '<img src="' + article.thumbnail_url + '" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="' + article.title + '">'
+            : '<span class="material-symbols-outlined text-5xl text-outline-variant">article</span>'}
+        </div>
+        <span class="text-secondary font-bold text-xs mb-1 block">${catLabel}</span>
+        <h4 class="text-lg font-bold text-primary mb-2 leading-snug group-hover:text-secondary transition-colors">${article.title}</h4>
+        <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2">${article.subtitle || ''}</p>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (e) {
+    // Keep static fallback articles
+  }
+})();
+</script>
+</body>
+</html>
