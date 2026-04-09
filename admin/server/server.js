@@ -74,6 +74,19 @@ app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Route not found' });
   }
+
+  // Portal routes — serve portal HTML files
+  if (req.path.startsWith('/portal/')) {
+    const portalFile = req.path.replace('/portal/', '') || 'index.html';
+    // Only serve known HTML files, let static middleware handle assets
+    if (portalFile.endsWith('.html') || portalFile === '' || !portalFile.includes('.')) {
+      const htmlFile = portalFile.endsWith('.html') ? portalFile : portalFile + '.html';
+      return res.sendFile(path.join(__dirname, '..', 'public', 'portal', htmlFile), (err) => {
+        if (err) res.sendFile(path.join(__dirname, '..', 'public', 'portal', 'index.html'));
+      });
+    }
+  }
+
   // Serve the appropriate HTML file based on path
   const htmlFiles = {
     '/login': 'login.html',

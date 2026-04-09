@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>אזור המשקיעים | Safe Capital</title>
-  <link rel="icon" type="image/png" href="/images/logo-half.png">
+  <link rel="icon" type="image/png" href="/portal/images/logo-half.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="/css/portal.css" rel="stylesheet">
+  <link href="/portal/css/portal.css" rel="stylesheet">
   <style>
     .login-card {
       background: #ffffff;
@@ -30,7 +30,7 @@
   <div class="w-full" style="max-width: 400px;">
     <!-- Logo -->
     <div class="text-center mb-8">
-      <img src="/images/logo-half.png" alt="Safe Capital" class="h-10 mx-auto mb-4">
+      <img src="/portal/images/logo-half.png" alt="Safe Capital" class="h-10 mx-auto mb-4">
       <h1 class="text-2xl font-bold" style="color: #022445; font-family: 'Heebo', sans-serif;">אזור המשקיעים</h1>
       <p class="text-sm mt-2" style="color: #43474e;">התחבר כדי לצפות בהשקעות שלך</p>
     </div>
@@ -92,11 +92,11 @@
     </p>
   </div>
 
-  <script src="/js/auth.js"></script>
+  <script src="/portal/js/auth.js"></script>
   <script>
     // If already logged in, redirect
     if (PORTAL_API.getInvestor()) {
-      window.location.href = '/index.html';
+      window.location.href = '/portal/index.html';
     }
 
     const form = document.getElementById('loginForm');
@@ -137,7 +137,7 @@
 
       try {
         await PORTAL_API.login(username, password);
-        window.location.href = '/index.html';
+        window.location.href = '/portal/index.html';
       } catch (err) {
         errorDiv.textContent = err.message === 'Invalid credentials'
           ? 'שם משתמש או סיסמה שגויים'

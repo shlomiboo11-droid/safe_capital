@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>העסקאות שלי | Safe Capital</title>
-  <link rel="icon" type="image/png" href="/images/logo-half.png">
+  <link rel="icon" type="image/png" href="/portal/images/logo-half.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="/css/portal.css" rel="stylesheet">
+  <link href="/portal/css/portal.css" rel="stylesheet">
   <script>
     if (typeof tailwind !== 'undefined') {
       tailwind.config = {
@@ -46,8 +46,8 @@
   <footer id="portalFooter"></footer>
   <nav id="portalBottomNav"></nav>
 
-  <script src="/js/auth.js"></script>
-  <script src="/js/shared.js"></script>
+  <script src="/portal/js/auth.js"></script>
+  <script src="/portal/js/shared.js"></script>
   <script>
     const investor = requirePortalAuth();
     if (investor) {
@@ -133,7 +133,7 @@
       const unreadCount = unreadBadges.length > 0 ? parseInt(unreadBadges[0].textContent) || 0 : 0;
       if (unreadCount > 0) {
         html += `
-          <a href="/notifications.html" class="block mb-6 p-4 rounded-xl" style="background: #fff7ed;">
+          <a href="/portal/notifications.html" class="block mb-6 p-4 rounded-xl" style="background: #fff7ed;">
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined" style="color: #9a3412;">notifications_active</span>
               <span class="font-semibold" style="color: #9a3412;">יש לך ${unreadCount} עדכונים חדשים</span>
@@ -186,7 +186,7 @@
           const investmentAmount = deal.investment_amount || 0;
 
           html += `
-            <a href="/deal.html?id=${deal.id || deal._id}" class="deal-card block">
+            <a href="/portal/deal.html?id=${deal.id || deal._id}" class="deal-card block">
               <div class="flex flex-col sm:flex-row">
                 ${thumbnail ? `
                   <div class="sm:w-48 h-40 sm:h-auto flex-shrink-0">

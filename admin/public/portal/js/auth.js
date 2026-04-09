@@ -50,7 +50,7 @@ const PORTAL_API = {
 
   logout() {
     this.removeToken();
-    window.location.href = '/login.html';
+    window.location.href = '/portal/login.html';
   }
 };
 
@@ -58,7 +58,7 @@ const PORTAL_API = {
 function requirePortalAuth() {
   const investor = PORTAL_API.getInvestor();
   if (!investor) {
-    window.location.href = '/login.html';
+    window.location.href = '/portal/login.html';
     return false;
   }
   return investor;

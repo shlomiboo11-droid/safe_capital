@@ -45,21 +45,21 @@ function buildHeader(activePage) {
   header.innerHTML = `
     <div class="portal-header">
       <div class="portal-header-inner">
-        <a href="/index.html" class="portal-logo">
-          <img src="/images/logo-half.png" alt="Safe Capital" class="h-8">
+        <a href="/portal/index.html" class="portal-logo">
+          <img src="/portal/images/logo-half.png" alt="Safe Capital" class="h-8">
         </a>
 
         <nav class="portal-nav-desktop">
-          <a href="/index.html" class="portal-nav-link ${activePage === 'home' ? 'active' : ''}">
+          <a href="/portal/index.html" class="portal-nav-link ${activePage === 'home' ? 'active' : ''}">
             <span class="material-symbols-outlined text-xl">dashboard</span>
             העסקאות שלי
           </a>
-          <a href="/notifications.html" class="portal-nav-link ${activePage === 'notifications' ? 'active' : ''}">
+          <a href="/portal/notifications.html" class="portal-nav-link ${activePage === 'notifications' ? 'active' : ''}">
             <span class="material-symbols-outlined text-xl">notifications</span>
             הודעות
             <span class="notification-badge hidden">0</span>
           </a>
-          <a href="/profile.html" class="portal-nav-link ${activePage === 'profile' ? 'active' : ''}">
+          <a href="/portal/profile.html" class="portal-nav-link ${activePage === 'profile' ? 'active' : ''}">
             <span class="material-symbols-outlined text-xl">person</span>
             פרופיל
           </a>
@@ -77,16 +77,16 @@ function buildHeader(activePage) {
       </div>
 
       <div class="portal-mobile-menu hidden" id="portalMobileMenu">
-        <a href="/index.html" class="portal-mobile-link ${activePage === 'home' ? 'active' : ''}">
+        <a href="/portal/index.html" class="portal-mobile-link ${activePage === 'home' ? 'active' : ''}">
           <span class="material-symbols-outlined">dashboard</span>
           העסקאות שלי
         </a>
-        <a href="/notifications.html" class="portal-mobile-link ${activePage === 'notifications' ? 'active' : ''}">
+        <a href="/portal/notifications.html" class="portal-mobile-link ${activePage === 'notifications' ? 'active' : ''}">
           <span class="material-symbols-outlined">notifications</span>
           הודעות
           <span class="notification-badge hidden">0</span>
         </a>
-        <a href="/profile.html" class="portal-mobile-link ${activePage === 'profile' ? 'active' : ''}">
+        <a href="/portal/profile.html" class="portal-mobile-link ${activePage === 'profile' ? 'active' : ''}">
           <span class="material-symbols-outlined">person</span>
           פרופיל
         </a>
@@ -136,16 +136,16 @@ function buildBottomNav(activePage) {
 
   nav.innerHTML = `
     <div class="portal-bottom-nav">
-      <a href="/index.html" class="portal-bottom-link ${activePage === 'home' ? 'active' : ''}">
+      <a href="/portal/index.html" class="portal-bottom-link ${activePage === 'home' ? 'active' : ''}">
         <span class="material-symbols-outlined">dashboard</span>
         <span class="portal-bottom-label">העסקאות שלי</span>
       </a>
-      <a href="/notifications.html" class="portal-bottom-link ${activePage === 'notifications' ? 'active' : ''}">
+      <a href="/portal/notifications.html" class="portal-bottom-link ${activePage === 'notifications' ? 'active' : ''}">
         <span class="material-symbols-outlined">notifications</span>
         <span class="notification-badge hidden">0</span>
         <span class="portal-bottom-label">הודעות</span>
       </a>
-      <a href="/profile.html" class="portal-bottom-link ${activePage === 'profile' ? 'active' : ''}">
+      <a href="/portal/profile.html" class="portal-bottom-link ${activePage === 'profile' ? 'active' : ''}">
         <span class="material-symbols-outlined">person</span>
         <span class="portal-bottom-label">פרופיל</span>
       </a>

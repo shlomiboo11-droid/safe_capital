@@ -125,7 +125,7 @@ function renderNotifications(notifications, unreadCount) {
             </div>
             <p class="text-sm notification-body" style="color: #43474e;">${escapeHtml(n.body)}</p>
             ${n.deal_id ? `
-              <a href="/deal.html?id=${n.deal_id}" class="inline-flex items-center gap-1 text-xs font-semibold mt-2" style="color: #022445;" onclick="event.stopPropagation();">
+              <a href="/portal/deal.html?id=${n.deal_id}" class="inline-flex items-center gap-1 text-xs font-semibold mt-2" style="color: #022445;" onclick="event.stopPropagation();">
                 \u05E6\u05E4\u05D4 \u05D1\u05E2\u05E1\u05E7\u05D4
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
               </a>

@@ -181,7 +181,7 @@ function renderSummaryHeader(deal, snapshot, categories, totals) {
 
   return `
     <div class="mb-6">
-      <a href="/index.html" class="inline-flex items-center gap-1 text-sm font-semibold mb-4" style="color: #022445; text-decoration: none;">
+      <a href="/portal/index.html" class="inline-flex items-center gap-1 text-sm font-semibold mb-4" style="color: #022445; text-decoration: none;">
         <span class="material-symbols-outlined text-base">arrow_forward</span>
         חזרה לעסקאות שלי
       </a>
