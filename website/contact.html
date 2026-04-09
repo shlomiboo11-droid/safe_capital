@@ -122,7 +122,7 @@
 </div>
 <div>
 <p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-label">טלפון</p>
-<p class="text-xl font-bold text-primary" dir="ltr">+972 (0) 3 555 0123</p>
+<p class="text-xl font-bold text-primary" dir="ltr" data-setting="phone">+972 (0) 3 555 0123</p>
 </div>
 </div>
 <div class="flex items-start gap-4">
@@ -131,7 +131,7 @@
 </div>
 <div>
 <p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-label">אימייל</p>
-<p class="text-xl font-bold text-primary">invest@safecapital.co.il</p>
+<p class="text-xl font-bold text-primary" data-setting="email_main">invest@safecapital.co.il</p>
 </div>
 </div>
 <div class="flex items-start gap-4">
@@ -140,7 +140,7 @@
 </div>
 <div>
 <p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-label">WhatsApp</p>
-<p class="text-xl font-bold text-primary" dir="ltr">+972 54 123 4567</p>
+<p class="text-xl font-bold text-primary" dir="ltr" data-setting="phone_whatsapp">+972 54 123 4567</p>
 </div>
 </div>
 <div class="flex items-start gap-4">
@@ -149,21 +149,21 @@
 </div>
 <div>
 <p class="text-xs uppercase tracking-widest text-on-surface-variant mb-1 font-label">שעות פעילות</p>
-<p class="text-lg font-medium text-primary">ראשון - חמישי: 09:00 - 18:00</p>
-<p class="text-on-surface-variant">שישי ושבת: סגור</p>
+<p class="text-lg font-medium text-primary" data-setting="hours_weekday">ראשון - חמישי: 09:00 - 18:00</p>
+<p class="text-on-surface-variant" data-setting="hours_weekend">שישי ושבת: סגור</p>
 </div>
 </div>
 </div>
 <div class="pt-8 border-t border-outline-variant/20">
 <p class="text-xs uppercase tracking-widest text-on-surface-variant mb-4 font-label">עקבו אחרינו</p>
 <div class="flex gap-4">
-<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#">
+<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#" data-setting-href="facebook">
 <span class="material-symbols-outlined" data-icon="share">share</span>
 </a>
-<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#">
+<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#" data-setting-href="instagram">
 <span class="material-symbols-outlined" data-icon="public">public</span>
 </a>
-<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#">
+<a class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center hover:bg-secondary transition-colors" href="#" data-setting-href="linkedin">
 <span class="material-symbols-outlined" data-icon="group">group</span>
 </a>
 </div>
@@ -253,21 +253,29 @@
 </div>
 <div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
 <div class="footer-brand">
-<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
 <div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
 </div></div>
-<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact"><span data-setting="email_info">info@safecapital.co.il</span> | <span data-setting="phone_footer">03-123-4567</span></span></div>
 </footer>
 <script src="js/shared.js"></script>
 
 <!-- NagishLi z-index fix -->
-<style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}</style>
+<style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}
+#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:12px;line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
+#nl-dismiss:hover{opacity:1}</style>
 <!-- jQuery for NagishLi -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <!-- NagishLi Accessibility Widget -->
 <script>
 var nl_pos="br";var nl_lang="he";var nl_color="blue";var nl_compact="1";var nl_accordion="0";var nl_dir="nl-files/";
 (function(){var s=document.createElement("script");s.type="text/javascript";s.src="nagishli.js?v=2.3";s.async=true;document.getElementsByTagName("head")[0].appendChild(s)})();
+setTimeout(function(){
+  var btn=document.createElement("button");
+  btn.id="nl-dismiss";btn.textContent="✕";btn.title="הסתר כפתור נגישות";
+  btn.onclick=function(){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";this.style.display="none"};
+  document.body.appendChild(btn);
+},2000);
 </script>
 
 </body>

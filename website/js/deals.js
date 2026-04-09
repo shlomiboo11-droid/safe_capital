@@ -320,7 +320,7 @@ function renderExpandedContent(deal) {
       <div class="bg-surface-container rounded-xl p-8 md:p-12 text-center">
         <p class="text-lg text-on-surface leading-relaxed">
           מעוניינים להשקיע בעסקה הזו? רוצים לדעת מתי כנס המשקיעים הבא?
-          <a href="https://chat.whatsapp.com/" target="_blank" rel="noopener noreferrer"
+          <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
              class="inline-block mt-4 bg-whatsapp text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 active:scale-95 transition-all">
             <span class="flex items-center gap-3 justify-center">
               <span>לחצו כאן כדי להצטרף לקבוצת הווצאפ שלנו</span>

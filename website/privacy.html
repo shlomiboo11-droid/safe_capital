@@ -132,7 +132,7 @@
                 </p>
 <div class="mt-8 flex items-center gap-3 text-sm text-secondary font-medium bg-surface-container-low w-fit px-4 py-2 rounded-full">
 <span class="material-symbols-outlined text-sm">calendar_today</span>
-                    עודכן לאחרונה: מרץ 2026
+                    <span data-setting="last_updated_he">עודכן לאחרונה: מרץ 2026</span>
                 </div>
 </header>
 <!-- Policy Content Block -->
@@ -214,7 +214,7 @@
 <h3 class="text-lg font-bold text-primary">שאלות בנושא פרטיות?</h3>
 <p class="text-on-surface-variant">צוות הציות שלנו זמין עבורכם לכל הבהרה.</p>
 </div>
-<a class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-primary-container transition-colors" href="mailto:privacy@safecapital.co.il">
+<a class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-primary-container transition-colors" href="mailto:privacy@safecapital.co.il" data-setting-href="email_privacy">
 <span class="material-symbols-outlined">mail</span>
                                 צרו קשר
                             </a>
@@ -241,21 +241,29 @@
 </div>
 <div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
 <div class="footer-brand">
-<p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
+<p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
 <div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
 </div></div>
-<div class="footer-bottom"><span>&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact">info@safecapital.co.il | 03-123-4567</span></div>
+<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact"><span data-setting="email_info">info@safecapital.co.il</span> | <span data-setting="phone_footer">03-123-4567</span></span></div>
 </footer>
 <script src="js/shared.js"></script>
 
 <!-- NagishLi z-index fix -->
-<style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}</style>
+<style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}
+#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:12px;line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
+#nl-dismiss:hover{opacity:1}</style>
 <!-- jQuery for NagishLi -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <!-- NagishLi Accessibility Widget -->
 <script>
 var nl_pos="br";var nl_lang="he";var nl_color="blue";var nl_compact="1";var nl_accordion="0";var nl_dir="nl-files/";
 (function(){var s=document.createElement("script");s.type="text/javascript";s.src="nagishli.js?v=2.3";s.async=true;document.getElementsByTagName("head")[0].appendChild(s)})();
+setTimeout(function(){
+  var btn=document.createElement("button");
+  btn.id="nl-dismiss";btn.textContent="✕";btn.title="הסתר כפתור נגישות";
+  btn.onclick=function(){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";this.style.display="none"};
+  document.body.appendChild(btn);
+},2000);
 </script>
 
 </body></html>
