@@ -18,7 +18,8 @@ app.use(helmet({
 app.use(cors({
   origin: [
     process.env.ADMIN_ORIGIN || 'http://localhost:3000',
-    'http://localhost:8081'
+    'http://localhost:8081',
+    'https://safe-capital-il.vercel.app'
   ]
 }));
 app.use(express.json({ limit: '50mb' }));

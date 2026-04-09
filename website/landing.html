@@ -1283,7 +1283,8 @@ tailwind.config = {
   }
 
   /* ===== 12. Live Deals from Admin API ===== */
-  var DEALS_API = 'http://localhost:3000/api/public/deals';
+  var ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
+  var DEALS_API = ADMIN_HOST + '/api/public/deals';
   var dealsContainer = document.getElementById('landing-deals');
   var staticResults = document.getElementById('static-results');
 
@@ -1308,7 +1309,7 @@ tailwind.config = {
     return '$' + Math.round(n).toLocaleString('en-US');
   }
 
-  var ADMIN_BASE = 'http://localhost:3000';
+  var ADMIN_BASE = ADMIN_HOST;
 
   function getDealThumb(deal) {
     if (deal.thumbnail_url) return ADMIN_BASE + deal.thumbnail_url;

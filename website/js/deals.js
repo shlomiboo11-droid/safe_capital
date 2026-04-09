@@ -7,7 +7,8 @@
  * All text is right-aligned by default.
  */
 
-const API_URL = 'http://localhost:3000/api/public/deals';
+const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
+const API_URL = ADMIN_HOST + '/api/public/deals';
 
 // ── Status label maps ────────────────────────────────────────────────────────
 
