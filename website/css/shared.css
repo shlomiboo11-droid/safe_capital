@@ -659,8 +659,8 @@ body {
     background: rgba(251, 249, 246, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(196, 198, 207, 0.2);
+    padding: 1rem 1.5rem 1.5rem;
+    margin-bottom: 1.5rem;
     transition: box-shadow 0.3s ease;
 }
 .step-progress-bar.scrolled {
