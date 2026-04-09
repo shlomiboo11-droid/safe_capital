@@ -45,19 +45,29 @@ These rules are non-negotiable. Violating them produces an off-brand result:
 - **Heebo 300 / Inter** — body text
 
 ## Agents
-Specialist agents are in `.claude/agents/`. The project-manager orchestrates all of them:
+Specialist agents in `.claude/agents/`, organized by team:
 
+### `build/` — Builds code & content
 | Agent | Responsibility |
 |-------|---------------|
-| `project-manager` | Orchestrator — reads workflows, delegates |
-| `frontend-developer` | HTML/CSS/JS implementation |
-| `ui-designer` | Visual design, styling, brand consistency |
+| `frontend-developer` | HTML/CSS/JS, animations, interactive components |
+| `ui-designer` | Visual design, SVG icons, brand consistency |
 | `content-strategist` | Copy, messaging, Hebrew content |
 | `deal-analyst` | Deal financial data from xlsx/docs |
-| `code-reviewer` | Post-implementation review |
+
+### `qa/` — Reviews & tests
+| Agent | Responsibility |
+|-------|---------------|
+| `qa` | End-to-end testing — links, forms, responsive, RTL |
+| `code-reviewer` | Code quality, bugs, best practices |
 | `ux-reviewer` | UX, conversion, trust signals |
-| `debugger` | Bug finding and fixing |
 | `seo-legal-reviewer` | Legal pages, SEO, compliance |
+
+### `ops/` — Manages & fixes
+| Agent | Responsibility |
+|-------|---------------|
+| `project-manager` | Orchestrator — delegates to teams |
+| `debugger` | Bug finding and fixing |
 
 ## Deal Data
 Deal folders (e.g., `oxmoore/`) contain: financial calculators (.xlsx), photos, renderings, construction plans, loan docs. Always read actual deal files — never invent financial data.
