@@ -293,15 +293,15 @@ function renderExpandedContent(deal) {
         <h3 class="text-2xl font-extrabold text-primary">פירוט פיננסי</h3>
       </div>
       ${costCatsHtml}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center">
         ${totalCost ? `
         <div>
           <p class="text-xs text-on-surface-variant mb-1 font-bold">סך השקעה</p>
           <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
         </div>` : ''}
         ${expectedSalePrice ? `
-        <div class="relative">
-          <div class="flex items-center gap-1 mb-1">
+        <div>
+          <div class="flex items-center gap-1 mb-1 justify-center">
             <p class="text-xs text-on-surface-variant font-bold">מחיר מכירה צפוי</p>
             ${tooltipHtml}
           </div>
@@ -309,7 +309,7 @@ function renderExpandedContent(deal) {
         </div>` : ''}
         ${expectedProfit ? `
         <div class="bg-secondary/5 p-4 rounded-lg">
-          <p class="text-xs text-secondary mb-1 font-extrabold">רווח נקי למשקיעים</p>
+          <p class="text-xs text-secondary mb-1 font-extrabold">רווח צפוי</p>
           <p class="text-3xl font-extrabold text-secondary font-label">${formatUSD(expectedProfit)}</p>
         </div>` : ''}
       </div>
