@@ -1,12 +1,13 @@
 /* Safe Capital Investor Portal — Custom Styles */
 
 /* Font imports */
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Heebo:wght@300;400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 /* RTL defaults */
 html { direction: rtl; text-align: right; }
-body { font-family: 'Heebo', sans-serif; }
+body { font-family: 'Inter', sans-serif; }
+h1, h2, h3 { font-family: 'Heebo', sans-serif; }
 
 /* Header */
 .portal-header {
@@ -115,7 +116,7 @@ body { font-family: 'Heebo', sans-serif; }
 .badge {
   display: inline-flex; align-items: center;
   padding: 0.25rem 0.75rem; border-radius: 9999px;
-  font-size: 0.75rem; font-weight: 600;
+  font-size: 0.75rem; font-weight: 700;
 }
 .badge-gray { background: #f3f4f6; color: #374151; }
 .badge-blue { background: #dbeafe; color: #1e40af; }
@@ -127,43 +128,50 @@ body { font-family: 'Heebo', sans-serif; }
 /* Metric card */
 .metric-card {
   background: #ffffff;
-  border-radius: 0.75rem;
-  padding: 1.25rem 1.5rem;
-  box-shadow: 0 1px 8px rgba(27,28,26,0.04);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0px 8px 24px rgba(2, 36, 69, 0.04);
+  transition: transform 0.3s;
 }
+.metric-card:hover { transform: translateY(-4px); }
 .metric-num {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700; font-size: 2rem; line-height: 1;
-  color: #984349;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 800; font-size: 2.25rem; line-height: 1;
+  color: #000e21;
 }
 .metric-label {
-  font-size: 0.875rem; color: #43474e; margin-top: 0.25rem;
+  font-size: 0.8125rem; color: #43474e; margin-top: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  font-family: 'Inter', sans-serif; font-weight: 600;
 }
 
 /* Deal card */
 .deal-card {
   background: #ffffff;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 8px rgba(27,28,26,0.04);
+  border-radius: 1rem;
+  box-shadow: 0px 8px 24px rgba(2, 36, 69, 0.04);
   overflow: hidden;
-  transition: box-shadow 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-.deal-card:hover { box-shadow: 0 4px 16px rgba(27,28,26,0.08); }
+.deal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 12px 32px rgba(2, 36, 69, 0.06);
+}
 
 /* Progress bar */
 .progress-track {
-  height: 6px; background: #eae8e5; border-radius: 3px; overflow: hidden;
+  height: 8px; background: #eae8e5; border-radius: 9999px; overflow: hidden;
 }
 .progress-fill {
-  height: 100%; background: #022445; border-radius: 3px;
+  height: 100%; background: #000e21; border-radius: 9999px;
   transition: width 0.6s ease;
 }
 
 /* Toast notifications */
 .portal-toast {
   position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-  background: #022445; color: #fff;
-  padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+  background: #000e21; color: #fff;
+  padding: 0.75rem 1.5rem; border-radius: 1rem;
   font-size: 0.875rem; z-index: 100;
   box-shadow: 0 4px 16px rgba(2,36,69,0.2);
   animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
@@ -171,16 +179,17 @@ body { font-family: 'Heebo', sans-serif; }
 @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
 @keyframes toastOut { to { opacity: 0; transform: translateX(-50%) translateY(-10px); } }
 
-/* Form inputs — bottom-border focus only */
+/* Form inputs — ring focus */
 .portal-input {
-  width: 100%; padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db; border-radius: 0.5rem;
+  width: 100%; padding: 1rem;
+  border: none; border-radius: 0.75rem;
   font-size: 1rem; font-family: 'Heebo', sans-serif;
-  background: #fff; transition: border-color 0.15s;
+  background: #eae8e5; transition: all 0.2s;
 }
 .portal-input:focus {
-  outline: none; border-color: transparent;
-  border-bottom: 2px solid #022445;
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(0, 14, 33, 0.2);
 }
 .portal-input.ltr {
   direction: ltr; font-family: 'Inter', sans-serif;
@@ -195,37 +204,38 @@ body { font-family: 'Heebo', sans-serif; }
 
 /* Notification list */
 .notification-item {
-  padding: 1rem 1.25rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
-  transition: background 0.15s;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s;
   cursor: pointer;
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   align-items: flex-start;
 }
 .notification-item.unread {
   background: #f5f3f0;
-  border-right: 4px solid #022445;
+  border-right: 3px solid #000e21;
 }
 .notification-item.read {
   background: #fff;
 }
 .notification-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-size: 1.25rem;
+  background: #ffffff;
 }
-.notification-icon.update { background: #e0f2fe; color: #0369a1; }
-.notification-icon.milestone { background: #dcfce7; color: #166534; }
-.notification-icon.document { background: #fef3c7; color: #92400e; }
-.notification-icon.financial { background: #fce7f3; color: #9d174d; }
-.notification-icon.message { background: #ede9fe; color: #6d28d9; }
+.notification-icon.update { background: #ffffff; color: #0369a1; }
+.notification-icon.milestone { background: #ffffff; color: #166534; }
+.notification-icon.document { background: #ffffff; color: #92400e; }
+.notification-icon.financial { background: #ffffff; color: #9d174d; }
+.notification-icon.message { background: #ffffff; color: #6d28d9; }
 
 .notification-body {
   display: -webkit-box;
@@ -239,11 +249,17 @@ body { font-family: 'Heebo', sans-serif; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #f5f3f0;
+  padding: 0.875rem 1rem;
+  background: #f5f3f0;
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-bottom: none;
 }
 .profile-field:last-child { border-bottom: none; }
-.profile-field-label { color: #43474e; font-size: 0.875rem; }
+.profile-field-label {
+  color: #43474e; font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+}
 .profile-field-value { font-weight: 500; }
 
 /* Mobile adjustments */
