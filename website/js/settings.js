@@ -19,13 +19,12 @@ async function loadSiteSettings() {
 
     // Update text content: <span data-setting="phone_footer">03-123-4567</span>
     document.querySelectorAll('[data-setting]').forEach(el => {
-      const val = config[el.dataset.setting];
+      const key = el.dataset.setting;
+      let val = config[key];
       if (!val) return;
-      if (el.tagName === 'A') {
-        el.textContent = val;
-      } else {
-        el.textContent = val;
-      }
+      // Format date values for display
+      val = formatSettingValue(key, val);
+      el.textContent = val;
     });
 
     // Update href: <a data-setting-href="whatsapp_group" href="...">
@@ -41,6 +40,22 @@ async function loadSiteSettings() {
   } catch (err) {
     // Silently fail — hardcoded values in HTML remain as fallback
   }
+}
+
+/**
+ * Format date values stored as YYYY-MM-DD into display strings.
+ */
+function formatSettingValue(key, val) {
+  if (key === 'last_updated_he' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    const HE_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    const [y, m] = val.split('-');
+    return `עודכן לאחרונה: ${HE_MONTHS[parseInt(m, 10) - 1]} ${y}`;
+  }
+  if (key === 'last_updated_en' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    const d = new Date(val + 'T00:00:00');
+    return 'Last Updated: ' + d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+  return val;
 }
 
 async function loadSiteStats() {

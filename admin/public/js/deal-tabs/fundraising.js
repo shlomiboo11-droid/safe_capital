@@ -73,7 +73,7 @@ function renderFundraisingTab(data) {
         <h3 class="text-lg font-bold">רשימת משקיעים</h3>
         <button class="btn btn-primary btn-sm" onclick="addInvestor()">
           <span class="material-symbols-outlined text-sm">person_add</span>
-          משקיע חדש
+          הוספת משקיע
         </button>
       </div>
 
@@ -89,13 +89,16 @@ function renderFundraisingTab(data) {
             </tr>
           </thead>
           <tbody id="investorsTableBody">
-            ${investors.length === 0 ? '<tr><td colspan="5" class="text-center text-gray-400 py-8">אין משקיעים. לחץ על "משקיע חדש" כדי להוסיף.</td></tr>' : ''}
-            ${investors.map(inv => `
+            ${investors.length === 0 ? '<tr><td colspan="5" class="text-center text-gray-400 py-8">אין משקיעים. לחץ על "הוספת משקיע" כדי להוסיף.</td></tr>' : ''}
+            ${investors.map(inv => {
+              const displayName = inv.investor_name || '';
+              const hasProfile = !!inv.investor_id;
+              const nameLink = hasProfile
+                ? `<a href="/investor?id=${inv.investor_id}" class="text-primary hover:underline font-medium">${escapeHtml(displayName)}</a>`
+                : `<span class="text-gray-700">${escapeHtml(displayName)}</span>`;
+              return `
               <tr data-inv-id="${inv.id}">
-                <td>
-                  <input type="text" class="form-input text-sm" value="${inv.investor_name || ''}"
-                    onchange="updateInvestor(${inv.id}, 'investor_name', this.value)">
-                </td>
+                <td>${nameLink}</td>
                 <td>
                   <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr text-sm w-36"
                     value="${inv.amount ? formatCurrency(inv.amount) : ''}"
@@ -111,12 +114,12 @@ function renderFundraisingTab(data) {
                     onchange="updateInvestor(${inv.id}, 'notes', this.value)">
                 </td>
                 <td>
-                  <button class="btn btn-danger btn-sm" onclick="deleteInvestor(${inv.id})">
+                  <button class="btn btn-danger btn-sm" onclick="deleteDealInvestor(${inv.id})">
                     <span class="material-symbols-outlined text-sm">delete</span>
                   </button>
                 </td>
-              </tr>
-            `).join('')}
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>
       </div>
@@ -124,18 +127,44 @@ function renderFundraisingTab(data) {
   `;
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ── Investor search autocomplete ──
+let investorSearchTimer = null;
+let investorSearchResults = [];
+
 function addInvestor() {
   const today = new Date().toISOString().split('T')[0];
   const overlay = document.createElement('div');
   overlay.className = 'branded-modal-overlay';
   overlay.innerHTML = `
     <div class="branded-modal" style="max-width: 28rem;">
-      <h3 class="branded-modal-title">הוספת משקיע חדש</h3>
+      <h3 class="branded-modal-title">הוספת משקיע לעסקה</h3>
       <form id="addInvestorModalForm" class="space-y-4">
-        <div>
-          <label class="form-label">שם המשקיע *</label>
-          <input type="text" name="investor_name" class="form-input text-sm" required placeholder="שם מלא">
+        <div style="position: relative;">
+          <label class="form-label">חיפוש משקיע קיים</label>
+          <input type="text" id="investorSearchInput" class="form-input text-sm" placeholder="הקלד שם, טלפון או מייל..." autocomplete="off">
+          <div id="investorSearchDropdown" class="investor-search-dropdown" style="display:none;"></div>
+          <input type="hidden" id="selectedInvestorId" name="investor_id" value="">
+          <div id="selectedInvestorBadge" style="display:none;" class="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg" style="background:#f0fdf4;">
+            <span class="material-symbols-outlined text-green-600 text-sm">check_circle</span>
+            <span id="selectedInvestorName" class="text-sm font-medium text-green-800"></span>
+            <button type="button" onclick="clearSelectedInvestor()" class="text-gray-400 hover:text-red-500 mr-auto">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          </div>
         </div>
+
+        <div class="text-center text-xs text-gray-400 py-1">— או —</div>
+
+        <div id="manualNameField">
+          <label class="form-label">שם משקיע חדש</label>
+          <input type="text" name="investor_name" id="manualInvestorName" class="form-input text-sm" placeholder="שם מלא (ייצור משקיע חדש)">
+        </div>
+
         <div>
           <label class="form-label">סכום השקעה ($) *</label>
           <input type="text" inputmode="numeric" name="amount" data-currency="true" class="form-input ltr text-sm"
@@ -167,6 +196,55 @@ function addInvestor() {
   amountInput.addEventListener('focus', () => unformatCurrencyInput(amountInput));
   amountInput.addEventListener('blur', () => formatCurrencyInput(amountInput));
 
+  // Investor search autocomplete
+  const searchInput = overlay.querySelector('#investorSearchInput');
+  const dropdown = overlay.querySelector('#investorSearchDropdown');
+
+  searchInput.addEventListener('input', () => {
+    clearTimeout(investorSearchTimer);
+    const q = searchInput.value.trim();
+    if (q.length < 2) {
+      dropdown.style.display = 'none';
+      return;
+    }
+    investorSearchTimer = setTimeout(async () => {
+      try {
+        investorSearchResults = await API.get(`/investors/search?q=${encodeURIComponent(q)}`);
+        if (investorSearchResults.length === 0) {
+          dropdown.innerHTML = '<div class="investor-search-item" style="color:#9ca3af;cursor:default;">לא נמצאו תוצאות</div>';
+        } else {
+          dropdown.innerHTML = investorSearchResults.map(inv => {
+            const name = `${inv.first_name} ${inv.last_name || ''}`.trim();
+            const extra = inv.phone || inv.email || '';
+            return `<div class="investor-search-item" data-id="${inv.id}" data-name="${escapeHtml(name)}">
+              <span class="font-medium">${escapeHtml(name)}</span>
+              ${extra ? `<span class="text-xs text-gray-400 font-inter mr-2" dir="ltr">${escapeHtml(extra)}</span>` : ''}
+            </div>`;
+          }).join('');
+        }
+        dropdown.style.display = 'block';
+      } catch {
+        dropdown.style.display = 'none';
+      }
+    }, 250);
+  });
+
+  // Click on dropdown result
+  dropdown.addEventListener('click', (e) => {
+    const item = e.target.closest('[data-id]');
+    if (!item) return;
+    selectInvestor(item.dataset.id, item.dataset.name);
+    dropdown.style.display = 'none';
+    searchInput.value = '';
+  });
+
+  // Hide dropdown on outside click
+  overlay.addEventListener('click', (e) => {
+    if (!e.target.closest('#investorSearchInput') && !e.target.closest('#investorSearchDropdown')) {
+      dropdown.style.display = 'none';
+    }
+  });
+
   // Cancel
   overlay.querySelector('[data-action="cancel"]').addEventListener('click', () => overlay.remove());
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
@@ -176,20 +254,33 @@ function addInvestor() {
     e.preventDefault();
     const form = e.target;
     const submitBtn = form.querySelector('button[type="submit"]');
+    const selectedId = document.getElementById('selectedInvestorId').value;
+    const manualName = document.getElementById('manualInvestorName').value.trim();
+
+    // Must have either selected investor or manual name
+    if (!selectedId && !manualName) {
+      showToast('בחר משקיע קיים או הזן שם חדש', 'error');
+      return;
+    }
+
     const body = {
-      investor_name: form.investor_name.value.trim(),
       amount: parseAmount(form.amount.value),
       investment_date: form.investment_date.value || null,
       notes: form.notes.value.trim() || null
     };
 
-    if (!body.investor_name) {
-      showToast('נא להזין שם משקיע', 'error');
-      return;
-    }
     if (!body.amount || body.amount <= 0) {
       showToast('נא להזין סכום השקעה', 'error');
       return;
+    }
+
+    if (selectedId) {
+      // Link to existing investor
+      body.investor_id = selectedId;
+      // Also set investor_name for display/backward compat
+      body.investor_name = document.getElementById('selectedInvestorName').textContent;
+    } else {
+      body.investor_name = manualName;
     }
 
     // Prevent double-submit
@@ -212,8 +303,27 @@ function addInvestor() {
     }
   });
 
-  // Focus first field
-  requestAnimationFrame(() => overlay.querySelector('[name="investor_name"]').focus());
+  // Focus search
+  requestAnimationFrame(() => searchInput.focus());
+}
+
+function selectInvestor(id, name) {
+  document.getElementById('selectedInvestorId').value = id;
+  document.getElementById('selectedInvestorName').textContent = name;
+  document.getElementById('selectedInvestorBadge').style.display = 'flex';
+  document.getElementById('selectedInvestorBadge').style.background = '#f0fdf4';
+  // Disable manual name when investor is selected
+  document.getElementById('manualInvestorName').value = '';
+  document.getElementById('manualInvestorName').disabled = true;
+  document.getElementById('manualNameField').style.opacity = '0.4';
+}
+
+function clearSelectedInvestor() {
+  document.getElementById('selectedInvestorId').value = '';
+  document.getElementById('selectedInvestorName').textContent = '';
+  document.getElementById('selectedInvestorBadge').style.display = 'none';
+  document.getElementById('manualInvestorName').disabled = false;
+  document.getElementById('manualNameField').style.opacity = '1';
 }
 
 async function updateInvestor(id, field, value) {
@@ -224,8 +334,8 @@ async function updateInvestor(id, field, value) {
   }
 }
 
-async function deleteInvestor(id) {
-  if (!await confirmAction('האם להסיר את המשקיע?')) return;
+async function deleteDealInvestor(id) {
+  if (!await confirmAction('האם להסיר את המשקיע מעסקה זו?')) return;
   try {
     await API.delete(`/deals/${currentDeal.id}/investors/${id}`);
     showToast('המשקיע הוסר');
@@ -234,3 +344,6 @@ async function deleteInvestor(id) {
     showToast(err.message, 'error');
   }
 }
+
+// Keep backward compat alias
+function deleteInvestor(id) { return deleteDealInvestor(id); }

@@ -26,8 +26,8 @@ const SETTINGS = [
   // ── legal ──
   { key: 'company_name_en', value: 'Safe Capital', label: 'שם חברה באנגלית', category: 'legal', field_type: 'text' },
   { key: 'copyright_text', value: '© 2026 Safe Capital. כל הזכויות שמורות.', label: 'טקסט זכויות יוצרים', category: 'legal', field_type: 'text' },
-  { key: 'last_updated_he', value: 'עודכן לאחרונה: מרץ 2026', label: 'עדכון אחרון (עברית)', category: 'legal', field_type: 'text' },
-  { key: 'last_updated_en', value: 'Last Updated: March 15, 2026', label: 'עדכון אחרון (אנגלית)', category: 'legal', field_type: 'text' },
+  { key: 'last_updated_he', value: '2026-03-15', label: 'עדכון אחרון (עברית)', category: 'legal', field_type: 'date' },
+  { key: 'last_updated_en', value: '2026-03-15', label: 'עדכון אחרון (אנגלית)', category: 'legal', field_type: 'date' },
   { key: 'footer_description', value: 'חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים', label: 'תיאור בפוטר', category: 'legal', field_type: 'textarea' },
 
   // ── events ──

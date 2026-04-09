@@ -53,6 +53,7 @@ app.use('/api/extract', require('./routes/extract'));
 app.use('/api/audit', require('./routes/audit'));
 app.use('/api/google-drive', require('./routes/google-drive'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/investors', require('./routes/investors'));
 
 // SPA fallback — serve index.html for non-API routes
 app.get('*', (req, res) => {
@@ -67,6 +68,8 @@ app.get('*', (req, res) => {
     '/deal-wizard': 'deal-wizard.html',
     '/deal': 'deal.html',
     '/settings': 'settings.html',
+    '/investors': 'investors.html',
+    '/investor': 'investor.html',
   };
 
   for (const [prefix, file] of Object.entries(htmlFiles)) {

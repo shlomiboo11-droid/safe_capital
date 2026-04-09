@@ -4,8 +4,8 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
-  max: 10,                       // up to 10 connections in the pool
-  idleTimeoutMillis: 30000,      // close idle connections after 30s
+  max: 3,                        // keep low for Supabase Session mode + Vercel serverless
+  idleTimeoutMillis: 10000,      // close idle connections after 10s
   connectionTimeoutMillis: 10000 // fail fast if can't connect within 10s
 });
 
@@ -287,6 +287,49 @@ CREATE TABLE IF NOT EXISTS deal_comp_images (
   is_primary  BOOLEAN DEFAULT FALSE,
   sort_order  INTEGER DEFAULT 0
 );
+
+-- Central investors table
+CREATE TABLE IF NOT EXISTS investors (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name      TEXT NOT NULL,
+  last_name       TEXT NOT NULL DEFAULT '',
+  email           TEXT,
+  phone           TEXT,
+  phone_secondary TEXT,
+  id_type         TEXT DEFAULT 'israeli_id',
+  id_number       TEXT,
+  address         TEXT,
+  city            TEXT,
+  country         TEXT DEFAULT 'ישראל',
+  bank_name       TEXT,
+  bank_branch     TEXT,
+  bank_account    TEXT,
+  company_name    TEXT,
+  company_number  TEXT,
+  llc_name        TEXT,
+  llc_ein         TEXT,
+  us_tax_id       TEXT,
+  source          TEXT,
+  status          TEXT DEFAULT 'lead' CHECK(status IN ('lead','active','inactive','vip')),
+  notes           TEXT,
+  created_at      TIMESTAMPTZ DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ DEFAULT NOW(),
+  created_by      INTEGER REFERENCES users(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_investors_status ON investors(status);
+CREATE INDEX IF NOT EXISTS idx_investors_name ON investors(first_name, last_name);
+
+-- Migration: add investor_id to deal_investors
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'deal_investors' AND column_name = 'investor_id'
+  ) THEN
+    ALTER TABLE deal_investors ADD COLUMN investor_id UUID REFERENCES investors(id);
+    ALTER TABLE deal_investors ADD COLUMN status TEXT DEFAULT 'funded';
+  END IF;
+END $$;
 
 -- Site settings (key-value, editable from admin dashboard)
 CREATE TABLE IF NOT EXISTS site_settings (

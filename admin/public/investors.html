@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול משקיעים | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/investors" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">ניהול משקיעים</h1>
+        <p class="text-sm text-gray-500 mt-1" id="investorCount"></p>
+      </div>
+      <button class="btn btn-primary" onclick="openInvestorModal()">
+        <span class="material-symbols-outlined text-lg">person_add</span>
+        משקיע חדש
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="card p-4 mb-6">
+      <div class="flex flex-wrap gap-3 items-center">
+        <div class="flex-1 min-w-[200px]">
+          <input type="text" id="searchInput" class="form-input" placeholder="חיפוש לפי שם, טלפון, מייל..." oninput="debounceLoad()">
+        </div>
+        <select id="statusFilter" class="form-select w-auto" onchange="loadInvestors()">
+          <option value="">כל הסטטוסים</option>
+          <option value="lead">ליד</option>
+          <option value="active">פעיל</option>
+          <option value="inactive">לא פעיל</option>
+          <option value="vip">VIP</option>
+        </select>
+        <select id="sortSelect" class="form-select w-auto" onchange="loadInvestors()">
+          <option value="created_at">תאריך הצטרפות</option>
+          <option value="first_name">שם</option>
+          <option value="status">סטטוס</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="data-table" id="investorsTable">
+          <thead>
+            <tr>
+              <th>שם מלא</th>
+              <th>טלפון</th>
+              <th>אימייל</th>
+              <th>סטטוס</th>
+              <th>עסקאות</th>
+              <th>סה"כ השקעה</th>
+              <th>מקור</th>
+              <th>פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="investorsBody">
+            <tr><td colspan="8" class="text-center py-12 text-gray-400">טוען...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    // Auth guard
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    const STATUS_LABELS = { lead: 'ליד', active: 'פעיל', inactive: 'לא פעיל', vip: 'VIP' };
+    const STATUS_COLORS = { lead: 'gray', active: 'green', inactive: 'yellow', vip: 'blue' };
+    const SOURCE_LABELS = { conference: 'כנס', referral: 'הפניה', website: 'אתר', facebook: 'פייסבוק', linkedin: 'לינקדאין', whatsapp: 'ווצאפ', other: 'אחר' };
+
+    let debounceTimer;
+    function debounceLoad() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadInvestors, 300);
+    }
+
+    async function loadInvestors() {
+      const q = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+      const sort = document.getElementById('sortSelect').value;
+
+      const params = new URLSearchParams();
+      if (q) params.set('q', q);
+      if (status) params.set('status', status);
+      params.set('sort', sort);
+
+      try {
+        const data = await API.get('/investors?' + params.toString());
+        renderTable(data);
+        document.getElementById('investorCount').textContent = `${data.length} משקיעים`;
+      } catch (err) {
+        document.getElementById('investorsBody').innerHTML =
+          '<tr><td colspan="8" class="text-center py-8 text-red-500">שגיאה בטעינה</td></tr>';
+      }
+    }
+
+    function renderTable(investors) {
+      const tbody = document.getElementById('investorsBody');
+      if (investors.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-gray-400">לא נמצאו משקיעים</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = investors.map(inv => {
+        const name = `${inv.first_name} ${inv.last_name || ''}`.trim();
+        const statusColor = STATUS_COLORS[inv.status] || 'gray';
+        const statusLabel = STATUS_LABELS[inv.status] || inv.status;
+        const total = parseFloat(inv.total_invested || 0);
+
+        return `<tr>
+          <td>
+            <a href="/investor?id=${inv.id}" class="font-medium text-primary hover:underline">${escapeHtml(name)}</a>
+          </td>
+          <td>
+            ${inv.phone ? `<a href="tel:${inv.phone}" class="text-gray-600 hover:text-primary font-inter" dir="ltr">${escapeHtml(inv.phone)}</a>` : '<span class="text-gray-300">—</span>'}
+          </td>
+          <td>
+            ${inv.email ? `<a href="mailto:${inv.email}" class="text-gray-600 hover:text-primary font-inter" dir="ltr">${escapeHtml(inv.email)}</a>` : '<span class="text-gray-300">—</span>'}
+          </td>
+          <td><span class="badge badge-${statusColor}">${statusLabel}</span></td>
+          <td class="font-inter">${inv.deal_count || 0}</td>
+          <td class="font-inter" dir="ltr">${total > 0 ? '$' + Math.round(total).toLocaleString() : '—'}</td>
+          <td>${inv.source ? (SOURCE_LABELS[inv.source] || inv.source) : '<span class="text-gray-300">—</span>'}</td>
+          <td>
+            <div class="flex gap-1">
+              <a href="/investor?id=${inv.id}" class="btn btn-secondary btn-sm" title="צפייה">
+                <span class="material-symbols-outlined text-sm">visibility</span>
+              </a>
+              <button class="btn btn-secondary btn-sm" title="עריכה" onclick="openInvestorModal('${inv.id}')">
+                <span class="material-symbols-outlined text-sm">edit</span>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // ── Create / Edit Modal ──
+    async function openInvestorModal(investorId) {
+      let investor = null;
+      if (investorId) {
+        try {
+          const data = await API.get(`/investors/${investorId}`);
+          investor = data.investor;
+        } catch { return; }
+      }
+
+      const isEdit = !!investor;
+      const title = isEdit ? 'עריכת משקיע' : 'משקיע חדש';
+
+      const overlay = document.createElement('div');
+      overlay.className = 'branded-modal-overlay';
+      overlay.innerHTML = `
+        <div class="branded-modal" style="max-width: 40rem; max-height: 90vh; overflow-y: auto;">
+          <h3 class="branded-modal-title">${title}</h3>
+          <form id="investorForm" class="space-y-5">
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">פרטים אישיים</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">שם פרטי *</label>
+                <input type="text" name="first_name" class="form-input text-sm" required value="${escapeHtml(investor?.first_name || '')}">
+              </div>
+              <div>
+                <label class="form-label">שם משפחה</label>
+                <input type="text" name="last_name" class="form-input text-sm" value="${escapeHtml(investor?.last_name || '')}">
+              </div>
+              <div>
+                <label class="form-label">טלפון</label>
+                <input type="tel" name="phone" class="form-input ltr text-sm" dir="ltr" placeholder="050-XXX-XXXX" value="${escapeHtml(investor?.phone || '')}">
+              </div>
+              <div>
+                <label class="form-label">טלפון נוסף</label>
+                <input type="tel" name="phone_secondary" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.phone_secondary || '')}">
+              </div>
+              <div class="col-span-2">
+                <label class="form-label">אימייל</label>
+                <input type="email" name="email" class="form-input ltr text-sm" dir="ltr" placeholder="email@example.com" value="${escapeHtml(investor?.email || '')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">זיהוי</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">סוג תעודה</label>
+                <select name="id_type" class="form-select text-sm">
+                  <option value="israeli_id" ${investor?.id_type === 'israeli_id' ? 'selected' : ''}>ת.ז.</option>
+                  <option value="passport" ${investor?.id_type === 'passport' ? 'selected' : ''}>דרכון</option>
+                  <option value="other" ${investor?.id_type === 'other' ? 'selected' : ''}>אחר</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">מספר תעודה</label>
+                <input type="text" name="id_number" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.id_number || '')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">כתובת</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="col-span-2">
+                <label class="form-label">כתובת</label>
+                <input type="text" name="address" class="form-input text-sm" value="${escapeHtml(investor?.address || '')}">
+              </div>
+              <div>
+                <label class="form-label">עיר</label>
+                <input type="text" name="city" class="form-input text-sm" value="${escapeHtml(investor?.city || '')}">
+              </div>
+              <div>
+                <label class="form-label">מדינה</label>
+                <input type="text" name="country" class="form-input text-sm" value="${escapeHtml(investor?.country || 'ישראל')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">פרטים בנקאיים</div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="form-label">שם בנק</label>
+                <input type="text" name="bank_name" class="form-input text-sm" value="${escapeHtml(investor?.bank_name || '')}">
+              </div>
+              <div>
+                <label class="form-label">סניף</label>
+                <input type="text" name="bank_branch" class="form-input text-sm" value="${escapeHtml(investor?.bank_branch || '')}">
+              </div>
+              <div>
+                <label class="form-label">מספר חשבון</label>
+                <input type="text" name="bank_account" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.bank_account || '')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">פרטי חברה</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">שם חברה</label>
+                <input type="text" name="company_name" class="form-input text-sm" value="${escapeHtml(investor?.company_name || '')}">
+              </div>
+              <div>
+                <label class="form-label">ח.פ</label>
+                <input type="text" name="company_number" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.company_number || '')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">פרטי LLC</div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="form-label">שם LLC</label>
+                <input type="text" name="llc_name" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.llc_name || '')}">
+              </div>
+              <div>
+                <label class="form-label">EIN</label>
+                <input type="text" name="llc_ein" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.llc_ein || '')}">
+              </div>
+              <div>
+                <label class="form-label">ITIN</label>
+                <input type="text" name="us_tax_id" class="form-input ltr text-sm" dir="ltr" value="${escapeHtml(investor?.us_tax_id || '')}">
+              </div>
+            </div>
+
+            <div class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2 mt-4">ניהול</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="form-label">מקור הגעה</label>
+                <select name="source" class="form-select text-sm">
+                  <option value="">— לא נבחר —</option>
+                  <option value="conference" ${investor?.source === 'conference' ? 'selected' : ''}>כנס</option>
+                  <option value="referral" ${investor?.source === 'referral' ? 'selected' : ''}>הפניה</option>
+                  <option value="website" ${investor?.source === 'website' ? 'selected' : ''}>אתר</option>
+                  <option value="facebook" ${investor?.source === 'facebook' ? 'selected' : ''}>פייסבוק</option>
+                  <option value="linkedin" ${investor?.source === 'linkedin' ? 'selected' : ''}>לינקדאין</option>
+                  <option value="whatsapp" ${investor?.source === 'whatsapp' ? 'selected' : ''}>ווצאפ</option>
+                  <option value="other" ${investor?.source === 'other' ? 'selected' : ''}>אחר</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">סטטוס *</label>
+                <select name="status" class="form-select text-sm" required>
+                  <option value="lead" ${(!investor || investor?.status === 'lead') ? 'selected' : ''}>ליד</option>
+                  <option value="active" ${investor?.status === 'active' ? 'selected' : ''}>פעיל</option>
+                  <option value="inactive" ${investor?.status === 'inactive' ? 'selected' : ''}>לא פעיל</option>
+                  <option value="vip" ${investor?.status === 'vip' ? 'selected' : ''}>VIP</option>
+                </select>
+              </div>
+              <div class="col-span-2">
+                <label class="form-label">הערות</label>
+                <textarea name="notes" class="form-input text-sm" rows="2">${escapeHtml(investor?.notes || '')}</textarea>
+              </div>
+            </div>
+
+            <div class="branded-modal-actions" style="margin-top: 1.5rem;">
+              <button type="submit" class="branded-modal-btn branded-modal-btn-primary">
+                ${isEdit ? 'שמור שינויים' : 'צור משקיע'}
+              </button>
+              <button type="button" class="branded-modal-btn branded-modal-btn-secondary" data-action="cancel">
+                ביטול
+              </button>
+              ${isEdit ? `<button type="button" class="branded-modal-btn branded-modal-btn-danger" onclick="deleteInvestor('${investorId}', this)">מחק</button>` : ''}
+            </div>
+          </form>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      // Close
+      overlay.querySelector('[data-action="cancel"]').addEventListener('click', () => overlay.remove());
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+      // Submit
+      overlay.querySelector('#investorForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'שומר...';
+
+        const body = {};
+        const fields = ['first_name','last_name','email','phone','phone_secondary','id_type','id_number',
+          'address','city','country','bank_name','bank_branch','bank_account',
+          'company_name','company_number','llc_name','llc_ein','us_tax_id','source','status','notes'];
+        for (const f of fields) {
+          const el = form.elements[f];
+          if (el) body[f] = el.value;
+        }
+
+        try {
+          if (isEdit) {
+            await API.put(`/investors/${investorId}`, body);
+          } else {
+            await API.post('/investors', body);
+          }
+          overlay.remove();
+          loadInvestors();
+        } catch (err) {
+          alert(err.message || 'שגיאה בשמירה');
+          btn.disabled = false;
+          btn.textContent = isEdit ? 'שמור שינויים' : 'צור משקיע';
+        }
+      });
+
+      requestAnimationFrame(() => overlay.querySelector('[name="first_name"]').focus());
+    }
+
+    async function deleteInvestor(id, btn) {
+      if (!confirm('האם למחוק את המשקיע?')) return;
+      try {
+        await API.delete(`/investors/${id}`);
+        document.querySelector('.branded-modal-overlay')?.remove();
+        loadInvestors();
+      } catch (err) {
+        alert(err.message || 'שגיאה במחיקה');
+      }
+    }
+
+    // Init
+    loadInvestors();
+  </script>
+</body>
+</html>

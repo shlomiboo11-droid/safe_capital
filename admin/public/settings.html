@@ -27,6 +27,10 @@
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span>עסקאות</span>
       </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
       <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
         <span class="material-symbols-outlined text-xl">group</span>
         <span>ניהול משתמשים</span>
@@ -89,13 +93,30 @@
   <script src="/js/api.js"></script>
   <script src="/js/utils.js"></script>
   <script>
+    // ── Auth guard & sidebar init ──
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent =
+          user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') {
+          document.getElementById('nav-users').style.display = '';
+        }
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    // ── Category metadata ──
     const CATEGORY_LABELS = {
       contact: 'פרטי קשר',
       links: 'קישורים',
       legal: 'משפטי ומידע חברה',
       events: 'אירועים'
     };
-
     const CATEGORY_ICONS = {
       contact: 'call',
       links: 'link',
@@ -103,11 +124,70 @@
       events: 'event'
     };
 
+    // ── Tooltips — what each field does and where it appears ──
+    const TOOLTIPS = {
+      phone:             'מספר הטלפון הראשי שמופיע בעמוד צור קשר ובכפתורי התקשרות.\nפורמט: +972-XX-XXX-XXXX',
+      phone_whatsapp:    'מספר הטלפון לוואטסאפ שמופיע בעמוד צור קשר.\nפורמט: +972-XX-XXX-XXXX',
+      phone_footer:      'מספר הטלפון שמוצג בפוטר בכל עמודי האתר.\nפורמט: 03-123-4567',
+      email_main:        'כתובת המייל הראשית — מופיעה בעמוד צור קשר.',
+      email_info:        'כתובת מייל כללית — מופיעה בפוטר בכל עמודי האתר.',
+      email_privacy:     'כתובת מייל לפניות פרטיות — מופיעה בעמוד מדיניות פרטיות.',
+      email_legal:       'כתובת מייל לפניות משפטיות — מופיעה בעמוד תקנון.',
+      hours_weekday:     'שעות הפעילות בימי חול — מוצגות בעמוד צור קשר.',
+      hours_weekend:     'שעות הפעילות בסופ"ש — מוצגות בעמוד צור קשר.',
+      whatsapp_group:    'הקישור שכל כפתורי "הצטרפו לקבוצת הוואטסאפ" מפנים אליו.\nמופיע בעמוד עסקאות, עמוד הצטרפות ובפוטר.',
+      whatsapp_chat:     'קישור לצ\'אט וואטסאפ ישיר (wa.me) — משמש בכפתור הוואטסאפ הצף בדף הבית ובדף הנחיתה.',
+      facebook:          'קישור לעמוד הפייסבוק — מופיע באייקונים בעמוד צור קשר.',
+      instagram:         'קישור לאינסטגרם — מופיע באייקונים בעמוד צור קשר.',
+      linkedin:          'קישור ללינקדאין — מופיע באייקונים בעמוד צור קשר.',
+      company_name_en:   'שם החברה באנגלית — משמש בכותרות ובמטא-דאטה.',
+      copyright_text:    'טקסט זכויות יוצרים — מוצג בתחתית כל עמוד.\nלמשל: © Safe Capital 2026',
+      last_updated_he:   'תאריך עדכון אחרון בעברית — מוצג בעמוד מדיניות פרטיות.',
+      last_updated_en:   'תאריך עדכון אחרון באנגלית — מוצג בעמוד תקנון.',
+      footer_description:'תיאור החברה בפוטר — 1-2 משפטים שמוצגים בתחתית כל עמוד.',
+      event_cta_text:    'הטקסט שמופיע בכפתור/באנר הכנס באתר.\nלמשל: "בואו לכנס המשקיעים הקרוב"',
+    };
+
+    // ── Placeholders ──
+    const PLACEHOLDERS = {
+      phone:             '+972-50-123-4567',
+      phone_whatsapp:    '+972-54-123-4567',
+      phone_footer:      '03-123-4567',
+      email_main:        'invest@safecapital.co.il',
+      email_info:        'info@safecapital.co.il',
+      email_privacy:     'privacy@safecapital.co.il',
+      email_legal:       'legal@safecapital.co.il',
+      hours_weekday:     'ראשון - חמישי: 09:00 - 18:00',
+      hours_weekend:     'שישי ושבת: סגור',
+      whatsapp_group:    'https://chat.whatsapp.com/...',
+      whatsapp_chat:     'https://wa.me/972501234567',
+      facebook:          'https://facebook.com/safecapital',
+      instagram:         'https://instagram.com/safecapital',
+      linkedin:          'https://linkedin.com/company/safecapital',
+      company_name_en:   'Safe Capital',
+      copyright_text:    '© 2026 Safe Capital. כל הזכויות שמורות.',
+      last_updated_he:   'עודכן לאחרונה: מרץ 2026',
+      last_updated_en:   'Last Updated: March 15, 2026',
+      footer_description:'חברת Safe Capital מתמחה ב...',
+      event_cta_text:    'בואו לכנס המשקיעים הקרוב',
+    };
+
+    // ── Fields that should render as date pickers ──
+    const DATE_KEYS = new Set(['last_updated_he', 'last_updated_en']);
+
+    // ── Field prefix icons ──
+    const FIELD_PREFIX = {
+      tel:   'call',
+      email: 'mail',
+      url:   'link',
+    };
+
     let originalValues = {};
 
+    // ── Load ──
     async function loadSettings() {
       try {
-        const data = await API.get('/api/settings');
+        const data = await API.get('/settings');
         renderSettings(data);
         document.getElementById('loadingState').style.display = 'none';
       } catch (err) {
@@ -116,11 +196,11 @@
       }
     }
 
+    // ── Render ──
     function renderSettings(settings) {
       const container = document.getElementById('settingsContainer');
       container.innerHTML = '';
 
-      // Group by category
       const groups = {};
       for (const s of settings) {
         if (!groups[s.category]) groups[s.category] = [];
@@ -136,7 +216,7 @@
             <span class="material-symbols-outlined text-primary">${CATEGORY_ICONS[cat] || 'settings'}</span>
             <h2 class="text-lg font-bold text-gray-900">${CATEGORY_LABELS[cat] || cat}</h2>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="settings-grid">
             ${items.map(s => renderField(s)).join('')}
           </div>
         `;
@@ -144,24 +224,67 @@
       }
     }
 
+    // ── Render single field ──
     function renderField(s) {
       const isTextarea = s.field_type === 'textarea';
-      const inputType = { tel: 'tel', email: 'email', url: 'url' }[s.field_type] || 'text';
-      const dir = ['tel', 'email', 'url'].includes(s.field_type) ? 'dir="ltr" class="form-input ltr"' : 'class="form-input"';
-      const colSpan = isTextarea ? 'md:col-span-2' : '';
+      const isDate = DATE_KEYS.has(s.key);
+      const isLtr = ['tel', 'email', 'url'].includes(s.field_type);
+      const inputType = isDate ? 'date' : ({ tel: 'tel', email: 'email', url: 'url' }[s.field_type] || 'text');
+      const fullWidth = isTextarea || s.field_type === 'url';
+      const colSpan = fullWidth ? 'settings-field-full' : '';
+      const placeholder = PLACEHOLDERS[s.key] || '';
+      const tooltip = TOOLTIPS[s.key] || '';
+      const prefixIcon = isDate ? '' : (FIELD_PREFIX[s.field_type] || '');
+
+      // Label + tooltip
+      const tooltipHtml = tooltip
+        ? `<span class="setting-tooltip-wrap" tabindex="0">
+             <span class="setting-tooltip-icon">?</span>
+             <span class="setting-tooltip">${escapeHtml(tooltip).replace(/\n/g, '<br>')}</span>
+           </span>`
+        : '';
+
+      const labelHtml = `
+        <div class="setting-label-row">
+          <label class="form-label">${s.label}</label>
+          ${tooltipHtml}
+        </div>`;
 
       if (isTextarea) {
         return `
-          <div class="${colSpan}">
-            <label class="form-label">${s.label}</label>
-            <textarea ${dir} rows="3" data-key="${s.key}">${escapeHtml(s.value)}</textarea>
+          <div class="setting-field ${colSpan}">
+            ${labelHtml}
+            <textarea class="form-input${isLtr ? ' ltr' : ''}" rows="3" data-key="${s.key}" placeholder="${escapeHtml(placeholder)}">${escapeHtml(s.value)}</textarea>
           </div>`;
       }
 
+      // Date field
+      if (isDate) {
+        const dateVal = s.value.match(/\d{4}-\d{2}-\d{2}/) ? s.value : '';
+        return `
+          <div class="setting-field ${colSpan}">
+            ${labelHtml}
+            <div class="input-group">
+              <span class="input-group-prefix"><span class="material-symbols-outlined">calendar_month</span></span>
+              <input type="date" class="form-input ltr has-prefix" data-key="${s.key}" value="${escapeHtml(dateVal)}">
+            </div>
+          </div>`;
+      }
+
+      // Input with optional prefix icon
+      const prefixHtml = prefixIcon
+        ? `<span class="input-group-prefix"><span class="material-symbols-outlined">${prefixIcon}</span></span>`
+        : '';
+
+      const inputClass = `form-input${isLtr ? ' ltr' : ''}${prefixIcon ? ' has-prefix' : ''}`;
+
       return `
-        <div class="${colSpan}">
-          <label class="form-label">${s.label}</label>
-          <input type="${inputType}" ${dir} data-key="${s.key}" value="${escapeHtml(s.value)}">
+        <div class="setting-field ${colSpan}">
+          ${labelHtml}
+          <div class="input-group">
+            ${prefixHtml}
+            <input type="${inputType}" class="${inputClass}" data-key="${s.key}" value="${escapeHtml(s.value)}" placeholder="${escapeHtml(placeholder)}">
+          </div>
         </div>`;
     }
 
@@ -169,16 +292,29 @@
       return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // ── Save ──
     async function saveAll() {
       const btn = document.getElementById('saveAllBtn');
       btn.disabled = true;
       btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> שומר...';
 
       const inputs = document.querySelectorAll('[data-key]');
+
+      // Validate before saving
+      let hasError = false;
+      for (const el of inputs) {
+        if (!validateField(el)) hasError = true;
+      }
+      if (hasError) {
+        showToast('יש שדות עם ערכים לא תקינים — תקן ונסה שוב', 'red');
+        resetBtn(btn);
+        return;
+      }
+
       const settings = [];
       for (const el of inputs) {
         const key = el.dataset.key;
-        const value = el.tagName === 'TEXTAREA' ? el.value : el.value;
+        const value = el.value;
         if (value !== originalValues[key]) {
           settings.push({ key, value });
         }
@@ -191,17 +327,42 @@
       }
 
       try {
-        const result = await API.put('/api/settings', { settings });
+        const result = await API.put('/settings', { settings });
         showToast(`${result.updated} הגדרות עודכנו בהצלחה`, 'green');
-        // Update original values
+        // Update original values + flash success
         for (const { key, value } of settings) {
           originalValues[key] = value;
+          const el = document.querySelector(`[data-key="${key}"]`);
+          if (el) {
+            el.classList.add('field-saved');
+            setTimeout(() => el.classList.remove('field-saved'), 1500);
+          }
         }
       } catch (err) {
         showToast('שגיאה בשמירה', 'red');
       } finally {
         resetBtn(btn);
       }
+    }
+
+    // ── Validation ──
+    function validateField(el) {
+      const type = el.type;
+      const val = el.value.trim();
+      let valid = true;
+
+      if (type === 'email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+        valid = false;
+      }
+      if (type === 'url' && val && val !== '#' && !/^https?:\/\/.+/.test(val)) {
+        valid = false;
+      }
+      if (type === 'tel' && val && !/^[\d\s\-+()]+$/.test(val)) {
+        valid = false;
+      }
+
+      el.classList.toggle('field-invalid', !valid);
+      return valid;
     }
 
     function resetBtn(btn) {
@@ -212,9 +373,38 @@
     function showToast(msg, color) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
-      toast.className = `fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-all duration-300 opacity-100 bg-${color}-600`;
-      setTimeout(() => { toast.classList.replace('opacity-100', 'opacity-0'); }, 3000);
+      const colors = { green: '#166534', red: '#991b1b', gray: '#374151' };
+      const bgs = { green: '#dcfce7', red: '#fef2f2', gray: '#f3f4f6' };
+      toast.style.background = bgs[color] || bgs.gray;
+      toast.style.color = colors[color] || colors.gray;
+      toast.style.border = '1px solid ' + (color === 'green' ? '#bbf7d0' : color === 'red' ? '#fecaca' : '#e5e7eb');
+      toast.style.opacity = '1';
+      toast.classList.remove('pointer-events-none');
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.classList.add('pointer-events-none');
+      }, 3000);
     }
+
+    // Validate on blur
+    document.addEventListener('focusout', (e) => {
+      if (e.target.dataset && e.target.dataset.key) validateField(e.target);
+    });
+
+    // Close tooltips on outside click (mobile)
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.setting-tooltip-wrap')) {
+        document.querySelectorAll('.setting-tooltip-wrap.active').forEach(el => el.classList.remove('active'));
+      }
+    });
+    document.addEventListener('click', (e) => {
+      const wrap = e.target.closest('.setting-tooltip-wrap');
+      if (wrap) {
+        const wasActive = wrap.classList.contains('active');
+        document.querySelectorAll('.setting-tooltip-wrap.active').forEach(el => el.classList.remove('active'));
+        if (!wasActive) wrap.classList.add('active');
+      }
+    });
 
     // Init
     document.addEventListener('DOMContentLoaded', loadSettings);
