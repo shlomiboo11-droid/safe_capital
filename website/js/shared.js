@@ -231,15 +231,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Form validation
+    // Contact form submission
     const form = document.getElementById('contact-form');
     if (form) {
-        form.addEventListener('submit', (e) => {
+        const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('contact-submit-btn');
             const successMsg = document.getElementById('form-success');
-            if (successMsg) {
+            const errorMsg = document.getElementById('form-error');
+            if (btn) btn.disabled = true;
+            if (btn) btn.textContent = 'שולח...';
+            if (errorMsg) errorMsg.classList.add('hidden');
+            try {
+                const data = {
+                    name: form.name.value,
+                    email: form.email.value,
+                    phone: form.phone.value,
+                    message: form.message.value
+                };
+                const res = await fetch(ADMIN_HOST + '/api/public/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 form.classList.add('hidden');
-                successMsg.classList.remove('hidden');
+                if (successMsg) successMsg.classList.remove('hidden');
+            } catch (err) {
+                console.error('Form submit error:', err);
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                if (btn) btn.disabled = false;
+                if (btn) btn.textContent = 'שליחת הודעה';
             }
         });
     }

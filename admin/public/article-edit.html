@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עריכת כתבה | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/weekly-briefing" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">summarize</span>
+        <span>סקירה שבועית</span>
+      </a>
+      <a href="/content-pages" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">description</span>
+        <span>עמודי מידע</span>
+      </a>
+      <a href="/content-agents" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>פרומפטים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Back + Header -->
+    <div class="flex items-center gap-4 mb-6">
+      <a href="/articles" class="text-gray-400 hover:text-primary transition" style="line-height:1;">
+        <span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span>
+      </a>
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900" id="pageTitle">כתבה חדשה</h1>
+        <p class="text-sm text-gray-500 mt-1" id="pageSubtitle"></p>
+      </div>
+      <div class="flex gap-2">
+        <a href="/articles" class="btn btn-secondary">חזרה לרשימה</a>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveArticle()">
+          <span class="material-symbols-outlined text-lg">save</span>
+          שמור
+        </button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form id="articleForm" class="space-y-6" onsubmit="event.preventDefault(); saveArticle();">
+
+      <!-- Main fields -->
+      <div class="card p-6 space-y-4">
+        <div>
+          <label class="form-label">כותרת *</label>
+          <input type="text" name="title" class="form-input" required placeholder="כותרת הכתבה" oninput="autoSlug(this.value)">
+        </div>
+        <div>
+          <label class="form-label">כותרת משנה</label>
+          <input type="text" name="subtitle" class="form-input" placeholder="תת כותרת (אופציונלי)">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="form-label">Slug *</label>
+            <input type="text" name="slug" class="form-input ltr" dir="ltr" required placeholder="article-slug">
+          </div>
+          <div>
+            <label class="form-label">קטגוריה</label>
+            <select name="category" class="form-select">
+              <option value="news">כללי</option>
+              <option value="market">שוק</option>
+              <option value="neighborhood">שכונות</option>
+              <option value="infrastructure">תשתיות</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">תאריך פרסום</label>
+            <input type="date" name="publish_date" class="form-input ltr" dir="ltr">
+          </div>
+        </div>
+        <div>
+          <label class="form-label">תגיות</label>
+          <input type="text" name="tags" class="form-input" placeholder="הפרד בפסיקים: בירמינגהם, נדלן, השקעות">
+        </div>
+        <div>
+          <label class="form-label">תמונה ראשית (URL)</label>
+          <input type="url" name="thumbnail_url" class="form-input ltr" dir="ltr" placeholder="https://..." oninput="updatePreview(this.value)">
+          <div id="imagePreview" class="mt-2" style="display:none;">
+            <img id="previewImg" src="" alt="תצוגה מקדימה" style="max-height:200px; border-radius:0.5rem;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="card p-6">
+        <label class="form-label">גוף הכתבה *</label>
+        <textarea name="body" class="form-input" style="min-height:400px;" required placeholder="תוכן הכתבה (תומך HTML)"></textarea>
+      </div>
+
+      <!-- SEO -->
+      <div class="card p-6 space-y-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-primary">search</span>
+          <h2 class="text-lg font-bold text-gray-900">SEO</h2>
+        </div>
+        <div>
+          <label class="form-label">SEO Title</label>
+          <input type="text" name="seo_title" class="form-input ltr" dir="ltr" placeholder="Page title for search engines">
+        </div>
+        <div>
+          <label class="form-label">SEO Description</label>
+          <textarea name="seo_description" class="form-input ltr" dir="ltr" rows="2" placeholder="Meta description for search engines"></textarea>
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="card p-6">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-primary">tune</span>
+          <h2 class="text-lg font-bold text-gray-900">הגדרות</h2>
+        </div>
+        <div class="flex flex-wrap gap-6">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="is_published" class="w-5 h-5">
+            <span class="text-sm font-medium">מפורסם</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="is_featured" class="w-5 h-5">
+            <span class="text-sm font-medium">מודגשת</span>
+          </label>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    // Auth guard
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    const articleId = getUrlParam('id');
+    const isEdit = !!articleId;
+    let slugManuallyEdited = false;
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Auto-generate slug from title
+    function autoSlug(title) {
+      if (isEdit && slugManuallyEdited) return;
+      const slugInput = document.querySelector('[name="slug"]');
+      if (!slugInput) return;
+      // Generate timestamp-based slug with sanitized title parts
+      const sanitized = title
+        .trim()
+        .toLowerCase()
+        .replace(/[^\u0590-\u05FFa-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+      const ts = Date.now().toString(36);
+      slugInput.value = sanitized ? `${sanitized}-${ts}` : '';
+    }
+
+    // Detect manual slug edits
+    document.querySelector('[name="slug"]').addEventListener('input', function() {
+      slugManuallyEdited = true;
+    });
+
+    function updatePreview(url) {
+      const preview = document.getElementById('imagePreview');
+      const img = document.getElementById('previewImg');
+      if (url && url.startsWith('http')) {
+        img.src = url;
+        preview.style.display = '';
+        img.onerror = () => { preview.style.display = 'none'; };
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    // Load article for edit mode
+    async function loadArticle() {
+      if (!isEdit) return;
+      document.getElementById('pageTitle').textContent = 'עריכת כתבה';
+      document.title = 'עריכת כתבה | Safe Capital Admin';
+
+      try {
+        const data = await API.get(`/content/articles/${articleId}`);
+        const a = data.article;
+        const form = document.getElementById('articleForm');
+
+        form.elements.title.value = a.title || '';
+        form.elements.subtitle.value = a.subtitle || '';
+        form.elements.slug.value = a.slug || '';
+        form.elements.category.value = a.category || 'news';
+        form.elements.tags.value = a.tags || '';
+        form.elements.thumbnail_url.value = a.thumbnail_url || '';
+        form.elements.body.value = a.body || '';
+        form.elements.seo_title.value = a.seo_title || '';
+        form.elements.seo_description.value = a.seo_description || '';
+        form.elements.is_published.checked = !!a.is_published;
+        form.elements.is_featured.checked = !!a.is_featured;
+        if (a.publish_date) {
+          form.elements.publish_date.value = a.publish_date.substring(0, 10);
+        }
+
+        if (a.thumbnail_url) updatePreview(a.thumbnail_url);
+
+        document.getElementById('pageSubtitle').textContent = `Slug: ${a.slug}`;
+        slugManuallyEdited = true;
+      } catch (err) {
+        showToast('שגיאה בטעינת הכתבה', 'error');
+      }
+    }
+
+    async function saveArticle() {
+      const form = document.getElementById('articleForm');
+      const btn = document.getElementById('saveBtn');
+
+      const title = form.elements.title.value.trim();
+      const slug = form.elements.slug.value.trim();
+      const body = form.elements.body.value.trim();
+
+      if (!title || !slug || !body) {
+        showToast('כותרת, slug וגוף הכתבה הם שדות חובה', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> שומר...';
+
+      const payload = {
+        title,
+        subtitle: form.elements.subtitle.value.trim() || null,
+        slug,
+        category: form.elements.category.value,
+        tags: form.elements.tags.value.trim() || null,
+        thumbnail_url: form.elements.thumbnail_url.value.trim() || null,
+        body,
+        seo_title: form.elements.seo_title.value.trim() || null,
+        seo_description: form.elements.seo_description.value.trim() || null,
+        is_published: form.elements.is_published.checked,
+        is_featured: form.elements.is_featured.checked,
+        publish_date: form.elements.publish_date.value || null
+      };
+
+      try {
+        if (isEdit) {
+          await API.put(`/content/articles/${articleId}`, payload);
+          showToast('הכתבה עודכנה בהצלחה');
+        } else {
+          const result = await API.post('/content/articles', payload);
+          showToast('הכתבה נוצרה בהצלחה');
+          // Redirect to edit mode
+          window.location.href = `/article-edit?id=${result.id}`;
+          return;
+        }
+      } catch (err) {
+        showToast(err.message || 'שגיאה בשמירה', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg">save</span> שמור';
+      }
+    }
+
+    // Init
+    loadArticle();
+  </script>
+</body>
+</html>

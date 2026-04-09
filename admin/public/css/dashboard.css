@@ -41,6 +41,16 @@ body {
   font-weight: 600;
 }
 
+.sidebar-section-label {
+  padding: 1rem 1.5rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
 /* Main content */
 .main-content {
   margin-right: 260px;

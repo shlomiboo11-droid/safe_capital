@@ -86,6 +86,7 @@
 
     // ===== Confetti Particle System =====
     function launchConfetti() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         var canvas = document.getElementById('confetti-canvas');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');

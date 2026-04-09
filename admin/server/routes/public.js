@@ -226,4 +226,135 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// POST /api/public/contact — save contact form submission
+router.post('/contact', async (req, res) => {
+  try {
+    const { name, email, phone, message } = req.body;
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    await pool.query(
+      'INSERT INTO contact_submissions (name, email, phone, message) VALUES ($1, $2, $3, $4)',
+      [name, email, phone || null, message]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Contact submission error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /api/public/articles — published articles with pagination
+router.get('/articles', async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
+    const offset = (page - 1) * limit;
+    const category = req.query.category || null;
+
+    let where = 'WHERE is_published = true';
+    const params = [];
+    let paramIdx = 1;
+
+    if (category) {
+      where += ` AND category = $${paramIdx++}`;
+      params.push(category);
+    }
+
+    // Count total for pagination
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as total FROM articles ${where}`, params
+    );
+    const total = parseInt(countResult.rows[0].total);
+
+    const sql = `
+      SELECT id, title, subtitle, slug, thumbnail_url, category, tags,
+             is_featured, publish_date, author, seo_title, seo_description, created_at
+      FROM articles ${where}
+      ORDER BY publish_date DESC NULLS LAST, created_at DESC
+      LIMIT $${paramIdx++} OFFSET $${paramIdx}
+    `;
+
+    const result = await pool.query(sql, [...params, limit, offset]);
+
+    res.json({
+      articles: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+  } catch (err) {
+    console.error('Public articles error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /api/public/articles/:slug — single published article by slug
+router.get('/articles/:slug', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, title, subtitle, slug, body, thumbnail_url, category, tags,
+              is_featured, publish_date, author, seo_title, seo_description, created_at
+       FROM articles
+       WHERE slug = $1 AND is_published = true`,
+      [req.params.slug]
+    );
+
+    if (!result.rows[0]) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    res.json({ article: result.rows[0] });
+  } catch (err) {
+    console.error('Public article error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /api/public/weekly-briefing — latest published briefing
+router.get('/weekly-briefing', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, week_start, body, created_at
+       FROM weekly_briefing
+       WHERE is_published = true
+       ORDER BY week_start DESC
+       LIMIT 1`
+    );
+
+    if (!result.rows[0]) {
+      return res.json({ briefing: null });
+    }
+
+    res.json({ briefing: result.rows[0] });
+  } catch (err) {
+    console.error('Public weekly briefing error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// GET /api/public/static-pages/:slug — static page by slug
+router.get('/static-pages/:slug', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, slug, title, body, seo_title, seo_description, updated_at
+       FROM static_pages
+       WHERE slug = $1`,
+      [req.params.slug]
+    );
+
+    if (!result.rows[0]) {
+      return res.status(404).json({ error: 'Page not found' });
+    }
+
+    res.json({ page: result.rows[0] });
+  } catch (err) {
+    console.error('Public static page error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

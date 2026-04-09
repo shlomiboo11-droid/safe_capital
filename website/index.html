@@ -330,6 +330,12 @@
   pointer-events: none;
   transition: opacity 0.4s ease, transform 0.2s ease;
 }
+@media (max-width: 767px) {
+  .whatsapp-fab {
+    left: auto;
+    right: 24px;
+  }
+}
 .whatsapp-fab.visible {
   opacity: 1;
   pointer-events: auto;
@@ -406,6 +412,7 @@ tailwind.config = {
 <div class="nav-links">
 <a href="index.html" class="active">עמוד הבית</a>
 <a href="properties.html">עסקאות</a>
+<a href="birmingham.html">בירמינגהם</a>
 <a href="join.html">איך מצטרפים</a>
 <a href="contact.html">צור קשר</a>
 </div>
@@ -415,6 +422,7 @@ tailwind.config = {
 <div class="mobile-nav">
 <a href="index.html" class="active">עמוד הבית</a>
 <a href="properties.html">עסקאות</a>
+<a href="birmingham.html">בירמינגהם</a>
 <a href="join.html">איך מצטרפים</a>
 <a href="contact.html">צור קשר</a>
 <a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
@@ -441,8 +449,8 @@ tailwind.config = {
     <div class="max-w-[1200px] ml-auto px-6 md:pr-[84px] w-full">
       <div class="scroll-panel-inner md:w-[55%] md:ml-auto text-right active">
         <h1 class="font-headline font-extrabold leading-tight mb-6">
-          <span class="block text-3xl md:text-4xl lg:text-5xl md:whitespace-nowrap"><span class="text-primary">הכסף שלך </span><span class="text-secondary">עובד בשבילך?</span></span>
-          <span class="block text-3xl md:text-4xl lg:text-[2.8rem] md:whitespace-nowrap"><span class="text-primary">או שאתה עובד </span><span class="text-primary opacity-50">בשביל הכסף?</span></span>
+          <span class="block text-2xl md:text-4xl lg:text-5xl md:whitespace-nowrap"><span class="text-primary">הכסף שלך </span><span class="text-secondary">עובד בשבילך?</span></span>
+          <span class="block text-2xl md:text-4xl lg:text-[2.8rem] md:whitespace-nowrap"><span class="text-primary">או שאתה עובד </span><span class="text-primary opacity-50">בשביל הכסף?</span></span>
         </h1>
         <div class="text-lg md:text-xl leading-relaxed mb-10 max-w-xl space-y-1">
           <p class="text-on-surface-variant">השקעות נדל"ן קצרות בארה"ב</p>
@@ -1017,13 +1025,13 @@ tailwind.config = {
   var heroEl = document.getElementById('hero');
   var frameImg = document.querySelector('.scroll-frame');
 
-  if (frameImg && heroEl) {
+  if (frameImg && heroEl && window.innerWidth >= 768) {
     var TOTAL_FRAMES = 88;
     var frameImages = [];
     var framesLoaded = 0;
     var lastFrame = -1;
 
-    /* Preload all frame images */
+    /* Preload all frame images (desktop only — hidden on mobile) */
     for (var f = 1; f <= TOTAL_FRAMES; f++) {
       (function(idx) {
         var img = new Image();
@@ -1104,6 +1112,13 @@ tailwind.config = {
     var prefix = el.dataset.prefix || '';
     var suffix = el.dataset.suffix || '';
     var isDecimal = el.dataset.decimal === 'true';
+
+    /* Respect prefers-reduced-motion */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.textContent = prefix + (isDecimal ? target.toFixed(1) : Math.round(target)) + suffix;
+      return;
+    }
+
     var duration = 2000;
     var start = performance.now();
 
@@ -1245,12 +1260,13 @@ tailwind.config = {
   var houseSection = document.getElementById('house-flip-section');
   var houseFrame = document.getElementById('house-frame');
 
-  if (houseSection && houseFrame) {
+  if (houseSection && houseFrame && window.innerWidth >= 768) {
     var HOUSE_TOTAL = 192;
     var houseImages = [];
     var houseLoaded = 0;
     var lastHouseFrame = -1;
 
+    /* Preload house frames (desktop only — hidden on mobile) */
     for (var h = 0; h < HOUSE_TOTAL; h++) {
       (function(idx) {
         var img = new Image();

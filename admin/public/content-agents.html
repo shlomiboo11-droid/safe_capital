@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סוכני תוכן — פרומפטים | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/weekly-briefing" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">summarize</span>
+        <span>סקירה שבועית</span>
+      </a>
+      <a href="/content-pages" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">description</span>
+        <span>עמודי מידע</span>
+      </a>
+      <a href="/content-agents" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>פרומפטים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">סוכני תוכן — פרומפטים</h1>
+        <p class="text-sm text-gray-500 mt-1">ניהול ההוראות שסוכני ה-AI מקבלים ליצירת תוכן</p>
+      </div>
+    </div>
+
+    <!-- Tooltip info -->
+    <div class="card p-4 mb-6" style="background: #f0f4ff;">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary">info</span>
+        <span class="text-sm text-gray-700">הפרומפט הזה מגדיר את ההוראות שהסוכן מקבל. שינוי כאן ישפיע על התוכן שנוצר.</span>
+      </div>
+    </div>
+
+    <!-- Agent cards container -->
+    <div id="agentsContainer" class="space-y-6">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingState" class="text-center py-20">
+      <svg class="animate-spin text-primary mx-auto" width="32" height="32" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <p class="text-sm text-gray-400 mt-3">טוען פרומפטים...</p>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" style="display:none;" class="text-center py-20">
+      <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">smart_toy</span>
+      <h3 class="text-xl font-bold text-gray-400 mt-4">אין סוכנים מוגדרים</h3>
+      <p class="text-sm text-gray-400 mt-2">סוכנים יופיעו כאן לאחר שייצורו בבסיס הנתונים</p>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    // Auth guard
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    let promptsData = [];
+
+    async function loadPrompts() {
+      try {
+        const data = await API.get('/content/agent-prompts');
+        promptsData = data.prompts || [];
+        document.getElementById('loadingState').style.display = 'none';
+
+        if (promptsData.length === 0) {
+          document.getElementById('emptyState').style.display = '';
+          return;
+        }
+
+        renderAgents(promptsData);
+      } catch (err) {
+        document.getElementById('loadingState').innerHTML =
+          '<p class="text-red-500">שגיאה בטעינת פרומפטים</p>';
+      }
+    }
+
+    function renderAgents(prompts) {
+      const container = document.getElementById('agentsContainer');
+      container.innerHTML = prompts.map(p => `
+        <div class="card p-6" data-agent="${escapeHtml(p.agent_name)}">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">smart_toy</span>
+                ${escapeHtml(p.display_name)}
+              </h3>
+              ${p.description ? `<p class="text-sm text-gray-500 mt-1">${escapeHtml(p.description)}</p>` : ''}
+            </div>
+            ${p.updated_at ? `<span class="text-xs text-gray-400">עודכן: ${new Date(p.updated_at).toLocaleDateString('he-IL')}</span>` : ''}
+          </div>
+          <div class="space-y-3">
+            <div>
+              <label class="form-label">שם תצוגה</label>
+              <input type="text" class="form-input text-sm" data-field="display_name" value="${escapeHtml(p.display_name)}">
+            </div>
+            <div>
+              <label class="form-label">תיאור</label>
+              <input type="text" class="form-input text-sm" data-field="description" value="${escapeHtml(p.description || '')}">
+            </div>
+            <div>
+              <label class="form-label">פרומפט</label>
+              <textarea class="form-input text-sm" style="min-height:300px;" data-field="prompt">${escapeHtml(p.prompt || '')}</textarea>
+            </div>
+            <div class="flex justify-end">
+              <button class="btn btn-primary btn-sm" onclick="savePrompt('${escapeHtml(p.agent_name)}', this)">
+                <span class="material-symbols-outlined text-sm">save</span>
+                שמור
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function savePrompt(agentName, btn) {
+      const card = document.querySelector(`[data-agent="${agentName}"]`);
+      if (!card) return;
+
+      const display_name = card.querySelector('[data-field="display_name"]').value.trim();
+      const description = card.querySelector('[data-field="description"]').value.trim();
+      const prompt = card.querySelector('[data-field="prompt"]').value.trim();
+
+      if (!display_name || !prompt) {
+        showToast('שם תצוגה ופרומפט הם שדות חובה', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> שומר...';
+
+      try {
+        await API.put(`/content/agent-prompts/${agentName}`, {
+          display_name, prompt,
+          description: description || null
+        });
+        showToast('הפרומפט נשמר בהצלחה');
+      } catch (err) {
+        showToast(err.message || 'שגיאה בשמירה', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    // Init
+    loadPrompts();
+  </script>
+</body>
+</html>

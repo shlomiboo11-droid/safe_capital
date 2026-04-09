@@ -51,6 +51,7 @@ body {
     direction: ltr;
     justify-content: space-between;
     align-items: center;
+    position: relative;
     width: 100%;
     padding: 0.875rem 2.5rem;
 }
@@ -71,6 +72,9 @@ body {
     direction: rtl;
     align-items: center;
     gap: 2rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .site-nav .mobile-menu-btn { display: block; }
 @media (min-width: 768px) {
@@ -406,13 +410,14 @@ body {
     .site-nav .mobile-menu-btn {
         min-width: 44px;
         min-height: 44px;
+        padding: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .site-nav .mobile-nav a {
         padding: 0.875rem 1.25rem;
-        min-height: 44px;
+        min-height: 48px;
         display: flex;
         align-items: center;
     }
@@ -426,7 +431,7 @@ body {
         height: 180px;
     }
     .site-footer .footer-inner {
-        gap: 2rem;
+        gap: 1.25rem;
         text-align: center;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -597,7 +602,8 @@ body {
 
     /* --- General touch-friendly targets --- */
     input, select, textarea {
-        min-height: 44px;
+        min-height: 48px;
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
     }
     .carousel-dots .dot {
         min-height: auto !important;
@@ -640,6 +646,91 @@ body {
     .rounded-full.text-xl {
         font-size: 1rem !important;
         padding: 0.875rem 1.5rem !important;
+    }
+
+    /* --- Touch Targets: Accordion & Cost Headers --- */
+    .tax-accordion-btn {
+        min-height: 48px;
+        padding-top: 0.875rem !important;
+        padding-bottom: 0.875rem !important;
+    }
+    .cost-category-header {
+        padding: 1rem 0 !important;
+    }
+
+    /* --- Typography: Readability Fixes --- */
+    .deal-expanded .text-xs,
+    .deal-status-badge {
+        font-size: 0.8125rem !important;
+    }
+    main p.font-light,
+    main li.font-light,
+    .page-content p,
+    .page-content li,
+    .article-body p,
+    .article-body li {
+        font-weight: 400 !important;
+    }
+
+    /* --- Spacing: Section Padding Reduction --- */
+    main .p-8,
+    main .bg-surface-container-lowest.p-8 {
+        padding: 1.25rem !important;
+    }
+    main .p-12,
+    main .bg-primary.p-12 {
+        padding: 1.5rem !important;
+    }
+    main .pt-24 {
+        padding-top: 5rem !important;
+    }
+    main .gap-8 {
+        gap: 1.25rem !important;
+    }
+
+    /* --- Layout: Full-Width CTAs --- */
+    main a.inline-block[href*="whatsapp"],
+    main a.w-fit {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    /* --- Tables: Prevent Overflow --- */
+    main table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* --- Focus States: Visible Outline --- */
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid rgba(2, 36, 69, 0.3);
+        outline-offset: 2px;
+    }
+
+    /* --- Share Buttons: Min Touch Size --- */
+    .share-btn {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+
+    /* --- Sub-Nav Tabs (Birmingham pages): Touch Size --- */
+    .sub-nav-tab {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    /* --- Footer Links Touch Targets --- */
+    .site-footer .footer-links a {
+        padding: 0.5rem 0;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 }
 
@@ -743,7 +834,12 @@ body {
 @media (max-width: 767px) {
     .step-progress-bar {
         top: 52px;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 0.5rem;
+    }
+    .step-progress-inner {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.25rem;
     }
     .step-circle-num {
         width: 1.6rem;
@@ -757,7 +853,11 @@ body {
         right: 12.8px;
     }
     .step-circle-label {
-        font-size: 0.55rem;
+        font-size: 0.6rem;
+        max-width: 3.5rem;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

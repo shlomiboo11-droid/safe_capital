@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עמודי תוכן | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/weekly-briefing" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">summarize</span>
+        <span>סקירה שבועית</span>
+      </a>
+      <a href="/content-pages" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">description</span>
+        <span>עמודי מידע</span>
+      </a>
+      <a href="/content-agents" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>פרומפטים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">עמודי תוכן</h1>
+        <p class="text-sm text-gray-500 mt-1">עריכת עמודי מידע סטטיים באתר</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-container">
+      <div class="flex gap-2 mb-6">
+        <button class="tab-btn active" data-tab="birmingham-info">
+          <span class="material-symbols-outlined text-sm">location_city</span>
+          בירמינגהם — מידע כללי
+        </button>
+        <button class="tab-btn" data-tab="birmingham-compare">
+          <span class="material-symbols-outlined text-sm">compare_arrows</span>
+          בירמינגהם — השוואה
+        </button>
+      </div>
+
+      <!-- Tab: birmingham-info -->
+      <div class="tab-content active" data-tab-content="birmingham-info">
+        <div class="card p-6 space-y-4">
+          <div>
+            <label class="form-label">כותרת *</label>
+            <input type="text" id="info-title" class="form-input" placeholder="כותרת העמוד">
+          </div>
+          <div>
+            <label class="form-label">תוכן (HTML) *</label>
+            <textarea id="info-body" class="form-input" style="min-height:500px;" placeholder="תוכן העמוד — תומך HTML"></textarea>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">SEO Title</label>
+              <input type="text" id="info-seo_title" class="form-input ltr" dir="ltr" placeholder="Page title for search engines">
+            </div>
+            <div>
+              <label class="form-label">SEO Description</label>
+              <textarea id="info-seo_description" class="form-input ltr" dir="ltr" rows="2" placeholder="Meta description"></textarea>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button class="btn btn-primary" onclick="savePage('birmingham-info')">
+              <span class="material-symbols-outlined text-lg">save</span>
+              שמור
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: birmingham-compare -->
+      <div class="tab-content" data-tab-content="birmingham-compare">
+        <div class="card p-6 space-y-4">
+          <div>
+            <label class="form-label">כותרת *</label>
+            <input type="text" id="compare-title" class="form-input" placeholder="כותרת העמוד">
+          </div>
+          <div>
+            <label class="form-label">תוכן (HTML) *</label>
+            <textarea id="compare-body" class="form-input" style="min-height:500px;" placeholder="תוכן העמוד — תומך HTML"></textarea>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">SEO Title</label>
+              <input type="text" id="compare-seo_title" class="form-input ltr" dir="ltr" placeholder="Page title for search engines">
+            </div>
+            <div>
+              <label class="form-label">SEO Description</label>
+              <textarea id="compare-seo_description" class="form-input ltr" dir="ltr" rows="2" placeholder="Meta description"></textarea>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button class="btn btn-primary" onclick="savePage('birmingham-compare')">
+              <span class="material-symbols-outlined text-lg">save</span>
+              שמור
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingState" class="text-center py-20">
+      <svg class="animate-spin text-primary mx-auto" width="32" height="32" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <p class="text-sm text-gray-400 mt-3">טוען עמודים...</p>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    // Auth guard
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    initTabs();
+
+    const PAGES = ['birmingham-info', 'birmingham-compare'];
+    const PREFIX_MAP = { 'birmingham-info': 'info', 'birmingham-compare': 'compare' };
+
+    async function loadPages() {
+      try {
+        const promises = PAGES.map(slug =>
+          API.get(`/content/static-pages/${slug}`).catch(() => ({ page: null }))
+        );
+        const results = await Promise.all(promises);
+
+        results.forEach((data, i) => {
+          const slug = PAGES[i];
+          const prefix = PREFIX_MAP[slug];
+          const page = data.page;
+          if (page) {
+            document.getElementById(`${prefix}-title`).value = page.title || '';
+            document.getElementById(`${prefix}-body`).value = page.body || '';
+            document.getElementById(`${prefix}-seo_title`).value = page.seo_title || '';
+            document.getElementById(`${prefix}-seo_description`).value = page.seo_description || '';
+          }
+        });
+
+        document.getElementById('loadingState').style.display = 'none';
+      } catch (err) {
+        document.getElementById('loadingState').innerHTML =
+          '<p class="text-red-500">שגיאה בטעינת העמודים</p>';
+      }
+    }
+
+    async function savePage(slug) {
+      const prefix = PREFIX_MAP[slug];
+      const title = document.getElementById(`${prefix}-title`).value.trim();
+      const body = document.getElementById(`${prefix}-body`).value.trim();
+      const seo_title = document.getElementById(`${prefix}-seo_title`).value.trim();
+      const seo_description = document.getElementById(`${prefix}-seo_description`).value.trim();
+
+      if (!title || !body) {
+        showToast('כותרת ותוכן הם שדות חובה', 'error');
+        return;
+      }
+
+      try {
+        await API.put(`/content/static-pages/${slug}`, {
+          title, body,
+          seo_title: seo_title || null,
+          seo_description: seo_description || null
+        });
+        showToast('העמוד נשמר בהצלחה');
+      } catch (err) {
+        showToast(err.message || 'שגיאה בשמירה', 'error');
+      }
+    }
+
+    // Init
+    loadPages();
+  </script>
+</body>
+</html>

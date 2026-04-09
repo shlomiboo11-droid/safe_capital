@@ -369,6 +369,76 @@ CREATE TABLE IF NOT EXISTS investor_notifications (
 CREATE INDEX IF NOT EXISTS idx_investor_notifications_investor ON investor_notifications(investor_id);
 CREATE INDEX IF NOT EXISTS idx_investor_notifications_unread ON investor_notifications(investor_id, is_read);
 
+-- Articles (Birmingham content)
+CREATE TABLE IF NOT EXISTS articles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  subtitle TEXT,
+  slug TEXT UNIQUE NOT NULL,
+  body TEXT NOT NULL,
+  thumbnail_url TEXT,
+  category TEXT DEFAULT 'news' CHECK(category IN ('news','market','neighborhood','infrastructure')),
+  tags TEXT[],
+  is_published BOOLEAN DEFAULT false,
+  is_featured BOOLEAN DEFAULT false,
+  publish_date TIMESTAMPTZ,
+  author TEXT DEFAULT 'צוות סייף קפיטל',
+  seo_title TEXT,
+  seo_description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
+CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(is_published, publish_date);
+CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category);
+
+-- Weekly briefing
+CREATE TABLE IF NOT EXISTS weekly_briefing (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  week_start DATE NOT NULL,
+  body TEXT NOT NULL,
+  is_published BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Static pages (editable content pages)
+CREATE TABLE IF NOT EXISTS static_pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  seo_title TEXT,
+  seo_description TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_static_pages_slug ON static_pages(slug);
+
+-- Content agent prompts
+CREATE TABLE IF NOT EXISTS content_agent_prompts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  agent_name TEXT UNIQUE NOT NULL,
+  display_name TEXT NOT NULL,
+  prompt TEXT NOT NULL,
+  description TEXT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Contact form submissions
+CREATE TABLE IF NOT EXISTS contact_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_contact_submissions_created ON contact_submissions(created_at DESC);
+
     `);
     console.log('Database schema initialized.');
   } finally {

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול כתבות | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/weekly-briefing" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">summarize</span>
+        <span>סקירה שבועית</span>
+      </a>
+      <a href="/content-pages" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">description</span>
+        <span>עמודי מידע</span>
+      </a>
+      <a href="/content-agents" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>פרומפטים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">ניהול כתבות</h1>
+        <p class="text-sm text-gray-500 mt-1" id="articleCount"></p>
+      </div>
+      <a href="/article-edit" class="btn btn-primary">
+        <span class="material-symbols-outlined text-lg">add</span>
+        כתבה חדשה
+      </a>
+    </div>
+
+    <!-- Table -->
+    <div class="card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="data-table" id="articlesTable">
+          <thead>
+            <tr>
+              <th>כותרת</th>
+              <th>קטגוריה</th>
+              <th>סטטוס</th>
+              <th>תאריך</th>
+              <th>מודגשת</th>
+              <th>פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="articlesBody">
+            <tr><td colspan="6" class="text-center py-12 text-gray-400">טוען...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" style="display:none;" class="text-center py-20">
+      <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">article</span>
+      <h3 class="text-xl font-bold text-gray-400 mt-4">אין כתבות עדיין</h3>
+      <p class="text-sm text-gray-400 mt-2">צור כתבה חדשה כדי להתחיל</p>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    // Auth guard
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    const CATEGORY_LABELS = { news: 'כללי', market: 'שוק', neighborhood: 'שכונות', infrastructure: 'תשתיות' };
+    const CATEGORY_COLORS = { news: 'gray', market: 'blue', neighborhood: 'green', infrastructure: 'yellow' };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    async function loadArticles() {
+      try {
+        const data = await API.get('/content/articles');
+        const articles = data.articles || [];
+        document.getElementById('articleCount').textContent = `${articles.length} כתבות`;
+
+        if (articles.length === 0) {
+          document.getElementById('articlesTable').style.display = 'none';
+          document.getElementById('emptyState').style.display = '';
+          return;
+        }
+
+        document.getElementById('articlesTable').style.display = '';
+        document.getElementById('emptyState').style.display = 'none';
+        renderTable(articles);
+      } catch (err) {
+        document.getElementById('articlesBody').innerHTML =
+          '<tr><td colspan="6" class="text-center py-8 text-red-500">שגיאה בטעינה</td></tr>';
+      }
+    }
+
+    function renderTable(articles) {
+      const tbody = document.getElementById('articlesBody');
+      tbody.innerHTML = articles.map(a => {
+        const cat = CATEGORY_LABELS[a.category] || a.category || 'כללי';
+        const catColor = CATEGORY_COLORS[a.category] || 'gray';
+        const date = a.publish_date
+          ? new Date(a.publish_date).toLocaleDateString('he-IL')
+          : new Date(a.created_at).toLocaleDateString('he-IL');
+        const published = a.is_published;
+        const featured = a.is_featured;
+
+        return `<tr>
+          <td>
+            <a href="/article-edit?id=${a.id}" class="font-medium text-primary hover:underline">${escapeHtml(a.title)}</a>
+            ${a.subtitle ? `<div class="text-xs text-gray-400 mt-0.5">${escapeHtml(a.subtitle)}</div>` : ''}
+          </td>
+          <td><span class="badge badge-${catColor}">${cat}</span></td>
+          <td>
+            <button class="badge badge-${published ? 'green' : 'gray'} cursor-pointer hover:opacity-80"
+              onclick="togglePublish(${a.id}, ${!published})" title="${published ? 'לחץ להעברה לטיוטה' : 'לחץ לפרסום'}">
+              ${published ? 'מפורסם' : 'טיוטה'}
+            </button>
+          </td>
+          <td class="font-inter text-sm" dir="ltr">${date}</td>
+          <td>
+            <button class="cursor-pointer hover:opacity-80" onclick="toggleFeatured(${a.id}, ${!featured})" title="${featured ? 'הסר הדגשה' : 'הדגש'}">
+              <span class="material-symbols-outlined text-lg" style="color: ${featured ? '#eab308' : '#d1d5db'}; font-variation-settings: 'FILL' ${featured ? 1 : 0};">star</span>
+            </button>
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <a href="/article-edit?id=${a.id}" class="btn btn-secondary btn-sm" title="עריכה">
+                <span class="material-symbols-outlined text-sm">edit</span>
+              </a>
+              <button class="btn btn-secondary btn-sm" title="מחיקה" onclick="deleteArticle(${a.id})">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function togglePublish(id, newVal) {
+      try {
+        await API.put(`/content/articles/${id}`, { is_published: newVal });
+        loadArticles();
+      } catch (err) {
+        showToast(err.message || 'שגיאה בעדכון', 'error');
+      }
+    }
+
+    async function toggleFeatured(id, newVal) {
+      try {
+        await API.put(`/content/articles/${id}`, { is_featured: newVal });
+        loadArticles();
+      } catch (err) {
+        showToast(err.message || 'שגיאה בעדכון', 'error');
+      }
+    }
+
+    async function deleteArticle(id) {
+      const confirmed = await confirmAction('האם למחוק את הכתבה? פעולה זו בלתי הפיכה.');
+      if (!confirmed) return;
+      try {
+        await API.delete(`/content/articles/${id}`);
+        showToast('הכתבה נמחקה');
+        loadArticles();
+      } catch (err) {
+        showToast(err.message || 'שגיאה במחיקה', 'error');
+      }
+    }
+
+    // Init
+    loadArticles();
+  </script>
+</body>
+</html>

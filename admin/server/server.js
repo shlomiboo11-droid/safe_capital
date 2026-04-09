@@ -63,6 +63,7 @@ app.use('/api/audit', require('./routes/audit'));
 app.use('/api/google-drive', require('./routes/google-drive'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/investors', require('./routes/investors'));
+app.use('/api/content', require('./routes/content'));
 
 // Portal routes (investor-facing, separate auth)
 const portalRouter = require('./routes/portal');
@@ -97,6 +98,11 @@ app.get('*', (req, res) => {
     '/settings': 'settings.html',
     '/investors': 'investors.html',
     '/investor': 'investor.html',
+    '/articles': 'articles.html',
+    '/article-edit': 'article-edit.html',
+    '/weekly-briefing': 'weekly-briefing.html',
+    '/content-pages': 'content-pages.html',
+    '/content-agents': 'content-agents.html',
   };
 
   for (const [prefix, file] of Object.entries(htmlFiles)) {
