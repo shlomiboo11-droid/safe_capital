@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(helmet({
-  contentSecurityPolicy: false   // Admin is internal — inline scripts + CDN are safe here
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
 }));
 app.use(cors({
   origin: [
