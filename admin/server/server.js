@@ -76,8 +76,14 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Safe Capital Admin Dashboard running on http://localhost:${PORT}`);
-  console.log(`  Login:  http://localhost:${PORT}/login`);
-  console.log(`  Admin:  http://localhost:${PORT}/`);
-});
+// For local dev: start server
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`Safe Capital Admin Dashboard running on http://localhost:${PORT}`);
+    console.log(`  Login:  http://localhost:${PORT}/login`);
+    console.log(`  Admin:  http://localhost:${PORT}/`);
+  });
+}
+
+// For Vercel: export the Express app
+module.exports = app;
