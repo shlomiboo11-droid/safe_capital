@@ -19,17 +19,25 @@ app.use(cors({
   origin: [
     process.env.ADMIN_ORIGIN || 'http://localhost:3000',
     'http://localhost:8081',
+    'http://localhost:8082',
     'https://safe-capital-il.vercel.app'
   ]
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Rate limiter for login endpoint
+// Rate limiter for admin login endpoint
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
   message: { error: 'Too many login attempts, please try again after 15 minutes' }
+});
+
+// Rate limiter for portal login (separate from admin)
+const portalLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message: { error: 'יותר מדי ניסיונות התחברות. נסה שוב בעוד 15 דקות' }
 });
 
 // Serve static files
@@ -54,6 +62,11 @@ app.use('/api/audit', require('./routes/audit'));
 app.use('/api/google-drive', require('./routes/google-drive'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/investors', require('./routes/investors'));
+
+// Portal routes (investor-facing, separate auth)
+const portalRouter = require('./routes/portal');
+app.use('/api/portal/login', portalLoginLimiter);
+app.use('/api/portal', portalRouter);
 
 // SPA fallback — serve index.html for non-API routes
 app.get('*', (req, res) => {

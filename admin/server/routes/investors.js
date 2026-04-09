@@ -3,6 +3,7 @@
  * All routes require JWT authentication.
  */
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const pool = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { logAudit } = require('../helpers/audit');
@@ -194,7 +195,8 @@ router.put('/:id', authorize('super_admin', 'manager'), async (req, res) => {
     'bank_name', 'bank_branch', 'bank_account',
     'company_name', 'company_number',
     'llc_name', 'llc_ein', 'us_tax_id',
-    'source', 'status', 'notes'
+    'source', 'status', 'notes',
+    'portal_username', 'portal_active'
   ];
 
   const sets = [];
@@ -255,6 +257,36 @@ router.delete('/:id', authorize('super_admin', 'manager'), async (req, res) => {
     res.json({ message: 'Investor deleted' });
   } catch (err) {
     console.error('Delete investor error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ── PUT /api/investors/:id/portal-password — set portal password ──
+router.put('/:id/portal-password', authorize('super_admin', 'manager'), async (req, res) => {
+  const { password } = req.body;
+
+  if (!password || password.length < 6) {
+    return res.status(400).json({ error: 'הסיסמה חייבת להכיל לפחות 6 תווים' });
+  }
+
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const result = await pool.query(
+      'UPDATE investors SET portal_password_hash = $1, updated_at = NOW() WHERE id = $2 RETURNING id',
+      [hash, req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Investor not found' });
+    }
+
+    await logAudit(req.user.id, 'set_portal_password', 'investor', null, {
+      investor_id: req.params.id
+    });
+
+    res.json({ success: true, message: 'Password set' });
+  } catch (err) {
+    console.error('Set portal password error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

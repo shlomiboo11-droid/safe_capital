@@ -19,8 +19,8 @@ website/frames-house/
 .vscode/
 .idea/
 
-# Uploads (runtime data)
-admin/public/uploads/
+# Uploads — tracked for Vercel deployment
+# admin/public/uploads/
 
 # Claude
 .claude/

@@ -110,6 +110,7 @@
       try {
         investorData = await API.get(`/investors/${investorId}`);
         renderProfile(investorData);
+        populatePortalSection(investorData.investor);
       } catch (err) {
         document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-red-500">שגיאה בטעינת פרופיל המשקיע</div>';
       }
@@ -167,6 +168,44 @@
           <div class="card p-4">
             <div class="text-2xl font-bold font-inter ${summary.avg_return > 0 ? 'text-green-600' : 'text-gray-400'}" dir="ltr">${summary.avg_return ? summary.avg_return.toFixed(1) + '%' : '—'}</div>
             <div class="text-sm text-gray-500 mt-1">תשואה ממוצעת</div>
+          </div>
+        </div>
+
+        <!-- Portal Access Section -->
+        <div class="card p-6 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold">גישה לפורטל</h3>
+            <div id="portalStatus"></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="form-label">שם משתמש</label>
+              <input type="text" id="portalUsername" class="form-input ltr text-sm" dir="ltr" placeholder="investor_username">
+            </div>
+            <div>
+              <label class="form-label">סיסמה (מוצגת פעם אחת)</label>
+              <div class="flex gap-2">
+                <input type="text" id="portalPassword" class="form-input ltr text-sm flex-1" dir="ltr" placeholder="הגדר סיסמה ראשונית">
+                <button class="btn btn-secondary btn-sm" onclick="generatePassword()" title="ייצר סיסמה">
+                  <span class="material-symbols-outlined text-sm">password</span>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="form-label mb-0">פורטל פעיל</label>
+              <input type="checkbox" id="portalActive" class="w-5 h-5">
+            </div>
+            <div id="lastLoginDisplay" class="text-sm text-gray-500"></div>
+          </div>
+          <div class="flex gap-2 mt-4">
+            <button class="btn btn-primary btn-sm" onclick="savePortalAccess()">
+              <span class="material-symbols-outlined text-sm">save</span>
+              שמור גישה
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="resetPortalPassword()">
+              <span class="material-symbols-outlined text-sm">lock_reset</span>
+              אפס סיסמה
+            </button>
           </div>
         </div>
 
@@ -465,6 +504,80 @@
       });
 
       requestAnimationFrame(() => overlay.querySelector('[name="first_name"]').focus());
+    }
+
+    // ── Portal Access Functions ──
+    function populatePortalSection(inv) {
+      const usernameEl = document.getElementById('portalUsername');
+      const activeEl = document.getElementById('portalActive');
+      const statusEl = document.getElementById('portalStatus');
+      const lastLoginEl = document.getElementById('lastLoginDisplay');
+
+      if (!usernameEl) return;
+
+      usernameEl.value = inv.portal_username || '';
+      activeEl.checked = !!inv.portal_active;
+
+      if (inv.portal_active) {
+        statusEl.innerHTML = '<span class="badge badge-green">פעיל</span>';
+      } else {
+        statusEl.innerHTML = '<span class="badge badge-gray">לא פעיל</span>';
+      }
+
+      if (inv.last_login) {
+        const d = new Date(inv.last_login);
+        const formatted = d.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          + ' ' + d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+        lastLoginEl.textContent = 'התחברות אחרונה: ' + formatted;
+      } else {
+        lastLoginEl.textContent = 'טרם התחבר לפורטל';
+      }
+    }
+
+    function generatePassword() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+      let pw = '';
+      for (let i = 0; i < 8; i++) {
+        pw += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('portalPassword').value = pw;
+    }
+
+    async function savePortalAccess() {
+      const username = document.getElementById('portalUsername').value.trim();
+      const active = document.getElementById('portalActive').checked;
+      const password = document.getElementById('portalPassword').value.trim();
+
+      try {
+        await API.put(`/investors/${investorId}`, {
+          portal_username: username,
+          portal_active: active
+        });
+
+        if (password) {
+          await API.put(`/investors/${investorId}/portal-password`, { password });
+        }
+
+        showToast('גישה לפורטל נשמרה בהצלחה');
+        document.getElementById('portalPassword').value = '';
+        loadInvestor();
+      } catch (err) {
+        showToast(err.message || 'שגיאה בשמירה', 'error');
+      }
+    }
+
+    async function resetPortalPassword() {
+      generatePassword();
+      const password = document.getElementById('portalPassword').value;
+
+      try {
+        await API.put(`/investors/${investorId}/portal-password`, { password });
+        showToast('סיסמה חדשה: ' + password, 'success');
+        document.getElementById('portalPassword').value = '';
+        loadInvestor();
+      } catch (err) {
+        showToast(err.message || 'שגיאה באיפוס סיסמה', 'error');
+      }
     }
 
     // Init

@@ -71,10 +71,16 @@ function renderFundraisingTab(data) {
     <div class="card p-6">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-bold">רשימת משקיעים</h3>
-        <button class="btn btn-primary btn-sm" onclick="addInvestor()">
-          <span class="material-symbols-outlined text-sm">person_add</span>
-          הוספת משקיע
-        </button>
+        <div class="flex gap-2">
+          <button class="btn btn-primary btn-sm" onclick="addInvestor()">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+            הוספת משקיע
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="openNotifyInvestorsModal()">
+            <span class="material-symbols-outlined text-sm">notifications</span>
+            שלח עדכון למשקיעים
+          </button>
+        </div>
       </div>
 
       <div class="overflow-x-auto">
@@ -347,3 +353,88 @@ async function deleteDealInvestor(id) {
 
 // Keep backward compat alias
 function deleteInvestor(id) { return deleteDealInvestor(id); }
+
+// ── Notify Investors Modal ──
+function openNotifyInvestorsModal() {
+  const investors = (typeof currentDealData !== 'undefined' && currentDealData && currentDealData.investors) || [];
+
+  // Build investor options
+  const investorOptions = investors
+    .filter(inv => inv.investor_id)
+    .map(inv => `<option value="${inv.investor_id}">${escapeHtml(inv.investor_name || '')}</option>`)
+    .join('');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'branded-modal-overlay';
+  overlay.innerHTML = `
+    <div class="branded-modal" style="max-width: 28rem;">
+      <h3 class="branded-modal-title">שלח עדכון למשקיעים</h3>
+      <form id="notifyInvestorsForm" class="space-y-4">
+        <div>
+          <label class="form-label">כותרת *</label>
+          <input type="text" name="notifyTitle" class="form-input text-sm" required>
+        </div>
+        <div>
+          <label class="form-label">תוכן</label>
+          <textarea name="notifyBody" class="form-input text-sm" rows="3"></textarea>
+        </div>
+        <div>
+          <label class="form-label">סוג הודעה</label>
+          <select name="notifyType" class="form-select text-sm">
+            <option value="update">עדכון כללי</option>
+            <option value="milestone">אבן דרך</option>
+            <option value="document">מסמך חדש</option>
+            <option value="financial">עדכון פיננסי</option>
+            <option value="message">הודעה אישית</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">נמענים</label>
+          <select name="notifyTarget" class="form-select text-sm">
+            <option value="all">כל משקיעי העסקה</option>
+            ${investorOptions}
+          </select>
+        </div>
+        <div class="branded-modal-actions" style="margin-top: 1.5rem;">
+          <button type="submit" class="branded-modal-btn branded-modal-btn-primary">שלח</button>
+          <button type="button" class="branded-modal-btn branded-modal-btn-secondary" data-action="cancel">ביטול</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('[data-action="cancel"]').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+  overlay.querySelector('#notifyInvestorsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+
+    const target = form.notifyTarget.value;
+    const body = {
+      title: form.notifyTitle.value.trim(),
+      body: form.notifyBody.value.trim() || null,
+      type: form.notifyType.value
+    };
+
+    if (target !== 'all') {
+      body.investor_id = target;
+    }
+
+    try {
+      const result = await API.post(`/portal/deals/${currentDeal.id}/notify`, body);
+      showToast(result.message || 'ההתראות נשלחו בהצלחה');
+      overlay.remove();
+    } catch (err) {
+      showToast(err.message || 'שגיאה בשליחה', 'error');
+      btn.disabled = false;
+      btn.textContent = 'שלח';
+    }
+  });
+
+  requestAnimationFrame(() => overlay.querySelector('[name="notifyTitle"]').focus());
+}

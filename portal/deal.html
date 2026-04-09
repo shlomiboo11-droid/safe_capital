@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פרטי עסקה | סייף קפיטל</title>
+  <link rel="icon" type="image/png" href="/images/logo-half.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/css/portal.css" rel="stylesheet">
+  <link href="/css/deal.css" rel="stylesheet">
+  <script>
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { headline: ['Heebo'], body: ['Heebo'], label: ['Inter'] },
+            colors: {
+              primary: '#022445',
+              'primary-container': '#1e3a5c',
+              secondary: '#984349',
+              background: '#fbf9f6',
+              'surface-container-low': '#f5f3f0',
+              'on-surface-variant': '#43474e',
+            }
+          }
+        }
+      };
+    }
+  </script>
+</head>
+<body class="min-h-screen" style="background: #fbf9f6;">
+  <header id="portalHeader"></header>
+
+  <main id="mainContent" class="max-w-5xl mx-auto px-4 py-6" style="padding-top: 80px; padding-bottom: 100px;">
+    <!-- Loading state -->
+    <div id="loadingState" class="flex items-center justify-center py-20">
+      <svg class="animate-spin h-8 w-8" style="color: #022445;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+    </div>
+
+    <!-- Deal content (injected by JS) -->
+    <div id="dealContent" class="hidden"></div>
+  </main>
+
+  <footer id="portalFooter"></footer>
+  <nav id="portalBottomNav"></nav>
+
+  <!-- Lightbox container -->
+  <div id="lightboxOverlay" class="lightbox-overlay" style="display: none;" role="dialog" aria-label="תמונה מוגדלת">
+    <button class="lightbox-close" aria-label="סגור">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <button class="lightbox-nav lightbox-prev" aria-label="תמונה הבאה">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" aria-label="תמונה קודמת">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/shared.js"></script>
+  <script src="/js/deal.js"></script>
+</body>
+</html>

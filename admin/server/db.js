@@ -341,6 +341,34 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Migration: add portal fields to investors
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'investors' AND column_name = 'portal_username'
+  ) THEN
+    ALTER TABLE investors ADD COLUMN portal_username TEXT UNIQUE;
+    ALTER TABLE investors ADD COLUMN portal_password_hash TEXT;
+    ALTER TABLE investors ADD COLUMN portal_active BOOLEAN DEFAULT FALSE;
+    ALTER TABLE investors ADD COLUMN last_login TIMESTAMPTZ;
+  END IF;
+END $$;
+
+-- Notifications table for investor portal
+CREATE TABLE IF NOT EXISTS investor_notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  investor_id UUID NOT NULL REFERENCES investors(id) ON DELETE CASCADE,
+  deal_id INTEGER REFERENCES deals(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  body TEXT,
+  type TEXT DEFAULT 'update' CHECK(type IN ('update','milestone','document','financial','message')),
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_investor_notifications_investor ON investor_notifications(investor_id);
+CREATE INDEX IF NOT EXISTS idx_investor_notifications_unread ON investor_notifications(investor_id, is_read);
+
     `);
     console.log('Database schema initialized.');
   } finally {

@@ -65,8 +65,34 @@ if (typeof tailwind !== 'undefined') {
     };
 }
 
+// Portal link URL (change for production)
+const PORTAL_URL = '/portal/login.html';
+
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
+    // Inject "אזור אישי" portal link into nav
+    const navLinks = document.querySelector('.site-nav .nav-links');
+    const mobileNavEl = document.querySelector('.site-nav .mobile-nav');
+    if (navLinks) {
+        const portalLink = document.createElement('a');
+        portalLink.href = PORTAL_URL;
+        portalLink.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-left:4px;">person</span>אזור אישי';
+        portalLink.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+        navLinks.appendChild(portalLink);
+    }
+    if (mobileNavEl) {
+        const mobilePortalLink = document.createElement('a');
+        mobilePortalLink.href = PORTAL_URL;
+        mobilePortalLink.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-left:4px;">person</span>אזור אישי';
+        // Insert before the CTA button
+        const mobileCta = mobileNavEl.querySelector('.mobile-cta');
+        if (mobileCta) {
+            mobileNavEl.insertBefore(mobilePortalLink, mobileCta);
+        } else {
+            mobileNavEl.appendChild(mobilePortalLink);
+        }
+    }
+
     // Standard site nav mobile menu
     const siteMenuBtn = document.querySelector('.site-nav .mobile-menu-btn');
     const siteMenuPanel = document.querySelector('.site-nav .mobile-nav');
