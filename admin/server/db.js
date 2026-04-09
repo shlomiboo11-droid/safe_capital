@@ -376,9 +376,11 @@ CREATE INDEX IF NOT EXISTS idx_investor_notifications_unread ON investor_notific
   }
 }
 
-// Run schema init on startup (non-blocking — errors are logged but don't crash)
-initDb().catch(err => {
-  console.error('DB init error:', err.message);
-});
+// Run schema init on startup — skip on Vercel serverless (tables already exist)
+if (process.env.VERCEL !== '1') {
+  initDb().catch(err => {
+    console.error('DB init error:', err.message);
+  });
+}
 
 module.exports = pool;

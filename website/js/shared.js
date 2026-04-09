@@ -65,8 +65,10 @@ if (typeof tailwind !== 'undefined') {
     };
 }
 
-// Portal link URL (change for production)
-const PORTAL_URL = '/portal/login.html';
+// Portal link URL — portal is hosted on the admin server
+const PORTAL_URL = (window.location.hostname === 'localhost')
+  ? 'http://localhost:3000/portal/login.html'
+  : 'https://safe-capital-admin.vercel.app/portal/login.html';
 
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
