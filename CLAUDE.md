@@ -54,6 +54,7 @@ Specialist agents in `.claude/agents/`, organized by team:
 | `ui-designer` | Visual design, SVG icons, brand consistency |
 | `content-strategist` | Copy, messaging, Hebrew content |
 | `deal-analyst` | Deal financial data from xlsx/docs |
+| `mobile-adapter` | Mobile responsiveness, touch, viewport fixes |
 
 ### `qa/` — Reviews & tests
 | Agent | Responsibility |
