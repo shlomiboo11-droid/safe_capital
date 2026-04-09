@@ -31,7 +31,7 @@ const FUNDRAISING_STATUS_LABELS = {
 // Timeline step status → icon + style
 const TIMELINE_STEP_STYLE = {
   completed: { icon: 'check',       bg: 'bg-primary',   text: 'text-white',   extra: '' },
-  active:    { icon: 'engineering', bg: 'bg-secondary',  text: 'text-white',   extra: 'ring-4 ring-secondary/20' },
+  active:    { icon: 'engineering', bg: 'bg-secondary',  text: 'text-white',   extra: '' },
   pending:   { icon: '',            bg: 'bg-outline-variant', text: 'text-white', extra: 'opacity-30' }
 };
 
@@ -49,6 +49,14 @@ function formatUSD(value) {
 function renderTimeline(steps) {
   if (!steps || steps.length === 0) return '';
 
+  // Calculate progress percentage
+  let activeIndex = -1;
+  steps.forEach((step, i) => {
+    if (step.status === 'completed') activeIndex = i;
+    if (step.status === 'active' && activeIndex < i) activeIndex = i;
+  });
+  const progressPct = steps.length > 1 ? Math.round((activeIndex / (steps.length - 1)) * 100) : 0;
+
   const stepsHtml = steps.map(step => {
     const style = TIMELINE_STEP_STYLE[step.status] || TIMELINE_STEP_STYLE.pending;
     const iconHtml = style.icon
@@ -59,8 +67,8 @@ function renderTimeline(steps) {
       : 'text-xs font-bold';
 
     return `
-      <div class="relative z-10 flex flex-col items-center gap-2 ${style.extra}">
-        <div class="w-8 h-8 rounded-full ${style.bg} ${style.extra} flex items-center justify-center ${style.text}">
+      <div class="relative z-10 flex flex-col items-center gap-2">
+        <div class="w-8 h-8 rounded-full ${style.bg} flex items-center justify-center ${style.text}">
           ${iconHtml}
         </div>
         <p class="${labelClass}">${step.step_name}</p>
@@ -70,7 +78,8 @@ function renderTimeline(steps) {
   return `
     <h3 class="text-2xl font-extrabold text-primary mb-8">לוחות זמנים</h3>
     <div class="relative flex justify-between items-start">
-      <div class="absolute top-4 right-0 left-0 h-0.5 bg-outline-variant/30"></div>
+      <div class="absolute top-4 right-0 left-0 h-0.5 bg-outline-variant/20"></div>
+      <div class="absolute top-4 right-0 h-0.5 bg-primary" style="width:${progressPct}%"></div>
       ${stepsHtml}
     </div>`;
 }
