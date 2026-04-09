@@ -324,7 +324,7 @@ function renderExpandedContent(deal) {
         <h3 class="text-2xl font-extrabold text-primary">פירוט פיננסי</h3>
       </div>
       ${costCatsHtml}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center items-center">
         ${totalCost ? `
         <div>
           <p class="text-xs text-on-surface-variant mb-1 font-bold">סך השקעה</p>
