@@ -12,14 +12,28 @@
       tailwind.config = {
         theme: {
           extend: {
-            fontFamily: { headline: ['Heebo'], body: ['Heebo'], label: ['Inter'] },
+            fontFamily: {
+              headline: ['Heebo', 'Plus Jakarta Sans', 'sans-serif'],
+              body: ['Inter', 'sans-serif'],
+              label: ['Inter', 'sans-serif']
+            },
             colors: {
-              primary: '#022445',
-              'primary-container': '#1e3a5c',
+              primary: '#000e21',
+              'primary-container': '#022445',
               secondary: '#984349',
+              'secondary-fixed': '#ffdada',
+              'on-secondary-container': '#792b32',
               background: '#fbf9f6',
+              surface: '#fbf9f6',
               'surface-container-low': '#f5f3f0',
+              'surface-container': '#efeeeb',
+              'surface-container-high': '#eae8e5',
+              'surface-container-highest': '#e4e2df',
+              'surface-container-lowest': '#ffffff',
+              'on-surface': '#1b1c1a',
               'on-surface-variant': '#43474e',
+              outline: '#74777f',
+              'outline-variant': '#c4c6cf',
             }
           }
         }
@@ -33,7 +47,7 @@
   <main id="mainContent" class="max-w-5xl mx-auto px-4 py-6" style="padding-top: 80px; padding-bottom: 100px;">
     <!-- Loading state -->
     <div id="loadingState" class="flex items-center justify-center py-20">
-      <svg class="animate-spin h-8 w-8" style="color: #022445;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <svg class="animate-spin h-8 w-8" style="color: #000e21;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
       </svg>
@@ -86,7 +100,7 @@
             <span class="material-symbols-outlined text-5xl mb-4 block" style="color: #d1d5db;">error</span>
             <p class="text-lg font-semibold" style="color: #1b1c1a;">שגיאה בטעינת הנתונים</p>
             <p class="text-sm mt-2" style="color: #43474e;">${(err.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
-            <button onclick="location.reload()" class="mt-4 px-6 py-2 rounded-lg text-sm font-semibold text-white" style="background: #022445;">
+            <button onclick="location.reload()" class="mt-4 px-6 py-2 rounded-lg text-sm font-semibold text-white" style="background: #000e21;">
               נסה שוב
             </button>
           </div>
@@ -123,7 +137,7 @@
 
       // A. Greeting
       html += `
-        <h1 class="text-2xl font-bold mb-6" style="color: #022445; font-family: 'Heebo', sans-serif;">
+        <h1 class="text-2xl font-bold mb-6" style="color: #000e21; font-family: 'Heebo', sans-serif;">
           שלום${firstName ? ' ' + firstName : ''}
         </h1>
       `;
@@ -176,7 +190,7 @@
           </div>
         `;
       } else {
-        html += `<h2 class="text-lg font-bold mb-4" style="color: #022445;">העסקאות שלי</h2>`;
+        html += `<h2 class="text-lg font-bold mb-4" style="color: #000e21;">העסקאות שלי</h2>`;
         html += `<div class="space-y-4">`;
 
         flatDeals.forEach(deal => {
@@ -210,7 +224,7 @@
                   <div class="progress-track mb-3">
                     <div class="progress-fill" style="width: ${progress}%;"></div>
                   </div>
-                  <div class="flex items-center gap-1 text-sm font-semibold" style="color: #022445;">
+                  <div class="flex items-center gap-1 text-sm font-semibold" style="color: #000e21;">
                     <span>צפה בפרטים</span>
                     <span class="material-symbols-outlined text-base">arrow_back</span>
                   </div>

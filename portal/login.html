@@ -7,19 +7,52 @@
   <link rel="icon" type="image/png" href="/images/logo-half.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="/css/portal.css" rel="stylesheet">
+  <script>
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              headline: ['Heebo', 'Plus Jakarta Sans', 'sans-serif'],
+              body: ['Inter', 'sans-serif'],
+              label: ['Inter', 'sans-serif']
+            },
+            colors: {
+              primary: '#000e21',
+              'primary-container': '#022445',
+              secondary: '#984349',
+              'secondary-fixed': '#ffdada',
+              'on-secondary-container': '#792b32',
+              background: '#fbf9f6',
+              surface: '#fbf9f6',
+              'surface-container-low': '#f5f3f0',
+              'surface-container': '#efeeeb',
+              'surface-container-high': '#eae8e5',
+              'surface-container-highest': '#e4e2df',
+              'surface-container-lowest': '#ffffff',
+              'on-surface': '#1b1c1a',
+              'on-surface-variant': '#43474e',
+              outline: '#74777f',
+              'outline-variant': '#c4c6cf',
+            }
+          }
+        }
+      };
+    }
+  </script>
   <style>
     .login-card {
       background: #ffffff;
-      border-radius: 0.75rem;
-      box-shadow: 0 8px 24px rgba(27,28,26,0.04);
+      border-radius: 1rem;
+      box-shadow: 0px 8px 24px rgba(2, 36, 69, 0.04);
       padding: 2.5rem 2rem;
     }
     .login-btn {
-      background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
-      color: #fff; border: none; border-radius: 0.5rem;
-      padding: 0.875rem; font-size: 1rem; font-weight: 600;
+      background: linear-gradient(135deg, #000e21 0%, #022445 100%);
+      color: #fff; border: none; border-radius: 0.75rem;
+      padding: 1rem; font-size: 1rem; font-weight: 700;
       font-family: 'Heebo', sans-serif;
-      cursor: pointer; transition: opacity 0.2s; width: 100%;
+      cursor: pointer; transition: all 0.3s; width: 100%;
     }
     .login-btn:hover { opacity: 0.92; }
     .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -31,7 +64,7 @@
     <!-- Logo -->
     <div class="text-center mb-8">
       <img src="/images/logo-half.png" alt="Safe Capital" class="h-10 mx-auto mb-4">
-      <h1 class="text-2xl font-bold" style="color: #022445; font-family: 'Heebo', sans-serif;">אזור המשקיעים</h1>
+      <h1 class="text-2xl font-bold" style="color: #000e21; font-family: 'Heebo', sans-serif;">אזור המשקיעים</h1>
       <p class="text-sm mt-2" style="color: #43474e;">התחבר כדי לצפות בהשקעות שלך</p>
     </div>
 
@@ -88,7 +121,7 @@
 
     <p class="text-center text-sm mt-6" style="color: #74777f;">
       שכחת סיסמה?
-      <a href="https://wa.me/972544594947" target="_blank" class="underline hover:no-underline" style="color: #022445;">צור קשר</a>
+      <a href="https://wa.me/972544594947" target="_blank" class="underline hover:no-underline" style="color: #000e21;">צור קשר</a>
     </p>
   </div>
 
