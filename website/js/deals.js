@@ -46,8 +46,30 @@ function formatUSD(value) {
 
 // ── Timeline renderer ────────────────────────────────────────────────────────
 
-function renderTimeline(steps) {
+// Map property_status to timeline step index for fallback sync
+const STATUS_TO_STEP_INDEX = {
+  sourcing: 0,
+  purchased: 1,
+  planning: 2,
+  renovation: 3,
+  selling: 4,
+  sold: 5
+};
+
+function renderTimeline(steps, propertyStatus) {
   if (!steps || steps.length === 0) return '';
+
+  // Sync timeline with property_status if timeline data is stale
+  const expectedIndex = STATUS_TO_STEP_INDEX[propertyStatus] || 0;
+  steps.forEach((step, i) => {
+    if (i < expectedIndex) {
+      step.status = 'completed';
+    } else if (i === expectedIndex) {
+      step.status = 'active';
+    } else {
+      step.status = 'pending';
+    }
+  });
 
   // Calculate progress percentage
   let activeIndex = -1;
@@ -220,7 +242,7 @@ function renderGallery(images) {
 // ── Full expanded deal content ───────────────────────────────────────────────
 
 function renderExpandedContent(deal) {
-  const timelineHtml        = renderTimeline(deal.timeline);
+  const timelineHtml        = renderTimeline(deal.timeline, deal.property_status);
   const fundraisingBarHtml  = renderFundraisingBar(deal);
   const costCatsHtml        = renderCostCategories(deal.cost_categories);
   const specsHtml           = renderSpecs(deal.specs);
