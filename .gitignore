@@ -39,6 +39,7 @@ oxmoore/
 
 # Credentials
 supabase-credentials.txt
+.mcp.json
 
 # Source/design files
 google_stitch/
@@ -49,3 +50,4 @@ qa-plugin/
 prompt_*.md
 admin-dashboard-spec.md
 *-spec.md
+.vercel

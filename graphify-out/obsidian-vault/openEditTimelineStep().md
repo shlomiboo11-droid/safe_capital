@@ -1,0 +1,17 @@
+---
+source_file: "admin/public/js/deal-tabs/timeline.js"
+type: "code"
+community: "Timeline Management"
+location: "L333"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Timeline_Management
+---
+
+# openEditTimelineStep()
+
+## Connections
+- [[timeline.js]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/Timeline_Management

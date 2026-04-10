@@ -1,0 +1,4987 @@
+{
+  "nodes": [
+    {
+      "id": "seed_content",
+      "label": "seed-content.js",
+      "file_type": "code",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "seed_content_readagentfile",
+      "label": "readAgentFile()",
+      "file_type": "code",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L18"
+    },
+    {
+      "id": "seed_content_seed",
+      "label": "seed()",
+      "file_type": "code",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L198"
+    },
+    {
+      "id": "server",
+      "label": "server.js",
+      "file_type": "code",
+      "source_file": "admin/server/server.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "db",
+      "label": "db.js",
+      "file_type": "code",
+      "source_file": "admin/server/db.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "db_initdb",
+      "label": "initDb()",
+      "file_type": "code",
+      "source_file": "admin/server/db.js",
+      "source_location": "L14"
+    },
+    {
+      "id": "migrate_investors",
+      "label": "migrate-investors.js",
+      "file_type": "code",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "migrate_investors_parsename",
+      "label": "parseName()",
+      "file_type": "code",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L17"
+    },
+    {
+      "id": "migrate_investors_migrate",
+      "label": "migrate()",
+      "file_type": "code",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L26"
+    },
+    {
+      "id": "seed_settings",
+      "label": "seed-settings.js",
+      "file_type": "code",
+      "source_file": "admin/server/seed-settings.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "seed_settings_seedsettings",
+      "label": "seedSettings()",
+      "file_type": "code",
+      "source_file": "admin/server/seed-settings.js",
+      "source_location": "L37"
+    },
+    {
+      "id": "seed",
+      "label": "seed.js",
+      "file_type": "code",
+      "source_file": "admin/server/seed.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "seed_seed",
+      "label": "seed()",
+      "file_type": "code",
+      "source_file": "admin/server/seed.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "auth",
+      "label": "auth.js",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "auth_authenticate",
+      "label": "authenticate()",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L10"
+    },
+    {
+      "id": "auth_authorize",
+      "label": "authorize()",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L30"
+    },
+    {
+      "id": "auth_generatetoken",
+      "label": "generateToken()",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L45"
+    },
+    {
+      "id": "portalauth",
+      "label": "portalAuth.js",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/portalAuth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "portalauth_portalauthenticate",
+      "label": "portalAuthenticate()",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/portalAuth.js",
+      "source_location": "L12"
+    },
+    {
+      "id": "deal_cashflow",
+      "label": "deal-cashflow.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deal_cashflow_recalcactualamount",
+      "label": "recalcActualAmount()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": "L164"
+    },
+    {
+      "id": "investors",
+      "label": "investors.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/investors.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "google_drive",
+      "label": "google-drive.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "google_drive_makeoauth2client",
+      "label": "makeOAuth2Client()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L27"
+    },
+    {
+      "id": "google_drive_ensuretables",
+      "label": "ensureTables()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L37"
+    },
+    {
+      "id": "google_drive_getstoredtokens",
+      "label": "getStoredTokens()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L68"
+    },
+    {
+      "id": "google_drive_getauthenticateddrive",
+      "label": "getAuthenticatedDrive()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L73"
+    },
+    {
+      "id": "google_drive_downloaddrivefile",
+      "label": "downloadDriveFile()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L337"
+    },
+    {
+      "id": "deal_sub_entities",
+      "label": "deal-sub-entities.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-sub-entities.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deal_financials",
+      "label": "deal-financials.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "public",
+      "label": "public.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/public.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "auth",
+      "label": "auth.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "users",
+      "label": "users.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/users.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deals",
+      "label": "deals.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "upload",
+      "label": "upload.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/upload.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "portal",
+      "label": "portal.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/portal.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "audit",
+      "label": "audit.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/audit.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "extract",
+      "label": "extract.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "extract_parseaiamount",
+      "label": "parseAIAmount()",
+      "file_type": "code",
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": "L120"
+    },
+    {
+      "id": "content",
+      "label": "content.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/content.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "settings",
+      "label": "settings.js",
+      "file_type": "code",
+      "source_file": "admin/server/routes/settings.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "audit",
+      "label": "audit.js",
+      "file_type": "code",
+      "source_file": "admin/server/helpers/audit.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "audit_logaudit",
+      "label": "logAudit()",
+      "file_type": "code",
+      "source_file": "admin/server/helpers/audit.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "zillow_scraper",
+      "label": "zillow-scraper.js",
+      "file_type": "code",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "zillow_scraper_fetchzillowimages",
+      "label": "fetchZillowImages()",
+      "file_type": "code",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L21"
+    },
+    {
+      "id": "zillow_scraper_extractimagesfromresponse",
+      "label": "extractImagesFromResponse()",
+      "file_type": "code",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L86"
+    },
+    {
+      "id": "zillow_scraper_iszillowimageurl",
+      "label": "isZillowImageUrl()",
+      "file_type": "code",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L151"
+    },
+    {
+      "id": "xlsx_extractor",
+      "label": "xlsx-extractor.js",
+      "file_type": "code",
+      "source_file": "admin/server/services/xlsx-extractor.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "xlsx_extractor_getxlsxastext",
+      "label": "getXlsxAsText()",
+      "file_type": "code",
+      "source_file": "admin/server/services/xlsx-extractor.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "ai_extractor",
+      "label": "ai-extractor.js",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "ai_extractor_callclaude",
+      "label": "callClaude()",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L21"
+    },
+    {
+      "id": "ai_extractor_parseaijson",
+      "label": "parseAIJson()",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L54"
+    },
+    {
+      "id": "ai_extractor_analyzealldocuments",
+      "label": "analyzeAllDocuments()",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L134"
+    },
+    {
+      "id": "profile",
+      "label": "profile.js",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "profile_loadprofile",
+      "label": "loadProfile()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "profile_renderprofile",
+      "label": "renderProfile()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L36"
+    },
+    {
+      "id": "profile_profilefield",
+      "label": "profileField()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L121"
+    },
+    {
+      "id": "profile_handlepasswordchange",
+      "label": "handlePasswordChange()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L130"
+    },
+    {
+      "id": "profile_showtoast",
+      "label": "showToast()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L176"
+    },
+    {
+      "id": "auth",
+      "label": "auth.js",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/auth.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "auth_requireportalauth",
+      "label": "requirePortalAuth()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/auth.js",
+      "source_location": "L58"
+    },
+    {
+      "id": "deal",
+      "label": "deal.js",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deal_formatcurrency",
+      "label": "formatCurrency()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L42"
+    },
+    {
+      "id": "deal_formatdate",
+      "label": "formatDate()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L48"
+    },
+    {
+      "id": "deal_formatdateshort",
+      "label": "formatDateShort()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L56"
+    },
+    {
+      "id": "deal_escapehtml",
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L63"
+    },
+    {
+      "id": "deal_hasvalue",
+      "label": "hasValue()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L70"
+    },
+    {
+      "id": "deal_deviationclass",
+      "label": "deviationClass()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L74"
+    },
+    {
+      "id": "deal_loaddeal",
+      "label": "loadDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L84"
+    },
+    {
+      "id": "deal_errorhtml",
+      "label": "errorHTML()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L107"
+    },
+    {
+      "id": "deal_renderdeal",
+      "label": "renderDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L121"
+    },
+    {
+      "id": "deal_rendersummaryheader",
+      "label": "renderSummaryHeader()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L171"
+    },
+    {
+      "id": "deal_rendermyinvestment",
+      "label": "renderMyInvestment()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L233"
+    },
+    {
+      "id": "deal_rendertimeline",
+      "label": "renderTimeline()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L280"
+    },
+    {
+      "id": "deal_renderplanvsactual",
+      "label": "renderPlanVsActual()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L309"
+    },
+    {
+      "id": "deal_planrow",
+      "label": "planRow()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L392"
+    },
+    {
+      "id": "deal_planrowtotal",
+      "label": "planRowTotal()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L404"
+    },
+    {
+      "id": "deal_renderspecs",
+      "label": "renderSpecs()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L415"
+    },
+    {
+      "id": "deal_rendergallery",
+      "label": "renderGallery()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L458"
+    },
+    {
+      "id": "deal_rendercomps",
+      "label": "renderComps()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L509"
+    },
+    {
+      "id": "deal_renderdocuments",
+      "label": "renderDocuments()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L553"
+    },
+    {
+      "id": "deal_renderrenovationplan",
+      "label": "renderRenovationPlan()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L603"
+    },
+    {
+      "id": "deal_initlightbox",
+      "label": "initLightbox()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L673"
+    },
+    {
+      "id": "deal_openlightbox",
+      "label": "openLightbox()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L727"
+    },
+    {
+      "id": "deal_closelightbox",
+      "label": "closeLightbox()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L735"
+    },
+    {
+      "id": "deal_updatelightbox",
+      "label": "updateLightbox()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L744"
+    },
+    {
+      "id": "shared",
+      "label": "shared.js",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "shared_getcurrentpage",
+      "label": "getCurrentPage()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "shared_fetchunreadcount",
+      "label": "fetchUnreadCount()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "shared_updatebadges",
+      "label": "updateBadges()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L26"
+    },
+    {
+      "id": "shared_buildheader",
+      "label": "buildHeader()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L38"
+    },
+    {
+      "id": "shared_togglemobilemenu",
+      "label": "toggleMobileMenu()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L102"
+    },
+    {
+      "id": "shared_buildfooter",
+      "label": "buildFooter()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L111"
+    },
+    {
+      "id": "shared_buildbottomnav",
+      "label": "buildBottomNav()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L133"
+    },
+    {
+      "id": "shared_initportalshell",
+      "label": "initPortalShell()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L157"
+    },
+    {
+      "id": "notifications",
+      "label": "notifications.js",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "notifications_escapehtml",
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "notifications_relativedate",
+      "label": "relativeDate()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L17"
+    },
+    {
+      "id": "notifications_getnotificationicon",
+      "label": "getNotificationIcon()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L35"
+    },
+    {
+      "id": "notifications_loadnotifications",
+      "label": "loadNotifications()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L46"
+    },
+    {
+      "id": "notifications_rendernotifications",
+      "label": "renderNotifications()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L76"
+    },
+    {
+      "id": "notifications_markasread",
+      "label": "markAsRead()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L143"
+    },
+    {
+      "id": "notifications_markallasread",
+      "label": "markAllAsRead()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L167"
+    },
+    {
+      "id": "notifications_updateheaderbadge",
+      "label": "updateHeaderBadge()",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L202"
+    },
+    {
+      "id": "deal_edit",
+      "label": "deal-edit.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deal_edit_loaddeal",
+      "label": "loadDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L25"
+    },
+    {
+      "id": "deal_edit_savedealfield",
+      "label": "saveDealField()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L72"
+    },
+    {
+      "id": "deal_edit_deletedeal",
+      "label": "deleteDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L82"
+    },
+    {
+      "id": "deal_edit_reloaddeal",
+      "label": "reloadDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L102"
+    },
+    {
+      "id": "deal_edit_openquickcashflow",
+      "label": "openQuickCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L134"
+    },
+    {
+      "id": "deal_edit_closequickcashflow",
+      "label": "closeQuickCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L186"
+    },
+    {
+      "id": "deal_edit_setquickcashflowtype",
+      "label": "setQuickCashflowType()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L191"
+    },
+    {
+      "id": "deal_edit_populatequickcategories",
+      "label": "populateQuickCategories()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L217"
+    },
+    {
+      "id": "deal_edit_updatequickcostitems",
+      "label": "updateQuickCostItems()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L233"
+    },
+    {
+      "id": "deal_edit_submitquickcashflow",
+      "label": "submitQuickCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L251"
+    },
+    {
+      "id": "deal_wizard",
+      "label": "deal-wizard.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deal_wizard_renderuploadcards",
+      "label": "renderUploadCards()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L38"
+    },
+    {
+      "id": "deal_wizard_handledrop",
+      "label": "handleDrop()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L78"
+    },
+    {
+      "id": "deal_wizard_handlefileselect",
+      "label": "handleFileSelect()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L89"
+    },
+    {
+      "id": "deal_wizard_showfilenames",
+      "label": "showFileNames()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L98"
+    },
+    {
+      "id": "deal_wizard_updateextractbutton",
+      "label": "updateExtractButton()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L111"
+    },
+    {
+      "id": "deal_wizard_startextraction",
+      "label": "startExtraction()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L121"
+    },
+    {
+      "id": "deal_wizard_renderreviewstep",
+      "label": "renderReviewStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L190"
+    },
+    {
+      "id": "deal_wizard_recalcalltotals",
+      "label": "recalcAllTotals()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L461"
+    },
+    {
+      "id": "deal_wizard_esc",
+      "label": "esc()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L497"
+    },
+    {
+      "id": "deal_wizard_savedealfromextraction",
+      "label": "saveDealFromExtraction()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L505"
+    },
+    {
+      "id": "deal_wizard_gotostep",
+      "label": "goToStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L526"
+    },
+    {
+      "id": "users",
+      "label": "users.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "users_loadusers",
+      "label": "loadUsers()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L29"
+    },
+    {
+      "id": "users_renderusers",
+      "label": "renderUsers()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L39"
+    },
+    {
+      "id": "users_showaddusermodal",
+      "label": "showAddUserModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L76"
+    },
+    {
+      "id": "users_edituser",
+      "label": "editUser()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L86"
+    },
+    {
+      "id": "users_closeusermodal",
+      "label": "closeUserModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L99"
+    },
+    {
+      "id": "users_toggleuserstatus",
+      "label": "toggleUserStatus()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L129"
+    },
+    {
+      "id": "users_deleteuser",
+      "label": "deleteUser()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L143"
+    },
+    {
+      "id": "users_showresetpw",
+      "label": "showResetPw()",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L154"
+    },
+    {
+      "id": "deals",
+      "label": "deals.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "deals_loaddeals",
+      "label": "loadDeals()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L37"
+    },
+    {
+      "id": "deals_renderdealcard",
+      "label": "renderDealCard()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L70"
+    },
+    {
+      "id": "deals_toggledealmenu",
+      "label": "toggleDealMenu()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L128"
+    },
+    {
+      "id": "deals_openinlinecashflow",
+      "label": "openInlineCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L161"
+    },
+    {
+      "id": "deals_closeinlinecashflow",
+      "label": "closeInlineCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L273"
+    },
+    {
+      "id": "deals_setinlinecftype",
+      "label": "setInlineCfType()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L278"
+    },
+    {
+      "id": "deals_updateinlinecostitems",
+      "label": "updateInlineCostItems()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L297"
+    },
+    {
+      "id": "deals_submitinlinecashflow",
+      "label": "submitInlineCashflow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L314"
+    },
+    {
+      "id": "deals_openthumbnailpicker",
+      "label": "openThumbnailPicker()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L355"
+    },
+    {
+      "id": "deals_deletedealwithpassword",
+      "label": "deleteDealWithPassword()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L414"
+    },
+    {
+      "id": "deals_createnewdeal",
+      "label": "createNewDeal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L441"
+    },
+    {
+      "id": "deals_closenewdealmodal",
+      "label": "closeNewDealModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L446"
+    },
+    {
+      "id": "utils",
+      "label": "utils.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "utils_formatcurrency",
+      "label": "formatCurrency()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L7"
+    },
+    {
+      "id": "utils_formatpercent",
+      "label": "formatPercent()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L17"
+    },
+    {
+      "id": "utils_formatnumber",
+      "label": "formatNumber()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L22"
+    },
+    {
+      "id": "utils_formatdate",
+      "label": "formatDate()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L27"
+    },
+    {
+      "id": "utils_formatdatetime",
+      "label": "formatDateTime()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L33"
+    },
+    {
+      "id": "utils_parseamount",
+      "label": "parseAmount()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L41"
+    },
+    {
+      "id": "utils_formatcurrencyinput",
+      "label": "formatCurrencyInput()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L52"
+    },
+    {
+      "id": "utils_unformatcurrencyinput",
+      "label": "unformatCurrencyInput()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L61"
+    },
+    {
+      "id": "utils_bindcurrencyinputs",
+      "label": "bindCurrencyInputs()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L70"
+    },
+    {
+      "id": "utils_getdeviationstatus",
+      "label": "getDeviationStatus()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L86"
+    },
+    {
+      "id": "utils_createelement",
+      "label": "createElement()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L135"
+    },
+    {
+      "id": "utils_showtoast",
+      "label": "showToast()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L151"
+    },
+    {
+      "id": "utils_showpromptmodal",
+      "label": "showPromptModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L169"
+    },
+    {
+      "id": "utils_showconfirmmodal",
+      "label": "showConfirmModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L213"
+    },
+    {
+      "id": "utils_confirmaction",
+      "label": "confirmAction()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L248"
+    },
+    {
+      "id": "utils_inittoggles",
+      "label": "initToggles()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L254"
+    },
+    {
+      "id": "utils_inittabs",
+      "label": "initTabs()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L266"
+    },
+    {
+      "id": "utils_geturlparam",
+      "label": "getUrlParam()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L286"
+    },
+    {
+      "id": "utils_getdealidfromurl",
+      "label": "getDealIdFromUrl()",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L291"
+    },
+    {
+      "id": "api",
+      "label": "api.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "api_requireauth",
+      "label": "requireAuth()",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": "L98"
+    },
+    {
+      "id": "api_hasrole",
+      "label": "hasRole()",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": "L109"
+    },
+    {
+      "id": "documents",
+      "label": "documents.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "documents_renderdocumentstab",
+      "label": "renderDocumentsTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "documents_adddocument",
+      "label": "addDocument()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L251"
+    },
+    {
+      "id": "documents_updatedocument",
+      "label": "updateDocument()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L275"
+    },
+    {
+      "id": "documents_deletedocument",
+      "label": "deleteDocument()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L283"
+    },
+    {
+      "id": "documents_deleteuploadeddoc",
+      "label": "deleteUploadedDoc()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L294"
+    },
+    {
+      "id": "documents_extractsingledoc",
+      "label": "extractSingleDoc()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L305"
+    },
+    {
+      "id": "documents_viewextracteddata",
+      "label": "viewExtractedData()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L320"
+    },
+    {
+      "id": "documents_applyextracteddata",
+      "label": "applyExtractedData()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L361"
+    },
+    {
+      "id": "fundraising",
+      "label": "fundraising.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "fundraising_renderfundraisingtab",
+      "label": "renderFundraisingTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L4"
+    },
+    {
+      "id": "fundraising_escapehtml",
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L136"
+    },
+    {
+      "id": "fundraising_addinvestor",
+      "label": "addInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L145"
+    },
+    {
+      "id": "fundraising_selectinvestor",
+      "label": "selectInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L316"
+    },
+    {
+      "id": "fundraising_clearselectedinvestor",
+      "label": "clearSelectedInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L327"
+    },
+    {
+      "id": "fundraising_updateinvestor",
+      "label": "updateInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L335"
+    },
+    {
+      "id": "fundraising_deletedealinvestor",
+      "label": "deleteDealInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L343"
+    },
+    {
+      "id": "fundraising_deleteinvestor",
+      "label": "deleteInvestor()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L355"
+    },
+    {
+      "id": "fundraising_opennotifyinvestorsmodal",
+      "label": "openNotifyInvestorsModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L358"
+    },
+    {
+      "id": "financial",
+      "label": "financial.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "financial_renderfinancialtab",
+      "label": "renderFinancialTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L16"
+    },
+    {
+      "id": "financial_rendercategoryrows",
+      "label": "renderCategoryRows()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L185"
+    },
+    {
+      "id": "financial_togglefinancialeditmode",
+      "label": "toggleFinancialEditMode()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L281"
+    },
+    {
+      "id": "financial_recalcfinancials",
+      "label": "recalcFinancials()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L294"
+    },
+    {
+      "id": "financial_addcategory",
+      "label": "addCategory()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L307"
+    },
+    {
+      "id": "financial_updatecategoryname",
+      "label": "updateCategoryName()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L319"
+    },
+    {
+      "id": "financial_deletecategory",
+      "label": "deleteCategory()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L328"
+    },
+    {
+      "id": "financial_addcostitem",
+      "label": "addCostItem()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L339"
+    },
+    {
+      "id": "financial_updatecostitem",
+      "label": "updateCostItem()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L351"
+    },
+    {
+      "id": "financial_deletecostitem",
+      "label": "deleteCostItem()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L359"
+    },
+    {
+      "id": "specs",
+      "label": "specs.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "specs_renderspecstab",
+      "label": "renderSpecsTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "specs_buildspecshtml",
+      "label": "buildSpecsHTML()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L11"
+    },
+    {
+      "id": "specs_addspec",
+      "label": "addSpec()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L53"
+    },
+    {
+      "id": "specs_updatespec",
+      "label": "updateSpec()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L72"
+    },
+    {
+      "id": "specs_deletespec",
+      "label": "deleteSpec()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L77"
+    },
+    {
+      "id": "property",
+      "label": "property.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/property.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "property_renderpropertytab",
+      "label": "renderPropertyTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/property.js",
+      "source_location": "L5"
+    },
+    {
+      "id": "timeline",
+      "label": "timeline.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "timeline_getactivestageindex",
+      "label": "getActiveStageIndex()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L28"
+    },
+    {
+      "id": "timeline_buildtimelinecharthtml",
+      "label": "buildTimelineChartHTML()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L37"
+    },
+    {
+      "id": "timeline_onstageclick",
+      "label": "onStageClick()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L73"
+    },
+    {
+      "id": "timeline_rendertimelinetab",
+      "label": "renderTimelineTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L127"
+    },
+    {
+      "id": "timeline_buildtimelinetabhtml",
+      "label": "buildTimelineTabHTML()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L178"
+    },
+    {
+      "id": "timeline_buildsteprowhtml",
+      "label": "buildStepRowHTML()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L220"
+    },
+    {
+      "id": "timeline_escapehtml",
+      "label": "escapeHtml()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L291"
+    },
+    {
+      "id": "timeline_quickcyclestepstatus",
+      "label": "quickCycleStepStatus()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L306"
+    },
+    {
+      "id": "timeline_openaddtimelinestep",
+      "label": "openAddTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L319"
+    },
+    {
+      "id": "timeline_openedittimelinestep",
+      "label": "openEditTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L333"
+    },
+    {
+      "id": "timeline_closetimelinestepmodal",
+      "label": "closeTimelineStepModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L344"
+    },
+    {
+      "id": "timeline_submittimelinestep",
+      "label": "submitTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L350"
+    },
+    {
+      "id": "timeline_deletetimelinestep",
+      "label": "deleteTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L394"
+    },
+    {
+      "id": "timeline_addtimelinestep",
+      "label": "addTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L408"
+    },
+    {
+      "id": "timeline_updatetimelinestep",
+      "label": "updateTimelineStep()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L409"
+    },
+    {
+      "id": "cashflow",
+      "label": "cashflow.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "cashflow_rendercashflowtab",
+      "label": "renderCashflowTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L23"
+    },
+    {
+      "id": "cashflow_toggleinlinecategoryfields",
+      "label": "toggleInlineCategoryFields()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L275"
+    },
+    {
+      "id": "cashflow_updatecostitemselect",
+      "label": "updateCostItemSelect()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L289"
+    },
+    {
+      "id": "cashflow_applycashflowfilter",
+      "label": "applyCashflowFilter()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L310"
+    },
+    {
+      "id": "cashflow_clearcashflowfilters",
+      "label": "clearCashflowFilters()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L317"
+    },
+    {
+      "id": "cashflow_editcashflowentry",
+      "label": "editCashflowEntry()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L327"
+    },
+    {
+      "id": "cashflow_deletecashflowentry",
+      "label": "deleteCashflowEntry()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L335"
+    },
+    {
+      "id": "comps",
+      "label": "comps.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "comps_rendercompstab",
+      "label": "renderCompsTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L6"
+    },
+    {
+      "id": "comps_loadgooglemaps",
+      "label": "_loadGoogleMaps()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L139"
+    },
+    {
+      "id": "comps_initcompsmap",
+      "label": "initCompsMap()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L156"
+    },
+    {
+      "id": "comps_buildourdata",
+      "label": "_buildOurData()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L248"
+    },
+    {
+      "id": "comps_indicator",
+      "label": "_indicator()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L271"
+    },
+    {
+      "id": "comps_compdatarow",
+      "label": "_compDataRow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L282"
+    },
+    {
+      "id": "comps_rendercompcolumn",
+      "label": "_renderCompColumn()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L292"
+    },
+    {
+      "id": "comps_addcompfromzillow",
+      "label": "addCompFromZillow()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L349"
+    },
+    {
+      "id": "comps_generatecompsanalysis",
+      "label": "generateCompsAnalysis()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L387"
+    },
+    {
+      "id": "comps_updatecomp",
+      "label": "updateComp()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L411"
+    },
+    {
+      "id": "comps_deletecomp",
+      "label": "deleteComp()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L420"
+    },
+    {
+      "id": "comps_opencompgallery",
+      "label": "openCompGallery()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L435"
+    },
+    {
+      "id": "comps_closecompgallery",
+      "label": "closeCompGallery()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L451"
+    },
+    {
+      "id": "comps_rendergallerygrid",
+      "label": "_renderGalleryGrid()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L456"
+    },
+    {
+      "id": "comps_uploadcompimages",
+      "label": "uploadCompImages()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L478"
+    },
+    {
+      "id": "comps_setcompprimaryimage",
+      "label": "setCompPrimaryImage()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L492"
+    },
+    {
+      "id": "comps_deletecompimage",
+      "label": "deleteCompImage()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L503"
+    },
+    {
+      "id": "renovation",
+      "label": "renovation.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "renovation_renderrenovationtab",
+      "label": "renderRenovationTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L15"
+    },
+    {
+      "id": "renovation_togglerenovationeditmode",
+      "label": "toggleRenovationEditMode()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L209"
+    },
+    {
+      "id": "renovation_handlephasecostchange",
+      "label": "handlePhaseCostChange()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L223"
+    },
+    {
+      "id": "renovation_autorecalcrenovationtotal",
+      "label": "autoRecalcRenovationTotal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L237"
+    },
+    {
+      "id": "renovation_togglephasecompletion",
+      "label": "togglePhaseCompletion()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L266"
+    },
+    {
+      "id": "renovation_updaterenovationfield",
+      "label": "updateRenovationField()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L323"
+    },
+    {
+      "id": "renovation_updaterenovationphase",
+      "label": "updateRenovationPhase()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L331"
+    },
+    {
+      "id": "renovation_deleterenovationphase",
+      "label": "deleteRenovationPhase()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L344"
+    },
+    {
+      "id": "renovation_addrenovationphase",
+      "label": "addRenovationPhase()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L367"
+    },
+    {
+      "id": "renovation_reloadrenovationtab",
+      "label": "reloadRenovationTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L400"
+    },
+    {
+      "id": "renovation_escapehtmlrenovation",
+      "label": "escapeHtmlRenovation()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L404"
+    },
+    {
+      "id": "images",
+      "label": "images.js",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "images_renderimagestab",
+      "label": "renderImagesTab()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L17"
+    },
+    {
+      "id": "images_handleimageupload",
+      "label": "handleImageUpload()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L209"
+    },
+    {
+      "id": "images_handleimagedrop",
+      "label": "handleImageDrop()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L224"
+    },
+    {
+      "id": "images_deleteimage",
+      "label": "deleteImage()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L232"
+    },
+    {
+      "id": "images_fetchzillowimages",
+      "label": "fetchZillowImages()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L245"
+    },
+    {
+      "id": "images_connectgoogledrive",
+      "label": "connectGoogleDrive()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L288"
+    },
+    {
+      "id": "images_disconnectgoogledrive",
+      "label": "disconnectGoogleDrive()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L293"
+    },
+    {
+      "id": "images_handledriveurlparams",
+      "label": "_handleDriveUrlParams()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L304"
+    },
+    {
+      "id": "images_opendrivelinkmodal",
+      "label": "openDriveLinkModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L320"
+    },
+    {
+      "id": "images_closedrivelinkmodal",
+      "label": "closeDriveLinkModal()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L333"
+    },
+    {
+      "id": "images_submitdrivelink",
+      "label": "submitDriveLink()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L338"
+    },
+    {
+      "id": "images_syncdrivefolder",
+      "label": "syncDriveFolder()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L367"
+    },
+    {
+      "id": "images_unlinkdrivefolder",
+      "label": "unlinkDriveFolder()",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L386"
+    }
+  ],
+  "edges": [
+    {
+      "source": "seed_content",
+      "target": "seed_content_readagentfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "seed_content",
+      "target": "seed_content_seed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "seed_content_seed",
+      "target": "seed_content_readagentfile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/seed-content.js",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "db",
+      "target": "db_initdb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/db.js",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "migrate_investors",
+      "target": "migrate_investors_parsename",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "migrate_investors",
+      "target": "migrate_investors_migrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "migrate_investors_migrate",
+      "target": "migrate_investors_parsename",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/migrate-investors.js",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "seed_settings",
+      "target": "seed_settings_seedsettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/seed-settings.js",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "seed",
+      "target": "seed_seed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/seed.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "auth",
+      "target": "auth_authenticate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "auth",
+      "target": "auth_authorize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "auth",
+      "target": "auth_generatetoken",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "portalauth",
+      "target": "portalauth_portalauthenticate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/middleware/portalAuth.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_cashflow",
+      "target": "deal_cashflow_recalcactualamount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive",
+      "target": "google_drive_makeoauth2client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive",
+      "target": "google_drive_ensuretables",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive",
+      "target": "google_drive_getstoredtokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive",
+      "target": "google_drive_getauthenticateddrive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive",
+      "target": "google_drive_downloaddrivefile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive_getauthenticateddrive",
+      "target": "google_drive_getstoredtokens",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "google_drive_getauthenticateddrive",
+      "target": "google_drive_makeoauth2client",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "extract",
+      "target": "extract_parseaiamount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "audit",
+      "target": "audit_logaudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/helpers/audit.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "zillow_scraper",
+      "target": "zillow_scraper_fetchzillowimages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "zillow_scraper",
+      "target": "zillow_scraper_extractimagesfromresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "zillow_scraper",
+      "target": "zillow_scraper_iszillowimageurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "zillow_scraper_fetchzillowimages",
+      "target": "zillow_scraper_extractimagesfromresponse",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "xlsx_extractor",
+      "target": "xlsx_extractor_getxlsxastext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/xlsx-extractor.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_extractor",
+      "target": "ai_extractor_callclaude",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_extractor",
+      "target": "ai_extractor_parseaijson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_extractor",
+      "target": "ai_extractor_analyzealldocuments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_extractor_analyzealldocuments",
+      "target": "ai_extractor_callclaude",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_extractor_analyzealldocuments",
+      "target": "ai_extractor_parseaijson",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "profile",
+      "target": "profile_loadprofile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "profile",
+      "target": "profile_renderprofile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "profile",
+      "target": "profile_profilefield",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "profile",
+      "target": "profile_handlepasswordchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "profile",
+      "target": "profile_showtoast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "profile_loadprofile",
+      "target": "profile_renderprofile",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "profile_renderprofile",
+      "target": "profile_profilefield",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "profile_handlepasswordchange",
+      "target": "profile_showtoast",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/profile.js",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "auth",
+      "target": "auth_requireportalauth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/auth.js",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_formatcurrency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_formatdate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_formatdateshort",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_escapehtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_hasvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_deviationclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_loaddeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_errorhtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_renderdeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_rendersummaryheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_rendermyinvestment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_rendertimeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_renderplanvsactual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L309",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_planrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L392",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_planrowtotal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L404",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_renderspecs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L415",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_rendergallery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L458",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_rendercomps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L509",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_renderdocuments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L553",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_renderrenovationplan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L603",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_initlightbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L673",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_openlightbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L727",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_closelightbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L735",
+      "weight": 1.0
+    },
+    {
+      "source": "deal",
+      "target": "deal_updatelightbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L744",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_deviationclass",
+      "target": "deal_hasvalue",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_loaddeal",
+      "target": "deal_errorhtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_loaddeal",
+      "target": "deal_renderdeal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_errorhtml",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_rendersummaryheader",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_rendermyinvestment",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_rendertimeline",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_renderplanvsactual",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_renderspecs",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_rendergallery",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_rendercomps",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_renderdocuments",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_renderrenovationplan",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderdeal",
+      "target": "deal_initlightbox",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_rendersummaryheader",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L193",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_rendersummaryheader",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_rendermyinvestment",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_rendermyinvestment",
+      "target": "deal_formatdate",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_rendermyinvestment",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L274",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderplanvsactual",
+      "target": "deal_planrow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L326",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderplanvsactual",
+      "target": "deal_planrowtotal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L342",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderplanvsactual",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L348",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderplanvsactual",
+      "target": "deal_deviationclass",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L349",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrow",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L397",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrow",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L398",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrow",
+      "target": "deal_deviationclass",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L399",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrowtotal",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L407",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrowtotal",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L408",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_planrowtotal",
+      "target": "deal_deviationclass",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L409",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderrenovationplan",
+      "target": "deal_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L621",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_renderrenovationplan",
+      "target": "deal_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L631",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_initlightbox",
+      "target": "deal_closelightbox",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L697",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_initlightbox",
+      "target": "deal_updatelightbox",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L704",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_openlightbox",
+      "target": "deal_updatelightbox",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": "L731",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_getcurrentpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_fetchunreadcount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_updatebadges",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_buildheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_togglemobilemenu",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_buildfooter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_buildbottomnav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "shared",
+      "target": "shared_initportalshell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_fetchunreadcount",
+      "target": "shared_updatebadges",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_initportalshell",
+      "target": "shared_getcurrentpage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_initportalshell",
+      "target": "shared_buildheader",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_initportalshell",
+      "target": "shared_buildfooter",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_initportalshell",
+      "target": "shared_buildbottomnav",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "shared_initportalshell",
+      "target": "shared_fetchunreadcount",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_escapehtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_relativedate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_getnotificationicon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_loadnotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_rendernotifications",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_markasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_markallasread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications",
+      "target": "notifications_updateheaderbadge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_loadnotifications",
+      "target": "notifications_rendernotifications",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_loadnotifications",
+      "target": "notifications_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_markasread",
+      "target": "notifications_updateheaderbadge",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "notifications_markallasread",
+      "target": "notifications_updateheaderbadge",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_loaddeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_savedealfield",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_deletedeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_reloaddeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_openquickcashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_closequickcashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_setquickcashflowtype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_populatequickcategories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_updatequickcostitems",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit",
+      "target": "deal_edit_submitquickcashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L251",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_loaddeal",
+      "target": "deal_edit_openquickcashflow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_openquickcashflow",
+      "target": "deal_edit_populatequickcategories",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_openquickcashflow",
+      "target": "deal_edit_setquickcashflowtype",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_openquickcashflow",
+      "target": "deal_edit_updatequickcostitems",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_submitquickcashflow",
+      "target": "deal_edit_closequickcashflow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_edit_submitquickcashflow",
+      "target": "deal_edit_reloaddeal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": "L303",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_renderuploadcards",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_handledrop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_handlefileselect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_showfilenames",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_updateextractbutton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_startextraction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_renderreviewstep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_recalcalltotals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L461",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_esc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L497",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_savedealfromextraction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L505",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard",
+      "target": "deal_wizard_gotostep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L526",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_handledrop",
+      "target": "deal_wizard_showfilenames",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_handledrop",
+      "target": "deal_wizard_updateextractbutton",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_handlefileselect",
+      "target": "deal_wizard_showfilenames",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_handlefileselect",
+      "target": "deal_wizard_updateextractbutton",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_startextraction",
+      "target": "deal_wizard_gotostep",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "deal_wizard_renderreviewstep",
+      "target": "deal_wizard_esc",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_loadusers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_renderusers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_showaddusermodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_edituser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_closeusermodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_toggleuserstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_deleteuser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users",
+      "target": "users_showresetpw",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_loadusers",
+      "target": "users_renderusers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_toggleuserstatus",
+      "target": "users_loadusers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_deleteuser",
+      "target": "users_loadusers",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/users.js",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_loaddeals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_renderdealcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_toggledealmenu",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_openinlinecashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_closeinlinecashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L273",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_setinlinecftype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L278",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_updateinlinecostitems",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_submitinlinecashflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_openthumbnailpicker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_deletedealwithpassword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L414",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_createnewdeal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L441",
+      "weight": 1.0
+    },
+    {
+      "source": "deals",
+      "target": "deals_closenewdealmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L446",
+      "weight": 1.0
+    },
+    {
+      "source": "deals_submitinlinecashflow",
+      "target": "deals_closeinlinecashflow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L345",
+      "weight": 1.0
+    },
+    {
+      "source": "deals_deletedealwithpassword",
+      "target": "deals_loaddeals",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": "L433",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatcurrency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatpercent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatnumber",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatdate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatdatetime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_parseamount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_formatcurrencyinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_unformatcurrencyinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_bindcurrencyinputs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_getdeviationstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_createelement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_showtoast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_showpromptmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_showconfirmmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_confirmaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_inittoggles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_inittabs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_geturlparam",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L286",
+      "weight": 1.0
+    },
+    {
+      "source": "utils",
+      "target": "utils_getdealidfromurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_formatcurrencyinput",
+      "target": "utils_parseamount",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_formatcurrencyinput",
+      "target": "utils_formatcurrency",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_unformatcurrencyinput",
+      "target": "utils_parseamount",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_showtoast",
+      "target": "utils_createelement",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_confirmaction",
+      "target": "utils_showconfirmmodal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "utils_getdealidfromurl",
+      "target": "utils_geturlparam",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "api",
+      "target": "api_requireauth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/api.js",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "api",
+      "target": "api_hasrole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/api.js",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_renderdocumentstab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_adddocument",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L251",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_updatedocument",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L275",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_deletedocument",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L283",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_deleteuploadeddoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L294",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_extractsingledoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L305",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_viewextracteddata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "documents",
+      "target": "documents_applyextracteddata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": "L361",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_renderfundraisingtab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_escapehtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_addinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_selectinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L316",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_clearselectedinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L327",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_updateinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L335",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_deletedealinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_deleteinvestor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising",
+      "target": "fundraising_opennotifyinvestorsmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L358",
+      "weight": 1.0
+    },
+    {
+      "source": "fundraising_deleteinvestor",
+      "target": "fundraising_deletedealinvestor",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_renderfinancialtab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_rendercategoryrows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_togglefinancialeditmode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_recalcfinancials",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L294",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_addcategory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L307",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_updatecategoryname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L319",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_deletecategory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_addcostitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L339",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_updatecostitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L351",
+      "weight": 1.0
+    },
+    {
+      "source": "financial",
+      "target": "financial_deletecostitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L359",
+      "weight": 1.0
+    },
+    {
+      "source": "financial_togglefinancialeditmode",
+      "target": "financial_renderfinancialtab",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "financial_recalcfinancials",
+      "target": "financial_renderfinancialtab",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "specs",
+      "target": "specs_renderspecstab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "specs",
+      "target": "specs_buildspecshtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "specs",
+      "target": "specs_addspec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "specs",
+      "target": "specs_updatespec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "specs",
+      "target": "specs_deletespec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/specs.js",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "property",
+      "target": "property_renderpropertytab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/property.js",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_getactivestageindex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_buildtimelinecharthtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_onstageclick",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_rendertimelinetab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_buildtimelinetabhtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_buildsteprowhtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_escapehtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_quickcyclestepstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_openaddtimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L319",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_openedittimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_closetimelinestepmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L344",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_submittimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L350",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_deletetimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L394",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_addtimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L408",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline",
+      "target": "timeline_updatetimelinestep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L409",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline_buildtimelinecharthtml",
+      "target": "timeline_getactivestageindex",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline_onstageclick",
+      "target": "timeline_buildtimelinecharthtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline_rendertimelinetab",
+      "target": "timeline_buildtimelinetabhtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline_buildsteprowhtml",
+      "target": "timeline_escapehtml",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "timeline_submittimelinestep",
+      "target": "timeline_closetimelinestepmodal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": "L384",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_rendercashflowtab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_toggleinlinecategoryfields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L275",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_updatecostitemselect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_applycashflowfilter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_clearcashflowfilters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L317",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_editcashflowentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L327",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow",
+      "target": "cashflow_deletecashflowentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L335",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow_applycashflowfilter",
+      "target": "cashflow_rendercashflowtab",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "cashflow_clearcashflowfilters",
+      "target": "cashflow_rendercashflowtab",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_rendercompstab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_loadgooglemaps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_initcompsmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_buildourdata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_indicator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_compdatarow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L282",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_rendercompcolumn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L292",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_addcompfromzillow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L349",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_generatecompsanalysis",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L387",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_updatecomp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L411",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_deletecomp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L420",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_opencompgallery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L435",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_closecompgallery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L451",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_rendergallerygrid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L456",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_uploadcompimages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L478",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_setcompprimaryimage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L492",
+      "weight": 1.0
+    },
+    {
+      "source": "comps",
+      "target": "comps_deletecompimage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L503",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_rendercompstab",
+      "target": "comps_buildourdata",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_rendercompstab",
+      "target": "comps_compdatarow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_rendercompstab",
+      "target": "comps_initcompsmap",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_initcompsmap",
+      "target": "comps_loadgooglemaps",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_compdatarow",
+      "target": "comps_indicator",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_rendercompcolumn",
+      "target": "comps_indicator",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L319",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_rendercompcolumn",
+      "target": "comps_compdatarow",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L330",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_opencompgallery",
+      "target": "comps_rendergallerygrid",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L441",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_uploadcompimages",
+      "target": "comps_closecompgallery",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L486",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_setcompprimaryimage",
+      "target": "comps_closecompgallery",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L497",
+      "weight": 1.0
+    },
+    {
+      "source": "comps_deletecompimage",
+      "target": "comps_closecompgallery",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": "L509",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_renderrenovationtab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_togglerenovationeditmode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_handlephasecostchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_autorecalcrenovationtotal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L237",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_togglephasecompletion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_updaterenovationfield",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L323",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_updaterenovationphase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L331",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_deleterenovationphase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L344",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_addrenovationphase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L367",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_reloadrenovationtab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L400",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation",
+      "target": "renovation_escapehtmlrenovation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L404",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation_renderrenovationtab",
+      "target": "renovation_escapehtmlrenovation",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation_togglerenovationeditmode",
+      "target": "renovation_renderrenovationtab",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation_handlephasecostchange",
+      "target": "renovation_updaterenovationphase",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "renovation_handlephasecostchange",
+      "target": "renovation_autorecalcrenovationtotal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_renderimagestab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_handleimageupload",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_handleimagedrop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_deleteimage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_fetchzillowimages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_connectgoogledrive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L288",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_disconnectgoogledrive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_handledriveurlparams",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L304",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_opendrivelinkmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_closedrivelinkmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_submitdrivelink",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L338",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_syncdrivefolder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L367",
+      "weight": 1.0
+    },
+    {
+      "source": "images",
+      "target": "images_unlinkdrivefolder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "images_renderimagestab",
+      "target": "images_handledriveurlparams",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "images_handleimagedrop",
+      "target": "images_handleimageupload",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "images_submitdrivelink",
+      "target": "images_closedrivelinkmodal",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": "L355",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

@@ -14,6 +14,34 @@
 
 **Available workflows:** `workflows/single_task.md`, `workflows/qa.md`
 
+## Image Generation — חובה בכל תמונה חסרה
+
+**כלל ברזל:** בכל מקום באתר שצריך תמונה — אל תשתמש ב-placeholder, אל תדלג, אל תבקש מהמשתמש. צור את התמונה בעצמך.
+
+### תהליך חובה:
+1. **הבן** מה התמונה צריכה להראות (הקשר הדף, המיקום, הגודל)
+2. **כתוב פרומפט** באנגלית, מציאותי ככל האפשר — פרט סגנון, תאורה, זווית, צבעים
+3. **צור** עם `generate_image` (nano-banana MCP) — תמיד עם יחס גובה-רוחב מתאים
+4. **העבר** את הקובץ מ-`generated_imgs/` ל-`website/images/` (או לתיקייה המתאימה)
+5. **שים** את הנתיב בקוד ה-HTML
+
+### עקרונות לפרומפט:
+- **תמיד באנגלית**
+- **תמיד פוטוריאליסטי:** "photorealistic, professional real estate photography, natural lighting, sharp focus, 8K"
+- **ספציפי:** אל תכתוב "house" — כתוב "brick ranch-style home in Birmingham Alabama, green lawn, blue sky, afternoon light"
+- **יחסי גובה-רוחב:** hero = `16:9`, כרטיסי דיל = `4:3`, פרופיל = `1:1`, מובייל = `9:16`
+
+### תיקיות:
+- תמונות אתר → `website/images/`
+- תמונות פורטל → `admin/public/portal/images/`
+- תמונות דיל ספציפי → `website/images/deals/[deal-name]/`
+
+## Graphify Auto-Update Rule
+בכל פעם שאתה משנה קובץ כלשהו בתיקיית `admin/` — בסוף התשובה שלך כתוב:
+> עדכנתי גם את גרפיפיי
+
+ה-hook מריץ את העדכון אוטומטית ברקע. ההודעה מאשרת לשלומי שזה קרה.
+
 ## Ironclad Rules
 - **Never change CSS, design, colors, layout, or styling** unless the user explicitly asks
 - **Never touch files outside the task scope** — no "improvements" or "cleanups"
@@ -69,6 +97,22 @@ Specialist agents in `.claude/agents/`, organized by team:
 |-------|---------------|
 | `project-manager` | Orchestrator — delegates to teams |
 | `debugger` | Bug finding and fixing |
+
+## Codebase Knowledge Graph (RAG)
+
+`graphify-out/` contains a pre-built knowledge graph of the `admin/` codebase:
+
+| File | Use |
+|------|-----|
+| `graphify-out/graph.json` | Machine-readable graph — 273 nodes, 336 edges, 43 communities |
+| `graphify-out/GRAPH_REPORT.md` | Plain-language architecture summary |
+| `graphify-out/graph.html` | Interactive visual explorer (open in browser) |
+
+**When to use:** Before touching any `admin/` code — read `graphify-out/GRAPH_REPORT.md` first to understand which modules are involved, then use `graph.json` to trace dependencies between functions/routes/files. This replaces blind `grep` searches across dozens of files.
+
+**Key communities:** Deal Detail UI · UI Utilities · Comps (Zillow) · Timeline · Images/Google Drive · Deal Wizard · Renovation · Financial · Fundraising · Documents & AI Extraction · Notifications · User Management · Shared Components
+
+**Refresh:** Run `/graphify admin` after major structural changes to the admin codebase.
 
 ## Deal Data
 Deal folders (e.g., `oxmoore/`) contain: financial calculators (.xlsx), photos, renderings, construction plans, loan docs. Always read actual deal files — never invent financial data.
