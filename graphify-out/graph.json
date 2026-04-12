@@ -9,7 +9,7 @@
       "source_file": "admin/server/seed-content.js",
       "source_location": "L1",
       "id": "seed_content",
-      "community": 22
+      "community": 24
     },
     {
       "label": "readAgentFile()",
@@ -17,7 +17,7 @@
       "source_file": "admin/server/seed-content.js",
       "source_location": "L18",
       "id": "seed_content_readagentfile",
-      "community": 22
+      "community": 24
     },
     {
       "label": "seed()",
@@ -25,7 +25,7 @@
       "source_file": "admin/server/seed-content.js",
       "source_location": "L198",
       "id": "seed_content_seed",
-      "community": 22
+      "community": 24
     },
     {
       "label": "server.js",
@@ -33,7 +33,7 @@
       "source_file": "admin/server/server.js",
       "source_location": "L1",
       "id": "server",
-      "community": 34
+      "community": 37
     },
     {
       "label": "db.js",
@@ -41,7 +41,7 @@
       "source_file": "admin/server/db.js",
       "source_location": "L1",
       "id": "db",
-      "community": 25
+      "community": 28
     },
     {
       "label": "initDb()",
@@ -49,7 +49,7 @@
       "source_file": "admin/server/db.js",
       "source_location": "L14",
       "id": "db_initdb",
-      "community": 25
+      "community": 28
     },
     {
       "label": "migrate-investors.js",
@@ -57,7 +57,7 @@
       "source_file": "admin/server/migrate-investors.js",
       "source_location": "L1",
       "id": "migrate_investors",
-      "community": 23
+      "community": 25
     },
     {
       "label": "parseName()",
@@ -65,7 +65,7 @@
       "source_file": "admin/server/migrate-investors.js",
       "source_location": "L17",
       "id": "migrate_investors_parsename",
-      "community": 23
+      "community": 25
     },
     {
       "label": "migrate()",
@@ -73,7 +73,7 @@
       "source_file": "admin/server/migrate-investors.js",
       "source_location": "L26",
       "id": "migrate_investors_migrate",
-      "community": 23
+      "community": 25
     },
     {
       "label": "seed-settings.js",
@@ -81,7 +81,7 @@
       "source_file": "admin/server/seed-settings.js",
       "source_location": "L1",
       "id": "seed_settings",
-      "community": 26
+      "community": 29
     },
     {
       "label": "seedSettings()",
@@ -89,7 +89,7 @@
       "source_file": "admin/server/seed-settings.js",
       "source_location": "L37",
       "id": "seed_settings_seedsettings",
-      "community": 26
+      "community": 29
     },
     {
       "label": "seed.js",
@@ -97,7 +97,7 @@
       "source_file": "admin/server/seed.js",
       "source_location": "L1",
       "id": "seed",
-      "community": 27
+      "community": 30
     },
     {
       "label": "seed()",
@@ -105,7 +105,7 @@
       "source_file": "admin/server/seed.js",
       "source_location": "L15",
       "id": "seed_seed",
-      "community": 27
+      "community": 30
     },
     {
       "label": "auth.js",
@@ -113,7 +113,7 @@
       "source_file": "admin/public/portal/js/auth.js",
       "source_location": "L1",
       "id": "auth",
-      "community": 19
+      "community": 1
     },
     {
       "label": "authenticate()",
@@ -121,7 +121,7 @@
       "source_file": "admin/server/middleware/auth.js",
       "source_location": "L10",
       "id": "auth_authenticate",
-      "community": 19
+      "community": 1
     },
     {
       "label": "authorize()",
@@ -129,7 +129,7 @@
       "source_file": "admin/server/middleware/auth.js",
       "source_location": "L30",
       "id": "auth_authorize",
-      "community": 19
+      "community": 1
     },
     {
       "label": "generateToken()",
@@ -137,7 +137,7 @@
       "source_file": "admin/server/middleware/auth.js",
       "source_location": "L45",
       "id": "auth_generatetoken",
-      "community": 19
+      "community": 1
     },
     {
       "label": "portalAuth.js",
@@ -145,7 +145,7 @@
       "source_file": "admin/server/middleware/portalAuth.js",
       "source_location": "L1",
       "id": "portalauth",
-      "community": 28
+      "community": 31
     },
     {
       "label": "portalAuthenticate()",
@@ -153,7 +153,7 @@
       "source_file": "admin/server/middleware/portalAuth.js",
       "source_location": "L12",
       "id": "portalauth_portalauthenticate",
-      "community": 28
+      "community": 31
     },
     {
       "label": "deal-cashflow.js",
@@ -161,7 +161,7 @@
       "source_file": "admin/server/routes/deal-cashflow.js",
       "source_location": "L1",
       "id": "deal_cashflow",
-      "community": 29
+      "community": 32
     },
     {
       "label": "recalcActualAmount()",
@@ -169,7 +169,7 @@
       "source_file": "admin/server/routes/deal-cashflow.js",
       "source_location": "L164",
       "id": "deal_cashflow_recalcactualamount",
-      "community": 29
+      "community": 32
     },
     {
       "label": "investors.js",
@@ -177,7 +177,7 @@
       "source_file": "admin/server/routes/investors.js",
       "source_location": "L1",
       "id": "investors",
-      "community": 35
+      "community": 38
     },
     {
       "label": "google-drive.js",
@@ -185,7 +185,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L1",
       "id": "google_drive",
-      "community": 16
+      "community": 19
     },
     {
       "label": "makeOAuth2Client()",
@@ -193,7 +193,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L27",
       "id": "google_drive_makeoauth2client",
-      "community": 16
+      "community": 19
     },
     {
       "label": "ensureTables()",
@@ -201,7 +201,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L37",
       "id": "google_drive_ensuretables",
-      "community": 16
+      "community": 19
     },
     {
       "label": "getStoredTokens()",
@@ -209,7 +209,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L68",
       "id": "google_drive_getstoredtokens",
-      "community": 16
+      "community": 19
     },
     {
       "label": "getAuthenticatedDrive()",
@@ -217,7 +217,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L73",
       "id": "google_drive_getauthenticateddrive",
-      "community": 16
+      "community": 19
     },
     {
       "label": "downloadDriveFile()",
@@ -225,7 +225,7 @@
       "source_file": "admin/server/routes/google-drive.js",
       "source_location": "L337",
       "id": "google_drive_downloaddrivefile",
-      "community": 16
+      "community": 19
     },
     {
       "label": "deal-sub-entities.js",
@@ -233,7 +233,7 @@
       "source_file": "admin/server/routes/deal-sub-entities.js",
       "source_location": "L1",
       "id": "deal_sub_entities",
-      "community": 36
+      "community": 39
     },
     {
       "label": "deal-financials.js",
@@ -241,7 +241,7 @@
       "source_file": "admin/server/routes/deal-financials.js",
       "source_location": "L1",
       "id": "deal_financials",
-      "community": 37
+      "community": 40
     },
     {
       "label": "public.js",
@@ -249,7 +249,7 @@
       "source_file": "admin/server/routes/public.js",
       "source_location": "L1",
       "id": "public",
-      "community": 38
+      "community": 41
     },
     {
       "label": "users.js",
@@ -257,7 +257,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L1",
       "id": "users",
-      "community": 13
+      "community": 15
     },
     {
       "label": "deals.js",
@@ -265,7 +265,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L1",
       "id": "deals",
-      "community": 5
+      "community": 7
     },
     {
       "label": "upload.js",
@@ -273,7 +273,7 @@
       "source_file": "admin/server/routes/upload.js",
       "source_location": "L1",
       "id": "upload",
-      "community": 39
+      "community": 42
     },
     {
       "label": "portal.js",
@@ -281,7 +281,7 @@
       "source_file": "admin/server/routes/portal.js",
       "source_location": "L1",
       "id": "portal",
-      "community": 40
+      "community": 43
     },
     {
       "label": "audit.js",
@@ -289,7 +289,7 @@
       "source_file": "admin/server/helpers/audit.js",
       "source_location": "L1",
       "id": "audit",
-      "community": 31
+      "community": 33
     },
     {
       "label": "extract.js",
@@ -297,7 +297,7 @@
       "source_file": "admin/server/routes/extract.js",
       "source_location": "L1",
       "id": "extract",
-      "community": 30
+      "community": 34
     },
     {
       "label": "parseAIAmount()",
@@ -305,7 +305,7 @@
       "source_file": "admin/server/routes/extract.js",
       "source_location": "L120",
       "id": "extract_parseaiamount",
-      "community": 30
+      "community": 34
     },
     {
       "label": "content.js",
@@ -313,7 +313,7 @@
       "source_file": "admin/server/routes/content.js",
       "source_location": "L1",
       "id": "content",
-      "community": 41
+      "community": 44
     },
     {
       "label": "settings.js",
@@ -321,7 +321,7 @@
       "source_file": "admin/server/routes/settings.js",
       "source_location": "L1",
       "id": "settings",
-      "community": 42
+      "community": 45
     },
     {
       "label": "logAudit()",
@@ -329,7 +329,7 @@
       "source_file": "admin/server/helpers/audit.js",
       "source_location": "L11",
       "id": "audit_logaudit",
-      "community": 31
+      "community": 33
     },
     {
       "label": "zillow-scraper.js",
@@ -337,7 +337,7 @@
       "source_file": "admin/server/services/zillow-scraper.js",
       "source_location": "L1",
       "id": "zillow_scraper",
-      "community": 20
+      "community": 22
     },
     {
       "label": "fetchZillowImages()",
@@ -345,7 +345,7 @@
       "source_file": "admin/server/services/zillow-scraper.js",
       "source_location": "L21",
       "id": "zillow_scraper_fetchzillowimages",
-      "community": 20
+      "community": 22
     },
     {
       "label": "extractImagesFromResponse()",
@@ -353,7 +353,7 @@
       "source_file": "admin/server/services/zillow-scraper.js",
       "source_location": "L86",
       "id": "zillow_scraper_extractimagesfromresponse",
-      "community": 20
+      "community": 22
     },
     {
       "label": "isZillowImageUrl()",
@@ -361,7 +361,7 @@
       "source_file": "admin/server/services/zillow-scraper.js",
       "source_location": "L151",
       "id": "zillow_scraper_iszillowimageurl",
-      "community": 20
+      "community": 22
     },
     {
       "label": "xlsx-extractor.js",
@@ -369,7 +369,7 @@
       "source_file": "admin/server/services/xlsx-extractor.js",
       "source_location": "L1",
       "id": "xlsx_extractor",
-      "community": 32
+      "community": 35
     },
     {
       "label": "getXlsxAsText()",
@@ -377,7 +377,7 @@
       "source_file": "admin/server/services/xlsx-extractor.js",
       "source_location": "L15",
       "id": "xlsx_extractor_getxlsxastext",
-      "community": 32
+      "community": 35
     },
     {
       "label": "ai-extractor.js",
@@ -385,7 +385,7 @@
       "source_file": "admin/server/services/ai-extractor.js",
       "source_location": "L1",
       "id": "ai_extractor",
-      "community": 21
+      "community": 23
     },
     {
       "label": "callClaude()",
@@ -393,7 +393,7 @@
       "source_file": "admin/server/services/ai-extractor.js",
       "source_location": "L21",
       "id": "ai_extractor_callclaude",
-      "community": 21
+      "community": 23
     },
     {
       "label": "parseAIJson()",
@@ -401,7 +401,7 @@
       "source_file": "admin/server/services/ai-extractor.js",
       "source_location": "L54",
       "id": "ai_extractor_parseaijson",
-      "community": 21
+      "community": 23
     },
     {
       "label": "analyzeAllDocuments()",
@@ -409,7 +409,7 @@
       "source_file": "admin/server/services/ai-extractor.js",
       "source_location": "L134",
       "id": "ai_extractor_analyzealldocuments",
-      "community": 21
+      "community": 23
     },
     {
       "label": "profile.js",
@@ -417,7 +417,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L1",
       "id": "profile",
-      "community": 17
+      "community": 20
     },
     {
       "label": "loadProfile()",
@@ -425,7 +425,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L11",
       "id": "profile_loadprofile",
-      "community": 17
+      "community": 20
     },
     {
       "label": "renderProfile()",
@@ -433,7 +433,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L36",
       "id": "profile_renderprofile",
-      "community": 17
+      "community": 20
     },
     {
       "label": "profileField()",
@@ -441,7 +441,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L121",
       "id": "profile_profilefield",
-      "community": 17
+      "community": 20
     },
     {
       "label": "handlePasswordChange()",
@@ -449,7 +449,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L130",
       "id": "profile_handlepasswordchange",
-      "community": 17
+      "community": 20
     },
     {
       "label": "showToast()",
@@ -457,7 +457,7 @@
       "source_file": "admin/public/portal/js/profile.js",
       "source_location": "L176",
       "id": "profile_showtoast",
-      "community": 17
+      "community": 20
     },
     {
       "label": "requirePortalAuth()",
@@ -465,7 +465,7 @@
       "source_file": "admin/public/portal/js/auth.js",
       "source_location": "L58",
       "id": "auth_requireportalauth",
-      "community": 19
+      "community": 1
     },
     {
       "label": "deal.js",
@@ -473,7 +473,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L1",
       "id": "deal",
-      "community": 0
+      "community": 2
     },
     {
       "label": "formatCurrency()",
@@ -481,7 +481,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L42",
       "id": "deal_formatcurrency",
-      "community": 0
+      "community": 2
     },
     {
       "label": "formatDate()",
@@ -489,7 +489,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L48",
       "id": "deal_formatdate",
-      "community": 0
+      "community": 2
     },
     {
       "label": "formatDateShort()",
@@ -497,7 +497,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L56",
       "id": "deal_formatdateshort",
-      "community": 0
+      "community": 2
     },
     {
       "label": "escapeHtml()",
@@ -505,7 +505,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L63",
       "id": "deal_escapehtml",
-      "community": 0
+      "community": 2
     },
     {
       "label": "hasValue()",
@@ -513,7 +513,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L70",
       "id": "deal_hasvalue",
-      "community": 0
+      "community": 2
     },
     {
       "label": "deviationClass()",
@@ -521,7 +521,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L74",
       "id": "deal_deviationclass",
-      "community": 0
+      "community": 2
     },
     {
       "label": "loadDeal()",
@@ -529,7 +529,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L84",
       "id": "deal_loaddeal",
-      "community": 0
+      "community": 2
     },
     {
       "label": "errorHTML()",
@@ -537,7 +537,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L107",
       "id": "deal_errorhtml",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderDeal()",
@@ -545,7 +545,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L121",
       "id": "deal_renderdeal",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderSummaryHeader()",
@@ -553,7 +553,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L171",
       "id": "deal_rendersummaryheader",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderMyInvestment()",
@@ -561,7 +561,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L233",
       "id": "deal_rendermyinvestment",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderTimeline()",
@@ -569,7 +569,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L280",
       "id": "deal_rendertimeline",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderPlanVsActual()",
@@ -577,7 +577,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L309",
       "id": "deal_renderplanvsactual",
-      "community": 0
+      "community": 2
     },
     {
       "label": "planRow()",
@@ -585,7 +585,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L392",
       "id": "deal_planrow",
-      "community": 0
+      "community": 2
     },
     {
       "label": "planRowTotal()",
@@ -593,7 +593,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L404",
       "id": "deal_planrowtotal",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderSpecs()",
@@ -601,7 +601,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L415",
       "id": "deal_renderspecs",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderGallery()",
@@ -609,7 +609,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L458",
       "id": "deal_rendergallery",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderComps()",
@@ -617,7 +617,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L509",
       "id": "deal_rendercomps",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderDocuments()",
@@ -625,7 +625,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L553",
       "id": "deal_renderdocuments",
-      "community": 0
+      "community": 2
     },
     {
       "label": "renderRenovationPlan()",
@@ -633,7 +633,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L603",
       "id": "deal_renderrenovationplan",
-      "community": 0
+      "community": 2
     },
     {
       "label": "initLightbox()",
@@ -641,7 +641,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L673",
       "id": "deal_initlightbox",
-      "community": 0
+      "community": 2
     },
     {
       "label": "openLightbox()",
@@ -649,7 +649,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L727",
       "id": "deal_openlightbox",
-      "community": 0
+      "community": 2
     },
     {
       "label": "closeLightbox()",
@@ -657,7 +657,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L735",
       "id": "deal_closelightbox",
-      "community": 0
+      "community": 2
     },
     {
       "label": "updateLightbox()",
@@ -665,7 +665,7 @@
       "source_file": "admin/public/portal/js/deal.js",
       "source_location": "L744",
       "id": "deal_updatelightbox",
-      "community": 0
+      "community": 2
     },
     {
       "label": "shared.js",
@@ -673,7 +673,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L1",
       "id": "shared",
-      "community": 11
+      "community": 13
     },
     {
       "label": "getCurrentPage()",
@@ -681,7 +681,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L6",
       "id": "shared_getcurrentpage",
-      "community": 11
+      "community": 13
     },
     {
       "label": "fetchUnreadCount()",
@@ -689,7 +689,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L15",
       "id": "shared_fetchunreadcount",
-      "community": 11
+      "community": 13
     },
     {
       "label": "updateBadges()",
@@ -697,7 +697,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L26",
       "id": "shared_updatebadges",
-      "community": 11
+      "community": 13
     },
     {
       "label": "buildHeader()",
@@ -705,7 +705,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L38",
       "id": "shared_buildheader",
-      "community": 11
+      "community": 13
     },
     {
       "label": "toggleMobileMenu()",
@@ -713,7 +713,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L102",
       "id": "shared_togglemobilemenu",
-      "community": 11
+      "community": 13
     },
     {
       "label": "buildFooter()",
@@ -721,7 +721,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L111",
       "id": "shared_buildfooter",
-      "community": 11
+      "community": 13
     },
     {
       "label": "buildBottomNav()",
@@ -729,7 +729,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L133",
       "id": "shared_buildbottomnav",
-      "community": 11
+      "community": 13
     },
     {
       "label": "initPortalShell()",
@@ -737,7 +737,7 @@
       "source_file": "admin/public/portal/js/shared.js",
       "source_location": "L157",
       "id": "shared_initportalshell",
-      "community": 11
+      "community": 13
     },
     {
       "label": "notifications.js",
@@ -745,7 +745,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L1",
       "id": "notifications",
-      "community": 12
+      "community": 14
     },
     {
       "label": "escapeHtml()",
@@ -753,7 +753,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L11",
       "id": "notifications_escapehtml",
-      "community": 12
+      "community": 14
     },
     {
       "label": "relativeDate()",
@@ -761,7 +761,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L17",
       "id": "notifications_relativedate",
-      "community": 12
+      "community": 14
     },
     {
       "label": "getNotificationIcon()",
@@ -769,7 +769,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L35",
       "id": "notifications_getnotificationicon",
-      "community": 12
+      "community": 14
     },
     {
       "label": "loadNotifications()",
@@ -777,7 +777,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L46",
       "id": "notifications_loadnotifications",
-      "community": 12
+      "community": 14
     },
     {
       "label": "renderNotifications()",
@@ -785,7 +785,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L76",
       "id": "notifications_rendernotifications",
-      "community": 12
+      "community": 14
     },
     {
       "label": "markAsRead()",
@@ -793,7 +793,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L143",
       "id": "notifications_markasread",
-      "community": 12
+      "community": 14
     },
     {
       "label": "markAllAsRead()",
@@ -801,7 +801,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L167",
       "id": "notifications_markallasread",
-      "community": 12
+      "community": 14
     },
     {
       "label": "updateHeaderBadge()",
@@ -809,7 +809,7 @@
       "source_file": "admin/public/portal/js/notifications.js",
       "source_location": "L202",
       "id": "notifications_updateheaderbadge",
-      "community": 12
+      "community": 14
     },
     {
       "label": "deal-edit.js",
@@ -817,7 +817,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L1",
       "id": "deal_edit",
-      "community": 8
+      "community": 10
     },
     {
       "label": "loadDeal()",
@@ -825,7 +825,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L25",
       "id": "deal_edit_loaddeal",
-      "community": 8
+      "community": 10
     },
     {
       "label": "saveDealField()",
@@ -833,7 +833,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L72",
       "id": "deal_edit_savedealfield",
-      "community": 8
+      "community": 10
     },
     {
       "label": "deleteDeal()",
@@ -841,7 +841,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L82",
       "id": "deal_edit_deletedeal",
-      "community": 8
+      "community": 10
     },
     {
       "label": "reloadDeal()",
@@ -849,7 +849,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L102",
       "id": "deal_edit_reloaddeal",
-      "community": 8
+      "community": 10
     },
     {
       "label": "openQuickCashflow()",
@@ -857,7 +857,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L134",
       "id": "deal_edit_openquickcashflow",
-      "community": 8
+      "community": 10
     },
     {
       "label": "closeQuickCashflow()",
@@ -865,7 +865,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L186",
       "id": "deal_edit_closequickcashflow",
-      "community": 8
+      "community": 10
     },
     {
       "label": "setQuickCashflowType()",
@@ -873,7 +873,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L191",
       "id": "deal_edit_setquickcashflowtype",
-      "community": 8
+      "community": 10
     },
     {
       "label": "populateQuickCategories()",
@@ -881,7 +881,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L217",
       "id": "deal_edit_populatequickcategories",
-      "community": 8
+      "community": 10
     },
     {
       "label": "updateQuickCostItems()",
@@ -889,7 +889,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L233",
       "id": "deal_edit_updatequickcostitems",
-      "community": 8
+      "community": 10
     },
     {
       "label": "submitQuickCashflow()",
@@ -897,7 +897,7 @@
       "source_file": "admin/public/js/deal-edit.js",
       "source_location": "L251",
       "id": "deal_edit_submitquickcashflow",
-      "community": 8
+      "community": 10
     },
     {
       "label": "deal-wizard.js",
@@ -905,7 +905,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L1",
       "id": "deal_wizard",
-      "community": 6
+      "community": 8
     },
     {
       "label": "renderUploadCards()",
@@ -913,7 +913,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L38",
       "id": "deal_wizard_renderuploadcards",
-      "community": 6
+      "community": 8
     },
     {
       "label": "handleDrop()",
@@ -921,7 +921,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L78",
       "id": "deal_wizard_handledrop",
-      "community": 6
+      "community": 8
     },
     {
       "label": "handleFileSelect()",
@@ -929,7 +929,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L89",
       "id": "deal_wizard_handlefileselect",
-      "community": 6
+      "community": 8
     },
     {
       "label": "showFileNames()",
@@ -937,7 +937,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L98",
       "id": "deal_wizard_showfilenames",
-      "community": 6
+      "community": 8
     },
     {
       "label": "updateExtractButton()",
@@ -945,7 +945,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L111",
       "id": "deal_wizard_updateextractbutton",
-      "community": 6
+      "community": 8
     },
     {
       "label": "startExtraction()",
@@ -953,7 +953,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L121",
       "id": "deal_wizard_startextraction",
-      "community": 6
+      "community": 8
     },
     {
       "label": "renderReviewStep()",
@@ -961,7 +961,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L190",
       "id": "deal_wizard_renderreviewstep",
-      "community": 6
+      "community": 8
     },
     {
       "label": "recalcAllTotals()",
@@ -969,7 +969,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L461",
       "id": "deal_wizard_recalcalltotals",
-      "community": 6
+      "community": 8
     },
     {
       "label": "esc()",
@@ -977,7 +977,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L497",
       "id": "deal_wizard_esc",
-      "community": 6
+      "community": 8
     },
     {
       "label": "saveDealFromExtraction()",
@@ -985,7 +985,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L505",
       "id": "deal_wizard_savedealfromextraction",
-      "community": 6
+      "community": 8
     },
     {
       "label": "goToStep()",
@@ -993,7 +993,7 @@
       "source_file": "admin/public/js/deal-wizard.js",
       "source_location": "L526",
       "id": "deal_wizard_gotostep",
-      "community": 6
+      "community": 8
     },
     {
       "label": "loadUsers()",
@@ -1001,7 +1001,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L29",
       "id": "users_loadusers",
-      "community": 13
+      "community": 15
     },
     {
       "label": "renderUsers()",
@@ -1009,7 +1009,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L39",
       "id": "users_renderusers",
-      "community": 13
+      "community": 15
     },
     {
       "label": "showAddUserModal()",
@@ -1017,7 +1017,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L76",
       "id": "users_showaddusermodal",
-      "community": 13
+      "community": 15
     },
     {
       "label": "editUser()",
@@ -1025,7 +1025,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L86",
       "id": "users_edituser",
-      "community": 13
+      "community": 15
     },
     {
       "label": "closeUserModal()",
@@ -1033,7 +1033,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L99",
       "id": "users_closeusermodal",
-      "community": 13
+      "community": 15
     },
     {
       "label": "toggleUserStatus()",
@@ -1041,7 +1041,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L129",
       "id": "users_toggleuserstatus",
-      "community": 13
+      "community": 15
     },
     {
       "label": "deleteUser()",
@@ -1049,7 +1049,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L143",
       "id": "users_deleteuser",
-      "community": 13
+      "community": 15
     },
     {
       "label": "showResetPw()",
@@ -1057,7 +1057,7 @@
       "source_file": "admin/public/js/users.js",
       "source_location": "L154",
       "id": "users_showresetpw",
-      "community": 13
+      "community": 15
     },
     {
       "label": "loadDeals()",
@@ -1065,7 +1065,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L37",
       "id": "deals_loaddeals",
-      "community": 5
+      "community": 7
     },
     {
       "label": "renderDealCard()",
@@ -1073,7 +1073,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L70",
       "id": "deals_renderdealcard",
-      "community": 5
+      "community": 7
     },
     {
       "label": "toggleDealMenu()",
@@ -1081,7 +1081,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L128",
       "id": "deals_toggledealmenu",
-      "community": 5
+      "community": 7
     },
     {
       "label": "openInlineCashflow()",
@@ -1089,7 +1089,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L161",
       "id": "deals_openinlinecashflow",
-      "community": 5
+      "community": 7
     },
     {
       "label": "closeInlineCashflow()",
@@ -1097,7 +1097,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L273",
       "id": "deals_closeinlinecashflow",
-      "community": 5
+      "community": 7
     },
     {
       "label": "setInlineCfType()",
@@ -1105,7 +1105,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L278",
       "id": "deals_setinlinecftype",
-      "community": 5
+      "community": 7
     },
     {
       "label": "updateInlineCostItems()",
@@ -1113,7 +1113,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L297",
       "id": "deals_updateinlinecostitems",
-      "community": 5
+      "community": 7
     },
     {
       "label": "submitInlineCashflow()",
@@ -1121,7 +1121,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L314",
       "id": "deals_submitinlinecashflow",
-      "community": 5
+      "community": 7
     },
     {
       "label": "openThumbnailPicker()",
@@ -1129,7 +1129,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L355",
       "id": "deals_openthumbnailpicker",
-      "community": 5
+      "community": 7
     },
     {
       "label": "deleteDealWithPassword()",
@@ -1137,7 +1137,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L414",
       "id": "deals_deletedealwithpassword",
-      "community": 5
+      "community": 7
     },
     {
       "label": "createNewDeal()",
@@ -1145,7 +1145,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L441",
       "id": "deals_createnewdeal",
-      "community": 5
+      "community": 7
     },
     {
       "label": "closeNewDealModal()",
@@ -1153,7 +1153,7 @@
       "source_file": "admin/public/js/deals.js",
       "source_location": "L446",
       "id": "deals_closenewdealmodal",
-      "community": 5
+      "community": 7
     },
     {
       "label": "utils.js",
@@ -1161,7 +1161,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L1",
       "id": "utils",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatCurrency()",
@@ -1169,7 +1169,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L7",
       "id": "utils_formatcurrency",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatPercent()",
@@ -1177,7 +1177,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L17",
       "id": "utils_formatpercent",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatNumber()",
@@ -1185,7 +1185,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L22",
       "id": "utils_formatnumber",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatDate()",
@@ -1193,7 +1193,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L27",
       "id": "utils_formatdate",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatDateTime()",
@@ -1201,7 +1201,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L33",
       "id": "utils_formatdatetime",
-      "community": 1
+      "community": 3
     },
     {
       "label": "parseAmount()",
@@ -1209,7 +1209,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L41",
       "id": "utils_parseamount",
-      "community": 1
+      "community": 3
     },
     {
       "label": "formatCurrencyInput()",
@@ -1217,7 +1217,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L52",
       "id": "utils_formatcurrencyinput",
-      "community": 1
+      "community": 3
     },
     {
       "label": "unformatCurrencyInput()",
@@ -1225,7 +1225,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L61",
       "id": "utils_unformatcurrencyinput",
-      "community": 1
+      "community": 3
     },
     {
       "label": "bindCurrencyInputs()",
@@ -1233,7 +1233,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L70",
       "id": "utils_bindcurrencyinputs",
-      "community": 1
+      "community": 3
     },
     {
       "label": "getDeviationStatus()",
@@ -1241,7 +1241,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L86",
       "id": "utils_getdeviationstatus",
-      "community": 1
+      "community": 3
     },
     {
       "label": "createElement()",
@@ -1249,7 +1249,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L135",
       "id": "utils_createelement",
-      "community": 1
+      "community": 3
     },
     {
       "label": "showToast()",
@@ -1257,7 +1257,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L151",
       "id": "utils_showtoast",
-      "community": 1
+      "community": 3
     },
     {
       "label": "showPromptModal()",
@@ -1265,7 +1265,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L169",
       "id": "utils_showpromptmodal",
-      "community": 1
+      "community": 3
     },
     {
       "label": "showConfirmModal()",
@@ -1273,7 +1273,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L213",
       "id": "utils_showconfirmmodal",
-      "community": 1
+      "community": 3
     },
     {
       "label": "confirmAction()",
@@ -1281,7 +1281,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L248",
       "id": "utils_confirmaction",
-      "community": 1
+      "community": 3
     },
     {
       "label": "initToggles()",
@@ -1289,7 +1289,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L254",
       "id": "utils_inittoggles",
-      "community": 1
+      "community": 3
     },
     {
       "label": "initTabs()",
@@ -1297,7 +1297,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L266",
       "id": "utils_inittabs",
-      "community": 1
+      "community": 3
     },
     {
       "label": "getUrlParam()",
@@ -1305,7 +1305,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L286",
       "id": "utils_geturlparam",
-      "community": 1
+      "community": 3
     },
     {
       "label": "getDealIdFromUrl()",
@@ -1313,7 +1313,7 @@
       "source_file": "admin/public/js/utils.js",
       "source_location": "L291",
       "id": "utils_getdealidfromurl",
-      "community": 1
+      "community": 3
     },
     {
       "label": "api.js",
@@ -1321,7 +1321,7 @@
       "source_file": "admin/public/js/api.js",
       "source_location": "L1",
       "id": "api",
-      "community": 24
+      "community": 26
     },
     {
       "label": "requireAuth()",
@@ -1329,7 +1329,7 @@
       "source_file": "admin/public/js/api.js",
       "source_location": "L98",
       "id": "api_requireauth",
-      "community": 24
+      "community": 26
     },
     {
       "label": "hasRole()",
@@ -1337,7 +1337,7 @@
       "source_file": "admin/public/js/api.js",
       "source_location": "L109",
       "id": "api_hasrole",
-      "community": 24
+      "community": 26
     },
     {
       "label": "documents.js",
@@ -1345,7 +1345,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L1",
       "id": "documents",
-      "community": 14
+      "community": 16
     },
     {
       "label": "renderDocumentsTab()",
@@ -1353,7 +1353,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L4",
       "id": "documents_renderdocumentstab",
-      "community": 14
+      "community": 16
     },
     {
       "label": "addDocument()",
@@ -1361,7 +1361,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L251",
       "id": "documents_adddocument",
-      "community": 14
+      "community": 16
     },
     {
       "label": "updateDocument()",
@@ -1369,7 +1369,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L275",
       "id": "documents_updatedocument",
-      "community": 14
+      "community": 16
     },
     {
       "label": "deleteDocument()",
@@ -1377,7 +1377,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L283",
       "id": "documents_deletedocument",
-      "community": 14
+      "community": 16
     },
     {
       "label": "deleteUploadedDoc()",
@@ -1385,7 +1385,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L294",
       "id": "documents_deleteuploadeddoc",
-      "community": 14
+      "community": 16
     },
     {
       "label": "extractSingleDoc()",
@@ -1393,7 +1393,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L305",
       "id": "documents_extractsingledoc",
-      "community": 14
+      "community": 16
     },
     {
       "label": "viewExtractedData()",
@@ -1401,7 +1401,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L320",
       "id": "documents_viewextracteddata",
-      "community": 14
+      "community": 16
     },
     {
       "label": "applyExtractedData()",
@@ -1409,7 +1409,7 @@
       "source_file": "admin/public/js/deal-tabs/documents.js",
       "source_location": "L361",
       "id": "documents_applyextracteddata",
-      "community": 14
+      "community": 16
     },
     {
       "label": "fundraising.js",
@@ -1417,7 +1417,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L1",
       "id": "fundraising",
-      "community": 10
+      "community": 12
     },
     {
       "label": "renderFundraisingTab()",
@@ -1425,7 +1425,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L4",
       "id": "fundraising_renderfundraisingtab",
-      "community": 10
+      "community": 12
     },
     {
       "label": "escapeHtml()",
@@ -1433,7 +1433,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L136",
       "id": "fundraising_escapehtml",
-      "community": 10
+      "community": 12
     },
     {
       "label": "addInvestor()",
@@ -1441,7 +1441,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L145",
       "id": "fundraising_addinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "selectInvestor()",
@@ -1449,7 +1449,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L316",
       "id": "fundraising_selectinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "clearSelectedInvestor()",
@@ -1457,7 +1457,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L327",
       "id": "fundraising_clearselectedinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "updateInvestor()",
@@ -1465,7 +1465,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L335",
       "id": "fundraising_updateinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "deleteDealInvestor()",
@@ -1473,7 +1473,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L343",
       "id": "fundraising_deletedealinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "deleteInvestor()",
@@ -1481,7 +1481,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L355",
       "id": "fundraising_deleteinvestor",
-      "community": 10
+      "community": 12
     },
     {
       "label": "openNotifyInvestorsModal()",
@@ -1489,7 +1489,7 @@
       "source_file": "admin/public/js/deal-tabs/fundraising.js",
       "source_location": "L358",
       "id": "fundraising_opennotifyinvestorsmodal",
-      "community": 10
+      "community": 12
     },
     {
       "label": "financial.js",
@@ -1497,7 +1497,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L1",
       "id": "financial",
-      "community": 9
+      "community": 11
     },
     {
       "label": "renderFinancialTab()",
@@ -1505,7 +1505,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L16",
       "id": "financial_renderfinancialtab",
-      "community": 9
+      "community": 11
     },
     {
       "label": "renderCategoryRows()",
@@ -1513,7 +1513,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L185",
       "id": "financial_rendercategoryrows",
-      "community": 9
+      "community": 11
     },
     {
       "label": "toggleFinancialEditMode()",
@@ -1521,7 +1521,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L281",
       "id": "financial_togglefinancialeditmode",
-      "community": 9
+      "community": 11
     },
     {
       "label": "recalcFinancials()",
@@ -1529,7 +1529,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L294",
       "id": "financial_recalcfinancials",
-      "community": 9
+      "community": 11
     },
     {
       "label": "addCategory()",
@@ -1537,7 +1537,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L307",
       "id": "financial_addcategory",
-      "community": 9
+      "community": 11
     },
     {
       "label": "updateCategoryName()",
@@ -1545,7 +1545,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L319",
       "id": "financial_updatecategoryname",
-      "community": 9
+      "community": 11
     },
     {
       "label": "deleteCategory()",
@@ -1553,7 +1553,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L328",
       "id": "financial_deletecategory",
-      "community": 9
+      "community": 11
     },
     {
       "label": "addCostItem()",
@@ -1561,7 +1561,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L339",
       "id": "financial_addcostitem",
-      "community": 9
+      "community": 11
     },
     {
       "label": "updateCostItem()",
@@ -1569,7 +1569,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L351",
       "id": "financial_updatecostitem",
-      "community": 9
+      "community": 11
     },
     {
       "label": "deleteCostItem()",
@@ -1577,7 +1577,7 @@
       "source_file": "admin/public/js/deal-tabs/financial.js",
       "source_location": "L359",
       "id": "financial_deletecostitem",
-      "community": 9
+      "community": 11
     },
     {
       "label": "specs.js",
@@ -1585,7 +1585,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L1",
       "id": "specs",
-      "community": 18
+      "community": 21
     },
     {
       "label": "renderSpecsTab()",
@@ -1593,7 +1593,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L6",
       "id": "specs_renderspecstab",
-      "community": 18
+      "community": 21
     },
     {
       "label": "buildSpecsHTML()",
@@ -1601,7 +1601,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L11",
       "id": "specs_buildspecshtml",
-      "community": 18
+      "community": 21
     },
     {
       "label": "addSpec()",
@@ -1609,7 +1609,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L53",
       "id": "specs_addspec",
-      "community": 18
+      "community": 21
     },
     {
       "label": "updateSpec()",
@@ -1617,7 +1617,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L72",
       "id": "specs_updatespec",
-      "community": 18
+      "community": 21
     },
     {
       "label": "deleteSpec()",
@@ -1625,7 +1625,7 @@
       "source_file": "admin/public/js/deal-tabs/specs.js",
       "source_location": "L77",
       "id": "specs_deletespec",
-      "community": 18
+      "community": 21
     },
     {
       "label": "property.js",
@@ -1633,7 +1633,7 @@
       "source_file": "admin/public/js/deal-tabs/property.js",
       "source_location": "L1",
       "id": "property",
-      "community": 33
+      "community": 36
     },
     {
       "label": "renderPropertyTab()",
@@ -1641,7 +1641,7 @@
       "source_file": "admin/public/js/deal-tabs/property.js",
       "source_location": "L5",
       "id": "property_renderpropertytab",
-      "community": 33
+      "community": 36
     },
     {
       "label": "timeline.js",
@@ -1649,7 +1649,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L1",
       "id": "timeline",
-      "community": 3
+      "community": 5
     },
     {
       "label": "getActiveStageIndex()",
@@ -1657,7 +1657,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L28",
       "id": "timeline_getactivestageindex",
-      "community": 3
+      "community": 5
     },
     {
       "label": "buildTimelineChartHTML()",
@@ -1665,7 +1665,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L37",
       "id": "timeline_buildtimelinecharthtml",
-      "community": 3
+      "community": 5
     },
     {
       "label": "onStageClick()",
@@ -1673,7 +1673,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L73",
       "id": "timeline_onstageclick",
-      "community": 3
+      "community": 5
     },
     {
       "label": "renderTimelineTab()",
@@ -1681,7 +1681,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L127",
       "id": "timeline_rendertimelinetab",
-      "community": 3
+      "community": 5
     },
     {
       "label": "buildTimelineTabHTML()",
@@ -1689,7 +1689,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L178",
       "id": "timeline_buildtimelinetabhtml",
-      "community": 3
+      "community": 5
     },
     {
       "label": "buildStepRowHTML()",
@@ -1697,7 +1697,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L220",
       "id": "timeline_buildsteprowhtml",
-      "community": 3
+      "community": 5
     },
     {
       "label": "escapeHtml()",
@@ -1705,7 +1705,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L291",
       "id": "timeline_escapehtml",
-      "community": 3
+      "community": 5
     },
     {
       "label": "quickCycleStepStatus()",
@@ -1713,7 +1713,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L306",
       "id": "timeline_quickcyclestepstatus",
-      "community": 3
+      "community": 5
     },
     {
       "label": "openAddTimelineStep()",
@@ -1721,7 +1721,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L319",
       "id": "timeline_openaddtimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "openEditTimelineStep()",
@@ -1729,7 +1729,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L333",
       "id": "timeline_openedittimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "closeTimelineStepModal()",
@@ -1737,7 +1737,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L344",
       "id": "timeline_closetimelinestepmodal",
-      "community": 3
+      "community": 5
     },
     {
       "label": "submitTimelineStep()",
@@ -1745,7 +1745,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L350",
       "id": "timeline_submittimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "deleteTimelineStep()",
@@ -1753,7 +1753,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L394",
       "id": "timeline_deletetimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "addTimelineStep()",
@@ -1761,7 +1761,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L408",
       "id": "timeline_addtimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "updateTimelineStep()",
@@ -1769,7 +1769,7 @@
       "source_file": "admin/public/js/deal-tabs/timeline.js",
       "source_location": "L409",
       "id": "timeline_updatetimelinestep",
-      "community": 3
+      "community": 5
     },
     {
       "label": "cashflow.js",
@@ -1777,7 +1777,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L1",
       "id": "cashflow",
-      "community": 15
+      "community": 17
     },
     {
       "label": "renderCashflowTab()",
@@ -1785,7 +1785,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L23",
       "id": "cashflow_rendercashflowtab",
-      "community": 15
+      "community": 17
     },
     {
       "label": "toggleInlineCategoryFields()",
@@ -1793,7 +1793,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L275",
       "id": "cashflow_toggleinlinecategoryfields",
-      "community": 15
+      "community": 17
     },
     {
       "label": "updateCostItemSelect()",
@@ -1801,7 +1801,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L289",
       "id": "cashflow_updatecostitemselect",
-      "community": 15
+      "community": 17
     },
     {
       "label": "applyCashflowFilter()",
@@ -1809,7 +1809,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L310",
       "id": "cashflow_applycashflowfilter",
-      "community": 15
+      "community": 17
     },
     {
       "label": "clearCashflowFilters()",
@@ -1817,7 +1817,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L317",
       "id": "cashflow_clearcashflowfilters",
-      "community": 15
+      "community": 17
     },
     {
       "label": "editCashflowEntry()",
@@ -1825,7 +1825,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L327",
       "id": "cashflow_editcashflowentry",
-      "community": 15
+      "community": 17
     },
     {
       "label": "deleteCashflowEntry()",
@@ -1833,7 +1833,7 @@
       "source_file": "admin/public/js/deal-tabs/cashflow.js",
       "source_location": "L335",
       "id": "cashflow_deletecashflowentry",
-      "community": 15
+      "community": 17
     },
     {
       "label": "comps.js",
@@ -1841,7 +1841,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L1",
       "id": "comps",
-      "community": 2
+      "community": 4
     },
     {
       "label": "renderCompsTab()",
@@ -1849,7 +1849,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L6",
       "id": "comps_rendercompstab",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_loadGoogleMaps()",
@@ -1857,7 +1857,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L139",
       "id": "comps_loadgooglemaps",
-      "community": 2
+      "community": 4
     },
     {
       "label": "initCompsMap()",
@@ -1865,7 +1865,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L156",
       "id": "comps_initcompsmap",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_buildOurData()",
@@ -1873,7 +1873,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L248",
       "id": "comps_buildourdata",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_indicator()",
@@ -1881,7 +1881,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L271",
       "id": "comps_indicator",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_compDataRow()",
@@ -1889,7 +1889,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L282",
       "id": "comps_compdatarow",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_renderCompColumn()",
@@ -1897,7 +1897,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L292",
       "id": "comps_rendercompcolumn",
-      "community": 2
+      "community": 4
     },
     {
       "label": "addCompFromZillow()",
@@ -1905,7 +1905,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L349",
       "id": "comps_addcompfromzillow",
-      "community": 2
+      "community": 4
     },
     {
       "label": "generateCompsAnalysis()",
@@ -1913,7 +1913,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L387",
       "id": "comps_generatecompsanalysis",
-      "community": 2
+      "community": 4
     },
     {
       "label": "updateComp()",
@@ -1921,7 +1921,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L411",
       "id": "comps_updatecomp",
-      "community": 2
+      "community": 4
     },
     {
       "label": "deleteComp()",
@@ -1929,7 +1929,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L420",
       "id": "comps_deletecomp",
-      "community": 2
+      "community": 4
     },
     {
       "label": "openCompGallery()",
@@ -1937,7 +1937,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L435",
       "id": "comps_opencompgallery",
-      "community": 2
+      "community": 4
     },
     {
       "label": "closeCompGallery()",
@@ -1945,7 +1945,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L451",
       "id": "comps_closecompgallery",
-      "community": 2
+      "community": 4
     },
     {
       "label": "_renderGalleryGrid()",
@@ -1953,7 +1953,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L456",
       "id": "comps_rendergallerygrid",
-      "community": 2
+      "community": 4
     },
     {
       "label": "uploadCompImages()",
@@ -1961,7 +1961,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L478",
       "id": "comps_uploadcompimages",
-      "community": 2
+      "community": 4
     },
     {
       "label": "setCompPrimaryImage()",
@@ -1969,7 +1969,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L492",
       "id": "comps_setcompprimaryimage",
-      "community": 2
+      "community": 4
     },
     {
       "label": "deleteCompImage()",
@@ -1977,7 +1977,7 @@
       "source_file": "admin/public/js/deal-tabs/comps.js",
       "source_location": "L503",
       "id": "comps_deletecompimage",
-      "community": 2
+      "community": 4
     },
     {
       "label": "renovation.js",
@@ -1985,7 +1985,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L1",
       "id": "renovation",
-      "community": 7
+      "community": 9
     },
     {
       "label": "renderRenovationTab()",
@@ -1993,7 +1993,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L15",
       "id": "renovation_renderrenovationtab",
-      "community": 7
+      "community": 9
     },
     {
       "label": "toggleRenovationEditMode()",
@@ -2001,7 +2001,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L209",
       "id": "renovation_togglerenovationeditmode",
-      "community": 7
+      "community": 9
     },
     {
       "label": "handlePhaseCostChange()",
@@ -2009,7 +2009,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L223",
       "id": "renovation_handlephasecostchange",
-      "community": 7
+      "community": 9
     },
     {
       "label": "autoRecalcRenovationTotal()",
@@ -2017,7 +2017,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L237",
       "id": "renovation_autorecalcrenovationtotal",
-      "community": 7
+      "community": 9
     },
     {
       "label": "togglePhaseCompletion()",
@@ -2025,7 +2025,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L266",
       "id": "renovation_togglephasecompletion",
-      "community": 7
+      "community": 9
     },
     {
       "label": "updateRenovationField()",
@@ -2033,7 +2033,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L323",
       "id": "renovation_updaterenovationfield",
-      "community": 7
+      "community": 9
     },
     {
       "label": "updateRenovationPhase()",
@@ -2041,7 +2041,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L331",
       "id": "renovation_updaterenovationphase",
-      "community": 7
+      "community": 9
     },
     {
       "label": "deleteRenovationPhase()",
@@ -2049,7 +2049,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L344",
       "id": "renovation_deleterenovationphase",
-      "community": 7
+      "community": 9
     },
     {
       "label": "addRenovationPhase()",
@@ -2057,7 +2057,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L367",
       "id": "renovation_addrenovationphase",
-      "community": 7
+      "community": 9
     },
     {
       "label": "reloadRenovationTab()",
@@ -2065,7 +2065,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L400",
       "id": "renovation_reloadrenovationtab",
-      "community": 7
+      "community": 9
     },
     {
       "label": "escapeHtmlRenovation()",
@@ -2073,7 +2073,7 @@
       "source_file": "admin/public/js/deal-tabs/renovation.js",
       "source_location": "L404",
       "id": "renovation_escapehtmlrenovation",
-      "community": 7
+      "community": 9
     },
     {
       "label": "images.js",
@@ -2081,7 +2081,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L1",
       "id": "images",
-      "community": 4
+      "community": 6
     },
     {
       "label": "renderImagesTab()",
@@ -2089,7 +2089,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L17",
       "id": "images_renderimagestab",
-      "community": 4
+      "community": 6
     },
     {
       "label": "handleImageUpload()",
@@ -2097,7 +2097,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L209",
       "id": "images_handleimageupload",
-      "community": 4
+      "community": 6
     },
     {
       "label": "handleImageDrop()",
@@ -2105,7 +2105,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L224",
       "id": "images_handleimagedrop",
-      "community": 4
+      "community": 6
     },
     {
       "label": "deleteImage()",
@@ -2113,7 +2113,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L232",
       "id": "images_deleteimage",
-      "community": 4
+      "community": 6
     },
     {
       "label": "fetchZillowImages()",
@@ -2121,7 +2121,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L245",
       "id": "images_fetchzillowimages",
-      "community": 4
+      "community": 6
     },
     {
       "label": "connectGoogleDrive()",
@@ -2129,7 +2129,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L288",
       "id": "images_connectgoogledrive",
-      "community": 4
+      "community": 6
     },
     {
       "label": "disconnectGoogleDrive()",
@@ -2137,7 +2137,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L293",
       "id": "images_disconnectgoogledrive",
-      "community": 4
+      "community": 6
     },
     {
       "label": "_handleDriveUrlParams()",
@@ -2145,7 +2145,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L304",
       "id": "images_handledriveurlparams",
-      "community": 4
+      "community": 6
     },
     {
       "label": "openDriveLinkModal()",
@@ -2153,7 +2153,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L320",
       "id": "images_opendrivelinkmodal",
-      "community": 4
+      "community": 6
     },
     {
       "label": "closeDriveLinkModal()",
@@ -2161,7 +2161,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L333",
       "id": "images_closedrivelinkmodal",
-      "community": 4
+      "community": 6
     },
     {
       "label": "submitDriveLink()",
@@ -2169,7 +2169,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L338",
       "id": "images_submitdrivelink",
-      "community": 4
+      "community": 6
     },
     {
       "label": "syncDriveFolder()",
@@ -2177,7 +2177,7 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L367",
       "id": "images_syncdrivefolder",
-      "community": 4
+      "community": 6
     },
     {
       "label": "unlinkDriveFolder()",
@@ -2185,7 +2185,847 @@
       "source_file": "admin/public/js/deal-tabs/images.js",
       "source_location": "L386",
       "id": "images_unlinkdrivefolder",
-      "community": 4
+      "community": 6
+    },
+    {
+      "label": "Express App (server.js)",
+      "file_type": "code",
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "server_app",
+      "community": 1
+    },
+    {
+      "label": "PostgreSQL Pool (db.js)",
+      "file_type": "code",
+      "source_file": "admin/server/db.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "db_pool",
+      "community": 1
+    },
+    {
+      "label": "initDb (db.js)",
+      "file_type": "code",
+      "source_file": "admin/server/db.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "db_initDb",
+      "community": 46
+    },
+    {
+      "label": "generateToken (auth.js)",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/auth.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "auth_generateToken",
+      "community": 1
+    },
+    {
+      "label": "portalAuthenticate middleware",
+      "file_type": "code",
+      "source_file": "admin/server/middleware/portalAuth.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalAuth_portalAuthenticate",
+      "community": 1
+    },
+    {
+      "label": "logAudit helper",
+      "file_type": "code",
+      "source_file": "admin/server/helpers/audit.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "audit_logAudit",
+      "community": 1
+    },
+    {
+      "label": "Auth Route (/api/auth)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_auth",
+      "community": 1
+    },
+    {
+      "label": "Users Route (/api/users)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/users.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_users",
+      "community": 1
+    },
+    {
+      "label": "Deals Route (/api/deals)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_deals",
+      "community": 1
+    },
+    {
+      "label": "Deal Financials Route",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_deal_financials",
+      "community": 1
+    },
+    {
+      "label": "Deal Cashflow Route",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_deal_cashflow",
+      "community": 1
+    },
+    {
+      "label": "Deal Sub-Entities Route",
+      "file_type": "code",
+      "source_file": "admin/server/routes/deal-sub-entities.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_deal_sub_entities",
+      "community": 1
+    },
+    {
+      "label": "Upload Route (/api/upload)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/upload.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_upload",
+      "community": 1
+    },
+    {
+      "label": "Extract Route (/api/extract)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_extract",
+      "community": 1
+    },
+    {
+      "label": "Audit Route (/api/audit)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/audit.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_audit",
+      "community": 1
+    },
+    {
+      "label": "Google Drive Route",
+      "file_type": "code",
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_google_drive",
+      "community": 1
+    },
+    {
+      "label": "Settings Route (/api/settings)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/settings.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_settings",
+      "community": 1
+    },
+    {
+      "label": "Investors Route (/api/investors)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/investors.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_investors",
+      "community": 1
+    },
+    {
+      "label": "Content Route (/api/content)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/content.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_content",
+      "community": 1
+    },
+    {
+      "label": "Public Route (/api/public)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/public.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_public",
+      "community": 1
+    },
+    {
+      "label": "Portal Route (/api/portal)",
+      "file_type": "code",
+      "source_file": "admin/server/routes/portal.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "route_portal",
+      "community": 1
+    },
+    {
+      "label": "XLSX Extractor Service",
+      "file_type": "code",
+      "source_file": "admin/server/services/xlsx-extractor.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "service_xlsx_extractor",
+      "community": 1
+    },
+    {
+      "label": "AI Extractor Service",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "service_ai_extractor",
+      "community": 1
+    },
+    {
+      "label": "fetchZillowImages",
+      "file_type": "code",
+      "source_file": "admin/server/services/zillow-scraper.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "zillowscraper_fetchZillowImages",
+      "community": 47
+    },
+    {
+      "label": "getXlsxAsText",
+      "file_type": "code",
+      "source_file": "admin/server/services/xlsx-extractor.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "xlsxextractor_getXlsxAsText",
+      "community": 27
+    },
+    {
+      "label": "callClaude",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "aiextractor_callClaude",
+      "community": 27
+    },
+    {
+      "label": "analyzeAllDocuments",
+      "file_type": "code",
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "aiextractor_analyzeAllDocuments",
+      "community": 27
+    },
+    {
+      "label": "PORTAL_API (portal auth)",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/auth.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalauth_PORTAL_API",
+      "community": 18
+    },
+    {
+      "label": "requirePortalAuth",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/auth.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalauth_requirePortalAuth",
+      "community": 18
+    },
+    {
+      "label": "initPortalShell",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalshared_initPortalShell",
+      "community": 18
+    },
+    {
+      "label": "fetchUnreadCount",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalshared_fetchUnreadCount",
+      "community": 18
+    },
+    {
+      "label": "updateBadges",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalshared_updateBadges",
+      "community": 18
+    },
+    {
+      "label": "loadDeal (portal)",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portaldeal_loadDeal",
+      "community": 18
+    },
+    {
+      "label": "renderDeal (portal)",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portaldeal_renderDeal",
+      "community": 48
+    },
+    {
+      "label": "loadNotifications",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalnotif_loadNotifications",
+      "community": 18
+    },
+    {
+      "label": "markAsRead",
+      "file_type": "code",
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "portalnotif_markAsRead",
+      "community": 18
+    },
+    {
+      "label": "API (admin client)",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "api_API",
+      "community": 0
+    },
+    {
+      "label": "requireAuth (client)",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "api_requireAuth",
+      "community": 0
+    },
+    {
+      "label": "hasRole (client)",
+      "file_type": "code",
+      "source_file": "admin/public/js/api.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "api_hasRole",
+      "community": 49
+    },
+    {
+      "label": "formatCurrency (admin utils)",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_formatCurrency",
+      "community": 0
+    },
+    {
+      "label": "formatPercent",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_formatPercent",
+      "community": 0
+    },
+    {
+      "label": "formatDate",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_formatDate",
+      "community": 50
+    },
+    {
+      "label": "parseAmount",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_parseAmount",
+      "community": 0
+    },
+    {
+      "label": "showToast",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_showToast",
+      "community": 0
+    },
+    {
+      "label": "showConfirmModal",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_showConfirmModal",
+      "community": 0
+    },
+    {
+      "label": "confirmAction",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_confirmAction",
+      "community": 0
+    },
+    {
+      "label": "getDealIdFromUrl",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_getDealIdFromUrl",
+      "community": 0
+    },
+    {
+      "label": "initTabs",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_initTabs",
+      "community": 0
+    },
+    {
+      "label": "PROPERTY_STATUS constants",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_PROPERTY_STATUS",
+      "community": 0
+    },
+    {
+      "label": "FUNDRAISING_STATUS constants",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_FUNDRAISING_STATUS",
+      "community": 0
+    },
+    {
+      "label": "formatCurrencyInput",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_formatCurrencyInput",
+      "community": 0
+    },
+    {
+      "label": "getDeviationStatus",
+      "file_type": "code",
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "utils_getDeviationStatus",
+      "community": 0
+    },
+    {
+      "label": "loadDeals (admin)",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deals_loadDeals",
+      "community": 0
+    },
+    {
+      "label": "renderDealCard (admin)",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deals_renderDealCard",
+      "community": 0
+    },
+    {
+      "label": "submitInlineCashflow",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deals_submitInlineCashflow",
+      "community": 0
+    },
+    {
+      "label": "deleteDealWithPassword",
+      "file_type": "code",
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deals_deleteDealWithPassword",
+      "community": 0
+    },
+    {
+      "label": "loadDeal (admin edit)",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dealedit_loadDeal",
+      "community": 0
+    },
+    {
+      "label": "saveDealField",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dealedit_saveDealField",
+      "community": 0
+    },
+    {
+      "label": "deleteDeal (admin)",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dealedit_deleteDeal",
+      "community": 0
+    },
+    {
+      "label": "loadUsers",
+      "file_type": "code",
+      "source_file": "admin/public/js/users.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "users_loadUsers",
+      "community": 0
+    },
+    {
+      "label": "startExtraction (wizard)",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "wizard_startExtraction",
+      "community": 0
+    },
+    {
+      "label": "renderFinancialTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabfinancial_renderFinancialTab",
+      "community": 0
+    },
+    {
+      "label": "renderRenovationTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/renovation.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabrenovation_renderRenovationTab",
+      "community": 0
+    },
+    {
+      "label": "renderFundraisingTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabfundraising_renderFundraisingTab",
+      "community": 0
+    },
+    {
+      "label": "renderCashflowTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabcashflow_renderCashflowTab",
+      "community": 0
+    },
+    {
+      "label": "renderImagesTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/images.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabimages_renderImagesTab",
+      "community": 0
+    },
+    {
+      "label": "renderCompsTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabcomps_renderCompsTab",
+      "community": 0
+    },
+    {
+      "label": "renderDocumentsTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/documents.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabdocuments_renderDocumentsTab",
+      "community": 0
+    },
+    {
+      "label": "renderPropertyTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/property.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabproperty_renderPropertyTab",
+      "community": 0
+    },
+    {
+      "label": "renderTimelineTab",
+      "file_type": "code",
+      "source_file": "admin/public/js/deal-tabs/timeline.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "tabtimeline_renderTimelineTab",
+      "community": 51
     }
   ],
   "links": [
@@ -2344,6 +3184,198 @@
       "source": "auth",
       "target": "auth_requireportalauth",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_auth",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_auth"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_users",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_users"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deals",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_deals"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_financials",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_deal_financials"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_cashflow",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_deal_cashflow"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-sub-entities.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_sub_entities",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_deal_sub_entities"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/upload.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_upload",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_upload"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_extract",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_extract"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/audit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_audit",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_audit"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_google_drive",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_google_drive"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/settings.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_settings",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_settings"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/investors.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_investors",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_investors"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/content.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_content",
+      "_tgt": "auth_authenticate",
+      "source": "auth_authenticate",
+      "target": "route_content"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_users",
+      "_tgt": "auth_authorize",
+      "source": "auth_authorize",
+      "target": "route_users"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deals",
+      "_tgt": "auth_authorize",
+      "source": "auth_authorize",
+      "target": "route_deals"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_financials",
+      "_tgt": "auth_authorize",
+      "source": "auth_authorize",
+      "target": "route_deal_financials"
     },
     {
       "relation": "contains",
@@ -6220,6 +7252,1134 @@
       "source": "images_closedrivelinkmodal",
       "target": "images_submitdrivelink",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "depends_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "db_pool",
+      "source": "server_app",
+      "target": "db_pool"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_public",
+      "source": "server_app",
+      "target": "route_public"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_auth",
+      "source": "server_app",
+      "target": "route_auth"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_users",
+      "source": "server_app",
+      "target": "route_users"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_deals",
+      "source": "server_app",
+      "target": "route_deals"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_deal_financials",
+      "source": "server_app",
+      "target": "route_deal_financials"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_deal_cashflow",
+      "source": "server_app",
+      "target": "route_deal_cashflow"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_deal_sub_entities",
+      "source": "server_app",
+      "target": "route_deal_sub_entities"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_upload",
+      "source": "server_app",
+      "target": "route_upload"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_extract",
+      "source": "server_app",
+      "target": "route_extract"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_audit",
+      "source": "server_app",
+      "target": "route_audit"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_google_drive",
+      "source": "server_app",
+      "target": "route_google_drive"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_settings",
+      "source": "server_app",
+      "target": "route_settings"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_investors",
+      "source": "server_app",
+      "target": "route_investors"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_content",
+      "source": "server_app",
+      "target": "route_content"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/server.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "server_app",
+      "_tgt": "route_portal",
+      "source": "server_app",
+      "target": "route_portal"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/helpers/audit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "audit_logAudit",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "audit_logAudit"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_auth",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_auth"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_users",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_users"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deals",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_deals"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_financials",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_deal_financials"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_cashflow",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_deal_cashflow"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-sub-entities.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_sub_entities",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_deal_sub_entities"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/upload.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_upload",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_upload"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_extract",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_extract"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/audit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_audit",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_audit"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/google-drive.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_google_drive",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_google_drive"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/settings.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_settings",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_settings"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/investors.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_investors",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_investors"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/content.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_content",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_content"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/public.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_public",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_public"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/portal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_portal",
+      "_tgt": "db_pool",
+      "source": "db_pool",
+      "target": "route_portal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_auth",
+      "_tgt": "auth_generateToken",
+      "source": "auth_generateToken",
+      "target": "route_auth"
+    },
+    {
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/portal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_portal",
+      "_tgt": "portalAuth_portalAuthenticate",
+      "source": "portalAuth_portalAuthenticate",
+      "target": "route_portal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/auth.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_auth",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_auth"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_users",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_users"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deals",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_deals"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-financials.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_financials",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_deal_financials"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-cashflow.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_cashflow",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_deal_cashflow"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/deal-sub-entities.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_deal_sub_entities",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_deal_sub_entities"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/settings.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_settings",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_settings"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/investors.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_investors",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_investors"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/content.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_content",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_content"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/portal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_portal",
+      "_tgt": "audit_logAudit",
+      "source": "audit_logAudit",
+      "target": "route_portal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_extract",
+      "_tgt": "service_xlsx_extractor",
+      "source": "route_extract",
+      "target": "service_xlsx_extractor"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/routes/extract.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "route_extract",
+      "_tgt": "service_ai_extractor",
+      "source": "route_extract",
+      "target": "service_ai_extractor"
+    },
+    {
+      "relation": "depends_on",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": null,
+      "weight": 0.85,
+      "_src": "aiextractor_analyzeAllDocuments",
+      "_tgt": "xlsxextractor_getXlsxAsText",
+      "source": "xlsxextractor_getXlsxAsText",
+      "target": "aiextractor_analyzeAllDocuments"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/server/services/ai-extractor.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "aiextractor_analyzeAllDocuments",
+      "_tgt": "aiextractor_callClaude",
+      "source": "aiextractor_callClaude",
+      "target": "aiextractor_analyzeAllDocuments"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portaldeal_loadDeal",
+      "_tgt": "portalauth_PORTAL_API",
+      "source": "portalauth_PORTAL_API",
+      "target": "portaldeal_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalshared_fetchUnreadCount",
+      "_tgt": "portalauth_PORTAL_API",
+      "source": "portalauth_PORTAL_API",
+      "target": "portalshared_fetchUnreadCount"
+    },
+    {
+      "relation": "depends_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portaldeal_loadDeal",
+      "_tgt": "portalauth_requirePortalAuth",
+      "source": "portalauth_requirePortalAuth",
+      "target": "portaldeal_loadDeal"
+    },
+    {
+      "relation": "depends_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalnotif_loadNotifications",
+      "_tgt": "portalauth_requirePortalAuth",
+      "source": "portalauth_requirePortalAuth",
+      "target": "portalnotif_loadNotifications"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/deal.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portaldeal_loadDeal",
+      "_tgt": "portalshared_initPortalShell",
+      "source": "portalshared_initPortalShell",
+      "target": "portaldeal_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalnotif_loadNotifications",
+      "_tgt": "portalshared_initPortalShell",
+      "source": "portalshared_initPortalShell",
+      "target": "portalnotif_loadNotifications"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalshared_initPortalShell",
+      "_tgt": "portalshared_fetchUnreadCount",
+      "source": "portalshared_initPortalShell",
+      "target": "portalshared_fetchUnreadCount"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/shared.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalshared_fetchUnreadCount",
+      "_tgt": "portalshared_updateBadges",
+      "source": "portalshared_fetchUnreadCount",
+      "target": "portalshared_updateBadges"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/portal/js/notifications.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "portalnotif_markAsRead",
+      "_tgt": "portalshared_updateBadges",
+      "source": "portalshared_updateBadges",
+      "target": "portalnotif_markAsRead"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_loadDeals",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "deals_loadDeals"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_submitInlineCashflow",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "deals_submitInlineCashflow"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_deleteDealWithPassword",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "deals_deleteDealWithPassword"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "dealedit_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_saveDealField",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "dealedit_saveDealField"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_deleteDeal",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "dealedit_deleteDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "users_loadUsers",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "users_loadUsers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "admin/public/js/deal-wizard.js",
+      "source_location": null,
+      "weight": 0.9,
+      "_src": "wizard_startExtraction",
+      "_tgt": "api_API",
+      "source": "api_API",
+      "target": "wizard_startExtraction"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "api_requireAuth",
+      "source": "api_requireAuth",
+      "target": "dealedit_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/users.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "users_loadUsers",
+      "_tgt": "api_requireAuth",
+      "source": "api_requireAuth",
+      "target": "users_loadUsers"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_renderDealCard",
+      "_tgt": "utils_formatCurrency",
+      "source": "utils_formatCurrency",
+      "target": "deals_renderDealCard"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabfinancial_renderFinancialTab",
+      "_tgt": "utils_formatCurrency",
+      "source": "utils_formatCurrency",
+      "target": "tabfinancial_renderFinancialTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabfundraising_renderFundraisingTab",
+      "_tgt": "utils_formatCurrency",
+      "source": "utils_formatCurrency",
+      "target": "tabfundraising_renderFundraisingTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/cashflow.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabcashflow_renderCashflowTab",
+      "_tgt": "utils_formatCurrency",
+      "source": "utils_formatCurrency",
+      "target": "tabcashflow_renderCashflowTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/comps.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabcomps_renderCompsTab",
+      "_tgt": "utils_formatCurrency",
+      "source": "utils_formatCurrency",
+      "target": "tabcomps_renderCompsTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabfinancial_renderFinancialTab",
+      "_tgt": "utils_formatPercent",
+      "source": "utils_formatPercent",
+      "target": "tabfinancial_renderFinancialTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_submitInlineCashflow",
+      "_tgt": "utils_parseAmount",
+      "source": "utils_parseAmount",
+      "target": "deals_submitInlineCashflow"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_submitInlineCashflow",
+      "_tgt": "utils_showToast",
+      "source": "utils_showToast",
+      "target": "deals_submitInlineCashflow"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "utils_showToast",
+      "source": "utils_showToast",
+      "target": "dealedit_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_saveDealField",
+      "_tgt": "utils_showToast",
+      "source": "utils_showToast",
+      "target": "dealedit_saveDealField"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_deleteDealWithPassword",
+      "_tgt": "utils_showConfirmModal",
+      "source": "utils_showConfirmModal",
+      "target": "deals_deleteDealWithPassword"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/utils.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "utils_confirmAction",
+      "_tgt": "utils_showConfirmModal",
+      "source": "utils_showConfirmModal",
+      "target": "utils_confirmAction"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_deleteDeal",
+      "_tgt": "utils_confirmAction",
+      "source": "utils_confirmAction",
+      "target": "dealedit_deleteDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "utils_getDealIdFromUrl",
+      "source": "utils_getDealIdFromUrl",
+      "target": "dealedit_loadDeal"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "utils_initTabs",
+      "source": "utils_initTabs",
+      "target": "dealedit_loadDeal"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_renderDealCard",
+      "_tgt": "utils_PROPERTY_STATUS",
+      "source": "utils_PROPERTY_STATUS",
+      "target": "deals_renderDealCard"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deals.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "deals_renderDealCard",
+      "_tgt": "utils_FUNDRAISING_STATUS",
+      "source": "utils_FUNDRAISING_STATUS",
+      "target": "deals_renderDealCard"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/fundraising.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabfundraising_renderFundraisingTab",
+      "_tgt": "utils_formatCurrencyInput",
+      "source": "utils_formatCurrencyInput",
+      "target": "tabfundraising_renderFundraisingTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-tabs/financial.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "tabfinancial_renderFinancialTab",
+      "_tgt": "utils_getDeviationStatus",
+      "source": "utils_getDeviationStatus",
+      "target": "tabfinancial_renderFinancialTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabproperty_renderPropertyTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabproperty_renderPropertyTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabfinancial_renderFinancialTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabfinancial_renderFinancialTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabrenovation_renderRenovationTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabrenovation_renderRenovationTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabfundraising_renderFundraisingTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabfundraising_renderFundraisingTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabcashflow_renderCashflowTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabcashflow_renderCashflowTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabimages_renderImagesTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabimages_renderImagesTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabcomps_renderCompsTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabcomps_renderCompsTab"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "admin/public/js/deal-edit.js",
+      "source_location": null,
+      "weight": 1.0,
+      "_src": "dealedit_loadDeal",
+      "_tgt": "tabdocuments_renderDocumentsTab",
+      "source": "dealedit_loadDeal",
+      "target": "tabdocuments_renderDocumentsTab"
     }
   ],
   "hyperedges": []

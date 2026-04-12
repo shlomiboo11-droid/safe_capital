@@ -90,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "ללא כותרת.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -100,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "קישורים נכנסים עבור ללא כותרת"
+              "title": "קישורים נכנסים"
             }
           },
           {
@@ -165,8 +164,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -181,6 +179,8 @@
   },
   "active": "3398872a689bf2ed",
   "lastOpenFiles": [
+    "ללא כותרת.canvas",
+    "utils.js.md",
     "generateToken().md",
     "ללא כותרת.md"
   ]

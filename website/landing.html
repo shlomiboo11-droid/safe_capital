@@ -8,7 +8,7 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="css/shared.css?v=4" rel="stylesheet"/>
+<link href="css/shared.css?v=5" rel="stylesheet"/>
 
 <style>
 /* ===== CSS Custom Properties ===== */
@@ -971,23 +971,7 @@ tailwind.config = {
 (function() {
   'use strict';
 
-  /* ===== 1. Mobile Menu Toggle ===== */
-  var menuBtn = document.querySelector('.mobile-menu-btn');
-  var mobileNav = document.querySelector('.mobile-nav');
-  if (menuBtn && mobileNav) {
-    menuBtn.addEventListener('click', function() {
-      mobileNav.classList.toggle('open');
-      var isOpen = mobileNav.classList.contains('open');
-      menuBtn.querySelector('.material-symbols-outlined').textContent = isOpen ? 'close' : 'menu';
-    });
-    /* Close on link click */
-    mobileNav.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        mobileNav.classList.remove('open');
-        menuBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
-      });
-    });
-  }
+  /* Mobile Menu Toggle — handled by shared.js */
 
   /* ===== 2. Intersection Observer for .===== */
   var fadeEls = document.querySelectorAll('.fade-in');
@@ -1399,7 +1383,7 @@ tailwind.config = {
 })();
 </script>
 <script src="js/settings.js"></script>
-<script src="js/shared.js"></script>
+<script src="js/shared.js?v=2"></script>
 
 <!-- NagishLi z-index fix + dismiss button -->
 <style>

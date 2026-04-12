@@ -8,7 +8,7 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="css/shared.css?v=4" rel="stylesheet"/>
+<link href="css/shared.css?v=7" rel="stylesheet"/>
 
 <style>
 /* ===== CSS Custom Properties ===== */
@@ -179,18 +179,85 @@
   background: #984349;
 }
 
+/* ===== Desktop: Sticky Hero Text ===== */
+@media (min-width: 768px) {
+  #hero .scroll-panel[data-panel="0"] {
+    position: sticky;
+    top: 0;
+  }
+  /* Text is visible immediately on desktop — no entrance transitions */
+  .mobile-hero-title,
+  .mobile-hero-lines,
+  .mobile-hero-buttons {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* Mobile */
 @media (max-width: 767px) {
   .hero-video-bg { display: none; }
   .hero-vignette { display: none; }
   .scroll-panel { min-height: auto; padding: 2rem 1.5rem; }
-  .scroll-panel:first-child { min-height: 70vh; padding-top: 5rem; }
+  .scroll-panel:first-child { min-height: 85vh; padding-top: 6rem; display: flex; align-items: flex-start; }
   .scroll-panel-inner { opacity: 1; transform: none; }
-  .hero-mobile-video {
-    width: 100%;
-    border-radius: 0.75rem;
-  }
   .video-progress { display: none; }
+
+  /* Mobile hero scroll-frame background */
+  .hero-mobile-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .hero-mobile-bg .mobile-scroll-frame {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  #hero { min-height: 200vh; }
+  .hero-mobile-overlay {
+    display: none;
+  }
+  /* Top fade */
+  .hero-mobile-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, #fbf9f6, transparent);
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* Bottom fade */
+  .hero-mobile-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to top, #fbf9f6, transparent);
+    z-index: 1;
+    pointer-events: none;
+  }
+  #hero { position: relative; }
+  #hero .relative.z-10 {
+    position: relative;
+    z-index: 2;
+  }
+  #hero .scroll-panel[data-panel="0"] {
+    position: sticky;
+    top: 0;
+  }
 }
 
 /* ===== Scroll Fade-in ===== */
@@ -435,7 +502,13 @@ tailwind.config = {
 <!-- ============================================================ -->
 <section id="hero" class="relative bg-background">
 
-<!-- Full-screen video background -->
+<!-- Mobile: vertical scroll-frame background -->
+<div class="hero-mobile-bg md:hidden">
+  <img class="mobile-scroll-frame" src="frames-vertical/renovation_vertical00000000.jpg" alt="">
+  <div class="hero-mobile-overlay"></div>
+</div>
+
+<!-- Desktop: frame scroll video background -->
 <div class="hero-video-bg">
   <img class="scroll-frame" src="frames/frame-01.jpg" alt="">
   <div class="hero-vignette"></div>
@@ -448,19 +521,19 @@ tailwind.config = {
   <div class="scroll-panel" data-panel="0">
     <div class="max-w-[1200px] ml-auto px-6 md:pr-[84px] w-full">
       <div class="scroll-panel-inner md:w-[55%] md:ml-auto text-right active">
-        <h1 class="font-headline font-extrabold leading-tight mb-6">
+        <h1 class="font-headline font-extrabold leading-tight mb-6 mobile-hero-title">
           <span class="block text-2xl md:text-4xl lg:text-5xl md:whitespace-nowrap"><span class="text-primary">הכסף שלך </span><span class="text-secondary">עובד בשבילך?</span></span>
           <span class="block text-2xl md:text-4xl lg:text-[2.8rem] md:whitespace-nowrap"><span class="text-primary">או שאתה עובד </span><span class="text-primary opacity-50">בשביל הכסף?</span></span>
         </h1>
-        <div class="text-lg md:text-xl leading-relaxed mb-10 max-w-xl space-y-1">
+        <div class="text-lg md:text-xl leading-relaxed mb-10 max-w-xl space-y-1 mobile-hero-lines">
           <p class="text-on-surface-variant">השקעות נדל"ן קצרות בארה"ב</p>
           <p class="font-label font-bold text-secondary">עד 20% רווח</p>
           <p class="font-label font-bold text-secondary">עד שנה מרגע השיפוץ למכירה</p>
           <p class="text-on-surface-variant">אנחנו מנהלים הכל</p>
         </div>
-        <div class="flex flex-col sm:flex-row-reverse gap-4 items-start sm:items-center">
+        <div class="flex flex-col sm:flex-row-reverse gap-4 items-start sm:items-center mobile-hero-buttons">
           <a href="properties.html" class="inline-block text-white font-bold text-lg px-8 py-4 rounded-lg hover:opacity-90 active:scale-[0.97] transition-all" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">צפו בעסקאות הזמינות</a>
-          <a href="#method" class="inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-4 rounded-lg hover:bg-secondary/5 transition-all scroll-link">איך זה עובד?</a>
+          <a href="#method" class="hidden md:inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-4 rounded-lg hover:bg-secondary/5 transition-all scroll-link">איך זה עובד?</a>
         </div>
       </div>
     </div>
@@ -468,15 +541,12 @@ tailwind.config = {
 
   <!-- Scroll spacer for video animation -->
   <div class="hidden md:block" style="height:35vh"></div>
+  <!-- Mobile scroll spacer for frame animation -->
+  <div class="md:hidden" style="height:100vh"></div>
 
 </div>
 
-<!-- Mobile: autoplay video below hero -->
-<div class="md:hidden px-6 pb-12">
-  <video class="hero-mobile-video" autoplay muted loop playsinline>
-    <source src="website_media/renovation_horizontal.mp4" type="video/mp4">
-  </video>
-</div>
+<!-- Mobile video removed — now plays as hero background -->
 </section>
 
 
@@ -977,22 +1047,82 @@ tailwind.config = {
 (function() {
   'use strict';
 
-  /* ===== 1. Mobile Menu Toggle ===== */
-  var menuBtn = document.querySelector('.mobile-menu-btn');
-  var mobileNav = document.querySelector('.mobile-nav');
-  if (menuBtn && mobileNav) {
-    menuBtn.addEventListener('click', function() {
-      mobileNav.classList.toggle('open');
-      var isOpen = mobileNav.classList.contains('open');
-      menuBtn.querySelector('.material-symbols-outlined').textContent = isOpen ? 'close' : 'menu';
-    });
-    /* Close on link click */
-    mobileNav.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function() {
-        mobileNav.classList.remove('open');
-        menuBtn.querySelector('.material-symbols-outlined').textContent = 'menu';
-      });
-    });
+  /* Mobile Menu Toggle — handled by shared.js */
+
+  /* ===== Mobile Hero Scroll Frame Animation ===== */
+  if (window.innerWidth < 768) {
+    var mobileFrame = document.querySelector('.mobile-scroll-frame');
+    var heroOverlay = document.querySelector('.hero-mobile-overlay');
+    var heroSection = document.getElementById('hero');
+    var heroTitle = document.querySelector('.mobile-hero-title');
+    var heroLines = document.querySelector('.mobile-hero-lines');
+    var heroButtons = document.querySelector('.mobile-hero-buttons');
+    var heroContent = document.querySelector('#hero .relative.z-10');
+    var mobileBg = document.querySelector('.hero-mobile-bg');
+    var MOBILE_TOTAL_FRAMES = 121;
+    var mobileFrameCache = [];
+    var mobileCurrentFrame = -1;
+    var heroRevealed = false;
+
+    // Show title on load
+    if (heroTitle) {
+      setTimeout(function() {
+        heroTitle.style.opacity = '1';
+        heroTitle.style.transform = 'translateY(0)';
+      }, 300);
+    }
+
+    if (mobileFrame && heroSection) {
+      // Preload all frames
+      for (var i = 0; i < MOBILE_TOTAL_FRAMES; i++) {
+        var img = new Image();
+        img.src = 'frames-vertical/renovation_vertical' + String(i).padStart(8, '0') + '.jpg';
+        mobileFrameCache.push(img);
+      }
+
+      window.addEventListener('scroll', function() {
+        var rect = heroSection.getBoundingClientRect();
+        var heroH = heroSection.offsetHeight;
+        var scrolled = Math.max(0, -rect.top);
+        var progress = Math.min(1, scrolled / (heroH * 0.7));
+
+        // Phase 1: Reveal lines then buttons on first scroll
+        if (progress > 0.03 && !heroRevealed) {
+          heroRevealed = true;
+          if (heroLines) { heroLines.style.opacity = '1'; heroLines.style.transform = 'translateY(0)'; }
+          if (heroButtons) { heroButtons.style.opacity = '1'; heroButtons.style.transform = 'translateY(0)'; }
+        }
+
+        // Phase 2 (0–70%): Frame animation + overlay fade
+        var frameProgress = Math.min(1, progress / 0.7);
+        var frameIdx = Math.min(MOBILE_TOTAL_FRAMES - 1, Math.floor(frameProgress * MOBILE_TOTAL_FRAMES));
+        if (frameIdx !== mobileCurrentFrame && mobileFrameCache[frameIdx] && mobileFrameCache[frameIdx].complete) {
+          mobileFrame.src = mobileFrameCache[frameIdx].src;
+          mobileCurrentFrame = frameIdx;
+        }
+        /* Overlay stays — only fades with the final exit */
+
+        // Phase 3 (85–100%): Fade out bg + overlay
+        if (progress > 0.85) {
+          var exitProgress = (progress - 0.85) / 0.15;
+          var bgFade = String(Math.max(0, 1 - exitProgress));
+          if (mobileBg) mobileBg.style.opacity = bgFade;
+          if (heroOverlay) heroOverlay.style.opacity = bgFade;
+        } else {
+          if (mobileBg) mobileBg.style.opacity = '1';
+          if (heroOverlay) heroOverlay.style.opacity = '1';
+        }
+
+        // Hide fixed bg after hero
+        if (mobileBg) {
+          mobileBg.style.display = (rect.bottom < 0) ? 'none' : '';
+        }
+      }, { passive: true });
+    }
+  } else {
+    // Desktop: show all hero elements immediately
+    var els = document.querySelectorAll('.mobile-hero-title, .mobile-hero-lines, .mobile-hero-buttons');
+    els.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
   }
 
   /* ===== 2. Intersection Observer for .===== */
@@ -1413,7 +1543,7 @@ tailwind.config = {
 })();
 </script>
 <script src="js/settings.js"></script>
-<script src="js/shared.js"></script>
+<script src="js/shared.js?v=2"></script>
 
 <!-- NagishLi z-index fix + dismiss button -->
 <style>

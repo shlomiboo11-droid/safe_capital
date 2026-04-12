@@ -124,6 +124,7 @@ body {
     cursor: pointer;
     color: #022445;
     padding: 0.25rem;
+    font-size: 1.5rem;
 }
 
 /* Mobile nav dropdown */
@@ -150,7 +151,9 @@ body {
 .site-nav .mobile-nav a:hover { background: rgba(2, 36, 69, 0.04); color: #022445; }
 .site-nav .mobile-nav a.active { color: #984349; font-weight: 700; }
 .site-nav .mobile-nav .mobile-cta {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 1rem 2rem;
     text-align: center;
     background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
@@ -160,6 +163,12 @@ body {
     font-family: 'Heebo', sans-serif;
     font-weight: 700;
     text-decoration: none;
+    border-bottom: none;
+}
+.site-nav .mobile-nav .mobile-cta:hover {
+    background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
+    color: #fff;
+    opacity: 0.9;
 }
 
 /* Standardized Footer */
@@ -395,17 +404,35 @@ body {
 
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 767px) {
+    /* --- Prevent horizontal overflow --- */
+    html, body { overflow-x: clip; }
+
     /* --- Global Mobile Spacing & Typography --- */
-    h1 { font-size: 2rem !important; line-height: 1.2 !important; }
-    h2 { font-size: 1.5rem !important; }
-    h3 { font-size: 1.15rem !important; }
+    h1 { font-size: 1.625rem !important; line-height: 1.3 !important; }
+    h2 { font-size: 1.375rem !important; line-height: 1.3 !important; }
+    h3 { font-size: 1.0625rem !important; line-height: 1.4 !important; }
+
+    /* --- Text Utility Size Reduction --- */
+    .text-lg { font-size: 0.9375rem !important; }
+    .text-xl { font-size: 1rem !important; }
+    .text-2xl:not(h1):not(h2):not(h3) { font-size: 1.25rem !important; }
+    .text-3xl:not(h1):not(h2):not(h3) { font-size: 1.375rem !important; }
+
+    /* --- CTA Buttons Compact --- */
+    a.inline-block[class*="font-bold"][class*="px-8"],
+    a.inline-flex[class*="font-bold"][class*="px-8"],
+    a.inline-block[class*="font-bold"][class*="px-10"],
+    a.inline-flex[class*="font-bold"][class*="px-10"] {
+        font-size: 0.9375rem !important;
+        padding: 0.625rem 1.25rem !important;
+    }
 
     /* --- Nav Mobile Fixes --- */
     .site-nav .nav-inner {
-        padding: 0.75rem 1rem;
+        padding: 0.625rem 1rem;
     }
     .site-nav .nav-logo .nav-logo-img {
-        height: 32px;
+        height: 24px;
     }
     .site-nav .mobile-menu-btn {
         min-width: 44px;
@@ -414,7 +441,10 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-left: auto;
     }
+    .site-nav .nav-cta { display: none !important; }
+    .site-nav .nav-portal-btn { display: none !important; }
     .site-nav .mobile-nav a {
         padding: 0.875rem 1.25rem;
         min-height: 48px;
@@ -486,6 +516,11 @@ body {
         gap: 0.5rem;
         padding: 1rem 0;
     }
+    .site-footer .footer-cta-btn,
+    .site-footer .footer-ghost-btn {
+        font-size: 0.875rem !important;
+        padding: 0.625rem 1.25rem !important;
+    }
 
     /* --- Hero Section (index.html) --- */
     section.relative.pt-24.min-h-screen {
@@ -518,7 +553,7 @@ body {
 
     /* --- Investment Stats --- */
     .text-6xl {
-        font-size: 2.5rem !important;
+        font-size: 2rem !important;
     }
 
     /* --- Bottom CTA Section --- */
@@ -736,8 +771,8 @@ body {
 
 /* Small phones */
 @media (max-width: 374px) {
-    h1 { font-size: 1.75rem !important; }
-    h2 { font-size: 1.3rem !important; }
+    h1 { font-size: 1.5rem !important; line-height: 1.3 !important; }
+    h2 { font-size: 1.25rem !important; line-height: 1.3 !important; }
     .carousel-track > .carousel-card-80 {
         width: 85vw;
     }

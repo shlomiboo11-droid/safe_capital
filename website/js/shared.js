@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inject "אזור אישי" portal button next to "הצטרפו עכשיו"
     const navCta = document.querySelector('.site-nav .nav-cta');
     const mobileNavEl = document.querySelector('.site-nav .mobile-nav');
-    if (navCta) {
+    if (navCta && !window.matchMedia('(max-width: 767px)').matches) {
         // Wrap CTA + portal button in a flex container so they stay grouped together
         const btnGroup = document.createElement('div');
         btnGroup.style.cssText = 'display:flex;align-items:center;gap:0.625rem;';
