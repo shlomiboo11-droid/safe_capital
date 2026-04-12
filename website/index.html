@@ -199,6 +199,7 @@
 @media (max-width: 767px) {
   .hero-video-bg { display: none; }
   .hero-vignette { display: none; }
+  #hero::after { display: none; }
   .scroll-panel { min-height: auto; padding: 2rem 1.5rem; }
   .scroll-panel:first-child { min-height: 85vh; padding-top: 6rem; display: flex; align-items: flex-start; }
   .scroll-panel-inner { opacity: 1; transform: none; }
@@ -210,7 +211,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
     z-index: 0;
   }
   .hero-mobile-bg .mobile-scroll-frame {
@@ -233,15 +234,15 @@
     z-index: 1;
     pointer-events: none;
   }
-  /* Bottom fade */
+  /* Bottom fade — extends below image to cover gap */
   .hero-mobile-bg::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -60px;
     left: 0;
     right: 0;
-    height: 100px;
-    background: linear-gradient(to top, #fbf9f6, transparent);
+    height: 160px;
+    background: linear-gradient(to top, #fbf9f6 30%, transparent);
     z-index: 1;
     pointer-events: none;
   }
@@ -250,6 +251,12 @@
     position: relative;
     z-index: 2;
   }
+  /* House-flip section: disable scroll animation layout on mobile */
+  #house-flip-section { height: auto !important; }
+  #house-flip-section > div { position: relative !important; height: auto !important; overflow: visible !important; }
+  /* Step cards visible immediately on mobile — no animation */
+  .step-card { opacity: 1 !important; transform: none !important; }
+  .flow-connector-h, .flow-connector-v { opacity: 1 !important; }
 }
 
 /* ===== Scroll Fade-in ===== */
@@ -679,7 +686,7 @@ tailwind.config = {
   <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#fbf9f6">
 
     <!-- Method overlay (top portion) -->
-    <div class="relative z-10 pt-32 md:pt-36 pb-6" style="background:#fbf9f6">
+    <div class="relative z-10 pt-8 md:pt-36 pb-6" style="background:#fbf9f6">
       <div class="max-w-[1000px] mx-auto px-8">
         <h3 class="font-extrabold text-3xl text-primary mb-3 text-center">איך אנחנו מייצרים כסף?</h3>
         <p class="text-on-surface-variant font-bold text-lg mb-8 text-center">השיטה שלנו</p>
@@ -897,7 +904,7 @@ tailwind.config = {
       <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
     </div>
     <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p>כי בישראל תצטרכו הון של <span class="font-label font-bold text-secondary">300 אלף ומשכנתא</span> כדי לקבל סכום שבארצות הברית אתם יכולים להרוויח ב<span class="font-label font-bold text-secondary">חצי שנה</span> עם הרבה פחות הון עצמי</p>
+      <p>כי בישראל מחירי הכניסה להשקעה בנדל"ן <span class="font-label font-bold text-secondary">גבוהים משמעותית</span>, תהליך הפליפ דורש לפחות <span class="font-label font-bold text-secondary">18 חודשים</span> כדי להימנע ממס שבח, והרגולציה לבנייה ושיפוצים <strong class="text-primary">מסובכת ואיטית</strong> ביחס לארצות הברית — שם אפשר לסגור עסקה, לשפץ ולמכור תוך חודשים בודדים</p>
     </div>
   </div>
 
@@ -967,24 +974,24 @@ tailwind.config = {
 </div>
 
 <!-- 3 Steps -->
-<div class="flex flex-col md:flex-row gap-8 mb-16 justify-center">
-  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
-    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-lg">1</span>
+<div class="flex flex-col md:flex-row gap-8 mb-16 justify-center items-center md:items-start">
+  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
+    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-sm md:text-lg">1</span>
     </div>
-    <p class="text-white/90 leading-relaxed pt-2 md:text-center">הצטרפו לקבוצת הווצאפ השקטה<br>(זה בחינם)</p>
+    <p class="text-white/90 leading-relaxed text-center md:pt-1">הצטרפו לקבוצת הווצאפ השקטה<br>(זה בחינם)</p>
   </div>
-  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
-    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-lg">2</span>
+  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
+    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-sm md:text-lg">2</span>
     </div>
-    <p class="text-white/90 leading-relaxed pt-2 md:text-center">בואו לכנס המשקיעים הקרוב<br>ושמעו את כל הפרטים</p>
+    <p class="text-white/90 leading-relaxed text-center md:pt-1">בואו לכנס המשקיעים הקרוב<br>ושמעו את כל הפרטים</p>
   </div>
-  <div class="flex items-start gap-4 flex-1 md:flex-col md:items-center">
-    <div class="w-12 h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-lg">3</span>
+  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
+    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
+      <span class="font-label font-bold text-white text-sm md:text-lg">3</span>
     </div>
-    <p class="text-white/90 leading-relaxed pt-2 md:text-center">תחליטו אם מתאים לכם להצטרף<br>לעסקה הבאה</p>
+    <p class="text-white/90 leading-relaxed text-center md:pt-1">תחליטו אם מתאים לכם להצטרף<br>לעסקה הבאה</p>
   </div>
 </div>
 
@@ -1023,7 +1030,7 @@ tailwind.config = {
 <p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
 <div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
 </div></div>
-<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות.</span><span class="footer-bottom-contact"><span data-setting="email_info">info@safecapital.co.il</span> | <span data-setting="phone_footer">03-123-4567</span></span></div>
+<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות</span><span class="footer-bottom-contact"><span data-setting="email_info">safecapital2024@gmail.com</span> | <span data-setting="phone_footer">054-7828550</span></span></div>
 </footer>
 
 
@@ -1146,7 +1153,10 @@ tailwind.config = {
         }
       });
     }, { threshold: 0.3 });
-    stepObs.observe(stepCards[0]);
+    var firstVisibleCard = Array.from(stepCards).find(function(card) {
+      return card.offsetParent !== null;
+    });
+    if (firstVisibleCard) stepObs.observe(firstVisibleCard);
   }
 
   /* ===== 5. Counter Animation ===== */

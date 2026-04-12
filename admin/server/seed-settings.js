@@ -8,9 +8,9 @@ const SETTINGS = [
   // ── contact ──
   { key: 'phone', value: '+972 (0) 3 555 0123', label: 'טלפון ראשי', category: 'contact', field_type: 'tel' },
   { key: 'phone_whatsapp', value: '+972 54 123 4567', label: 'טלפון וואטסאפ', category: 'contact', field_type: 'tel' },
-  { key: 'phone_footer', value: '03-123-4567', label: 'טלפון בפוטר', category: 'contact', field_type: 'text' },
-  { key: 'email_main', value: 'invest@safecapital.co.il', label: 'אימייל ראשי', category: 'contact', field_type: 'email' },
-  { key: 'email_info', value: 'info@safecapital.co.il', label: 'אימייל כללי (פוטר)', category: 'contact', field_type: 'email' },
+  { key: 'phone_footer', value: '054-7828550', label: 'טלפון בפוטר', category: 'contact', field_type: 'text' },
+  { key: 'email_main', value: 'safecapital2024@gmail.com', label: 'אימייל ראשי', category: 'contact', field_type: 'email' },
+  { key: 'email_info', value: 'safecapital2024@gmail.com', label: 'אימייל כללי (פוטר)', category: 'contact', field_type: 'email' },
   { key: 'email_privacy', value: 'privacy@safecapital.co.il', label: 'אימייל פרטיות', category: 'contact', field_type: 'email' },
   { key: 'email_legal', value: 'legal@safecapital.co.il', label: 'אימייל משפטי', category: 'contact', field_type: 'email' },
   { key: 'hours_weekday', value: 'ראשון - חמישי: 09:00 - 18:00', label: 'שעות פעילות — ימי חול', category: 'contact', field_type: 'text' },
@@ -25,7 +25,7 @@ const SETTINGS = [
 
   // ── legal ──
   { key: 'company_name_en', value: 'Safe Capital', label: 'שם חברה באנגלית', category: 'legal', field_type: 'text' },
-  { key: 'copyright_text', value: '© 2026 Safe Capital. כל הזכויות שמורות.', label: 'טקסט זכויות יוצרים', category: 'legal', field_type: 'text' },
+  { key: 'copyright_text', value: '© 2026 Safe Capital. כל הזכויות שמורות', label: 'טקסט זכויות יוצרים', category: 'legal', field_type: 'text' },
   { key: 'last_updated_he', value: '2026-03-15', label: 'עדכון אחרון (עברית)', category: 'legal', field_type: 'date' },
   { key: 'last_updated_en', value: '2026-03-15', label: 'עדכון אחרון (אנגלית)', category: 'legal', field_type: 'date' },
   { key: 'footer_description', value: 'חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים', label: 'תיאור בפוטר', category: 'legal', field_type: 'textarea' },

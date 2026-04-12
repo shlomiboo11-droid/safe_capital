@@ -53,7 +53,7 @@ body {
     align-items: center;
     position: relative;
     width: 100%;
-    padding: 0.875rem 2.5rem;
+    padding: 0.5rem 2.5rem;
 }
 .site-nav .nav-logo {
     text-decoration: none;
@@ -433,7 +433,7 @@ body {
 
     /* --- Nav Mobile Fixes --- */
     .site-nav .nav-inner {
-        padding: 0.625rem 1rem;
+        padding: 0.375rem 1rem;
     }
     .site-nav .nav-logo .nav-logo-img {
         height: 24px;
