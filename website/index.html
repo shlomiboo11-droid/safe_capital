@@ -204,24 +204,20 @@
   .scroll-panel-inner { opacity: 1; transform: none; }
   .video-progress { display: none; }
 
-  /* Mobile hero scroll-frame background */
+  /* Mobile hero static background image */
   .hero-mobile-bg {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
     overflow: hidden;
     z-index: 0;
   }
   .hero-mobile-bg .mobile-scroll-frame {
     width: 100%;
     height: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: block;
   }
-  #hero { min-height: 200vh; }
   .hero-mobile-overlay {
     display: none;
   }
@@ -249,14 +245,10 @@
     z-index: 1;
     pointer-events: none;
   }
-  #hero { position: relative; }
+  #hero { position: relative; margin-bottom: 2rem; }
   #hero .relative.z-10 {
     position: relative;
     z-index: 2;
-  }
-  #hero .scroll-panel[data-panel="0"] {
-    position: sticky;
-    top: 0;
   }
 }
 
@@ -504,7 +496,7 @@ tailwind.config = {
 
 <!-- Mobile: vertical scroll-frame background -->
 <div class="hero-mobile-bg md:hidden">
-  <img class="mobile-scroll-frame" src="frames-vertical/renovation_vertical00000000.jpg" alt="">
+  <img class="mobile-scroll-frame" src="images/hero-mobile.jpg" alt="">
   <div class="hero-mobile-overlay"></div>
 </div>
 
@@ -541,8 +533,6 @@ tailwind.config = {
 
   <!-- Scroll spacer for video animation -->
   <div class="hidden md:block" style="height:35vh"></div>
-  <!-- Mobile scroll spacer for frame animation -->
-  <div class="md:hidden" style="height:100vh"></div>
 
 </div>
 
@@ -1049,84 +1039,8 @@ tailwind.config = {
 
   /* Mobile Menu Toggle — handled by shared.js */
 
-  /* ===== Mobile Hero Scroll Frame Animation ===== */
-  if (window.innerWidth < 768) {
-    var mobileFrame = document.querySelector('.mobile-scroll-frame');
-    var heroOverlay = document.querySelector('.hero-mobile-overlay');
-    var heroSection = document.getElementById('hero');
-    var heroTitle = document.querySelector('.mobile-hero-title');
-    var heroLines = document.querySelector('.mobile-hero-lines');
-    var heroButtons = document.querySelector('.mobile-hero-buttons');
-    var heroContent = document.querySelector('#hero .relative.z-10');
-    var mobileBg = document.querySelector('.hero-mobile-bg');
-    var MOBILE_TOTAL_FRAMES = 121;
-    var mobileFrameCache = [];
-    var mobileCurrentFrame = -1;
-    var heroRevealed = false;
-
-    // Show title on load
-    if (heroTitle) {
-      setTimeout(function() {
-        heroTitle.style.opacity = '1';
-        heroTitle.style.transform = 'translateY(0)';
-      }, 300);
-    }
-
-    if (mobileFrame && heroSection) {
-      // Preload all frames
-      for (var i = 0; i < MOBILE_TOTAL_FRAMES; i++) {
-        var img = new Image();
-        img.src = 'frames-vertical/renovation_vertical' + String(i).padStart(8, '0') + '.jpg';
-        mobileFrameCache.push(img);
-      }
-
-      var mobileTicking = false;
-      window.addEventListener('scroll', function() {
-        if (!mobileTicking) {
-          requestAnimationFrame(function() {
-            var rect = heroSection.getBoundingClientRect();
-            var heroH = heroSection.offsetHeight;
-            var scrolled = Math.max(0, -rect.top);
-            var progress = Math.min(1, scrolled / (heroH * 0.7));
-
-            // Phase 1: Reveal lines then buttons on first scroll
-            if (progress > 0.03 && !heroRevealed) {
-              heroRevealed = true;
-              if (heroLines) { heroLines.style.opacity = '1'; heroLines.style.transform = 'translateY(0)'; }
-              if (heroButtons) { heroButtons.style.opacity = '1'; heroButtons.style.transform = 'translateY(0)'; }
-            }
-
-            // Phase 2 (0–70%): Frame animation
-            var frameProgress = Math.min(1, progress / 0.7);
-            var frameIdx = Math.min(MOBILE_TOTAL_FRAMES - 1, Math.floor(frameProgress * MOBILE_TOTAL_FRAMES));
-            if (frameIdx !== mobileCurrentFrame && mobileFrameCache[frameIdx] && mobileFrameCache[frameIdx].complete) {
-              mobileFrame.src = mobileFrameCache[frameIdx].src;
-              mobileCurrentFrame = frameIdx;
-            }
-
-            // Phase 3 (85–100%): Fade out bg + overlay
-            if (progress > 0.85) {
-              var exitProgress = (progress - 0.85) / 0.15;
-              var bgFade = String(Math.max(0, 1 - exitProgress));
-              if (mobileBg) mobileBg.style.opacity = bgFade;
-              if (heroOverlay) heroOverlay.style.opacity = bgFade;
-            } else {
-              if (mobileBg) mobileBg.style.opacity = '1';
-              if (heroOverlay) heroOverlay.style.opacity = '1';
-            }
-
-            // Hide fixed bg after hero
-            if (mobileBg) {
-              mobileBg.style.display = (rect.bottom < 0) ? 'none' : '';
-            }
-            mobileTicking = false;
-          });
-          mobileTicking = true;
-        }
-      }, { passive: true });
-    }
-  } else {
-    // Desktop: show all hero elements immediately
+  /* Desktop: show all hero elements immediately */
+  if (window.innerWidth >= 768) {
     var els = document.querySelectorAll('.mobile-hero-title, .mobile-hero-lines, .mobile-hero-buttons');
     els.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
   }
