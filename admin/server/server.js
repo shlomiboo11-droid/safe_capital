@@ -70,6 +70,14 @@ const portalRouter = require('./routes/portal');
 app.use('/api/portal/login', portalLoginLimiter);
 app.use('/api/portal', portalRouter);
 
+// Investors portal: redirect root to /portal/ when accessed via investors subdomain
+app.get('/', (req, res, next) => {
+  if (req.hostname && req.hostname.includes('investors')) {
+    return res.redirect('/portal/');
+  }
+  next();
+});
+
 // SPA fallback — serve index.html for non-API routes
 app.get('*', (req, res) => {
   // Don't catch API calls

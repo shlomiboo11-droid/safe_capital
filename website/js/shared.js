@@ -68,7 +68,7 @@ if (typeof tailwind !== 'undefined') {
 // Portal link URL — portal is hosted on the admin server
 const PORTAL_URL = (window.location.hostname === 'localhost')
   ? 'http://localhost:3000/portal/login.html'
-  : 'https://safe-capital-investors.vercel.app/portal/login.html';
+  : 'https://safe-capital-investors.vercel.app';
 
 // Mobile menu toggle
 document.addEventListener('DOMContentLoaded', function() {
