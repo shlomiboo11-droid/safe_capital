@@ -21,7 +21,8 @@ app.use(cors({
     process.env.ADMIN_ORIGIN || 'http://localhost:3000',
     'http://localhost:8081',
     'http://localhost:8082',
-    'https://safe-capital-il.vercel.app'
+    'https://safe-capital-il.vercel.app',
+    'https://safecapital.vercel.app'
   ]
 }));
 app.use(express.json({ limit: '50mb' }));
