@@ -20,7 +20,11 @@ const router = express.Router();
 router.use(authenticate, authorize('super_admin', 'manager'));
 
 // ── Upload config ────────────────────────────────────────────
-const uploadDir = path.resolve(__dirname, '..', '..', 'public', 'uploads');
+// On Vercel, filesystem is read-only except /tmp
+const isVercel = process.env.VERCEL === '1';
+const uploadDir = isVercel
+  ? path.join('/tmp', 'uploads')
+  : path.resolve(__dirname, '..', '..', 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -43,6 +47,42 @@ const upload = multer({
     const allowed = ['.xlsx', '.xls', '.pdf'];
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, allowed.includes(ext));
+  }
+});
+
+// ──────────────────────────────────────────────────────────────
+// GET /api/extract/test — Test Anthropic API connectivity
+// ──────────────────────────────────────────────────────────────
+router.get('/test', async (req, res) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ ok: false, error: 'ANTHROPIC_API_KEY לא מוגדר ב-Vercel Environment Variables' });
+  }
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 10,
+        messages: [{ role: 'user', content: 'ping' }]
+      })
+    });
+
+    if (!resp.ok) {
+      const body = await resp.json().catch(() => ({}));
+      const msg = body?.error?.message || `HTTP ${resp.status}`;
+      return res.status(500).json({ ok: false, error: msg });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 

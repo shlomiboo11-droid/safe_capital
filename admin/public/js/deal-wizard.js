@@ -22,6 +22,27 @@ let zillowUrl = '';
 let aiResult = null; // The AI response
 let currentStep = 1;
 
+// ── API Test ─────────────────────────────────────────────────
+async function testApiConnection() {
+  const btn = document.querySelector('button[onclick="testApiConnection()"]');
+  const result = document.getElementById('apiTestResult');
+  btn.textContent = 'בודק...';
+  btn.disabled = true;
+  result.className = 'text-xs px-3 py-1.5 rounded-full font-medium';
+
+  try {
+    const data = await API.get('/extract/test');
+    result.textContent = 'API תקין';
+    result.classList.add('bg-green-100', 'text-green-700');
+  } catch (err) {
+    result.textContent = `שגיאה: ${err.message}`;
+    result.classList.add('bg-red-100', 'text-red-700');
+  } finally {
+    btn.textContent = 'בדוק API';
+    btn.disabled = false;
+  }
+}
+
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   renderUploadCards();

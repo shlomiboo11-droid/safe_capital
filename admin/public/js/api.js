@@ -61,6 +61,16 @@ const API = {
         return null;
       }
 
+      // Check if response is JSON before parsing
+      const contentType = resp.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const text = await resp.text();
+        console.error(`API returned non-JSON (${resp.status}):`, text.substring(0, 200));
+        if (resp.status === 413) throw new Error('הקבצים גדולים מדי. מקסימום 4.5MB בסה"כ');
+        if (resp.status === 504) throw new Error('הבקשה נגמרה בזמן — נסה שוב');
+        throw new Error(`שגיאת שרת (${resp.status})`);
+      }
+
       const data = await resp.json();
 
       if (!resp.ok) {
