@@ -1,38 +1,36 @@
 # Graph Report - website  (2026-04-12)
 
 ## Corpus Check
-- 10 files · ~50,000 words
+- 8 files · ~50,000 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 75 nodes · 76 edges · 23 communities detected
+- 73 nodes · 76 edges · 21 communities detected
 - Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.76)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Deal Rendering Engine|Deal Rendering Engine]]
-- [[_COMMUNITY_NagishLi Accessibility Plugin|NagishLi Accessibility Plugin]]
-- [[_COMMUNITY_Admin API Integration|Admin API Integration]]
-- [[_COMMUNITY_Deal Card Components|Deal Card Components]]
-- [[_COMMUNITY_Join Page Flow|Join Page Flow]]
-- [[_COMMUNITY_Landing Page Interactions|Landing Page Interactions]]
-- [[_COMMUNITY_Site Settings & Stats|Site Settings & Stats]]
-- [[_COMMUNITY_Accessibility Bootstrap|Accessibility Bootstrap]]
-- [[_COMMUNITY_Shared Carousel|Shared Carousel]]
-- [[_COMMUNITY_Join Progress & Celebration|Join Progress & Celebration]]
-- [[_COMMUNITY_Accordion UI Pattern|Accordion UI Pattern]]
-- [[_COMMUNITY_Portal Button Injection|Portal Button Injection]]
-- [[_COMMUNITY_Hebrew Digit Audio|Hebrew Digit Audio]]
-- [[_COMMUNITY_English Digit Audio|English Digit Audio]]
-- [[_COMMUNITY_Tax FAQ Toggle|Tax FAQ Toggle]]
-- [[_COMMUNITY_Scroll Fade Animation|Scroll Fade Animation]]
-- [[_COMMUNITY_BeforeAfter Slider|Before/After Slider]]
-- [[_COMMUNITY_WhatsApp FAB|WhatsApp FAB]]
-- [[_COMMUNITY_Smooth Scroll|Smooth Scroll]]
-- [[_COMMUNITY_Tooltip Toggle|Tooltip Toggle]]
-- [[_COMMUNITY_Mobile Nav Menu|Mobile Nav Menu]]
-- [[_COMMUNITY_FAQ Accordion|FAQ Accordion]]
-- [[_COMMUNITY_Mobile Carousel|Mobile Carousel]]
+- [[_COMMUNITY_Module 0|Module 0]]
+- [[_COMMUNITY_Module 1|Module 1]]
+- [[_COMMUNITY_Module 2|Module 2]]
+- [[_COMMUNITY_Module 3|Module 3]]
+- [[_COMMUNITY_Module 4|Module 4]]
+- [[_COMMUNITY_Module 5|Module 5]]
+- [[_COMMUNITY_Module 6|Module 6]]
+- [[_COMMUNITY_Module 7|Module 7]]
+- [[_COMMUNITY_Module 8|Module 8]]
+- [[_COMMUNITY_Module 9|Module 9]]
+- [[_COMMUNITY_Module 10|Module 10]]
+- [[_COMMUNITY_Module 11|Module 11]]
+- [[_COMMUNITY_Module 12|Module 12]]
+- [[_COMMUNITY_Module 13|Module 13]]
+- [[_COMMUNITY_Module 14|Module 14]]
+- [[_COMMUNITY_Module 15|Module 15]]
+- [[_COMMUNITY_Module 16|Module 16]]
+- [[_COMMUNITY_Module 17|Module 17]]
+- [[_COMMUNITY_Module 18|Module 18]]
+- [[_COMMUNITY_Module 19|Module 19]]
+- [[_COMMUNITY_Module 20|Module 20]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `renderExpandedContent() — Full Deal Detail Renderer` - 9 edges
@@ -44,158 +42,137 @@
 7. `loadDeals() — Fetch Deals from Admin API` - 4 edges
 8. `ADMIN_HOST — Admin API base URL (env-switched)` - 4 edges
 9. `renderDealCard() — Deal Card HTML Generator` - 4 edges
-10. `loadSiteSettings() — Fetch & inject site settings` - 4 edges
+10. `Admin API — /api/public/* (deals, settings, stats, contact)` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `NagishLi Accessibility Plugin v2.3` --conceptually_related_to--> `RTL-First Design Constraint`  [INFERRED]
-  website/nagishli.js → website/CLAUDE.md
-- `Tailwind Config — Brand Color Tokens` --conceptually_related_to--> `RTL-First Design Constraint`  [INFERRED]
-  website/js/shared.js → website/CLAUDE.md
-- `NagishLi Third-Party Credits` --references--> `NagishLi Accessibility Plugin v2.3`  [EXTRACTED]
-  website/nl-files/gfx/credits.txt → website/nagishli.js
-- `renderExpandedContent() — Full Deal Detail Renderer` --shares_data_with--> `[data-setting] / [data-setting-href] DOM Binding Pattern`  [EXTRACTED]
-  website/js/deals.js → website/js/settings.js
-- `Tailwind Config — Brand Color Tokens` --implements--> `Brand Color Palette (#022445 Navy, #984349 Crimson)`  [EXTRACTED]
-  website/js/shared.js → website/CLAUDE.md
+- None detected - all connections are within the same source files.
 
 ## Communities
 
-### Community 0 - "Deal Rendering Engine"
+### Community 0 - "Module 0"
 Cohesion: 0.31
 Nodes (12): formatUSD(), loadDeals(), renderCostCategories(), renderDealCard(), renderExpandedContent(), renderFundraisingBar(), renderGallery(), renderSpecs() (+4 more)
 
-### Community 1 - "NagishLi Accessibility Plugin"
+### Community 1 - "Module 1"
 Cohesion: 0.22
 Nodes (10): NagishLi Third-Party Credits, initNagishLi() — main plugin bootstrap, jQuery Dependency (dynamically loaded if missing), NagishLi Accessibility Settings (localStorage), NagishLi Accessibility Plugin v2.3, Tailwind Config — Brand Color Tokens, Brand Color Palette (#022445 Navy, #984349 Crimson), Website CLAUDE.md — Landing Page Project Instructions (+2 more)
 
-### Community 2 - "Admin API Integration"
+### Community 2 - "Module 2"
 Cohesion: 0.27
 Nodes (10): Admin API — /api/public/* (deals, settings, stats, contact), ADMIN_HOST — Admin API base URL (env-switched), loadDeals() — Fetch Deals from Admin API, API_URL — /api/public/deals endpoint, SETTINGS_API — Admin API base URL (env-switched), [data-setting] / [data-setting-href] DOM Binding Pattern, formatSettingValue() — Date Display Formatter (HE/EN), loadSiteSettings() — Fetch & inject site settings (+2 more)
 
-### Community 3 - "Deal Card Components"
+### Community 3 - "Module 3"
 Cohesion: 0.33
 Nodes (9): formatUSD() — Currency Formatter, renderDealCard() — Deal Card HTML Generator, renderCostCategories() — Cost Categories Accordion, renderExpandedContent() — Full Deal Detail Renderer, renderFundraisingBar() — Fundraising Progress Bar, renderGallery() — Before/After/Rendering Images, renderSpecs() — Property Specs Table, renderTimeline() — Deal Timeline Steps (+1 more)
 
-### Community 4 - "Join Page Flow"
+### Community 4 - "Module 4"
 Cohesion: 0.67
 Nodes (2): launchConfetti(), updateProgress()
 
-### Community 5 - "Landing Page Interactions"
+### Community 5 - "Module 5"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 6 - "Site Settings & Stats"
+### Community 6 - "Module 6"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 7 - "Accessibility Bootstrap"
+### Community 7 - "Module 7"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 8 - "Shared Carousel"
+### Community 8 - "Module 8"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 9 - "Join Progress & Celebration"
+### Community 9 - "Module 9"
 Cohesion: 1.0
 Nodes (2): launchConfetti() — Canvas Confetti Animation, Join Page Sticky Progress Bar
 
-### Community 10 - "Accordion UI Pattern"
+### Community 10 - "Module 10"
 Cohesion: 1.0
 Nodes (2): Deal Accordion Click Handler (document-level), Deal Accordion Toggle (shared.js — static HTML)
 
-### Community 11 - "Portal Button Injection"
+### Community 11 - "Module 11"
 Cohesion: 1.0
 Nodes (2): Portal Button Injection into Nav, PORTAL_URL — Investor Portal Link (env-switched)
 
-### Community 12 - "Hebrew Digit Audio"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 13 - "English Digit Audio"
-Cohesion: 1.0
-Nodes (0): 
-
-### Community 14 - "Tax FAQ Toggle"
+### Community 12 - "Module 12"
 Cohesion: 1.0
 Nodes (1): toggleTaxAccordion() — Tax FAQ Accordion (Step 6)
 
-### Community 15 - "Scroll Fade Animation"
+### Community 13 - "Module 13"
 Cohesion: 1.0
 Nodes (1): IntersectionObserver — .fade-in-up scroll animations
 
-### Community 16 - "Before/After Slider"
+### Community 14 - "Module 14"
 Cohesion: 1.0
 Nodes (1): Before/After Image Slider
 
-### Community 17 - "WhatsApp FAB"
+### Community 15 - "Module 15"
 Cohesion: 1.0
 Nodes (1): WhatsApp FAB Visibility (scroll-triggered)
 
-### Community 18 - "Smooth Scroll"
+### Community 16 - "Module 16"
 Cohesion: 1.0
 Nodes (1): Smooth Scroll for Anchor Links
 
-### Community 19 - "Tooltip Toggle"
+### Community 17 - "Module 17"
 Cohesion: 1.0
 Nodes (1): Tooltip Toggle Click Handler
 
-### Community 20 - "Mobile Nav Menu"
+### Community 18 - "Module 18"
 Cohesion: 1.0
 Nodes (1): Mobile Menu Toggle (site nav)
 
-### Community 21 - "FAQ Accordion"
+### Community 19 - "Module 19"
 Cohesion: 1.0
 Nodes (1): FAQ Accordion Toggle
 
-### Community 22 - "Mobile Carousel"
+### Community 20 - "Module 20"
 Cohesion: 1.0
 Nodes (1): Mobile Carousel / Scroll-Snap with Dot Indicators
 
 ## Knowledge Gaps
-- **24 isolated node(s):** `jQuery Dependency (dynamically loaded if missing)`, `NagishLi Accessibility Settings (localStorage)`, `NagishLi Third-Party Credits`, `Join Page Sticky Progress Bar`, `launchConfetti() — Canvas Confetti Animation` (+19 more)
+- **24 isolated node(s):** `jQuery Dependency (dynamically loaded if missing)`, `NagishLi Accessibility Settings (localStorage)`, `Join Page Sticky Progress Bar`, `launchConfetti() — Canvas Confetti Animation`, `toggleTaxAccordion() — Tax FAQ Accordion (Step 6)` (+19 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Accessibility Bootstrap`** (2 nodes): `initNagishLi()`, `nagishli.js`
+- **Thin community `Module 7`** (2 nodes): `initNagishLi()`, `nagishli.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Shared Carousel`** (2 nodes): `initCarousels()`, `shared.js`
+- **Thin community `Module 8`** (2 nodes): `initCarousels()`, `shared.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Join Progress & Celebration`** (2 nodes): `launchConfetti() — Canvas Confetti Animation`, `Join Page Sticky Progress Bar`
+- **Thin community `Module 9`** (2 nodes): `launchConfetti() — Canvas Confetti Animation`, `Join Page Sticky Progress Bar`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Accordion UI Pattern`** (2 nodes): `Deal Accordion Click Handler (document-level)`, `Deal Accordion Toggle (shared.js — static HTML)`
+- **Thin community `Module 10`** (2 nodes): `Deal Accordion Click Handler (document-level)`, `Deal Accordion Toggle (shared.js — static HTML)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Portal Button Injection`** (2 nodes): `Portal Button Injection into Nav`, `PORTAL_URL — Investor Portal Link (env-switched)`
+- **Thin community `Module 11`** (2 nodes): `Portal Button Injection into Nav`, `PORTAL_URL — Investor Portal Link (env-switched)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Hebrew Digit Audio`** (1 nodes): `he_digits.js`
+- **Thin community `Module 12`** (1 nodes): `toggleTaxAccordion() — Tax FAQ Accordion (Step 6)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `English Digit Audio`** (1 nodes): `en_digits.js`
+- **Thin community `Module 13`** (1 nodes): `IntersectionObserver — .fade-in-up scroll animations`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tax FAQ Toggle`** (1 nodes): `toggleTaxAccordion() — Tax FAQ Accordion (Step 6)`
+- **Thin community `Module 14`** (1 nodes): `Before/After Image Slider`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Scroll Fade Animation`** (1 nodes): `IntersectionObserver — .fade-in-up scroll animations`
+- **Thin community `Module 15`** (1 nodes): `WhatsApp FAB Visibility (scroll-triggered)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Before/After Slider`** (1 nodes): `Before/After Image Slider`
+- **Thin community `Module 16`** (1 nodes): `Smooth Scroll for Anchor Links`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `WhatsApp FAB`** (1 nodes): `WhatsApp FAB Visibility (scroll-triggered)`
+- **Thin community `Module 17`** (1 nodes): `Tooltip Toggle Click Handler`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Smooth Scroll`** (1 nodes): `Smooth Scroll for Anchor Links`
+- **Thin community `Module 18`** (1 nodes): `Mobile Menu Toggle (site nav)`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Tooltip Toggle`** (1 nodes): `Tooltip Toggle Click Handler`
+- **Thin community `Module 19`** (1 nodes): `FAQ Accordion Toggle`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Mobile Nav Menu`** (1 nodes): `Mobile Menu Toggle (site nav)`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `FAQ Accordion`** (1 nodes): `FAQ Accordion Toggle`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Mobile Carousel`** (1 nodes): `Mobile Carousel / Scroll-Snap with Dot Indicators`
+- **Thin community `Module 20`** (1 nodes): `Mobile Carousel / Scroll-Snap with Dot Indicators`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `renderExpandedContent() — Full Deal Detail Renderer` connect `Deal Card Components` to `Admin API Integration`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Why does `ADMIN_HOST — Admin API base URL (env-switched)` connect `Admin API Integration` to `Deal Card Components`?**
+- **Why does `renderExpandedContent() — Full Deal Detail Renderer` connect `Module 3` to `Module 2`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+- **Why does `ADMIN_HOST — Admin API base URL (env-switched)` connect `Module 2` to `Module 3`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `renderDealCard() — Deal Card HTML Generator` connect `Module 3` to `Module 2`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `renderDealCard() — Deal Card HTML Generator` connect `Deal Card Components` to `Admin API Integration`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **What connects `jQuery Dependency (dynamically loaded if missing)`, `NagishLi Accessibility Settings (localStorage)`, `NagishLi Third-Party Credits` to the rest of the system?**
+- **What connects `jQuery Dependency (dynamically loaded if missing)`, `NagishLi Accessibility Settings (localStorage)`, `Join Page Sticky Progress Bar` to the rest of the system?**
   _24 weakly-connected nodes found - possible documentation gaps or missing edges._

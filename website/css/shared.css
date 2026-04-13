@@ -323,10 +323,11 @@ body {
 /* ===== CAROUSEL COMPONENT ===== */
 .carousel-wrapper {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     padding-top: 1.25rem;
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+    padding-bottom: 0.5rem;
     margin-top: -1.25rem;
     margin-left: -1.25rem;
     margin-right: -1.25rem;
@@ -339,10 +340,13 @@ body {
     scrollbar-width: none;
     gap: 1rem;
     padding-bottom: 0.5rem;
+    overscroll-behavior-x: contain;
 }
 .carousel-track::-webkit-scrollbar { display: none; }
+.carousel-track.no-snap { scroll-snap-type: none; }
 .carousel-track > * {
-    scroll-snap-align: start;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
     flex-shrink: 0;
 }
 /* On desktop, carousel behaves like a grid */

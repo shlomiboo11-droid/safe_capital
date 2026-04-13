@@ -777,7 +777,10 @@ tailwind.config = {
 </h2>
 
 <!-- Live deal cards from admin API -->
-<div id="landing-deals" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+<div class="carousel-wrapper">
+  <div id="landing-deals" class="carousel-track md-grid-3"></div>
+  <div class="carousel-dots"></div>
+</div>
 
 <!-- Fallback: shown if API fails or no deals -->
 <div id="static-results" class="text-center text-on-surface-variant py-8" style="display:none">
@@ -1401,7 +1404,7 @@ tailwind.config = {
     return '';
   }
 
-  function renderDealCard(deal) {
+  function renderDealCard(deal, index) {
     var thumb = getDealThumb(deal);
     var statusLabel = FUNDRAISING_LABELS[deal.fundraising_status] || deal.fundraising_status;
     var statusColor = FUNDRAISING_COLORS[deal.fundraising_status] || 'bg-primary/10 text-primary';
@@ -1420,8 +1423,11 @@ tailwind.config = {
         '</div>'
       : '';
 
-    return '<div class="bg-white rounded-xl overflow-hidden fade-in" style="box-shadow:var(--shadow-ambient)">' +
-      '<div style="aspect-ratio:16/10" class="overflow-hidden">' + thumbHtml + '</div>' +
+    var dealNum = (index !== undefined) ? (index + 1) : '';
+    var ribbonHtml = dealNum ? '<div style="position:absolute;top:12px;left:12px;z-index:2" class="bg-primary text-white font-label font-bold text-xs px-3 py-1 rounded-full">\u05E2\u05E1\u05E7\u05D4 #' + dealNum + '</div>' : '';
+
+    return '<div class="bg-white rounded-xl overflow-hidden fade-in carousel-card-85" style="box-shadow:var(--shadow-ambient)">' +
+      '<div style="aspect-ratio:16/10;position:relative" class="overflow-hidden">' + ribbonHtml + thumbHtml + '</div>' +
       '<div class="p-5">' +
         '<div class="flex items-center gap-2 mb-3">' +
           '<span class="text-xs font-bold px-3 py-1 rounded-full ' + statusColor + '">' + statusLabel + '</span>' +
@@ -1430,8 +1436,8 @@ tailwind.config = {
         '<div class="w-full h-1.5 rounded-full bg-primary/10 mb-3"><div class="h-full rounded-full bg-secondary" style="width:' + Math.min(deal.fundraising_percent || 0, 100) + '%"></div></div>' +
         '<h3 class="font-bold text-primary text-lg mb-3">' + (deal.name || deal.full_address || '') + '</h3>' +
         '<div class="grid grid-cols-2 gap-3 text-sm">' +
-          '<div><p class="text-on-surface-variant text-xs font-bold mb-1">מחיר רכישה</p><p class="font-label font-bold text-secondary">' + fmtUSD(deal.purchase_price) + '</p></div>' +
-          '<div><p class="text-on-surface-variant text-xs font-bold mb-1">' + (deal.property_status === 'sold' ? 'מחיר מכירה' : 'שווי צפוי לאחר שיפוץ') + '</p><p class="font-label font-bold text-primary">' + fmtUSD(deal.property_status === 'sold' ? (deal.actual_sale_price || deal.expected_sale_price) : (deal.arv || deal.expected_sale_price)) + '</p></div>' +
+          '<div><p class="text-on-surface-variant text-xs font-bold mb-1">רכישה</p><p class="font-label font-bold text-secondary">' + fmtUSD(deal.purchase_price) + '</p></div>' +
+          '<div class="text-left"><p class="text-on-surface-variant text-xs font-bold mb-1" style="white-space:nowrap">' + (deal.property_status === 'sold' ? 'מכירה' : 'שווי צפוי אחרי שיפוץ') + '</p><p class="font-label font-bold text-primary">' + fmtUSD(deal.property_status === 'sold' ? (deal.actual_sale_price || deal.expected_sale_price) : (deal.arv || deal.expected_sale_price)) + '</p></div>' +
         '</div>' +
         profitHtml +
       '</div>' +
@@ -1452,11 +1458,29 @@ tailwind.config = {
             return;
           }
           var cards = data.deals.slice(0, 3);
-          dealsContainer.innerHTML = cards.map(renderDealCard).join('');
+          dealsContainer.innerHTML = cards.map(function(deal, i) { return renderDealCard(deal, i); }).join('');
           dealsContainer.querySelectorAll('.fade-in').forEach(function(el) {
             el.classList.add('visible');
           });
           if (staticResults) staticResults.style.display = 'none';
+          // Mobile only: add CTA card after last deal
+          if (window.innerWidth < 768) {
+            dealsContainer.insertAdjacentHTML('beforeend',
+              '<div class="carousel-card-85 flex-shrink-0 rounded-xl p-8 flex flex-col items-center justify-center text-center text-white" style="min-height:300px;background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">' +
+                '<span class="material-symbols-outlined text-4xl mb-4 text-secondary">notifications_active</span>' +
+                '<h3 class="font-bold text-lg mb-3">העסקה הבאה יכולה לצוץ מרגע לרגע</h3>' +
+                '<p class="text-white/80 text-sm mb-6 leading-relaxed">ולהיסגר תוך שבוע.<br>הדרך שלכם להישאר מעודכנים<br>היא בקבוצת הווצאפ</p>' +
+                '<a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" class="inline-flex items-center gap-2 bg-whatsapp text-white font-bold px-6 py-3 rounded-lg hover:opacity-90">' +
+                  '<svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.96 11.96 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.37 0-4.567-.7-6.42-1.9l-.147-.1-3.056 1.024 1.024-3.056-.1-.147A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>' +
+                  '\u05D4\u05E6\u05D8\u05E8\u05E4\u05D5 \u05DC\u05E7\u05D1\u05D5\u05E6\u05EA \u05D4\u05D5\u05D5\u05E6\u05D0\u05E4' +
+                '</a>' +
+              '</div>'
+            );
+          }
+          // Re-init carousels for dynamically loaded deals
+          if (window.innerWidth < 768 && window.initCarousels) {
+            window.initCarousels();
+          }
         })
         .catch(function() {
           dealsRetries++;

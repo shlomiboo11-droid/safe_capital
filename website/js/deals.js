@@ -10,6 +10,10 @@
 const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
 const API_URL = ADMIN_HOST + '/api/public/deals';
 
+function isMobile() { return window.innerWidth < 768; }
+
+const WHATSAPP_SVG = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+
 // ── Status label maps ────────────────────────────────────────────────────────
 
 const PROPERTY_STATUS_LABELS = {
@@ -104,6 +108,357 @@ function renderTimeline(steps, propertyStatus) {
       <div class="absolute top-4 right-0 h-0.5 bg-primary" style="width:${progressPct}%"></div>
       ${stepsHtml}
     </div>`;
+}
+
+// ── Mobile timeline renderer ─────────────────────────────────────────────────
+
+function renderMobileTimeline(steps, propertyStatus) {
+  if (!steps || steps.length === 0) return '';
+
+  const expectedIndex = STATUS_TO_STEP_INDEX[propertyStatus] || 0;
+  steps.forEach((step, i) => {
+    if (i < expectedIndex) step.status = 'completed';
+    else if (i === expectedIndex) step.status = 'active';
+    else step.status = 'pending';
+  });
+
+  let activeIndex = -1;
+  steps.forEach((step, i) => {
+    if (step.status === 'completed') activeIndex = i;
+    if (step.status === 'active' && activeIndex < i) activeIndex = i;
+  });
+  const progressPct = steps.length > 1 ? Math.round((activeIndex / (steps.length - 1)) * 100) : 0;
+
+  const stepsHtml = steps.map(step => {
+    if (step.status === 'completed') {
+      return `<div class="relative z-10 flex flex-col items-center gap-2">
+        <div class="w-6 h-6 rounded-full bg-[#022445] text-white flex items-center justify-center">
+          <span class="material-symbols-outlined" style="font-size:14px">check</span>
+        </div>
+        <span class="text-[10px] font-bold">${step.step_name}</span>
+      </div>`;
+    } else if (step.status === 'active') {
+      return `<div class="relative z-10 flex flex-col items-center gap-2">
+        <div class="w-6 h-6 rounded-full bg-[#022445] border-4 border-white shadow-sm flex items-center justify-center"></div>
+        <span class="text-[10px] font-bold text-[#022445]">${step.step_name}</span>
+      </div>`;
+    } else {
+      return `<div class="relative z-10 flex flex-col items-center gap-2">
+        <div class="w-6 h-6 rounded-full bg-[#e4e2df] flex items-center justify-center"></div>
+        <span class="text-[10px] font-bold text-[#43474e]">${step.step_name}</span>
+      </div>`;
+    }
+  }).join('');
+
+  return `<div class="px-5 py-6">
+    <div class="flex items-center justify-between relative">
+      <div class="absolute top-3 left-0 right-0 h-0.5 bg-[#e4e2df] z-0"></div>
+      <div class="absolute top-3 right-0 h-0.5 bg-[#022445] z-0" style="width:${progressPct}%"></div>
+      ${stepsHtml}
+    </div>
+  </div>`;
+}
+
+// ── Mobile fundraising bar ──────────────────────────────────────────────────
+
+function renderMobileFundraisingBar(deal) {
+  const goal = parseFloat(deal.fundraising_goal || 0);
+  const pct = deal.fundraising_percent || 0;
+  if (goal === 0) return '';
+
+  return `<div class="px-5 pb-6">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-xs font-bold text-[#022445]">התקדמות גיוס</span>
+      <span class="text-xs font-bold font-label text-[#022445]">${pct}%</span>
+    </div>
+    <div class="h-2 w-full bg-[#e4e2df] rounded-full overflow-hidden">
+      <div class="h-full bg-gradient-to-l from-[#022445] to-[#1e3a5c] rounded-full" style="width:${Math.min(pct, 100)}%"></div>
+    </div>
+  </div>`;
+}
+
+// ── Mobile gallery ──────────────────────────────────────────────────────────
+
+function renderMobileGallery(images) {
+  if (!images || images.length === 0) return '';
+
+  const beforeImages = images.filter(img => img.category === 'before');
+  const afterImages = images.filter(img => img.category === 'after');
+  const renderingImages = images.filter(img => img.category === 'rendering');
+  const allImages = [...beforeImages, ...afterImages, ...renderingImages];
+
+  let html = '<div class="px-5 mb-6">';
+
+  // Before/After main image
+  if (beforeImages.length > 0 || afterImages.length > 0) {
+    const beforeSrc = beforeImages[0]?.image_url || '';
+    const afterSrc = afterImages[0]?.image_url || '';
+    html += `<div class="relative h-48 w-full rounded-lg overflow-hidden mb-2">`;
+    if (afterSrc) {
+      html += `<img class="w-full h-full object-cover" src="${ADMIN_HOST + afterSrc}" alt="לפני ואחרי" loading="lazy"/>`;
+    } else if (beforeSrc) {
+      html += `<img class="w-full h-full object-cover" src="${ADMIN_HOST + beforeSrc}" alt="לפני ואחרי" loading="lazy"/>`;
+    }
+    html += `<div class="absolute inset-0 flex">`;
+    if (beforeSrc) {
+      html += `<div class="flex-1 border-l border-white/50 flex items-center justify-center">
+        <span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm backdrop-blur-md">לפני</span>
+      </div>`;
+    }
+    if (afterSrc) {
+      html += `<div class="flex-1 flex items-center justify-center">
+        <span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm backdrop-blur-md">אחרי</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // Thumbnail grid (4 cols)
+  if (allImages.length > 1) {
+    const thumbs = allImages.slice(1, 4);
+    const remaining = allImages.length - 4;
+    html += '<div class="grid grid-cols-4 gap-2">';
+    thumbs.forEach(img => {
+      html += `<img class="h-16 w-full object-cover rounded-md" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || ''}" loading="lazy"/>`;
+    });
+    if (remaining > 0 && allImages[4]) {
+      html += `<div class="relative h-16 w-full rounded-md overflow-hidden">
+        <img class="w-full h-full object-cover" src="${ADMIN_HOST + allImages[4].image_url}" alt="" loading="lazy"/>
+        <div class="absolute inset-0 bg-[#022445]/60 flex items-center justify-center text-white text-xs font-bold">+${remaining}</div>
+      </div>`;
+    } else if (allImages[4]) {
+      html += `<img class="h-16 w-full object-cover rounded-md" src="${ADMIN_HOST + allImages[4].image_url}" alt="" loading="lazy"/>`;
+    }
+    html += '</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ── Mobile metrics grid ─────────────────────────────────────────────────────
+
+function renderMobileMetrics(deal) {
+  const purchasePrice = deal.purchase_price;
+  const totalCost = deal.total_cost;
+  const arv = deal.arv;
+  const expectedProfit = deal.expected_profit;
+
+  let html = '<div class="px-5 mb-6"><div class="grid grid-cols-2 gap-4">';
+
+  if (purchasePrice) {
+    html += `<div class="bg-white p-4 rounded-lg">
+      <p class="text-[10px] text-[#43474e] uppercase mb-1">מחיר רכישה</p>
+      <p class="text-lg font-bold font-label">${formatUSD(purchasePrice)}</p>
+    </div>`;
+  }
+  if (totalCost) {
+    html += `<div class="bg-white p-4 rounded-lg">
+      <p class="text-[10px] text-[#43474e] uppercase mb-1">עלות פרויקט</p>
+      <p class="text-lg font-bold font-label">${formatUSD(totalCost)}</p>
+    </div>`;
+  }
+  if (arv) {
+    html += `<div class="bg-white p-4 rounded-lg border-r-4 border-[#984349]">
+      <p class="text-[10px] text-[#984349] font-bold uppercase mb-1">שווי שוק סופי (ARV)</p>
+      <p class="text-lg font-bold font-label">${formatUSD(arv)}</p>
+    </div>`;
+  }
+  if (expectedProfit) {
+    html += `<div class="bg-[#ffdada] p-4 rounded-lg">
+      <p class="text-[10px] text-[#792b32] font-bold uppercase mb-1">רווח משוער</p>
+      <p class="text-lg font-bold font-label text-[#792b32]">${formatUSD(expectedProfit)}</p>
+    </div>`;
+  }
+
+  html += '</div></div>';
+  return html;
+}
+
+// ── Mobile specs table ──────────────────────────────────────────────────────
+
+function renderMobileSpecs(specs) {
+  if (!specs || specs.length === 0) return '';
+
+  const rowsHtml = specs.map(spec => `
+    <tr>
+      <td class="py-2 px-3">${spec.spec_name}</td>
+      <td class="py-2 px-3 text-center font-label">${spec.value_before || '—'}</td>
+      <td class="py-2 px-3 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
+    </tr>`).join('');
+
+  return `<div class="px-5 mb-6">
+    <div class="bg-white rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-[#eae8e5]">
+          <tr>
+            <th class="py-2 px-3 text-right font-bold">מפרט</th>
+            <th class="py-2 px-3 text-center font-bold">לפני</th>
+            <th class="py-2 px-3 text-center font-bold text-[#984349]">אחרי</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#f5f3f0]">
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── Mobile cost accordion ───────────────────────────────────────────────────
+
+function renderMobileCostAccordion(categories) {
+  if (!categories || categories.length === 0) return '';
+
+  const items = categories.map(cat => `
+    <div class="bg-white p-3 rounded-lg">
+      <div class="flex justify-between items-center cursor-pointer cost-category-header-mobile" onclick="toggleMobileCostCategory(this)">
+        <span class="text-sm font-bold">${cat.name}</span>
+        <div class="flex items-center gap-2">
+          <span class="font-label font-bold text-[#022445] text-sm">${formatUSD(cat.total_planned)}</span>
+          <span class="material-symbols-outlined text-[#022445] mobile-cost-arrow">expand_more</span>
+        </div>
+      </div>
+      <div class="mobile-cost-items" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+        ${(cat.items || []).map(item => `
+          <div class="flex justify-between py-2 border-t border-[#f5f3f0] text-sm">
+            <span class="text-[#43474e]">${item.name}</span>
+            <span class="font-label font-medium">${formatUSD(item.planned_amount)}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  return `<div class="px-5 mb-6 space-y-2">${items}</div>`;
+}
+
+// ── Mobile WhatsApp CTA ─────────────────────────────────────────────────────
+
+function renderMobileWhatsAppCTA() {
+  return `<div class="px-5 pb-8">
+    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] p-6 rounded-xl text-center text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+      <h4 class="text-lg font-bold mb-2">מעוניין בפרטים נוספים?</h4>
+      <p class="text-xs text-white/70 mb-4">הצטרף לקבוצת המשקיעים השקטה שלנו וקבל עדכונים לפני כולם</p>
+      <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
+         class="w-full bg-[#25D366] hover:bg-[#128C7E] transition-colors py-3 rounded-lg flex items-center justify-center gap-2 font-bold shadow-lg text-white no-underline">
+        ${WHATSAPP_SVG}
+        דבר איתנו בוואטסאפ
+      </a>
+    </div>
+  </div>`;
+}
+
+// ── Mobile expanded content ─────────────────────────────────────────────────
+
+function renderMobileExpandedContent(deal) {
+  const timelineHtml = renderMobileTimeline(deal.timeline, deal.property_status);
+  const fundraisingHtml = renderMobileFundraisingBar(deal);
+  const galleryHtml = renderMobileGallery(deal.images);
+  const metricsHtml = renderMobileMetrics(deal);
+  const specsHtml = renderMobileSpecs(deal.specs);
+  const costHtml = renderMobileCostAccordion(deal.cost_categories);
+  const whatsappHtml = renderMobileWhatsAppCTA();
+
+  const descriptionHtml = deal.description
+    ? `<div class="px-5 mb-6">
+        <h3 class="text-md font-bold text-[#022445] mb-2">תכנית העסקה</h3>
+        <p class="text-sm text-[#43474e] leading-relaxed">${deal.description}</p>
+      </div>`
+    : '';
+
+  return `
+    ${timelineHtml}
+    ${fundraisingHtml}
+    ${galleryHtml}
+    ${metricsHtml}
+    ${descriptionHtml}
+    ${specsHtml}
+    ${costHtml}
+    ${whatsappHtml}
+    <button class="mobile-collapse-btn w-full py-4 bg-[#e4e2df]/50 flex items-center justify-center gap-2 text-[#022445] text-xs font-bold uppercase tracking-widest"
+            onclick="collapseMobileDeal(this)">
+      צמצם פרטים
+      <span class="material-symbols-outlined text-sm">expand_less</span>
+    </button>`;
+}
+
+// ── Mobile deal card ────────────────────────────────────────────────────────
+
+function renderMobileDealCard(deal, index) {
+  const isExpandable = deal.is_expandable !== false;
+  const propertyLabel = PROPERTY_STATUS_LABELS[deal.property_status] || deal.property_status || '';
+  const fundraisingLabel = FUNDRAISING_STATUS_LABELS[deal.fundraising_status] || deal.fundraising_status || '';
+
+  const thumbSrc = deal.thumbnail_url ? (ADMIN_HOST + deal.thumbnail_url) : '';
+  const isFeatured = deal.is_featured;
+
+  const totalCost = deal.total_cost;
+  const expectedProfit = deal.expected_profit;
+  const pct = deal.fundraising_percent || 0;
+
+  // Image classes
+  const imgClass = isFeatured ? 'w-full h-full object-cover' : 'w-full h-full object-cover grayscale-[30%]';
+  const imgOverlay = isFeatured ? '' : '<div class="absolute inset-0 bg-[#022445]/10"></div>';
+  const articleOpacity = isFeatured ? '' : ' opacity-60 hover:opacity-100 transition-opacity';
+
+  // Fundraising badge: if active/upcoming, show percentage
+  let fundraisingBadgeHtml = '';
+  if (fundraisingLabel) {
+    if (deal.fundraising_status === 'active' || deal.fundraising_status === 'upcoming') {
+      fundraisingBadgeHtml = `<div class="flex items-center gap-1.5 bg-[#ffdada]/50 px-2 py-0.5 rounded-full">
+        <span class="text-[10px] font-bold text-[#792b32]">${fundraisingLabel}</span>
+        <span class="text-[10px] font-label font-bold text-[#984349]">${pct}%</span>
+      </div>`;
+    } else {
+      fundraisingBadgeHtml = `<span class="bg-[#ffdada] px-2 py-0.5 rounded-full text-[10px] font-bold text-[#792b32]">${fundraisingLabel}</span>`;
+    }
+  }
+
+  const expandedHtml = isExpandable
+    ? `<div class="deal-expanded mobile-deal-expanded bg-[#f5f3f0]">${renderMobileExpandedContent(deal)}</div>`
+    : '';
+
+  const expandBtnHtml = isExpandable
+    ? `<button class="deal-expand-btn w-full py-4 border-t border-[#f5f3f0] flex items-center justify-center gap-2 text-[#43474e] text-xs font-bold uppercase tracking-widest hover:bg-[#f5f3f0] transition-colors"
+               onclick="expandMobileDeal(this)">
+        לפירוט מלא
+        <span class="material-symbols-outlined text-sm deal-arrow">expand_more</span>
+      </button>`
+    : '';
+
+  return `
+    <article class="bg-white rounded-xl overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)]${articleOpacity}">
+      <div class="deal-header p-4 flex gap-4 cursor-pointer">
+        <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 relative">
+          ${thumbSrc ? `<img alt="${deal.name}" class="${imgClass}" src="${thumbSrc}" loading="lazy"/>` : ''}
+          ${imgOverlay}
+        </div>
+        <div class="flex flex-col justify-between py-1 flex-grow">
+          <div>
+            <h2 class="text-lg font-bold text-[#022445] flex items-center gap-2 font-label">
+              ${deal.name}
+              <span class="text-[#984349] text-sm font-label">#${deal.deal_number}</span>
+            </h2>
+            <div class="flex gap-2 mt-2">
+              ${propertyLabel ? `<span class="bg-[#d3e3ff] px-2 py-0.5 rounded-full text-[10px] font-bold text-[#022445]">${propertyLabel}</span>` : ''}
+              ${fundraisingBadgeHtml}
+            </div>
+          </div>
+          <div class="flex justify-between items-end">
+            ${totalCost ? `<div class="space-y-0.5">
+              <div class="text-[10px] text-[#43474e] uppercase tracking-wider">עלות כוללת</div>
+              <div class="text-sm font-bold font-label">${formatUSD(totalCost)}</div>
+            </div>` : ''}
+            ${expectedProfit ? `<div class="space-y-0.5 text-left">
+              <div class="text-[10px] text-[#984349] uppercase tracking-wider">רווח משוער</div>
+              <div class="text-sm font-bold font-label text-[#984349]">${formatUSD(expectedProfit)}</div>
+            </div>` : ''}
+          </div>
+        </div>
+      </div>
+      ${expandBtnHtml}
+      ${expandedHtml}
+    </article>`;
 }
 
 // ── Fundraising progress bar ─────────────────────────────────────────────────
@@ -366,6 +721,9 @@ function renderExpandedContent(deal) {
 // ── Single deal card ─────────────────────────────────────────────────────────
 
 function renderDealCard(deal, index) {
+  // Mobile: use Stitch-style card
+  if (isMobile()) return renderMobileDealCard(deal, index);
+
   const isExpandable = deal.is_expandable !== false;
   const propertyLabel   = PROPERTY_STATUS_LABELS[deal.property_status]   || deal.property_status   || '';
   const fundraisingLabel = FUNDRAISING_STATUS_LABELS[deal.fundraising_status] || deal.fundraising_status || '';
@@ -450,6 +808,33 @@ document.addEventListener('click', function (e) {
   const header = e.target.closest('.deal-header');
   if (!header) return;
 
+  // Mobile: clicking header toggles expand (same as expand button)
+  if (isMobile()) {
+    const article = header.closest('article');
+    if (!article) return;
+    const expanded = article.querySelector('.mobile-deal-expanded');
+    if (!expanded || !expanded.children.length) return;
+
+    const isOpen = expanded.classList.contains('open');
+    // Close all other expanded deals
+    document.querySelectorAll('.mobile-deal-expanded.open').forEach(el => {
+      el.classList.remove('open');
+      const otherArticle = el.closest('article');
+      if (otherArticle) {
+        const otherBtn = otherArticle.querySelector('.deal-expand-btn');
+        if (otherBtn) otherBtn.style.display = '';
+      }
+    });
+
+    if (!isOpen) {
+      expanded.classList.add('open');
+      const expandBtn = article.querySelector('.deal-expand-btn');
+      if (expandBtn) expandBtn.style.display = 'none';
+    }
+    return;
+  }
+
+  // Desktop: existing behavior
   const card = header.closest('.bg-surface-container-lowest');
   if (!card) return;
 
@@ -492,6 +877,56 @@ document.addEventListener('click', function (e) {
   // Close any open tooltip when clicking elsewhere
   document.querySelectorAll('.tooltip-popup:not(.hidden)').forEach(t => t.classList.add('hidden'));
 });
+
+// ── Mobile expand/collapse helpers ───────────────────────────────────────────
+
+function expandMobileDeal(btn) {
+  const article = btn.closest('article');
+  if (!article) return;
+
+  // Close all other expanded deals
+  document.querySelectorAll('.mobile-deal-expanded.open').forEach(el => {
+    el.classList.remove('open');
+    const otherArticle = el.closest('article');
+    if (otherArticle && otherArticle !== article) {
+      const otherBtn = otherArticle.querySelector('.deal-expand-btn');
+      if (otherBtn) otherBtn.style.display = '';
+    }
+  });
+
+  const expanded = article.querySelector('.mobile-deal-expanded');
+  if (expanded) {
+    expanded.classList.add('open');
+    btn.style.display = 'none';
+  }
+}
+
+function collapseMobileDeal(btn) {
+  const article = btn.closest('article');
+  if (!article) return;
+
+  const expanded = article.querySelector('.mobile-deal-expanded');
+  if (expanded) {
+    expanded.classList.remove('open');
+    const expandBtn = article.querySelector('.deal-expand-btn');
+    if (expandBtn) expandBtn.style.display = '';
+    // Scroll to the card top
+    article.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function toggleMobileCostCategory(header) {
+  const items = header.nextElementSibling;
+  const arrow = header.querySelector('.mobile-cost-arrow');
+  if (!items) return;
+  if (items.style.maxHeight && items.style.maxHeight !== '0px') {
+    items.style.maxHeight = '0px';
+    if (arrow) arrow.style.transform = '';
+  } else {
+    items.style.maxHeight = items.scrollHeight + 'px';
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  }
+}
 
 // ── Main: fetch & render ─────────────────────────────────────────────────────
 

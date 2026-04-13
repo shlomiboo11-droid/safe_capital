@@ -236,22 +236,6 @@
       "community": 6
     },
     {
-      "label": "he_digits.js",
-      "file_type": "code",
-      "source_file": "website/nl-files/sfx/male/he_digits.js",
-      "source_location": "L1",
-      "id": "website_nl_files_sfx_male_he_digits_js",
-      "community": 12
-    },
-    {
-      "label": "en_digits.js",
-      "file_type": "code",
-      "source_file": "website/nl-files/sfx/male/en_digits.js",
-      "source_location": "L1",
-      "id": "website_nl_files_sfx_male_en_digits_js",
-      "community": 13
-    },
-    {
       "label": "NagishLi Accessibility Plugin v2.3",
       "file_type": "code",
       "source_file": "website/nagishli.js",
@@ -300,18 +284,6 @@
       "community": 1
     },
     {
-      "label": "NagishLi Third-Party Credits",
-      "file_type": "document",
-      "source_file": "website/nl-files/gfx/credits.txt",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": "Localize*",
-      "contributor": null,
-      "id": "nagishli_credits",
-      "community": 1
-    },
-    {
       "label": "Join Page Sticky Progress Bar",
       "file_type": "code",
       "source_file": "website/js/join.js",
@@ -345,7 +317,7 @@
       "author": null,
       "contributor": null,
       "id": "join_tax_accordion",
-      "community": 14
+      "community": 12
     },
     {
       "label": "IntersectionObserver \u2014 .fade-in-up scroll animations",
@@ -357,7 +329,7 @@
       "author": null,
       "contributor": null,
       "id": "landing_fade_observer",
-      "community": 15
+      "community": 13
     },
     {
       "label": "Before/After Image Slider",
@@ -369,7 +341,7 @@
       "author": null,
       "contributor": null,
       "id": "landing_ba_slider",
-      "community": 16
+      "community": 14
     },
     {
       "label": "WhatsApp FAB Visibility (scroll-triggered)",
@@ -381,7 +353,7 @@
       "author": null,
       "contributor": null,
       "id": "landing_whatsapp_fab",
-      "community": 17
+      "community": 15
     },
     {
       "label": "Smooth Scroll for Anchor Links",
@@ -393,7 +365,7 @@
       "author": null,
       "contributor": null,
       "id": "landing_smooth_scroll",
-      "community": 18
+      "community": 16
     },
     {
       "label": "loadDeals() \u2014 Fetch Deals from Admin API",
@@ -561,7 +533,19 @@
       "author": null,
       "contributor": null,
       "id": "deals_tooltip_toggle",
-      "community": 19
+      "community": 17
+    },
+    {
+      "label": "Admin API \u2014 /api/public/* (deals, settings, stats, contact)",
+      "file_type": "code",
+      "source_file": "website/js/deals.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "admin_api_public",
+      "community": 2
     },
     {
       "label": "Tailwind Config \u2014 Brand Color Tokens",
@@ -597,7 +581,7 @@
       "author": null,
       "contributor": null,
       "id": "shared_mobile_menu",
-      "community": 20
+      "community": 18
     },
     {
       "label": "FAQ Accordion Toggle",
@@ -609,7 +593,7 @@
       "author": null,
       "contributor": null,
       "id": "shared_faq_accordion",
-      "community": 21
+      "community": 19
     },
     {
       "label": "Deal Accordion Toggle (shared.js \u2014 static HTML)",
@@ -633,7 +617,7 @@
       "author": null,
       "contributor": null,
       "id": "shared_carousel",
-      "community": 22
+      "community": 20
     },
     {
       "label": "Contact Form Submission \u2014 /api/public/contact",
@@ -720,18 +704,6 @@
       "community": 2
     },
     {
-      "label": "Admin API \u2014 /api/public/* (deals, settings, stats, contact)",
-      "file_type": "code",
-      "source_file": "website/js/deals.js",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "admin_api_public",
-      "community": 2
-    },
-    {
       "label": "Website CLAUDE.md \u2014 Landing Page Project Instructions",
       "file_type": "document",
       "source_file": "website/CLAUDE.md",
@@ -777,6 +749,18 @@
       "author": null,
       "contributor": null,
       "id": "website_brand_colors",
+      "community": 1
+    },
+    {
+      "label": "NagishLi Third-Party Credits",
+      "file_type": "document",
+      "source_file": "website/nl-files/gfx/credits.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": "Localize*",
+      "contributor": null,
+      "id": "nagishli_credits",
       "community": 1
     }
   ],
@@ -1238,18 +1222,6 @@
       "target": "nagishli_initNagishLi"
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "website/nl-files/gfx/credits.txt",
-      "source_location": "line 1",
-      "weight": 1.0,
-      "_src": "nagishli_credits",
-      "_tgt": "nagishli_plugin",
-      "source": "nagishli_plugin",
-      "target": "nagishli_credits"
-    },
-    {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.6,
@@ -1260,6 +1232,18 @@
       "_tgt": "website_rtl_constraint",
       "source": "nagishli_plugin",
       "target": "website_rtl_constraint"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/nl-files/gfx/credits.txt",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "_src": "nagishli_credits",
+      "_tgt": "nagishli_plugin",
+      "source": "nagishli_plugin",
+      "target": "nagishli_credits"
     },
     {
       "relation": "references",
@@ -1538,6 +1522,42 @@
       "target": "shared_deal_accordion"
     },
     {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/js/shared.js",
+      "source_location": "line 253",
+      "weight": 1.0,
+      "_src": "shared_contact_form",
+      "_tgt": "admin_api_public",
+      "source": "admin_api_public",
+      "target": "shared_contact_form"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/js/settings.js",
+      "source_location": "line 13",
+      "weight": 1.0,
+      "_src": "settings_load_settings",
+      "_tgt": "admin_api_public",
+      "source": "admin_api_public",
+      "target": "settings_load_settings"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/js/settings.js",
+      "source_location": "line 63",
+      "weight": 1.0,
+      "_src": "settings_load_stats",
+      "_tgt": "admin_api_public",
+      "source": "admin_api_public",
+      "target": "settings_load_stats"
+    },
+    {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -1574,18 +1594,6 @@
       "target": "shared_portal_btn_inject"
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "website/js/shared.js",
-      "source_location": "line 253",
-      "weight": 1.0,
-      "_src": "shared_contact_form",
-      "_tgt": "admin_api_public",
-      "source": "shared_contact_form",
-      "target": "admin_api_public"
-    },
-    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -1596,18 +1604,6 @@
       "_tgt": "settings_api_url",
       "source": "settings_load_settings",
       "target": "settings_api_url"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "website/js/settings.js",
-      "source_location": "line 13",
-      "weight": 1.0,
-      "_src": "settings_load_settings",
-      "_tgt": "admin_api_public",
-      "source": "settings_load_settings",
-      "target": "admin_api_public"
     },
     {
       "relation": "calls",
@@ -1644,18 +1640,6 @@
       "_tgt": "settings_api_url",
       "source": "settings_load_stats",
       "target": "settings_api_url"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "website/js/settings.js",
-      "source_location": "line 63",
-      "weight": 1.0,
-      "_src": "settings_load_stats",
-      "_tgt": "admin_api_public",
-      "source": "settings_load_stats",
-      "target": "admin_api_public"
     },
     {
       "relation": "references",

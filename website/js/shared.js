@@ -179,6 +179,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const dotsContainer = wrapper.querySelector('.carousel-dots');
             if (!track || !dotsContainer) return;
 
+            // Clean up old clones from previous init
+            track.querySelectorAll('.carousel-clone').forEach(c => c.remove());
+
             const cards = Array.from(track.children);
             if (cards.length === 0) return;
 
@@ -220,6 +223,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Expose globally for dynamic content (e.g. deals loaded via API)
+    window.initCarousels = initCarousels;
 
     // Only init carousels on mobile
     if (window.innerWidth < 768) {
