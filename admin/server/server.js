@@ -22,7 +22,9 @@ app.use(cors({
     'http://localhost:8081',
     'http://localhost:8082',
     'https://safe-capital-il.vercel.app',
-    'https://safecapital.vercel.app'
+    'https://safecapital.vercel.app',
+    'https://safecapital.co.il',
+    'https://www.safecapital.co.il'
   ]
 }));
 app.use(express.json({ limit: '50mb' }));
@@ -124,6 +126,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
+// Global error handler — always return JSON, never HTML
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err.message, err.stack);
+  if (req.path.startsWith('/api/')) {
+    return res.status(500).json({ error: err.message || 'Internal server error' });
+  }
+  next(err);
+});
+
 // For local dev: start server
 if (process.env.VERCEL !== '1') {
   app.listen(PORT, () => {
@@ -133,5 +144,6 @@ if (process.env.VERCEL !== '1') {
   });
 }
 
-// For Vercel: export the Express app
+// For Vercel: export the Express app with extended timeout for AI extraction
 module.exports = app;
+module.exports.config = { maxDuration: 60 };
