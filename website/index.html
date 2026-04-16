@@ -509,7 +509,7 @@ tailwind.config = {
 
 <!-- Desktop: frame scroll video background -->
 <div class="hero-video-bg">
-  <img class="scroll-frame" src="frames/frame-01.jpg" alt="">
+  <img class="scroll-frame" src="https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames/frame-01.jpg" alt="">
   <div class="hero-vignette"></div>
 </div>
 
@@ -760,7 +760,7 @@ tailwind.config = {
     </div>
 
     <!-- Animation frame (full screen behind method) -->
-    <img id="house-frame" src="frames-house/frame-0000.jpg" alt="אנימציית שיפוץ בית" style="position:absolute;bottom:0;left:4.5%;width:90%;height:70%;object-fit:contain;object-position:center bottom;z-index:0">
+    <img id="house-frame" src="https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames-house/frame-0000.jpg" alt="אנימציית שיפוץ בית" style="position:absolute;bottom:0;left:4.5%;width:90%;height:70%;object-fit:contain;object-position:center bottom;z-index:0">
 
   </div>
 </section>
@@ -1096,7 +1096,7 @@ tailwind.config = {
       (function(idx) {
         var img = new Image();
         img.onload = function() { framesLoaded++; };
-        img.src = 'frames/frame-' + (idx < 10 ? '0' : '') + idx + '.jpg';
+        img.src = 'https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames/frame-' + (idx < 10 ? '0' : '') + idx + '.jpg';
         frameImages[idx - 1] = img;
       })(f);
     }
@@ -1335,7 +1335,7 @@ tailwind.config = {
         var img = new Image();
         img.onload = function() { houseLoaded++; };
         var padded = String(idx).padStart(4, '0');
-        img.src = 'frames-house/frame-' + padded + '.jpg';
+        img.src = 'https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames-house/frame-' + padded + '.jpg';
         houseImages[idx] = img;
       })(h);
     }
