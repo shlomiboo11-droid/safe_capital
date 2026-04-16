@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Contact form submission
     const form = document.getElementById('contact-form');
     if (form) {
-        const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
+        const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://admin.safecapital.co.il';
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('contact-submit-btn');

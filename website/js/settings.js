@@ -6,7 +6,7 @@
 
 const SETTINGS_API = (window.location.hostname === 'localhost')
   ? 'http://localhost:3000'
-  : 'https://safe-capital-admin.vercel.app';
+  : 'https://admin.safecapital.co.il';
 
 async function loadSiteSettings() {
   try {

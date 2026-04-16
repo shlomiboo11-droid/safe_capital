@@ -7,7 +7,7 @@
  * All text is right-aligned by default.
  */
 
-const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://safe-capital-admin.vercel.app';
+const ADMIN_HOST = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://admin.safecapital.co.il';
 const API_URL = ADMIN_HOST + '/api/public/deals';
 
 function isMobile() { return window.innerWidth < 768; }

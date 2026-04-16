@@ -406,6 +406,30 @@ body {
     transform: scale(1.3);
 }
 
+/* ===== PILLARS CAROUSEL (desktop override) ===== */
+@media (min-width: 768px) {
+    .pillars-carousel {
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+    }
+    .pillars-track {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.5rem;
+        overflow-x: visible !important;
+        scroll-snap-type: none !important;
+    }
+    .pillars-track > * {
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: unset !important;
+        flex-shrink: 1 !important;
+        scroll-snap-align: unset !important;
+    }
+    .pillars-carousel .carousel-dots { display: none !important; }
+}
+
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 767px) {
     /* --- Prevent horizontal overflow --- */
