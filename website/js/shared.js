@@ -247,7 +247,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const successMsg = document.getElementById('form-success');
             const errorMsg = document.getElementById('form-error');
             if (btn) btn.disabled = true;
-            if (btn) btn.textContent = 'שולח...';
+            const btnText = document.getElementById('btn-text');
+            const btnLoader = document.getElementById('btn-loader');
+            if (btnText) btnText.textContent = 'שולח...';
+            if (btnLoader) btnLoader.classList.remove('hidden');
             if (errorMsg) errorMsg.classList.add('hidden');
             try {
                 const data = {
@@ -268,7 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Form submit error:', err);
                 if (errorMsg) errorMsg.classList.remove('hidden');
                 if (btn) btn.disabled = false;
-                if (btn) btn.textContent = 'שליחת הודעה';
+                if (btnText) btnText.textContent = 'שליחת הודעה';
+                if (btnLoader) btnLoader.classList.add('hidden');
             }
         });
     }

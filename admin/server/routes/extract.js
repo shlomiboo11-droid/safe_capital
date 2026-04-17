@@ -20,12 +20,9 @@ const router = express.Router();
 router.use(authenticate, authorize('super_admin', 'manager'));
 
 // ── Upload config ────────────────────────────────────────────
-// On Vercel, filesystem is read-only except /tmp
-const isVercel = process.env.VERCEL === '1';
-const uploadDir = isVercel
-  ? path.join('/tmp', 'uploads')
-  : path.resolve(__dirname, '..', '..', 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+// Always use /tmp for extraction temp files (cleaned up after processing)
+// On Vercel the main filesystem is read-only; locally /tmp also works fine
+const uploadDir = path.join('/tmp', 'sc-extraction-uploads');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -131,7 +128,12 @@ router.post('/upload', upload.array('files', 10), async (req, res) => {
     }
 
     // Single AI call with all documents
-    console.log('Sending all documents to AI for unified analysis...');
+    const pdfSizes = {
+      loan: loanPdfBuffer ? `${(loanPdfBuffer.length / 1024).toFixed(0)}KB` : 'none',
+      reno: renovationPdfBuffer ? `${(renovationPdfBuffer.length / 1024).toFixed(0)}KB` : 'none',
+      xlsx: xlsxText ? `${(xlsxText.length / 1024).toFixed(0)}KB text` : 'none'
+    };
+    console.log('Sending docs to AI:', JSON.stringify(pdfSizes));
     const aiResult = await analyzeAllDocuments(xlsxText, loanPdfBuffer, renovationPdfBuffer, zillowUrl);
     console.log('AI analysis complete.');
 

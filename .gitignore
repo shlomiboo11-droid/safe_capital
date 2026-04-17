@@ -40,6 +40,8 @@ oxmoore/
 # Credentials
 supabase-credentials.txt
 .mcp.json
+.vercel-token.txt
+*.token.txt
 
 # Source/design files
 google_stitch/

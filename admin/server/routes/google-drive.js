@@ -17,8 +17,6 @@
 const express = require('express');
 const router = express.Router();
 const { google } = require('googleapis');
-const path = require('path');
-const fs = require('fs');
 const pool = require('../db');
 const { authenticate } = require('../middleware/auth');
 
@@ -88,6 +86,18 @@ async function getAuthenticatedDrive() {
       [tokens.access_token, tokens.expiry_date ? new Date(tokens.expiry_date) : null, stored.id]
     );
   });
+
+  // Test that refresh token is still valid
+  try {
+    await oauth2Client.getAccessToken();
+  } catch (refreshErr) {
+    if (refreshErr.message && refreshErr.message.includes('invalid_grant')) {
+      // Token expired — clear it from DB so status shows disconnected
+      await pool.query('DELETE FROM google_drive_tokens WHERE id=$1', [stored.id]);
+      throw new Error('invalid_grant: חיבור Google Drive פג תוקף. יש להתחבר מחדש.');
+    }
+    throw refreshErr;
+  }
 
   return google.drive({ version: 'v3', auth: oauth2Client });
 }
@@ -197,14 +207,27 @@ router.post('/link', authenticate, async (req, res) => {
   }
 
   try {
-    const drive = await getAuthenticatedDrive();
+    let drive;
+    try {
+      drive = await getAuthenticatedDrive();
+    } catch (authErr) {
+      if (authErr.message && authErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+      }
+      throw authErr;
+    }
 
     // Get folder name from Drive
     let folderName = folderId;
     try {
       const meta = await drive.files.get({ fileId: folderId, fields: 'name' });
       folderName = meta.data.name;
-    } catch { /* use folderId as fallback name */ }
+    } catch (metaErr) {
+      if (metaErr.message && metaErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+      }
+      /* use folderId as fallback name */
+    }
 
     await pool.query(`
       INSERT INTO deal_drive_folders (deal_id, category, folder_id, folder_name)
@@ -217,6 +240,9 @@ router.post('/link', authenticate, async (req, res) => {
     res.json({ ok: true, folderName });
   } catch (err) {
     console.error('Drive link error:', err.message);
+    if (err.message && err.message.includes('invalid_grant')) {
+      return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
@@ -238,47 +264,58 @@ router.post('/sync/:dealId/:category', authenticate, async (req, res) => {
     }
 
     const folder = folderRow.rows[0];
-    const drive = await getAuthenticatedDrive();
+
+    let drive;
+    try {
+      drive = await getAuthenticatedDrive();
+    } catch (authErr) {
+      if (authErr.message && authErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+      }
+      throw authErr;
+    }
 
     // List image files in the folder
-    const listRes = await drive.files.list({
-      q: `'${folder.folder_id}' in parents and mimeType contains 'image/' and trashed=false`,
-      fields: 'files(id,name,mimeType)',
-      pageSize: 100
-    });
+    let listRes;
+    try {
+      listRes = await drive.files.list({
+        q: `'${folder.folder_id}' in parents and mimeType contains 'image/' and trashed=false`,
+        fields: 'files(id,name,mimeType,thumbnailLink,webContentLink)',
+        pageSize: 100
+      });
+    } catch (listErr) {
+      if (listErr.message && listErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+      }
+      throw listErr;
+    }
 
     const driveFiles = listRes.data.files || [];
 
-    // Get existing images
+    // Get existing images (match by drive file ID in URL)
     const existingRows = await pool.query(
       'SELECT image_url FROM deal_images WHERE deal_id=$1 AND category=$2',
       [dealId, category]
     );
     const existingUrls = new Set(existingRows.rows.map(r => r.image_url));
 
-    // Ensure upload dir
-    const uploadDir = path.join(__dirname, '..', '..', 'public', 'uploads', String(dealId));
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
     let added = 0;
 
     for (const file of driveFiles) {
-      const localFilename = `drive_${file.id}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-      const localPath = path.join(uploadDir, localFilename);
-      const publicUrl = `/uploads/${dealId}/${localFilename}`;
+      // Use Google Drive direct image URL (no local download needed)
+      const driveImageUrl = `https://drive.google.com/thumbnail?id=${file.id}&sz=w1200`;
 
-      if (existingUrls.has(publicUrl)) continue;
+      if (existingUrls.has(driveImageUrl)) continue;
 
       try {
-        await downloadDriveFile(drive, file.id, localPath);
         await pool.query(
           `INSERT INTO deal_images (deal_id, image_url, alt_text, category, sort_order)
            VALUES ($1, $2, $3, $4, (SELECT COALESCE(MAX(sort_order),0)+1 FROM deal_images WHERE deal_id=$1 AND category=$4))`,
-          [dealId, publicUrl, file.name, category]
+          [dealId, driveImageUrl, file.name, category]
         );
         added++;
-      } catch (dlErr) {
-        console.error(`Failed to download ${file.name}:`, dlErr.message);
+      } catch (insertErr) {
+        console.error(`Failed to save ${file.name}:`, insertErr.message);
       }
     }
 
@@ -290,6 +327,9 @@ router.post('/sync/:dealId/:category', authenticate, async (req, res) => {
     res.json({ ok: true, added, total: driveFiles.length });
   } catch (err) {
     console.error('Drive sync error:', err.message);
+    if (err.message && err.message.includes('invalid_grant')) {
+      return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
@@ -331,25 +371,5 @@ router.delete('/link/:dealId/:category', authenticate, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// ── Helper: download a Drive file ────────────────────────────────────────────
-
-function downloadDriveFile(drive, fileId, destPath) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await drive.files.get(
-        { fileId, alt: 'media' },
-        { responseType: 'stream' }
-      );
-      const dest = fs.createWriteStream(destPath);
-      response.data
-        .on('end', resolve)
-        .on('error', reject)
-        .pipe(dest);
-    } catch (err) {
-      reject(err);
-    }
-  });
-}
 
 module.exports = router;
