@@ -27,8 +27,14 @@ app.use(cors({
     'https://www.safecapital.co.il'
   ]
 }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Larger JSON body limit only for routes that need it (upload/extract).
+// Default to 1MB for all other API endpoints to reduce DoS surface.
+app.use('/api/upload', express.json({ limit: '50mb' }));
+app.use('/api/upload', express.urlencoded({ extended: true, limit: '50mb' }));
+app.use('/api/extract', express.json({ limit: '50mb' }));
+app.use('/api/extract', express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
 // Rate limiter for admin login endpoint
 const loginLimiter = rateLimit({
@@ -44,6 +50,15 @@ const portalLoginLimiter = rateLimit({
   message: { error: 'יותר מדי ניסיונות התחברות. נסה שוב בעוד 15 דקות' }
 });
 
+// Rate limiter for public contact form — prevent spam/DoS
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  message: { error: 'יותר מדי פניות. נסה שוב בעוד שעה.' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
@@ -51,6 +66,8 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/images', express.static(path.join(__dirname, '..', '..', 'website', 'images')));
 
 // Public API routes — registered BEFORE auth middleware so no token is required
+// Rate-limit the contact form specifically to prevent spam/DoS
+app.use('/api/public/contact', contactLimiter);
 app.use('/api/public', require('./routes/public'));
 
 // API Routes
