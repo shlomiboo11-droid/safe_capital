@@ -1,0 +1,26 @@
+/* ============================================================
+   Safe Capital — Typography Tokens
+   מקור אמת יחיד לגדלי פונט באתר.
+   אסור לכתוב font-size hardcoded בשום מקום אחר.
+   ראה CLAUDE.md → "Typography — חוק ברזל".
+
+   תוקף נוכחי: desktop בלבד.
+   Mobile יתווסף ב-phase עתידי.
+   ============================================================ */
+
+:root {
+  /* Desktop — default values */
+  --fs-display:    3rem;      /* 48px — hero / page title */
+  --fs-h1:         2.25rem;   /* 36px */
+  --fs-h2:         1.875rem;  /* 30px */
+  --fs-h3:         1.5rem;    /* 24px */
+  --fs-h4:         1.25rem;   /* 20px — כותרת כרטיס */
+  --fs-body-lg:    1.125rem;  /* 18px */
+  --fs-body:       1rem;      /* 16px */
+  --fs-body-sm:    0.9375rem; /* 15px */
+  --fs-body-xs:    0.875rem;  /* 14px */
+  --fs-caption:    0.8125rem; /* 13px */
+  --fs-metric-xl:  2rem;      /* 32px — מספרים hero (כמו "65.9%") */
+  --fs-metric:     1.5rem;    /* 24px — מספרים רגילים */
+  --fs-label:      0.75rem;   /* 12px — תוויות */
+}

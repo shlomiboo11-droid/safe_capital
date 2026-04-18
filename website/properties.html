@@ -8,6 +8,8 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/tokens.css" rel="stylesheet"/>
+<link href="css/typography.css" rel="stylesheet"/>
 <link href="css/shared.css?v=5" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
@@ -96,7 +98,7 @@
         .deal-summary-row .deal-num {
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 1.125rem;
+            font-size: var(--fs-body-lg);
             color: #022445;
             min-width: 2.5rem;
             text-align: center;
@@ -105,7 +107,7 @@
         .deal-summary-row .deal-name {
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: var(--fs-body);
             color: #022445;
             white-space: nowrap;
             flex-shrink: 0;
@@ -115,7 +117,7 @@
             align-items: center;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
-            font-size: 0.75rem;
+            font-size: var(--fs-label);
             font-weight: 600;
             white-space: nowrap;
             flex-shrink: 0;
@@ -131,7 +133,7 @@
         .deal-summary-row .deal-value {
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 0.9375rem;
+            font-size: var(--fs-body-sm);
             color: #1b1b1f;
             white-space: nowrap;
             flex-shrink: 0;
@@ -139,7 +141,7 @@
         .deal-summary-row .deal-profit {
             font-family: 'Inter', sans-serif;
             font-weight: 800;
-            font-size: 0.9375rem;
+            font-size: var(--fs-body-sm);
             color: #984349;
             white-space: nowrap;
             flex-shrink: 0;
@@ -165,7 +167,7 @@
         }
         .deal-arrow-label {
             font-family: 'Heebo', sans-serif;
-            font-size: 0.875rem;
+            font-size: var(--fs-body-xs);
             font-weight: 700;
             color: #984349;
             white-space: nowrap;
@@ -228,7 +230,7 @@
             border-radius: 50%;
             background: rgba(2, 36, 69, 0.1);
             color: #022445;
-            font-size: 0.75rem;
+            font-size: var(--fs-label);
             font-weight: 700;
             cursor: pointer;
             position: relative;
@@ -247,7 +249,7 @@
             padding: 0.875rem 1rem;
             border-radius: 0.5rem;
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            font-size: 0.8125rem;
+            font-size: var(--fs-caption);
             line-height: 1.7;
             width: 280px;
             z-index: 50;
@@ -311,6 +313,277 @@
             transform: rotate(180deg);
         }
 
+        /* ===== Deal card v2 — Round 2 makeover ===== */
+        /* Card container — no dimming anywhere */
+        .deals-list > div[data-deal-id],
+        .deal-card,
+        #deals-container > div,
+        #deals-container article {
+            opacity: 1 !important;
+        }
+
+        /* Card wrapper needs relative for accent strip */
+        .deal-card-v2 {
+            position: relative;
+        }
+
+        /* Badges */
+        .deal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-label);
+            font-weight: 700;
+            white-space: nowrap;
+            width: fit-content;
+            line-height: 1.2;
+        }
+        .deal-badge--filled-crimson { background: #984349; color: #ffffff; }
+        .deal-badge--outline-crimson {
+            background: rgba(152, 67, 73, 0.08);
+            color: #984349;
+            border: 1px solid rgba(152, 67, 73, 0.3);
+        }
+        .deal-badge--light-navy {
+            background: rgba(2, 36, 69, 0.08);
+            color: #022445;
+        }
+        /* Mobile only: unify all status ribbons floating on the image —
+           all Crimson filled, text only (no icons, no pulse dot) */
+        @media (max-width: 767px) {
+            .deal-header .absolute .deal-badge {
+                background: #984349 !important;
+                color: #ffffff !important;
+                border: none !important;
+            }
+            .deal-header .absolute .deal-badge .material-symbols-outlined,
+            .deal-header .absolute .deal-badge .deal-badge__dot {
+                display: none !important;
+            }
+            /* Hide the vertical accent strip on mobile */
+            .deal-card-v2 .deal-accent-strip {
+                display: none !important;
+            }
+            /* Vertical dividers between numbers cells (Stitch style)
+               Positioned at CENTER of gap so content is visually centered between lines */
+            .deal-numbers-divider {
+                position: relative;
+            }
+            .deal-numbers-divider::before {
+                content: '';
+                position: absolute;
+                top: 15%;
+                bottom: 15%;
+                right: -8px;  /* half of grid gap (16px) */
+                width: 1px;
+                background: #e4e2df;
+            }
+        }
+
+        /* Floating ribbon for deal number on mobile image */
+        .deal-number-ribbon {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-label);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.95);
+            color: #022445;
+            box-shadow: 0 2px 8px rgba(2, 36, 69, 0.12);
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .deal-badge--filled-navy {
+            background: #022445;
+            color: #ffffff;
+        }
+
+        .deal-badge__dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+            background: currentColor;
+            animation: dealPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes dealPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.5; transform: scale(1.2); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .deal-badge__dot { animation: none; }
+        }
+
+        /* Accent strip (Active variant only) */
+        .deal-accent-strip {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: #984349;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Numbers — typography spec: Inter 800 */
+        .deal-number {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+        @media (min-width: 768px) {
+            .deal-number { white-space: nowrap; }
+        }
+        .deal-number--regular { font-size: var(--fs-body-xs); }  /* 14px mobile — Stitch spec */
+        .deal-number--hero    { font-size: var(--fs-body-xs); }  /* 14px mobile — Stitch spec (uniform) */
+        @media (min-width: 768px) {
+            .deal-number--regular { font-size: var(--fs-metric); }    /* 24px desktop */
+            .deal-number--hero    { font-size: var(--fs-metric-xl); } /* 32px desktop */
+        }
+        .deal-number-label {
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-label);
+            font-weight: 500;
+            color: #43474e;
+            margin-bottom: 0.25rem;
+            letter-spacing: 0.02em;
+        }
+        .deal-number--navy         { color: #022445; }
+        .deal-number--crimson      { color: #984349; }
+        .deal-number--crimson-soft { color: rgba(152, 67, 73, 0.75); }
+        .deal-number--navy-soft    { color: rgba(2, 36, 69, 0.65); }
+
+        /* Title + location */
+        .deal-card-title {
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            font-size: var(--fs-h4);  /* 20px desktop */
+            line-height: 1.3;
+            color: #022445;
+        }
+        .deal-card-subtitle {
+            font-family: 'Heebo', sans-serif;
+            font-size: var(--fs-label);
+            color: rgba(67, 71, 78, 0.7);
+            margin-top: 0.125rem;
+        }
+
+        /* CTA buttons */
+        .deal-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            cursor: pointer;
+            border: 0;
+            white-space: nowrap;
+        }
+        .deal-cta--filled-navy {
+            background: #022445;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            font-size: var(--fs-body);
+        }
+        .deal-cta--filled-navy:hover { background: #1e3a5c; }
+        .deal-cta--surface-tonal {
+            background: #eae8e5;
+            color: #022445;
+            padding: 0.75rem 1.5rem;
+            font-size: var(--fs-body-sm);
+        }
+        .deal-cta--surface-tonal:hover { background: #dbdad7; }
+        .deal-cta--text-only {
+            background: transparent;
+            color: #022445;
+            padding: 0.5rem 0;
+            font-size: var(--fs-body-xs);
+        }
+        .deal-cta--text-only:hover { color: #984349; }
+
+        /* Progress bars */
+        .deal-progress-track {
+            width: 100%;
+            height: 0.5rem;
+            background: rgba(2, 36, 69, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        .deal-progress-fill--crimson {
+            background: #984349;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        .deal-progress-fill--navy {
+            background: #022445;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        .deal-progress-text {
+            font-family: 'Heebo', sans-serif;
+            font-size: var(--fs-caption);
+            color: #43474e;
+            line-height: 1.5;
+        }
+
+        /* Zone B numbers container */
+        .deal-numbers-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+        .deal-numbers-row > div { min-width: 0; }
+
+        /* Card thumbnail in Zone A */
+        .deal-card-thumb {
+            width: 6rem;
+            height: 6rem;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        /* Mobile-specific */
+        @media (max-width: 767px) {
+            .deal-number-label {
+                font-size: var(--fs-label);  /* 12px — Stitch spec */
+                white-space: nowrap;
+                text-align: center;
+                margin-bottom: 0.375rem;  /* breathing room between label and number */
+            }
+            .deal-numbers-mobile-grid > div {
+                justify-content: center;  /* vertically center label+number as a group */
+            }
+            .deal-numbers-row > div,
+            .deal-numbers-row .flex.flex-col {
+                text-align: center;
+                align-items: center;
+            }
+            .deal-progress-text { font-size: var(--fs-label); } /* 12px — Stitch spec */
+            .deal-cta--filled-navy,
+            .deal-cta--surface-tonal {
+                width: 100%;
+                justify-content: center;
+                padding: 0.75rem 1rem;
+            }
+            .deal-card-title { font-size: 1rem; }       /* 16px mobile */
+            .deal-numbers-row { gap: 0.5rem; }
+        }
+
         /* ===== Mobile typography + spacing for deals ===== */
         @media (max-width: 767px) {
             /* Summary row (desktop template — hidden on mobile via JS) */
@@ -344,12 +617,10 @@
                 max-height: 0;
                 overflow: hidden;
                 transition: max-height 0.5s ease;
-                padding: 0;
+                padding: 0 0.75rem !important;
                 background: #efeeeb;
                 margin-left: -0.75rem;
                 margin-right: -0.75rem;
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
             }
             .mobile-deal-expanded.open {
                 max-height: 9999px;
@@ -401,14 +672,14 @@
   </div>
 </section>
 
-<main class="pt-6 md:pt-24 pb-20 max-w-7xl mx-auto px-3 md:px-12">
+<main class="pt-6 md:pt-24 pb-20 max-w-7xl mx-auto px-5 md:px-12">
 <!-- Header Section (desktop only) -->
 <header class="mb-12 hidden md:block">
-<h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-8 font-headline">העסקאות שלנו</h1>
+<h1 class="t-display font-extrabold text-primary mb-8 font-headline">העסקאות שלנו</h1>
 </header>
 <!-- Deals Accordion List — rendered dynamically by js/deals.js -->
 <section>
-<div id="deals-container" class="space-y-1 md:space-y-4">
+<div id="deals-container" class="space-y-10 md:space-y-4">
 <!-- Loading, empty, and error states are injected here by deals.js -->
 <!-- Deal cards are rendered here once data loads from http://localhost:3000/api/public/deals -->
 </div>
@@ -432,7 +703,8 @@
 </footer>
 <script src="js/shared.js?v=2"></script>
 <script src="js/settings.js"></script>
-<script src="js/deals.js?v=2"></script>
+<script src="js/deal-display-config.js?v=7"></script>
+<script src="js/deals.js?v=13"></script>
 <script>
 // Cost category accordion toggle — called from dynamically rendered HTML
 function toggleCostCategory(header) {
@@ -445,7 +717,7 @@ function toggleCostCategory(header) {
 
 <!-- NagishLi z-index fix -->
 <style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}
-#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:12px;line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
+#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:var(--fs-label);line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
 #nl-dismiss:hover{opacity:1}</style>
 <!-- jQuery for NagishLi -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

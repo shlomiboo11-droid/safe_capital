@@ -1,0 +1,20 @@
+/* ============================================================
+   Safe Capital — Typography Classes
+   מחלקות סמנטיות שמושכות מהטוקנים ב-tokens.css.
+   זו הדרך היחידה שמותר להגדיר גודל פונט ב-HTML.
+   ראה CLAUDE.md → "Typography — חוק ברזל".
+   ============================================================ */
+
+.t-display   { font-size: var(--fs-display); }
+.t-h1        { font-size: var(--fs-h1); }
+.t-h2        { font-size: var(--fs-h2); }
+.t-h3        { font-size: var(--fs-h3); }
+.t-h4        { font-size: var(--fs-h4); }
+.t-body-lg   { font-size: var(--fs-body-lg); }
+.t-body      { font-size: var(--fs-body); }
+.t-body-sm   { font-size: var(--fs-body-sm); }
+.t-body-xs   { font-size: var(--fs-body-xs); }
+.t-caption   { font-size: var(--fs-caption); }
+.t-metric-xl { font-size: var(--fs-metric-xl); }
+.t-metric    { font-size: var(--fs-metric); }
+.t-label     { font-size: var(--fs-label); }

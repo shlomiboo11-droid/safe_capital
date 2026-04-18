@@ -340,7 +340,9 @@ router.put('/:id', async (req, res) => {
       'thumbnail_url', 'description', 'project_duration',
       'purchase_price', 'arv', 'expected_sale_price', 'sale_price_tooltip',
       'actual_purchase_price', 'actual_arv', 'actual_sale_price',
-      'fundraising_goal', 'min_investment'
+      'fundraising_goal', 'min_investment',
+      'opens_at_date', 'sold_at_date', 'renovation_progress_percent', 'sale_completion_note',
+      'profit_distributed'
     ];
 
     const updates = [];

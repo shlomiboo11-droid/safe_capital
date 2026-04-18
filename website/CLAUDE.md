@@ -8,7 +8,8 @@
 
 ## Design System
 שפה ויזואלית: "Architectural Ledger" — Editorial Modernism עם נגיעות חום.
-ראה: `design-system.md` למפרט מלא של צבעים, טיפוגרפיה, spacing, shadows.
+
+**טיפוגרפיה:** גדלי פונט מוגדרים אך ורק ב-`website/css/tokens.css` (CSS variables) ו-`website/css/typography.css` (מחלקות `.t-*`). ראה את החוק ב-`CLAUDE.md` הראשי תחת "Typography — חוק ברזל".
 
 ## Agents
 הפרויקט מנוהל על ידי 5 סוכנים ב-`.claude/agents/`:
@@ -32,9 +33,9 @@
 ```
 
 ## Key Files
-- `design-system.md` — מפרט העיצוב המלא
-- `landing-page-copy.md` — כל הטקסט השיווקי
-- `stitch-prompt.md` — הפרומפט המאוחד ל-Google Stitch
+- `css/tokens.css` — מקור אמת לגדלי פונט (CSS variables)
+- `css/typography.css` — מחלקות סמנטיות `.t-*`
+- `css/shared.css` — סגנונות כלליים
 - `index.html` — התוצר הסופי
 
 ## Critical Rules

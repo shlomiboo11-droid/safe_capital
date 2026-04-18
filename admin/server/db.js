@@ -261,6 +261,16 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- Migration: add profit_distributed to deals (manual value for sold deals)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'deals' AND column_name = 'profit_distributed'
+  ) THEN
+    ALTER TABLE deals ADD COLUMN profit_distributed NUMERIC;
+  END IF;
+END $$;
+
 -- Migration: expand deal_images category to include 'during'
 DO $$ BEGIN
   ALTER TABLE deal_images DROP CONSTRAINT IF EXISTS deal_images_category_check;

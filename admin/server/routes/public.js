@@ -19,6 +19,9 @@ router.get('/deals', async (req, res) => {
         is_featured, is_expandable, thumbnail_url, description,
         project_duration, purchase_price, arv, expected_sale_price,
         sale_price_tooltip, fundraising_goal, min_investment,
+        opens_at_date, sold_at_date, renovation_progress_percent,
+        sale_completion_note, actual_purchase_price, actual_sale_price,
+        profit_distributed,
         sort_order, created_at
       FROM deals
       WHERE is_published = true
@@ -40,7 +43,10 @@ router.get('/deals', async (req, res) => {
       costItemsResult,
       timelineResult,
       specsResult,
-      investorsResult
+      investorsResult,
+      plannedRoiResult,
+      investorCountResult,
+      waitlistCountResult
     ] = await Promise.all([
       pool.query(
         `SELECT * FROM deal_images WHERE deal_id = ANY($1) ORDER BY category, sort_order`,
@@ -72,6 +78,26 @@ router.get('/deals', async (req, res) => {
       pool.query(
         `SELECT deal_id, COALESCE(SUM(amount), 0) as total_raised
          FROM deal_investors
+         WHERE deal_id = ANY($1)
+         GROUP BY deal_id`,
+        [dealIds]
+      ),
+      pool.query(
+        `SELECT deal_id, planned_roi
+         FROM deal_financials_snapshot
+         WHERE deal_id = ANY($1)`,
+        [dealIds]
+      ),
+      pool.query(
+        `SELECT deal_id, COUNT(id)::int AS investor_count
+         FROM deal_investors
+         WHERE deal_id = ANY($1)
+         GROUP BY deal_id`,
+        [dealIds]
+      ),
+      pool.query(
+        `SELECT deal_id, COUNT(*)::int AS waitlist_count
+         FROM deal_waitlist
          WHERE deal_id = ANY($1)
          GROUP BY deal_id`,
         [dealIds]
@@ -122,6 +148,21 @@ router.get('/deals', async (req, res) => {
       raisedByDeal[row.deal_id] = parseFloat(row.total_raised);
     }
 
+    const expectedRoiByDeal = {};
+    for (const row of plannedRoiResult.rows) {
+      expectedRoiByDeal[row.deal_id] = row.planned_roi != null ? parseFloat(row.planned_roi) : null;
+    }
+
+    const investorCountByDeal = {};
+    for (const row of investorCountResult.rows) {
+      investorCountByDeal[row.deal_id] = row.investor_count;
+    }
+
+    const waitlistCountByDeal = {};
+    for (const row of waitlistCountResult.rows) {
+      waitlistCountByDeal[row.deal_id] = row.waitlist_count;
+    }
+
     // Assemble final deal objects
     const enrichedDeals = deals.map(deal => {
       const fundraisingGoal = parseFloat(deal.fundraising_goal || 0);
@@ -161,6 +202,24 @@ router.get('/deals', async (req, res) => {
         fundraising_percent: fundraisingGoal > 0
           ? Math.round((fundraisingRaised / fundraisingGoal) * 100)
           : 0,
+        // Investor-facing display fields
+        expected_roi_percent: expectedRoiByDeal[deal.id] != null ? expectedRoiByDeal[deal.id] : null,
+        investor_count: investorCountByDeal[deal.id] || 0,
+        waitlist_count: waitlistCountByDeal[deal.id] || 0,
+        spots_remaining: (parseFloat(deal.min_investment) > 0 && fundraisingGoal > 0)
+          ? Math.max(0, Math.floor((fundraisingGoal - fundraisingRaised) / parseFloat(deal.min_investment)))
+          : null,
+        actual_roi_percent: (parseFloat(deal.actual_sale_price) > 0 && parseFloat(deal.actual_purchase_price) > 0)
+          ? Math.round(((parseFloat(deal.actual_sale_price) - parseFloat(deal.actual_purchase_price)) / parseFloat(deal.actual_purchase_price)) * 100 * 10) / 10
+          : null,
+        actual_duration_months: (deal.sold_at_date && deal.opens_at_date)
+          ? Math.max(1, Math.round((new Date(deal.sold_at_date) - new Date(deal.opens_at_date)) / (1000 * 60 * 60 * 24 * 30)))
+          : null,
+        opens_at_date: deal.opens_at_date,
+        sold_at_date: deal.sold_at_date,
+        renovation_progress_percent: deal.renovation_progress_percent,
+        sale_completion_note: deal.sale_completion_note,
+        profit_distributed: deal.profit_distributed != null ? parseFloat(deal.profit_distributed) : null,
         // Related data
         images: imagesByDeal[deal.id] || [],
         cost_categories: catsByDeal[deal.id] || [],

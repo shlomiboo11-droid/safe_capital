@@ -374,90 +374,245 @@ function renderMobileExpandedContent(deal) {
     ${descriptionHtml}
     ${specsHtml}
     ${costHtml}
-    ${whatsappHtml}
-    <button class="mobile-collapse-btn w-full py-4 bg-[#e4e2df]/50 flex items-center justify-center gap-2 text-[#022445] text-xs font-bold uppercase tracking-widest"
-            onclick="collapseMobileDeal(this)">
-      צמצם פרטים
-      <span class="material-symbols-outlined text-sm">expand_less</span>
+    ${whatsappHtml}`;
+}
+
+// ── Card v2 helpers (shared between desktop + mobile) ───────────────────────
+
+function colorClass(name) {
+  // Maps semantic color name → .deal-number--* modifier class
+  const map = {
+    'navy': 'deal-number--navy',
+    'crimson': 'deal-number--crimson',
+    'crimson-soft': 'deal-number--crimson-soft',
+    'navy-soft': 'deal-number--navy-soft'
+  };
+  return map[name] || 'deal-number--navy';
+}
+
+function renderBadge(badgeConfig, deal) {
+  const text = typeof badgeConfig.text === 'function' ? badgeConfig.text(deal) : (badgeConfig.text || '');
+
+  let iconHtml = '';
+  if (badgeConfig.dotPulse) {
+    iconHtml = '<span class="deal-badge__dot" aria-hidden="true"></span>';
+  } else if (badgeConfig.arrow) {
+    iconHtml = '<span class="material-symbols-outlined" style="font-size:14px" aria-hidden="true">arrow_back</span>';
+  } else if (badgeConfig.check) {
+    iconHtml = '<span class="material-symbols-outlined" style="font-size:14px" aria-hidden="true">check</span>';
+  } else if (badgeConfig.doubleCheck) {
+    iconHtml = '<span class="material-symbols-outlined" style="font-size:14px" aria-hidden="true">done_all</span>';
+  }
+
+  return `<span class="deal-badge deal-badge--${badgeConfig.style}">${iconHtml}${text}</span>`;
+}
+
+function renderProgress(progressConfig, deal, opts) {
+  if (!progressConfig) return '';
+  const isMobileView = !!(opts && opts.mobile);
+
+  // Helper to pull string from config field that may be fn or literal
+  const cfgText = (key) => typeof progressConfig[key] === 'function' ? progressConfig[key](deal) : (progressConfig[key] || '');
+
+  if (progressConfig.type === 'fundraising') {
+    const pct = typeof progressConfig.percent === 'function' ? progressConfig.percent(deal) : 0;
+    const clamped = Math.min(Math.max(Number(pct) || 0, 0), 100);
+    const remaining = cfgText('remaining');
+    const bottom = cfgText('bottom');
+    const legacyText = cfgText('text');
+
+    if (isMobileView) {
+      // percent LEFT + "X$ remaining" RIGHT (above bar) + bottom text centered BELOW
+      return `
+        <div class="w-full">
+          <div class="flex items-baseline justify-between mb-2">
+            <span class="deal-number deal-number--regular deal-number--crimson">${clamped}%</span>
+            <span class="deal-progress-text">${remaining}</span>
+          </div>
+          <div class="deal-progress-track">
+            <div class="deal-progress-fill--crimson" style="width:${clamped}%"></div>
+          </div>
+          <div class="deal-progress-text text-center mt-2">${bottom}</div>
+        </div>`;
+    }
+
+    return `
+      <div class="w-full">
+        <div class="deal-progress-track">
+          <div class="deal-progress-fill--crimson" style="width:${clamped}%"></div>
+        </div>
+        <div class="deal-progress-text">${legacyText || bottom || remaining}</div>
+      </div>`;
+  }
+
+  if (progressConfig.type === 'timeline') {
+    const bottom = cfgText('bottom');
+    const steps = Array.isArray(deal.timeline) ? deal.timeline : [];
+    return renderCollapsedTimeline(steps, bottom, isMobileView);
+  }
+
+  if (progressConfig.type === 'investors-enjoyed') {
+    const bottom = cfgText('bottom');
+    return `<div class="deal-progress-text text-center">${bottom}</div>`;
+  }
+
+  // Legacy types (kept for backwards compat, currently unused)
+  if (progressConfig.type === 'social' || progressConfig.type === 'success-note' || progressConfig.type === 'renovation') {
+    const text = cfgText('text');
+    return `<div class="deal-progress-text text-center">${text}</div>`;
+  }
+
+  return '';
+}
+
+// Compact horizontal timeline for collapsed renovation card
+function renderCollapsedTimeline(steps, bottomText, isMobileView) {
+  if (!steps || steps.length === 0) {
+    // Fallback to a generic 4-step timeline if no DB steps
+    steps = [
+      { step_name: 'רכישה',  status: 'completed' },
+      { step_name: 'תכנון',  status: 'completed' },
+      { step_name: 'שיפוץ',  status: 'active' },
+      { step_name: 'מכירה',  status: 'pending' }
+    ];
+  }
+  const dotColor = (s) => s === 'completed' ? '#984349' : (s === 'active' ? '#984349' : '#c4c6cf');
+  const dotFill  = (s) => s === 'pending' ? 'transparent' : dotColor(s);
+  const labelColor = (s) => s === 'pending' ? '#43474e' : '#022445';
+  const fontWeight = (s) => s === 'active' ? 700 : 500;
+
+  const dots = steps.map(step => {
+    const color = dotColor(step.status);
+    const fill = dotFill(step.status);
+    return `
+      <div class="flex flex-col items-center gap-1" style="flex:1;min-width:0">
+        <div style="width:10px;height:10px;border-radius:9999px;border:2px solid ${color};background:${fill}"></div>
+        <span class="deal-progress-text" style="color:${labelColor(step.status)};font-weight:${fontWeight(step.status)};font-size:var(--fs-label);text-align:center;white-space:nowrap">${step.step_name}</span>
+      </div>`;
+  }).join('');
+
+  // Connector line behind the dots (crimson up to active step)
+  const activeIdx = steps.findIndex(s => s.status === 'active');
+  const doneCount = steps.filter(s => s.status === 'completed').length;
+  const segments = Math.max(steps.length - 1, 1);
+  const progressPct = Math.min(100, Math.round(((activeIdx >= 0 ? activeIdx : doneCount) / segments) * 100));
+
+  return `
+    <div class="w-full">
+      <div class="relative" style="padding-top:4px">
+        <div class="absolute" style="top:9px;left:8%;right:8%;height:2px;background:#e4e2df"></div>
+        <div class="absolute" style="top:9px;right:8%;width:${progressPct * 0.84}%;height:2px;background:#984349"></div>
+        <div class="relative flex justify-between" style="gap:4px">${dots}</div>
+      </div>
+      <div class="deal-progress-text text-center mt-3">${bottomText}</div>
+    </div>`;
+}
+
+function renderCTA(ctaConfig, isExpandable) {
+  if (!ctaConfig) return '';
+  const arrowIcon = ctaConfig.style === 'text-only'
+    ? '<span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">arrow_back</span>'
+    : '';
+  const isToggle = isExpandable && ctaConfig.expandedText;
+  const toggleCls = isToggle ? ' deal-toggle-btn' : '';
+  const dataAttrs = isToggle
+    ? ` data-text-collapsed="${ctaConfig.text}" data-text-expanded="${ctaConfig.expandedText}"`
+    : '';
+  return `
+    <button type="button" class="deal-cta deal-cta--${ctaConfig.style}${toggleCls}"${dataAttrs}>
+      ${ctaConfig.text}
+      ${arrowIcon}
     </button>`;
+}
+
+function renderNumbersRow(numbers, deal, opts) {
+  const isMobileView = !!(opts && opts.mobile);
+  const cells = numbers.map((num, i) => {
+    const value = typeof num.value === 'function' ? num.value(deal) : num.value;
+    const sizeClass = num.hero ? 'deal-number--hero' : 'deal-number--regular';
+    const colorCls = colorClass(num.color);
+    const cellAlign = isMobileView ? 'items-center text-center' : 'min-w-0';
+    // Mobile: vertical dividers between cells (skip first — RTL puts it rightmost)
+    const dividerCls = (isMobileView && i > 0) ? 'deal-numbers-divider' : '';
+    return `
+      <div class="flex flex-col ${cellAlign} ${dividerCls}">
+        <span class="deal-number-label">${num.label}</span>
+        <span class="deal-number ${sizeClass} ${colorCls}">${value}</span>
+      </div>`;
+  }).join('');
+
+  if (isMobileView) {
+    return `
+      <div class="grid grid-cols-3 gap-2 py-0.5 px-2 rounded-xl deal-numbers-mobile-grid" style="background:rgba(2,36,69,0.04)">
+        ${cells}
+      </div>`;
+  }
+
+  return `<div class="deal-numbers-row">${cells}</div>`;
+}
+
+function locationSubtitle(deal) {
+  const parts = [];
+  if (deal.city) parts.push(deal.city);
+  if (deal.state) parts.push(deal.state);
+  const loc = parts.join(', ');
+  const num = deal.deal_number ? `#${deal.deal_number}` : '';
+  if (loc && num) return `${loc} · ${num}`;
+  return loc || num;
 }
 
 // ── Mobile deal card ────────────────────────────────────────────────────────
 
 function renderMobileDealCard(deal, index) {
   const isExpandable = deal.is_expandable !== false;
-  const propertyLabel = PROPERTY_STATUS_LABELS[deal.property_status] || deal.property_status || '';
-  const fundraisingLabel = FUNDRAISING_STATUS_LABELS[deal.fundraising_status] || deal.fundraising_status || '';
+  const status = getDisplayStatus(deal);
+  const config = DEAL_DISPLAY_CONFIG[status];
 
   const thumbSrc = deal.thumbnail_url ? (ADMIN_HOST + deal.thumbnail_url) : '';
-  const isFeatured = deal.is_featured;
 
-  const totalCost = deal.total_cost;
-  const expectedProfit = deal.expected_profit;
-  const pct = deal.fundraising_percent || 0;
+  const badgeHtml    = renderBadge(config.badge, deal);
+  const numbersHtml  = renderNumbersRow(config.numbers, deal, { mobile: true });
+  const progressHtml = renderProgress(config.progress, deal, { mobile: true });
+  const ctaHtml      = renderCTA(config.cta, isExpandable);
 
-  // Image classes
-  const imgClass = isFeatured ? 'w-full h-full object-cover' : 'w-full h-full object-cover grayscale-[30%]';
-  const imgOverlay = isFeatured ? '' : '<div class="absolute inset-0 bg-[#022445]/10"></div>';
-  const articleOpacity = isFeatured ? '' : ' opacity-60 hover:opacity-100 transition-opacity';
-
-  // Fundraising badge: if active/upcoming, show percentage
-  let fundraisingBadgeHtml = '';
-  if (fundraisingLabel) {
-    if (deal.fundraising_status === 'active' || deal.fundraising_status === 'upcoming') {
-      fundraisingBadgeHtml = `<div class="flex items-center gap-1.5 bg-[#ffdada]/50 px-2 py-0.5 rounded-full">
-        <span class="text-[10px] font-bold text-[#792b32]">${fundraisingLabel}</span>
-        <span class="text-[10px] font-label font-bold text-[#984349]">${pct}%</span>
-      </div>`;
-    } else {
-      fundraisingBadgeHtml = `<span class="bg-[#ffdada] px-2 py-0.5 rounded-full text-[10px] font-bold text-[#792b32]">${fundraisingLabel}</span>`;
-    }
-  }
+  // Mobile: deal# shown as white ribbon (original style)
+  const dealNumRibbon = deal.deal_number
+    ? `<span class="deal-number-ribbon">#${deal.deal_number}</span>`
+    : '';
 
   const expandedHtml = isExpandable
     ? `<div class="deal-expanded mobile-deal-expanded bg-[#f5f3f0]">${renderMobileExpandedContent(deal)}</div>`
     : '';
 
-  const expandBtnHtml = isExpandable
-    ? `<button class="deal-expand-btn w-full py-4 border-t border-[#f5f3f0] flex items-center justify-center gap-2 text-[#43474e] text-xs font-bold uppercase tracking-widest hover:bg-[#f5f3f0] transition-colors"
-               onclick="expandMobileDeal(this)">
-        לפירוט מלא
-        <span class="material-symbols-outlined text-sm deal-arrow">expand_more</span>
-      </button>`
+  const accentStripHtml = config.accentStrip
+    ? '<div class="deal-accent-strip"></div>'
     : '';
 
+  const imageHtml = thumbSrc
+    ? `<img alt="${deal.name}" class="w-full h-full object-cover rounded-2xl" style="height:220px" src="${thumbSrc}" loading="lazy"/>`
+    : `<div class="w-full bg-[#f5f3f0] rounded-2xl" style="height:220px"></div>`;
+
   return `
-    <article class="bg-white rounded-xl overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)]${articleOpacity}">
-      <div class="deal-header p-4 flex gap-4 cursor-pointer">
-        <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 relative">
-          ${thumbSrc ? `<img alt="${deal.name}" class="${imgClass}" src="${thumbSrc}" loading="lazy"/>` : ''}
-          ${imgOverlay}
+    <article class="deal-card-v2 bg-white rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)]">
+      ${accentStripHtml}
+      <div class="deal-header cursor-pointer">
+        <div class="p-3 relative">
+          ${imageHtml}
+          <div class="absolute top-6 right-6">${badgeHtml}</div>
+          <div class="absolute top-6 left-6">${dealNumRibbon}</div>
         </div>
-        <div class="flex flex-col justify-between py-1 flex-grow">
-          <div>
-            <h2 class="text-lg font-bold text-[#022445] flex items-center gap-2 font-label">
-              ${deal.name}
-              <span class="text-[#984349] text-sm font-label">#${deal.deal_number}</span>
-            </h2>
-            <div class="flex gap-2 mt-2">
-              ${propertyLabel ? `<span class="bg-[#d3e3ff] px-2 py-0.5 rounded-full text-[10px] font-bold text-[#022445]">${propertyLabel}</span>` : ''}
-              ${fundraisingBadgeHtml}
-            </div>
+        <div class="px-4 pb-4 flex flex-col gap-4">
+          <div class="text-right" dir="rtl">
+            <h3 class="deal-card-title" style="text-align:right">${deal.name || ''}</h3>
           </div>
-          <div class="flex justify-between items-end">
-            ${totalCost ? `<div class="space-y-0.5">
-              <div class="text-[10px] text-[#43474e] uppercase tracking-wider">עלות כוללת</div>
-              <div class="text-sm font-bold font-label">${formatUSD(totalCost)}</div>
-            </div>` : ''}
-            ${expectedProfit ? `<div class="space-y-0.5 text-left">
-              <div class="text-[10px] text-[#984349] uppercase tracking-wider">רווח משוער</div>
-              <div class="text-sm font-bold font-label text-[#984349]">${formatUSD(expectedProfit)}</div>
-            </div>` : ''}
-          </div>
+          ${numbersHtml}
+          ${progressHtml ? `<div class="w-full">${progressHtml}</div>` : ''}
         </div>
       </div>
-      ${expandBtnHtml}
       ${expandedHtml}
+      <div class="px-4 pb-4 pt-0 w-full">
+        ${ctaHtml}
+      </div>
     </article>`;
 }
 
@@ -725,49 +880,63 @@ function renderDealCard(deal, index) {
   if (isMobile()) return renderMobileDealCard(deal, index);
 
   const isExpandable = deal.is_expandable !== false;
-  const propertyLabel   = PROPERTY_STATUS_LABELS[deal.property_status]   || deal.property_status   || '';
-  const fundraisingLabel = FUNDRAISING_STATUS_LABELS[deal.fundraising_status] || deal.fundraising_status || '';
+  const status = getDisplayStatus(deal);
+  const config = DEAL_DISPLAY_CONFIG[status];
 
-  const thumbHtml = deal.thumbnail_url
-    ? `<img class="deal-thumb" alt="${deal.name}" src="${ADMIN_HOST + deal.thumbnail_url}" loading="lazy"/>`
-    : '';
+  const thumbSrc = deal.thumbnail_url ? (ADMIN_HOST + deal.thumbnail_url) : '';
+  const thumbHtml = thumbSrc
+    ? `<img class="deal-card-thumb" alt="${deal.name}" src="${thumbSrc}" loading="lazy"/>`
+    : `<div class="deal-card-thumb" style="background:#f5f3f0"></div>`;
 
-  const arrowHtml = isExpandable
-    ? `<div class="deal-arrow-wrap">
-         <span class="deal-arrow-label">לפירוט מלא</span>
-         <span class="deal-arrow material-symbols-outlined text-secondary text-2xl">expand_more</span>
-       </div>`
-    : '';
+  const badgeHtml    = renderBadge(config.badge, deal);
+  const numbersHtml  = renderNumbersRow(config.numbers, deal, { mobile: false });
+  const progressHtml = renderProgress(config.progress, deal);
+  const ctaHtml      = renderCTA(config.cta, isExpandable);
 
-  const totalCost    = deal.total_cost;
-  const expectedProfit = deal.expected_profit;
+  const subtitle = locationSubtitle(deal);
 
   const expandedHtml = isExpandable
     ? `<div class="deal-expanded space-y-16">${renderExpandedContent(deal)}</div>`
     : `<div class="deal-expanded"></div>`;
 
-  // Reduced opacity for non-featured collapsed deals (same as original design)
-  const cardClass = deal.is_featured
-    ? 'bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_8px_24px_rgba(27,28,26,0.04)] transition-all'
-    : 'bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm opacity-60 hover:opacity-100 transition-opacity';
+  const accentStripHtml = config.accentStrip
+    ? '<div class="deal-accent-strip"></div>'
+    : '';
 
-  // Featured deal has a visible border-b on the header
-  const headerBorderClass = deal.is_featured ? 'border-b border-outline-variant/15' : '';
+  const arrowHtml = isExpandable
+    ? `<span class="deal-arrow material-symbols-outlined" style="color:#022445;font-size:1.5rem">expand_more</span>`
+    : '';
 
   return `
-    <div class="${cardClass}">
-      <div class="deal-header p-4 md:p-6 cursor-pointer ${headerBorderClass}">
-        <div class="deal-summary-row">
-          <span class="deal-num">#${deal.deal_number}</span>
-          <span class="deal-name">${deal.name}</span>
-          <div class="deal-meta-fields">
-            ${propertyLabel   ? `<span class="deal-status-badge property-status">${propertyLabel}</span>`   : ''}
-            ${fundraisingLabel ? `<span class="deal-status-badge fundraising-status">${fundraisingLabel}</span>` : ''}
-            ${totalCost    ? `<span class="deal-value">${formatUSD(totalCost)}</span>`         : ''}
-            ${expectedProfit ? `<span class="deal-profit">${formatUSD(expectedProfit)}</span>` : ''}
+    <div class="deal-card-v2 bg-surface-container-lowest rounded-[1rem] overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)] transition-all">
+      ${accentStripHtml}
+      <div class="deal-header p-4 md:p-6 cursor-pointer">
+        <div class="flex flex-row items-center gap-6 w-full">
+          <!-- Zone A: thumbnail + badge + title (30%) -->
+          <div class="flex items-center gap-4 min-w-0" style="width:30%">
+            ${thumbHtml}
+            <div class="flex flex-col min-w-0">
+              ${badgeHtml}
+              <h3 class="deal-card-title mt-2 truncate">${deal.name || ''}</h3>
+              ${subtitle ? `<div class="deal-card-subtitle truncate">${subtitle}</div>` : ''}
+            </div>
           </div>
-          ${thumbHtml}
-          ${arrowHtml}
+
+          <!-- Zone B: 3 numbers (30%) -->
+          <div style="width:30%">
+            ${numbersHtml}
+          </div>
+
+          <!-- Zone C: progress (25%) -->
+          <div class="flex flex-col justify-center" style="width:25%">
+            ${progressHtml}
+          </div>
+
+          <!-- Zone D: CTA + arrow (15%) -->
+          <div class="flex items-center justify-end gap-2" style="width:15%">
+            ${ctaHtml}
+            ${arrowHtml}
+          </div>
         </div>
       </div>
       ${expandedHtml}
@@ -804,13 +973,25 @@ function showError(container) {
 
 // ── Accordion toggle (attaches to document — works for dynamically added cards) ──
 
-document.addEventListener('click', function (e) {
-  const header = e.target.closest('.deal-header');
-  if (!header) return;
+function setToggleBtnText(btn, open) {
+  if (!btn) return;
+  const collapsedText = btn.getAttribute('data-text-collapsed');
+  const expandedText = btn.getAttribute('data-text-expanded');
+  if (!collapsedText || !expandedText) return;
+  // Preserve any trailing icon span
+  const iconHtml = btn.querySelector('.material-symbols-outlined')?.outerHTML || '';
+  btn.innerHTML = (open ? expandedText : collapsedText) + (iconHtml ? '\n      ' + iconHtml : '');
+}
 
-  // Mobile: clicking header toggles expand (same as expand button)
+document.addEventListener('click', function (e) {
+  const toggleBtn = e.target.closest('.deal-toggle-btn');
+  const header = e.target.closest('.deal-header');
+  const trigger = toggleBtn || header;
+  if (!trigger) return;
+
+  // Mobile: clicking header OR toggle button expands/collapses
   if (isMobile()) {
-    const article = header.closest('article');
+    const article = trigger.closest('article');
     if (!article) return;
     const expanded = article.querySelector('.mobile-deal-expanded');
     if (!expanded || !expanded.children.length) return;
@@ -821,21 +1002,20 @@ document.addEventListener('click', function (e) {
       el.classList.remove('open');
       const otherArticle = el.closest('article');
       if (otherArticle) {
-        const otherBtn = otherArticle.querySelector('.deal-expand-btn');
-        if (otherBtn) otherBtn.style.display = '';
+        const otherBtn = otherArticle.querySelector('.deal-toggle-btn');
+        setToggleBtnText(otherBtn, false);
       }
     });
 
     if (!isOpen) {
       expanded.classList.add('open');
-      const expandBtn = article.querySelector('.deal-expand-btn');
-      if (expandBtn) expandBtn.style.display = 'none';
+      setToggleBtnText(article.querySelector('.deal-toggle-btn'), true);
     }
     return;
   }
 
   // Desktop: existing behavior
-  const card = header.closest('.bg-surface-container-lowest');
+  const card = header.closest('.deal-card-v2') || header.closest('.bg-surface-container-lowest');
   if (!card) return;
 
   const expanded = card.querySelector('.deal-expanded');
@@ -849,7 +1029,8 @@ document.addEventListener('click', function (e) {
   // Close all open deals first
   document.querySelectorAll('.deal-expanded.open').forEach(el => {
     el.classList.remove('open');
-    const arr = el.closest('.bg-surface-container-lowest')?.querySelector('.deal-arrow');
+    const parent = el.closest('.deal-card-v2') || el.closest('.bg-surface-container-lowest');
+    const arr = parent ? parent.querySelector('.deal-arrow') : null;
     if (arr) arr.classList.remove('open');
   });
 

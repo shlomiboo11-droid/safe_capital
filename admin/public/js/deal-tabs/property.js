@@ -136,6 +136,32 @@ function renderPropertyTab(data) {
             <label class="form-label">תמונה ראשית (URL)</label>
             <input type="url" name="thumbnail_url" class="form-input ltr" dir="ltr" value="${deal.thumbnail_url || ''}">
           </div>
+          <div>
+            <label class="form-label">תאריך פתיחה לגיוס</label>
+            <input type="date" name="opens_at_date" class="form-input ltr" dir="ltr" value="${deal.opens_at_date ? String(deal.opens_at_date).slice(0, 10) : ''}">
+          </div>
+          <div>
+            <label class="form-label">תאריך מכירה בפועל</label>
+            <input type="date" name="sold_at_date" class="form-input ltr" dir="ltr" value="${deal.sold_at_date ? String(deal.sold_at_date).slice(0, 10) : ''}">
+          </div>
+          <div>
+            <label class="form-label">אחוז התקדמות שיפוץ</label>
+            <div class="relative">
+              <input type="number" name="renovation_progress_percent" class="form-input ltr font-inter" dir="ltr" min="0" max="100" step="1" value="${deal.renovation_progress_percent != null ? deal.renovation_progress_percent : ''}">
+              <span class="absolute top-1/2 -translate-y-1/2 left-3 text-sm text-gray-500 pointer-events-none">%</span>
+            </div>
+          </div>
+          <div class="md:col-span-2">
+            <label class="form-label">הערת סיום עסקה</label>
+            <textarea name="sale_completion_note" class="form-input" rows="2" placeholder="הערה קצרה על סיום העסקה (למשל: 'נמכר מעל ציפיות תוך 6 חודשים')">${deal.sale_completion_note || ''}</textarea>
+          </div>
+          <div>
+            <label class="form-label">רווח שפוזר למשקיעים (USD)</label>
+            <div class="relative">
+              <input type="number" name="profit_distributed" class="form-input ltr font-inter" dir="ltr" min="0" step="1" placeholder="סכום דולרי שחולק בפועל" value="${deal.profit_distributed != null ? deal.profit_distributed : ''}">
+              <span class="absolute top-1/2 -translate-y-1/2 left-3 text-sm text-gray-500 pointer-events-none">$</span>
+            </div>
+          </div>
         </div>
 
         <!-- Toggles -->
@@ -190,7 +216,12 @@ function renderPropertyTab(data) {
       is_published: form.is_published.checked,
       is_featured: form.is_featured.checked,
       is_expandable: form.is_expandable.checked,
-      description: form.description.value.trim()
+      description: form.description.value.trim(),
+      opens_at_date: form.opens_at_date.value || null,
+      sold_at_date: form.sold_at_date.value || null,
+      renovation_progress_percent: form.renovation_progress_percent.value === '' ? null : parseFloat(form.renovation_progress_percent.value),
+      sale_completion_note: form.sale_completion_note.value.trim() || null,
+      profit_distributed: form.profit_distributed.value === '' ? null : parseFloat(form.profit_distributed.value)
     };
 
     try {

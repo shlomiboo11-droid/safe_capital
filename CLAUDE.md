@@ -72,6 +72,18 @@ These rules are non-negotiable. Violating them produces an off-brand result:
 - **Inter / Montserrat** — numbers, financial metrics, English labels
 - **Heebo 300 / Inter** — body text
 
+## Typography — חוק ברזל
+
+**דרך אחת בלבד להגדיר גודל פונט בקוד האתר (`website/`):**
+
+1. **אסור** לכתוב `font-size: Xrem/Xpx` בשום מקום (inline, `<style>`, או CSS file)
+2. **אסור** להשתמש ב-Tailwind `text-xs/sm/base/lg/xl/2xl/3xl/4xl/5xl/6xl` לגודל טקסט
+3. **מותר** רק: מחלקות `.t-*` (מ-`website/css/typography.css`) או `var(--fs-*)` (מ-`website/css/tokens.css`)
+4. אם צריך גודל חדש — **הוסף אותו ל-`tokens.css`**, לא בקוד
+5. לפני עריכה של UI — **קרא `tokens.css`** כדי לראות אילו טוקנים קיימים
+
+**תוקף נוכחי:** `website/properties.html` דסקטופ בלבד. שאר העמודים והמובייל — יצורפו ב-phases הבאים.
+
 ## Agents
 Specialist agents in `.claude/agents/`, organized by team:
 
