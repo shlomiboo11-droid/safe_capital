@@ -285,6 +285,206 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// GET /api/public/active-event — returns active + published event for the website
+router.get('/active-event', async (req, res) => {
+  try {
+    const evRes = await pool.query(
+      `SELECT * FROM events
+       WHERE is_active = TRUE AND is_published = TRUE
+       LIMIT 1`
+    );
+    const event = evRes.rows[0];
+    if (!event) {
+      return res.status(404).json({ error: 'No active event' });
+    }
+
+    // Load featured deals with join to deals table for live data
+    const fdRes = await pool.query(`
+      SELECT efd.*,
+        d.id              AS linked_deal_id,
+        d.deal_number     AS deal_number,
+        d.name            AS deal_name,
+        d.full_address    AS deal_full_address,
+        d.thumbnail_url   AS deal_thumbnail,
+        d.property_status AS deal_property_status,
+        d.fundraising_goal AS deal_fundraising_goal,
+        d.is_published    AS deal_is_published
+      FROM event_featured_deals efd
+      LEFT JOIN deals d ON efd.deal_id = d.id
+      WHERE efd.event_id = $1
+      ORDER BY efd.sort_order ASC, efd.id ASC
+    `, [event.id]);
+
+    // Fetch aggregate data for linked deals (raised + investor count + planned roi)
+    const dealIds = fdRes.rows.map(r => r.linked_deal_id).filter(Boolean);
+    const raisedMap = {};
+    const investorCountMap = {};
+    const roiMap = {};
+    if (dealIds.length > 0) {
+      const [raisedRes, countRes, roiRes] = await Promise.all([
+        pool.query(
+          `SELECT deal_id, COALESCE(SUM(amount), 0) AS total_raised
+           FROM deal_investors WHERE deal_id = ANY($1) GROUP BY deal_id`,
+          [dealIds]
+        ),
+        pool.query(
+          `SELECT deal_id, COUNT(id)::int AS cnt
+           FROM deal_investors WHERE deal_id = ANY($1) GROUP BY deal_id`,
+          [dealIds]
+        ),
+        pool.query(
+          `SELECT deal_id, planned_roi FROM deal_financials_snapshot
+           WHERE deal_id = ANY($1)`,
+          [dealIds]
+        )
+      ]);
+      for (const r of raisedRes.rows) raisedMap[r.deal_id] = parseFloat(r.total_raised);
+      for (const r of countRes.rows) investorCountMap[r.deal_id] = r.cnt;
+      for (const r of roiRes.rows) roiMap[r.deal_id] = r.planned_roi != null ? parseFloat(r.planned_roi) : null;
+    }
+
+    const featured_deals = fdRes.rows.map(r => {
+      const live = r.linked_deal_id != null;
+      const raised = live && raisedMap[r.linked_deal_id] != null ? raisedMap[r.linked_deal_id] : null;
+      const count = live && investorCountMap[r.linked_deal_id] != null ? investorCountMap[r.linked_deal_id] : null;
+      const roi = live && roiMap[r.linked_deal_id] != null ? roiMap[r.linked_deal_id] : null;
+
+      return {
+        id: r.id,
+        sort_order: r.sort_order,
+        deal_id: r.linked_deal_id,
+        deal_number: r.deal_number || r.fallback_deal_number || null,
+        address: r.deal_full_address || r.deal_name || r.fallback_address || '',
+        thumbnail_url: r.deal_thumbnail || null,
+        property_status: r.deal_property_status || null,
+        raised_amount: raised,
+        raised_display: r.fallback_raised_display || (raised != null ? '$' + Math.round(raised).toLocaleString('en-US') : null),
+        investor_count: count != null ? count : r.fallback_investor_count,
+        roi_percent: roi,
+        roi_display: r.fallback_roi_display || (roi != null ? roi + '%' : null),
+        status_label: r.override_status_label || null,
+        status_tone: r.override_status_tone || null,
+        note: r.override_note || null
+      };
+    });
+
+    res.json({
+      event: {
+        id: event.id,
+        slug: event.slug,
+        is_active: event.is_active,
+        is_published: event.is_published,
+
+        hero_eyebrow_location: event.hero_eyebrow_location,
+        hero_eyebrow_session: event.hero_eyebrow_session,
+        hero_title_main: event.hero_title_main,
+        hero_title_accent: event.hero_title_accent,
+        hero_description: event.hero_description,
+        hero_image_url: event.hero_image_url,
+
+        event_date: event.event_date,
+        event_time_start: event.event_time_start,
+        event_time_end: event.event_time_end,
+        event_date_display_full: event.event_date_display_full,
+        event_date_display_short: event.event_date_display_short,
+
+        venue_name: event.venue_name,
+        venue_address: event.venue_address,
+        venue_short: event.venue_short,
+        venue_full_address: event.venue_full_address,
+
+        seats_total: event.seats_total,
+        seats_taken: event.seats_taken,
+
+        min_investment_display: event.min_investment_display,
+        roi_target_display: event.roi_target_display,
+        roi_spec: event.roi_spec,
+        holding_period: event.holding_period,
+
+        brief_text: event.brief_text,
+
+        track_record_title: event.track_record_title,
+        track_record_subtitle: event.track_record_subtitle,
+
+        whatsapp_number: event.whatsapp_number,
+        gcal_title: event.gcal_title,
+        gcal_description: event.gcal_description,
+
+        agenda: event.agenda || [],
+        speakers: event.speakers || [],
+        faqs: event.faqs || []
+      },
+      featured_deals
+    });
+  } catch (err) {
+    console.error('Active event error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/public/event-registration — save investor-nights event registration
+// TODO(future): send confirmation email (requires SMTP/SendGrid configured)
+// TODO(future): send WhatsApp notification to admin (requires Twilio / WhatsApp Business API)
+router.post('/event-registration', async (req, res) => {
+  try {
+    const {
+      event_id,
+      event_slug,
+      first_name,
+      last_name,
+      email,
+      phone,
+      guest_name,
+      investor_type,
+      invested_before,
+      range_k,
+      readiness,
+      source,
+      note,
+      agree_terms,
+      subscribe_updates
+    } = req.body || {};
+
+    if (!first_name || !last_name || !email || !phone) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    if (!agree_terms) {
+      return res.status(400).json({ error: 'Terms must be accepted' });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO event_registrations
+        (event_id, event_slug, first_name, last_name, email, phone, guest_name,
+         investor_type, invested_before, range_k, readiness, source, note,
+         agree_terms, subscribe_updates)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+       RETURNING id`,
+      [
+        event_id ? parseInt(event_id) : null,
+        event_slug || 'may-2026-tlv',
+        first_name,
+        last_name,
+        email,
+        phone,
+        guest_name || null,
+        investor_type || null,
+        invested_before || null,
+        range_k || null,
+        readiness || null,
+        source || null,
+        note || null,
+        !!agree_terms,
+        subscribe_updates === false ? false : true
+      ]
+    );
+
+    res.json({ success: true, id: result.rows[0].id });
+  } catch (err) {
+    console.error('Event registration error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // POST /api/public/contact — save contact form submission
 router.post('/contact', async (req, res) => {
   try {

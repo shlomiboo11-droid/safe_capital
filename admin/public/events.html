@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>רשימת עסקאות | Safe Capital Admin</title>
+  <title>כנסי משקיעים | Safe Capital Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,13 +21,12 @@
       </a>
       <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
     </div>
-
     <nav class="p-3 space-y-1 mt-2">
-      <a href="/" class="sidebar-link active">
+      <a href="/" class="sidebar-link">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span>עסקאות</span>
       </a>
-      <a href="/events" class="sidebar-link">
+      <a href="/events" class="sidebar-link active">
         <span class="material-symbols-outlined text-xl">event</span>
         <span>כנסי משקיעים</span>
       </a>
@@ -62,8 +61,6 @@
         <span>פרומפטים</span>
       </a>
     </nav>
-
-    <!-- User info at bottom -->
     <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
       <div class="flex items-center justify-between">
         <div>
@@ -77,104 +74,72 @@
     </div>
   </aside>
 
-  <!-- Mobile sidebar toggle -->
   <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
     <span class="material-symbols-outlined">menu</span>
   </button>
 
-  <!-- Main Content -->
   <main class="main-content">
-    <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">עסקאות</h1>
-        <p class="text-sm text-gray-500 mt-1">ניהול כל עסקאות הנדל"ן</p>
+        <h1 class="text-2xl font-bold text-gray-900">כנסי משקיעים</h1>
+        <p class="text-sm text-gray-500 mt-1">ניהול אירועי משקיעים. רק אירוע אחד יכול להיות "פעיל" ולהיות מוצג באתר.</p>
       </div>
       <div class="flex gap-2">
-        <a href="/deal-wizard" class="btn btn-primary">
-          <span class="material-symbols-outlined text-lg">auto_awesome</span>
-          יצירה מ-מסמכים
-        </a>
-        <button class="btn btn-secondary" onclick="createNewDeal()">
+        <button class="btn btn-primary" onclick="createNewEvent()">
           <span class="material-symbols-outlined text-lg">add</span>
-          יצירה ידנית
+          אירוע חדש
         </button>
       </div>
     </div>
 
-    <!-- Stats Bar -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="statsBar">
-      <div class="fin-card">
-        <div class="fin-card-value font-inter" id="stat-total">0</div>
-        <div class="fin-card-label">סה"כ עסקאות</div>
-      </div>
-      <div class="fin-card">
-        <div class="fin-card-value font-inter" id="stat-active">0</div>
-        <div class="fin-card-label">פעילות</div>
-      </div>
-      <div class="fin-card">
-        <div class="fin-card-value font-inter" id="stat-sold">0</div>
-        <div class="fin-card-label">נמכרו</div>
-      </div>
-      <div class="fin-card">
-        <div class="fin-card-value font-inter" id="stat-fundraising">0</div>
-        <div class="fin-card-label">בגיוס</div>
-      </div>
-    </div>
-
-    <!-- Deals Grid -->
-    <div id="dealsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <!-- Populated by JS -->
     </div>
 
-    <!-- Empty state -->
     <div id="emptyState" class="hidden text-center py-20" style="display:none;">
-      <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">apartment</span>
-      <h3 class="text-xl font-bold text-gray-400 mt-4">אין עסקאות עדיין</h3>
-      <p class="text-sm text-gray-400 mt-2">לחץ על "עסקה חדשה" כדי להתחיל</p>
+      <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">event</span>
+      <h3 class="text-xl font-bold text-gray-400 mt-4">אין אירועים עדיין</h3>
+      <p class="text-sm text-gray-400 mt-2">לחץ על "אירוע חדש" כדי להתחיל</p>
     </div>
 
-    <!-- Loading -->
     <div id="loadingState" class="text-center py-20">
       <svg class="animate-spin text-primary mx-auto" width="32" height="32" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
       </svg>
-      <p class="text-sm text-gray-400 mt-3">טוען עסקאות...</p>
+      <p class="text-sm text-gray-400 mt-3">טוען אירועים...</p>
     </div>
   </main>
 
-  <!-- New Deal Modal -->
-  <div class="modal-overlay hidden" id="newDealModal">
+  <!-- New Event Modal -->
+  <div class="modal-overlay hidden" id="newEventModal">
     <div class="modal-box">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-bold">עסקה חדשה</h2>
-        <button onclick="closeNewDealModal()" class="text-gray-400 hover:text-gray-600">
+        <h2 class="text-xl font-bold">אירוע חדש</h2>
+        <button onclick="closeNewEventModal()" class="text-gray-400 hover:text-gray-600">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-      <form id="newDealForm" class="space-y-4">
+      <form id="newEventForm" class="space-y-4">
         <div>
-          <label class="form-label">שם הנכס</label>
-          <input type="text" id="newDealName" class="form-input" placeholder='לדוגמה: "1513 Oxmoor Rd"' required>
+          <label class="form-label">כותרת האירוע</label>
+          <input type="text" id="newEventTitle" class="form-input" placeholder="לדוגמה: ערב משקיעים" required>
         </div>
         <div>
-          <label class="form-label">כתובת מלאה</label>
-          <input type="text" id="newDealAddress" class="form-input ltr" dir="ltr" placeholder="1513 Oxmoor Rd, Birmingham, AL">
+          <label class="form-label">תת-כותרת (למשל: תאריך)</label>
+          <input type="text" id="newEventAccent" class="form-input" placeholder="מאי 2026">
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="form-label">עיר</label>
-            <input type="text" id="newDealCity" class="form-input ltr" dir="ltr" placeholder="Birmingham" value="Birmingham">
-          </div>
-          <div>
-            <label class="form-label">מדינה</label>
-            <input type="text" id="newDealState" class="form-input ltr" dir="ltr" placeholder="AL" value="AL">
-          </div>
+        <div>
+          <label class="form-label">Slug (אנגלית, ללא רווחים)</label>
+          <input type="text" id="newEventSlug" class="form-input ltr" dir="ltr" placeholder="may-2026-tlv">
+        </div>
+        <div>
+          <label class="form-label">תאריך האירוע</label>
+          <input type="date" id="newEventDate" class="form-input ltr" dir="ltr">
         </div>
         <div class="flex gap-3 pt-2">
-          <button type="submit" class="btn btn-primary flex-1">צור עסקה</button>
-          <button type="button" onclick="closeNewDealModal()" class="btn btn-secondary">ביטול</button>
+          <button type="submit" class="btn btn-primary flex-1">צור אירוע</button>
+          <button type="button" onclick="closeNewEventModal()" class="btn btn-secondary">ביטול</button>
         </div>
       </form>
     </div>
@@ -182,6 +147,6 @@
 
   <script src="/js/api.js"></script>
   <script src="/js/utils.js"></script>
-  <script src="/js/deals.js"></script>
+  <script src="/js/events-list.js"></script>
 </body>
 </html>

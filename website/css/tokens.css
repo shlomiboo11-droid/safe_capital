@@ -23,4 +23,9 @@
   --fs-metric-xl:  2rem;      /* 32px — מספרים hero (כמו "65.9%") */
   --fs-metric:     1.5rem;    /* 24px — מספרים רגילים */
   --fs-label:      0.75rem;   /* 12px — תוויות */
+
+  /* Hero — properties / cinematic page heroes */
+  --fs-hero:         4.5rem;    /* 72px — hero headline desktop */
+  --fs-hero-mobile:  2.125rem;  /* 34px — hero headline mobile (fits "השבחה. מכירה. רווח." on one line at 375px) */
+  --fs-eyebrow:      0.8125rem; /* 13px — eyebrow / label uppercase */
 }

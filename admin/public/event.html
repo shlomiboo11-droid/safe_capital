@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עריכת אירוע | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/events" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">event</span>
+        <span>כנסי משקיעים</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/weekly-briefing" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">summarize</span>
+        <span>סקירה שבועית</span>
+      </a>
+      <a href="/content-pages" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">description</span>
+        <span>עמודי מידע</span>
+      </a>
+      <a href="/content-agents" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>פרומפטים</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <main class="main-content">
+    <div class="flex items-center gap-4 mb-6">
+      <a href="/events" class="text-gray-400 hover:text-primary transition" style="line-height:1;">
+        <span class="material-symbols-outlined" style="font-size:28px;">arrow_forward</span>
+      </a>
+      <div class="flex-1">
+        <h1 class="text-2xl font-bold text-gray-900" id="eventTitle">טוען...</h1>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="badge badge-gray text-xs font-inter" id="eventSlugBadge"></span>
+          <span class="badge" id="eventActiveBadge"></span>
+          <span class="badge" id="eventPublishedBadge"></span>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button id="activateBtn" class="btn btn-primary btn-sm" onclick="activateEvent()" style="display:none;">
+          <span class="material-symbols-outlined text-sm">campaign</span>
+          הפעל כאירוע פעיל
+        </button>
+        <button id="deactivateBtn" class="btn btn-secondary btn-sm" onclick="deactivateEvent()" style="display:none;">
+          <span class="material-symbols-outlined text-sm">visibility_off</span>
+          הפסק פעילות
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="deleteEventAction()" title="מחק אירוע">
+          <span class="material-symbols-outlined text-sm">delete</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="tab-container">
+      <div class="tab-nav mb-6">
+        <button class="tab-btn active" data-tab="basic">פרטי אירוע</button>
+        <button class="tab-btn" data-tab="agenda">סדר יום</button>
+        <button class="tab-btn" data-tab="speakers">דוברים</button>
+        <button class="tab-btn" data-tab="featured-deals">עסקאות מוצגות</button>
+        <button class="tab-btn" data-tab="faqs">FAQ</button>
+        <button class="tab-btn" data-tab="registrations">נרשמים</button>
+      </div>
+
+      <div class="tab-content active" data-tab-content="basic" id="tab-basic"></div>
+      <div class="tab-content" data-tab-content="agenda" id="tab-agenda"></div>
+      <div class="tab-content" data-tab-content="speakers" id="tab-speakers"></div>
+      <div class="tab-content" data-tab-content="featured-deals" id="tab-featured-deals"></div>
+      <div class="tab-content" data-tab-content="faqs" id="tab-faqs"></div>
+      <div class="tab-content" data-tab-content="registrations" id="tab-registrations"></div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/event-tabs/basic.js"></script>
+  <script src="/js/event-tabs/agenda.js"></script>
+  <script src="/js/event-tabs/speakers.js"></script>
+  <script src="/js/event-tabs/featured-deals.js"></script>
+  <script src="/js/event-tabs/faqs.js"></script>
+  <script src="/js/event-tabs/registrations.js"></script>
+  <script src="/js/event-edit.js"></script>
+</body>
+</html>

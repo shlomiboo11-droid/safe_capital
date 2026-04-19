@@ -247,19 +247,19 @@ function renderMobileMetrics(deal) {
   let html = '<div class="px-5 mb-6"><div class="grid grid-cols-2 gap-4">';
 
   if (purchasePrice) {
-    html += `<div class="bg-white p-4 rounded-lg">
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg">
       <p class="text-[10px] text-[#43474e] uppercase mb-1">מחיר רכישה</p>
       <p class="text-lg font-bold font-label">${formatUSD(purchasePrice)}</p>
     </div>`;
   }
   if (totalCost) {
-    html += `<div class="bg-white p-4 rounded-lg">
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg">
       <p class="text-[10px] text-[#43474e] uppercase mb-1">עלות פרויקט</p>
       <p class="text-lg font-bold font-label">${formatUSD(totalCost)}</p>
     </div>`;
   }
   if (arv) {
-    html += `<div class="bg-white p-4 rounded-lg border-r-4 border-[#984349]">
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg border-r-4 border-[#984349]">
       <p class="text-[10px] text-[#984349] font-bold uppercase mb-1">שווי שוק סופי (ARV)</p>
       <p class="text-lg font-bold font-label">${formatUSD(arv)}</p>
     </div>`;
@@ -282,22 +282,22 @@ function renderMobileSpecs(specs) {
 
   const rowsHtml = specs.map(spec => `
     <tr>
-      <td class="py-2 px-3">${spec.spec_name}</td>
-      <td class="py-2 px-3 text-center font-label">${spec.value_before || '—'}</td>
-      <td class="py-2 px-3 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
+      <td class="py-3 px-3">${spec.spec_name}</td>
+      <td class="py-3 px-2 text-center font-label">${spec.value_before || '—'}</td>
+      <td class="py-3 px-2 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
     </tr>`).join('');
 
-  return `<div class="px-5 mb-6">
-    <div class="bg-white rounded-lg overflow-hidden">
-      <table class="w-full text-sm">
+  return `<div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <div class="bg-[#f5f3f0] overflow-hidden">
+      <table class="w-full text-sm" style="table-layout:fixed">
         <thead class="bg-[#eae8e5]">
           <tr>
-            <th class="py-2 px-3 text-right font-bold">מפרט</th>
-            <th class="py-2 px-3 text-center font-bold">לפני</th>
-            <th class="py-2 px-3 text-center font-bold text-[#984349]">אחרי</th>
+            <th class="py-2 px-3 text-right font-bold" style="width:50%">מפרט</th>
+            <th class="py-2 px-2 text-center font-bold" style="width:25%">לפני</th>
+            <th class="py-2 px-2 text-center font-bold text-[#984349]" style="width:25%">אחרי</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-[#f5f3f0]">
+        <tbody class="divide-y divide-[#eae8e5]">
           ${rowsHtml}
         </tbody>
       </table>
@@ -311,7 +311,7 @@ function renderMobileCostAccordion(categories) {
   if (!categories || categories.length === 0) return '';
 
   const items = categories.map(cat => `
-    <div class="bg-white p-3 rounded-lg">
+    <div class="bg-[#f5f3f0] p-3 rounded-lg">
       <div class="flex justify-between items-center cursor-pointer cost-category-header-mobile" onclick="toggleMobileCostCategory(this)">
         <span class="text-sm font-bold">${cat.name}</span>
         <div class="flex items-center gap-2">
@@ -321,7 +321,7 @@ function renderMobileCostAccordion(categories) {
       </div>
       <div class="mobile-cost-items" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
         ${(cat.items || []).map(item => `
-          <div class="flex justify-between py-2 border-t border-[#f5f3f0] text-sm">
+          <div class="flex justify-between py-2 border-t border-[#eae8e5] text-sm">
             <span class="text-[#43474e]">${item.name}</span>
             <span class="font-label font-medium">${formatUSD(item.planned_amount)}</span>
           </div>`).join('')}
@@ -351,30 +351,11 @@ function renderMobileWhatsAppCTA() {
 // ── Mobile expanded content ─────────────────────────────────────────────────
 
 function renderMobileExpandedContent(deal) {
-  const timelineHtml = renderMobileTimeline(deal.timeline, deal.property_status);
-  const fundraisingHtml = renderMobileFundraisingBar(deal);
-  const galleryHtml = renderMobileGallery(deal.images);
-  const metricsHtml = renderMobileMetrics(deal);
-  const specsHtml = renderMobileSpecs(deal.specs);
-  const costHtml = renderMobileCostAccordion(deal.cost_categories);
-  const whatsappHtml = renderMobileWhatsAppCTA();
-
-  const descriptionHtml = deal.description
-    ? `<div class="px-5 mb-6">
-        <h3 class="text-md font-bold text-[#022445] mb-2">תכנית העסקה</h3>
-        <p class="text-sm text-[#43474e] leading-relaxed">${deal.description}</p>
-      </div>`
-    : '';
-
-  return `
-    ${timelineHtml}
-    ${fundraisingHtml}
-    ${galleryHtml}
-    ${metricsHtml}
-    ${descriptionHtml}
-    ${specsHtml}
-    ${costHtml}
-    ${whatsappHtml}`;
+  const sectionIds = getExpandedConfig(deal);
+  return sectionIds
+    .map(id => (SECTION_RENDERERS_MOBILE[id] ? SECTION_RENDERERS_MOBILE[id](deal) : ''))
+    .filter(Boolean)
+    .join('');
 }
 
 // ── Card v2 helpers (shared between desktop + mobile) ───────────────────────
@@ -581,7 +562,7 @@ function renderMobileDealCard(deal, index) {
     : '';
 
   const expandedHtml = isExpandable
-    ? `<div class="deal-expanded mobile-deal-expanded bg-[#f5f3f0]">${renderMobileExpandedContent(deal)}</div>`
+    ? `<div class="deal-expanded mobile-deal-expanded bg-white">${renderMobileExpandedContent(deal)}</div>`
     : '';
 
   const accentStripHtml = config.accentStrip
@@ -701,16 +682,64 @@ function renderSpecs(specs) {
 
 // ── Gallery (before/after images) ───────────────────────────────────────────
 
-function renderGallery(images) {
+// Mode:
+//   'before-after' (default) — split view before+after + renderings grid
+//   'during'                 — during-construction grid + renderings (no before)
+//   'after-only'             — only after photos (the showcase, for selling)
+function renderGallery(images, mode = 'before-after') {
   if (!images || images.length === 0) return '';
 
   const renderingImages = images.filter(img => img.category === 'rendering');
   const beforeImages    = images.filter(img => img.category === 'before');
   const afterImages     = images.filter(img => img.category === 'after');
+  const duringImages    = images.filter(img => img.category === 'during');
 
   let html = '';
 
-  // Before/After split view (show first of each)
+  if (mode === 'after-only') {
+    if (afterImages.length === 0) return '';
+    const grid = afterImages.slice(0, 8).map(img => `
+      <img class="rounded-lg aspect-square object-cover" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || 'תמונה'}" loading="lazy"/>`
+    ).join('');
+    return `
+      <div>
+        <h3 class="text-2xl font-extrabold text-primary mb-6">הנכס המוכן למכירה</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          ${grid}
+        </div>
+      </div>`;
+  }
+
+  if (mode === 'during') {
+    if (duringImages.length === 0 && renderingImages.length === 0) return '';
+    if (duringImages.length > 0) {
+      const grid = duringImages.slice(0, 8).map(img => `
+        <img class="rounded-lg aspect-square object-cover" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || 'תמונה מהשטח'}" loading="lazy"/>`
+      ).join('');
+      html += `
+        <div class="mb-8">
+          <h3 class="text-2xl font-extrabold text-primary mb-6">תמונות מהשטח</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            ${grid}
+          </div>
+        </div>`;
+    }
+    if (renderingImages.length > 0) {
+      const grid = renderingImages.slice(0, 8).map(img => `
+        <img class="rounded-lg aspect-square object-cover" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || 'הדמיה אדריכלית'}" loading="lazy"/>`
+      ).join('');
+      html += `
+        <div>
+          <h3 class="text-2xl font-extrabold text-primary mb-6">הדמיות אדריכליות (אחרי)</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            ${grid}
+          </div>
+        </div>`;
+    }
+    return html;
+  }
+
+  // Default: before-after split view + renderings grid
   if (beforeImages.length > 0 || afterImages.length > 0) {
     const beforeSrc = beforeImages[0]?.image_url || '';
     const afterSrc  = afterImages[0]?.image_url  || '';
@@ -724,14 +753,13 @@ function renderGallery(images) {
           </div>` : ''}
           ${afterSrc ? `
           <div class="${beforeSrc ? 'w-1/2' : 'w-full'} relative ${beforeSrc ? 'border-r-4 border-white' : ''}">
-            <img class="h-full w-full object-cover" src="${ADMIN_HOST + afterSrc}" alt="אחרי שיפוץ (הדמיה)" loading="lazy"/>
-            <span class="absolute bottom-4 left-4 bg-primary/80 text-white text-xs px-2 py-1 rounded">אחרי (הדמיה)</span>
+            <img class="h-full w-full object-cover" src="${ADMIN_HOST + afterSrc}" alt="אחרי שיפוץ" loading="lazy"/>
+            <span class="absolute bottom-4 left-4 bg-primary/80 text-white text-xs px-2 py-1 rounded">אחרי</span>
           </div>` : ''}
         </div>
       </div>`;
   }
 
-  // Rendering gallery grid
   if (renderingImages.length > 0) {
     const renderingHtml = renderingImages.slice(0, 8).map(img => `
       <img class="rounded-lg aspect-square object-cover" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || 'הדמיה אדריכלית'}" loading="lazy"/>`
@@ -749,91 +777,107 @@ function renderGallery(images) {
   return html;
 }
 
-// ── Full expanded deal content ───────────────────────────────────────────────
+// ── Per-status section renderers (desktop) ──────────────────────────────────
 
-function renderExpandedContent(deal) {
-  const timelineHtml        = renderTimeline(deal.timeline, deal.property_status);
-  const fundraisingBarHtml  = renderFundraisingBar(deal);
-  const costCatsHtml        = renderCostCategories(deal.cost_categories);
-  const specsHtml           = renderSpecs(deal.specs);
-  const galleryHtml         = renderGallery(deal.images);
-
-  const totalCost        = deal.total_cost;
-  const expectedProfit   = deal.expected_profit;
+function renderKeyMetricsSection(deal) {
   const purchasePrice    = deal.purchase_price;
+  const totalCost        = deal.total_cost;
   const arv              = deal.arv;
-  const expectedSalePrice = deal.expected_sale_price;
+  const expectedProfit   = deal.expected_profit;
+  const expectedRoi      = deal.expected_roi_percent;
+  const duration         = deal.project_duration;
 
-  const tooltipId = `tooltip-sale-price-${deal.id}`;
+  const cells = [
+    purchasePrice && `
+      <div class="bg-surface-container-low p-6 rounded-lg">
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">רכישה</p>
+        <p class="text-2xl font-bold text-primary font-label">${formatUSD(purchasePrice)}</p>
+      </div>`,
+    totalCost && `
+      <div class="bg-surface-container-low p-6 rounded-lg">
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">עלות כוללת</p>
+        <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
+      </div>`,
+    arv && `
+      <div class="bg-surface-container-low p-6 rounded-lg">
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">שווי עתידי (ARV)</p>
+        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(arv)}</p>
+      </div>`,
+    expectedProfit && `
+      <div class="bg-surface-container-low p-6 rounded-lg">
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">רווח צפוי</p>
+        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(expectedProfit)}</p>
+      </div>`,
+    expectedRoi != null && `
+      <div class="bg-surface-container-low p-6 rounded-lg">
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">תשואה צפויה</p>
+        <p class="text-2xl font-bold text-secondary font-label">${Number(expectedRoi).toFixed(1)}%</p>
+      </div>`
+  ].filter(Boolean).join('');
+
+  if (!cells && !duration) return '';
+
+  return `
+    <div>
+      <h3 class="text-2xl font-extrabold text-primary mb-6">נתוני מפתח</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        ${cells}
+      </div>
+      ${duration ? `
+        <div class="mt-4 bg-primary text-on-primary p-6 rounded-lg flex justify-between items-center">
+          <span class="text-sm font-bold">משך זמן הפרויקט</span>
+          <span class="text-xl font-bold font-label">${duration}</span>
+        </div>` : ''}
+    </div>`;
+}
+
+function renderDescriptionSection(deal) {
+  if (!deal.description) return '';
+  return `
+    <div>
+      <h3 class="text-2xl font-extrabold text-primary mb-4">תכנית העסקה</h3>
+      <p class="text-on-surface-variant leading-relaxed">${deal.description}</p>
+    </div>`;
+}
+
+function renderTimelineSection(deal) {
+  const html = renderTimeline(deal.timeline, deal.property_status);
+  return html ? `<div>${html}</div>` : '';
+}
+
+function renderFundraisingBarSection(deal) {
+  return renderFundraisingBar(deal);
+}
+
+function renderSpecsSection(deal) {
+  const html = renderSpecs(deal.specs);
+  if (!html) return '';
+  return `
+    <div>
+      <h3 class="text-2xl font-extrabold text-primary mb-6">מפרט הנכס</h3>
+      ${html}
+    </div>`;
+}
+
+function renderCostBreakdownSection(deal) {
+  const catsHtml = renderCostCategories(deal.cost_categories);
+  if (!catsHtml) return '';
+
+  const totalCost         = deal.total_cost;
+  const expectedSalePrice = deal.expected_sale_price;
+  const expectedProfit    = deal.expected_profit;
+  const tooltipId         = `tooltip-sale-price-${deal.id}`;
   const tooltipHtml = deal.sale_price_tooltip
     ? `<button class="tooltip-trigger" data-tooltip="${tooltipId}" onclick="event.stopPropagation()">?</button>
        <div id="${tooltipId}" class="tooltip-popup hidden">${deal.sale_price_tooltip}</div>`
     : '';
 
-  const descriptionHtml = deal.description
-    ? `<p class="text-on-surface-variant leading-relaxed">${deal.description}</p>`
-    : '';
-
   return `
-    <!-- Timeline & Fundraising -->
-    <div class="space-y-8">
-      <div>${timelineHtml}</div>
-      ${fundraisingBarHtml}
-    </div>
-
-    <!-- Before/After & Key Metrics -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-      <div>${galleryHtml}</div>
-      <div class="grid grid-cols-2 gap-4">
-        ${purchasePrice ? `
-        <div class="bg-surface-container-low p-6 rounded-lg">
-          <p class="text-xs text-on-surface-variant mb-1 font-bold">רכישה</p>
-          <p class="text-2xl font-bold text-primary font-label">${formatUSD(purchasePrice)}</p>
-        </div>` : ''}
-        ${totalCost ? `
-        <div class="bg-surface-container-low p-6 rounded-lg">
-          <p class="text-xs text-on-surface-variant mb-1 font-bold">עלות כוללת</p>
-          <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
-        </div>` : ''}
-        ${arv ? `
-        <div class="bg-surface-container-low p-6 rounded-lg">
-          <p class="text-xs text-on-surface-variant mb-1 font-bold">שווי עתידי (ARV)</p>
-          <p class="text-2xl font-bold text-secondary font-label">${formatUSD(arv)}</p>
-        </div>` : ''}
-        ${expectedProfit ? `
-        <div class="bg-surface-container-low p-6 rounded-lg">
-          <p class="text-xs text-on-surface-variant mb-1 font-bold">רווח צפוי</p>
-          <p class="text-2xl font-bold text-secondary font-label">${formatUSD(expectedProfit)}</p>
-        </div>` : ''}
-        ${deal.project_duration ? `
-        <div class="col-span-2 bg-primary text-on-primary p-6 rounded-lg flex justify-between items-center">
-          <span class="text-sm font-bold">משך זמן הפרויקט</span>
-          <span class="text-xl font-bold font-label">${deal.project_duration}</span>
-        </div>` : ''}
-      </div>
-    </div>
-
-    <!-- Deal Plan -->
-    ${(descriptionHtml || specsHtml) ? `
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 border-t border-outline-variant/15 pt-12">
-      ${descriptionHtml ? `
-      <div class="lg:col-span-1">
-        <h3 class="text-2xl font-extrabold text-primary mb-4">תכנית העסקה</h3>
-        ${descriptionHtml}
-      </div>` : ''}
-      ${specsHtml ? `
-      <div class="${descriptionHtml ? 'lg:col-span-2' : 'lg:col-span-3'}">
-        ${specsHtml}
-      </div>` : ''}
-    </div>` : ''}
-
-    <!-- Financial Breakdown -->
-    ${costCatsHtml ? `
     <div class="bg-surface-container-low rounded-xl p-8 md:p-12">
       <div class="flex flex-col md:flex-row-reverse justify-between items-start md:items-center mb-8 gap-4">
         <h3 class="text-2xl font-extrabold text-primary">פירוט פיננסי</h3>
       </div>
-      ${costCatsHtml}
+      ${catsHtml}
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center items-center">
         ${totalCost ? `
         <div>
@@ -854,10 +898,12 @@ function renderExpandedContent(deal) {
           <p class="text-3xl font-extrabold text-secondary font-label">${formatUSD(expectedProfit)}</p>
         </div>` : ''}
       </div>
-    </div>` : ''}
+    </div>`;
+}
 
-    <!-- Bottom CTA -->
-    <div class="pt-12">
+function renderWhatsAppCTASection() {
+  return `
+    <div>
       <div class="rounded-xl p-8 md:p-12 text-center" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
         <p class="text-lg text-white/90 leading-relaxed mb-6">
           מעוניינים להשקיע בעסקה הזו? רוצים לדעת מתי כנס המשקיעים הבא?
@@ -871,6 +917,312 @@ function renderExpandedContent(deal) {
         </a>
       </div>
     </div>`;
+}
+
+// ── New per-status section renderers (desktop) ──────────────────────────────
+
+function renderRenovationProgress(deal) {
+  // Prefer explicit field; fall back to timeline-derived percent.
+  let pct = deal.renovation_progress_percent;
+  if (pct == null) {
+    const steps = Array.isArray(deal.timeline) ? deal.timeline : [];
+    const renoIdx = steps.findIndex(s => /שיפוץ|renovation/i.test(s.step_name || ''));
+    if (renoIdx >= 0 && steps.length > 1) {
+      // Status assumed to have been synced upstream
+      const completedBefore = steps.slice(0, renoIdx).filter(s => s.status === 'completed').length;
+      const isActive = steps[renoIdx].status === 'active';
+      pct = Math.round(((completedBefore + (isActive ? 0.5 : steps[renoIdx].status === 'completed' ? 1 : 0)) / steps.length) * 100);
+    }
+  }
+  if (pct == null) pct = 0;
+  const clamped = Math.min(Math.max(Number(pct) || 0, 0), 100);
+
+  return `
+    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] rounded-2xl p-8 md:p-12 text-white">
+      <div class="flex items-baseline justify-between mb-6">
+        <h3 class="text-2xl font-extrabold">התקדמות השיפוץ</h3>
+        <span class="font-label font-extrabold" style="font-size:3.5rem;line-height:1">${clamped}%</span>
+      </div>
+      <div class="w-full h-3 bg-white/15 rounded-full overflow-hidden">
+        <div class="h-full bg-secondary rounded-full" style="width:${clamped}%"></div>
+      </div>
+      ${deal.project_duration ? `
+        <p class="mt-4 text-sm text-white/80">משך פרויקט מתוכנן: <strong>${deal.project_duration}</strong></p>` : ''}
+    </div>`;
+}
+
+function renderPlanVsActual(deal) {
+  // Only renders for sold deals; rows hide gracefully when actual is missing.
+  const isHigherBetter = (key) => ['roi', 'profit', 'sale_price', 'arv'].includes(key);
+  const fmt = (n, suffix = '') => (n == null || n === '') ? '—' : (typeof n === 'number' ? Math.round(n).toLocaleString('en-US') : n) + suffix;
+  const fmtMoney = (n) => (n == null || n === '') ? '—' : formatUSD(n);
+  const fmtPct = (n) => (n == null || n === '') ? '—' : Number(n).toFixed(1) + '%';
+
+  const rows = [
+    { label: 'תשואה (ROI)',     planned: fmtPct(deal.expected_roi_percent),  actual: fmtPct(deal.actual_roi_percent),       key: 'roi',         pNum: deal.expected_roi_percent,  aNum: deal.actual_roi_percent },
+    { label: 'רווח שחולק',       planned: fmtMoney(deal.expected_profit),     actual: fmtMoney(deal.profit_distributed),      key: 'profit',      pNum: deal.expected_profit,       aNum: deal.profit_distributed },
+    { label: 'משך עסקה',         planned: deal.project_duration || '—',        actual: deal.actual_duration_months ? deal.actual_duration_months + ' חודשים' : '—', key: 'duration',  pNum: parseFloat(String(deal.project_duration).match(/\d+/)?.[0]),  aNum: deal.actual_duration_months },
+    { label: 'מחיר מכירה',       planned: fmtMoney(deal.expected_sale_price),  actual: fmtMoney(deal.actual_sale_price),      key: 'sale_price',  pNum: deal.expected_sale_price,   aNum: deal.actual_sale_price },
+    { label: 'מחיר רכישה',       planned: fmtMoney(deal.purchase_price),       actual: fmtMoney(deal.actual_purchase_price),  key: 'purchase',    pNum: deal.purchase_price,        aNum: deal.actual_purchase_price },
+    { label: 'שווי שוק (ARV)',   planned: fmtMoney(deal.arv),                  actual: fmtMoney(deal.actual_arv),             key: 'arv',         pNum: deal.arv,                   aNum: deal.actual_arv }
+  ];
+
+  const colorFor = (row) => {
+    if (row.aNum == null || row.pNum == null || row.aNum === '' || row.pNum === '') return 'text-primary';
+    const a = Number(row.aNum), p = Number(row.pNum);
+    if (isNaN(a) || isNaN(p)) return 'text-primary';
+    const better = isHigherBetter(row.key) ? a >= p : a <= p;
+    return better ? 'text-secondary' : 'text-on-surface-variant';
+  };
+
+  const rowsHtml = rows.map(row => `
+    <tr class="border-b border-outline-variant/10">
+      <td class="py-4 font-bold text-primary">${row.label}</td>
+      <td class="py-4 text-on-surface-variant text-center">${row.planned}</td>
+      <td class="py-4 font-extrabold text-center font-label ${colorFor(row)}">${row.actual}</td>
+    </tr>`).join('');
+
+  return `
+    <div class="bg-surface-container-low rounded-2xl p-8 md:p-12">
+      <h3 class="text-2xl font-extrabold text-primary mb-2">התוצאה: תוכנית מול מציאות</h3>
+      <p class="text-sm text-on-surface-variant mb-8">השוואה מלאה בין מה שתכננו למה שקרה בפועל</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-right">
+          <thead>
+            <tr class="text-xs text-outline uppercase tracking-wider border-b border-outline-variant/30">
+              <th class="pb-4 font-bold">פרמטר</th>
+              <th class="pb-4 font-bold text-center">מתוכנן</th>
+              <th class="pb-4 font-bold text-center">בפועל</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderPostSaleSummary(deal) {
+  if (!deal.sale_completion_note) return '';
+  return `
+    <div class="bg-surface-container-low rounded-xl p-8 md:p-10">
+      <h3 class="text-xl font-extrabold text-primary mb-3">סיכום העסקה</h3>
+      <p class="text-on-surface-variant leading-relaxed">${deal.sale_completion_note}</p>
+    </div>`;
+}
+
+function renderComps(deal) {
+  // comps not currently exposed by API — render only if data is present.
+  const comps = Array.isArray(deal.comps) ? deal.comps : [];
+  if (comps.length === 0) return '';
+
+  const cells = comps.slice(0, 6).map(c => `
+    <div class="bg-surface-container-low p-6 rounded-lg">
+      <p class="text-sm text-on-surface-variant mb-2">${c.address || ''}</p>
+      <p class="text-2xl font-extrabold text-primary font-label">${formatUSD(c.sale_price || c.price)}</p>
+      ${c.sqft ? `<p class="text-xs text-on-surface-variant mt-2">${c.sqft.toLocaleString('en-US')} sqft</p>` : ''}
+    </div>`).join('');
+
+  return `
+    <div>
+      <h3 class="text-2xl font-extrabold text-primary mb-2">השוואת נכסים בשכונה</h3>
+      <p class="text-sm text-on-surface-variant mb-6">נכסים דומים שנמכרו לאחרונה — האישוש לשווי המתוכנן</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        ${cells}
+      </div>
+    </div>`;
+}
+
+// ── Mobile section renderers ────────────────────────────────────────────────
+
+function renderMobileKeyMetrics(deal) {
+  return renderMobileMetrics(deal);
+}
+
+function renderMobileDescription(deal) {
+  if (!deal.description) return '';
+  return `
+    <div class="px-5 mb-6">
+      <h3 class="text-md font-bold text-[#022445] mb-2">תכנית העסקה</h3>
+      <p class="text-sm text-[#43474e] leading-relaxed">${deal.description}</p>
+    </div>`;
+}
+
+function renderMobileTimelineSection(deal) {
+  return renderMobileTimeline(deal.timeline, deal.property_status);
+}
+
+function renderMobileFundraisingBarSection(deal) {
+  return renderMobileFundraisingBar(deal);
+}
+
+function renderMobileSpecsSection(deal) {
+  return renderMobileSpecs(deal.specs);
+}
+
+function renderMobileCostBreakdownSection(deal) {
+  return renderMobileCostAccordion(deal.cost_categories);
+}
+
+function renderMobileGallerySection(deal, mode) {
+  // Reuse desktop gallery filter logic but route through mobile renderer for default.
+  if (mode === 'before-after') return renderMobileGallery(deal.images);
+  // For 'during' and 'after-only', render a simpler grid in mobile.
+  const images = Array.isArray(deal.images) ? deal.images : [];
+  if (images.length === 0) return '';
+  const filtered = mode === 'after-only'
+    ? images.filter(i => i.category === 'after')
+    : images.filter(i => i.category === 'during' || i.category === 'rendering');
+  if (filtered.length === 0) return '';
+  const heading = mode === 'after-only' ? 'הנכס המוכן למכירה' : 'תמונות מהשטח';
+  const thumbs = filtered.slice(0, 6).map(img => `
+    <img class="aspect-square w-full object-cover rounded-md" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || ''}" loading="lazy"/>`).join('');
+  return `
+    <div class="px-5 mb-6">
+      <h3 class="text-md font-bold text-[#022445] mb-3">${heading}</h3>
+      <div class="grid grid-cols-3 gap-2">${thumbs}</div>
+    </div>`;
+}
+
+function renderMobileWhatsAppCTASection() {
+  return renderMobileWhatsAppCTA();
+}
+
+function renderMobileRenovationProgress(deal) {
+  let pct = deal.renovation_progress_percent;
+  if (pct == null) pct = 0;
+  const clamped = Math.min(Math.max(Number(pct) || 0, 0), 100);
+  return `
+    <div class="px-5 mb-6">
+      <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] rounded-xl p-5 text-white">
+        <div class="flex items-baseline justify-between mb-3">
+          <h3 class="text-base font-extrabold">התקדמות השיפוץ</h3>
+          <span class="font-label font-extrabold text-3xl">${clamped}%</span>
+        </div>
+        <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden">
+          <div class="h-full bg-[#984349] rounded-full" style="width:${clamped}%"></div>
+        </div>
+        ${deal.project_duration ? `<p class="mt-3 text-xs text-white/80">משך מתוכנן: ${deal.project_duration}</p>` : ''}
+      </div>
+    </div>`;
+}
+
+function renderMobilePlanVsActual(deal) {
+  const fmtMoney = (n) => (n == null || n === '') ? '—' : formatUSD(n);
+  const fmtPct = (n) => (n == null || n === '') ? '—' : Number(n).toFixed(1) + '%';
+
+  const rows = [
+    { label: 'תשואה',         planned: fmtPct(deal.expected_roi_percent),  actual: fmtPct(deal.actual_roi_percent) },
+    { label: 'רווח שחולק',    planned: fmtMoney(deal.expected_profit),     actual: fmtMoney(deal.profit_distributed) },
+    { label: 'משך',           planned: deal.project_duration || '—',        actual: deal.actual_duration_months ? deal.actual_duration_months + ' חוד׳' : '—' },
+    { label: 'מחיר מכירה',    planned: fmtMoney(deal.expected_sale_price),  actual: fmtMoney(deal.actual_sale_price) },
+    { label: 'מחיר רכישה',    planned: fmtMoney(deal.purchase_price),       actual: fmtMoney(deal.actual_purchase_price) },
+    { label: 'ARV',           planned: fmtMoney(deal.arv),                  actual: fmtMoney(deal.actual_arv) }
+  ];
+
+  const rowsHtml = rows.map(r => `
+    <tr>
+      <td class="py-3 px-3 font-bold">${r.label}</td>
+      <td class="py-3 px-2 text-center text-[#43474e] text-xs">${r.planned}</td>
+      <td class="py-3 px-2 text-center font-bold font-label text-[#984349]">${r.actual}</td>
+    </tr>`).join('');
+
+  return `
+    <div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+      <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">תוכנית מול מציאות</h3>
+      <div class="bg-[#f5f3f0] overflow-hidden">
+        <table class="w-full text-sm" style="table-layout:fixed">
+          <thead class="bg-[#eae8e5]">
+            <tr>
+              <th class="py-2 px-3 text-right font-bold" style="width:40%">פרמטר</th>
+              <th class="py-2 px-2 text-center font-bold text-xs" style="width:30%">מתוכנן</th>
+              <th class="py-2 px-2 text-center font-bold text-[#984349]" style="width:30%">בפועל</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#eae8e5]">${rowsHtml}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderMobilePostSaleSummary(deal) {
+  if (!deal.sale_completion_note) return '';
+  return `
+    <div class="px-5 mb-6">
+      <div class="bg-[#f5f3f0] p-4 rounded-lg">
+        <h3 class="text-md font-bold text-[#022445] mb-2">סיכום העסקה</h3>
+        <p class="text-sm text-[#43474e] leading-relaxed">${deal.sale_completion_note}</p>
+      </div>
+    </div>`;
+}
+
+function renderMobileComps(deal) {
+  const comps = Array.isArray(deal.comps) ? deal.comps : [];
+  if (comps.length === 0) return '';
+  const items = comps.slice(0, 4).map(c => `
+    <div class="bg-[#f5f3f0] p-3 rounded-lg">
+      <p class="text-xs text-[#43474e] mb-1">${c.address || ''}</p>
+      <p class="text-base font-extrabold font-label text-[#022445]">${formatUSD(c.sale_price || c.price)}</p>
+    </div>`).join('');
+  return `
+    <div class="px-5 mb-6">
+      <h3 class="text-md font-bold text-[#022445] mb-3">השוואת נכסים בשכונה</h3>
+      <div class="grid grid-cols-2 gap-2">${items}</div>
+    </div>`;
+}
+
+// ── Section dispatcher ──────────────────────────────────────────────────────
+
+const SECTION_RENDERERS_DESKTOP = {
+  'fundraising-bar':      (d) => renderFundraisingBarSection(d),
+  'gallery-before-after': (d) => renderGallery(d.images, 'before-after'),
+  'gallery-during':       (d) => renderGallery(d.images, 'during'),
+  'gallery-after-only':   (d) => renderGallery(d.images, 'after-only'),
+  'key-metrics':          (d) => renderKeyMetricsSection(d),
+  'description':          (d) => renderDescriptionSection(d),
+  'specs':                (d) => renderSpecsSection(d),
+  'cost-breakdown':       (d) => renderCostBreakdownSection(d),
+  'timeline':             (d) => renderTimelineSection(d),
+  'comps':                (d) => renderComps(d),
+  'renovation-progress':  (d) => renderRenovationProgress(d),
+  'plan-vs-actual':       (d) => renderPlanVsActual(d),
+  'post-sale-summary':    (d) => renderPostSaleSummary(d),
+  'whatsapp-cta':         (_) => renderWhatsAppCTASection()
+};
+
+const SECTION_RENDERERS_MOBILE = {
+  'fundraising-bar':      (d) => renderMobileFundraisingBarSection(d),
+  'gallery-before-after': (d) => renderMobileGallerySection(d, 'before-after'),
+  'gallery-during':       (d) => renderMobileGallerySection(d, 'during'),
+  'gallery-after-only':   (d) => renderMobileGallerySection(d, 'after-only'),
+  'key-metrics':          (d) => renderMobileKeyMetrics(d),
+  'description':          (d) => renderMobileDescription(d),
+  'specs':                (d) => renderMobileSpecsSection(d),
+  'cost-breakdown':       (d) => renderMobileCostBreakdownSection(d),
+  'timeline':             (d) => renderMobileTimelineSection(d),
+  'comps':                (d) => renderMobileComps(d),
+  'renovation-progress':  (d) => renderMobileRenovationProgress(d),
+  'plan-vs-actual':       (d) => renderMobilePlanVsActual(d),
+  'post-sale-summary':    (d) => renderMobilePostSaleSummary(d),
+  'whatsapp-cta':         (_) => renderMobileWhatsAppCTASection()
+};
+
+function getExpandedConfig(deal) {
+  const cfg = (window.EXPANDED_PANEL_CONFIG || {})[deal.property_status];
+  // Fallback for unknown / missing status — same content as 'purchased'
+  return cfg || (window.EXPANDED_PANEL_CONFIG || {}).purchased || [];
+}
+
+// ── Full expanded deal content (config-driven, per property_status) ─────────
+
+function renderExpandedContent(deal) {
+  const sectionIds = getExpandedConfig(deal);
+  const html = sectionIds
+    .map(id => (SECTION_RENDERERS_DESKTOP[id] ? SECTION_RENDERERS_DESKTOP[id](deal) : ''))
+    .filter(Boolean)
+    .join('');
+  return html;
 }
 
 // ── Single deal card ─────────────────────────────────────────────────────────

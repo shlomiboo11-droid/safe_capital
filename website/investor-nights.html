@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<link rel="icon" type="image/png" href="images/logo-icon.png"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | כנסי משקיעים</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="css/tokens.css" rel="stylesheet"/>
+<link href="css/typography.css" rel="stylesheet"/>
+<link href="css/shared.css?v=13" rel="stylesheet"/>
+<link href="css/investor-nights.css?v=4" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background font-body in-body">
+
+<!-- Site Nav (same as other pages) -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
+    <div class="nav-links">
+      <a href="index.html">עמוד הבית</a>
+      <a href="properties.html">עסקאות</a>
+      <a href="birmingham.html">בירמינגהם</a>
+      <a href="investor-nights.html" class="active">כנסי משקיעים</a>
+      <a href="join.html">איך מצטרפים</a>
+      <a href="contact.html">צור קשר</a>
+    </div>
+    <button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
+    <a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+  </div>
+  <div class="mobile-nav">
+    <a href="index.html">עמוד הבית</a>
+    <a href="properties.html">עסקאות</a>
+    <a href="birmingham.html">בירמינגהם</a>
+    <a href="investor-nights.html" class="active">כנסי משקיעים</a>
+    <a href="join.html">איך מצטרפים</a>
+    <a href="contact.html">צור קשר</a>
+    <a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+  </div>
+</nav>
+
+<!-- Loading state (shown while fetching active event) -->
+<div class="in-loading" id="in-loading">
+  <div class="spinner" aria-hidden="true"></div>
+  <div class="label">טוען אירוע...</div>
+</div>
+
+<!-- No-event fallback (shown by JS when API returns no active event) -->
+<div class="in-no-event" id="in-no-event" style="display:none;">
+  <h2>אין אירוע קרוב כרגע</h2>
+  <p>בקרוב נפרסם פרטים על הכנס הבא. תרצו לשמוע קודם? השאירו פרטים וניצור איתכם קשר.</p>
+  <a href="contact.html">צרו קשר →</a>
+</div>
+
+<!-- Main content (desktop) -->
+<div class="in-page in-main-content" id="in-main-content" style="display:none;">
+
+  <!-- Cinematic Hero -->
+  <div class="in-hero">
+    <img id="in-hero-img" src="" alt="" class="in-hero-img kenburns" onerror="this.style.display='none'">
+    <div class="hero-overlay hero-gradient"></div>
+    <div class="hero-overlay blueprint-overlay" style="opacity:.3;mix-blend-mode:overlay"></div>
+    <div class="hero-tick-v"></div>
+    <div class="hero-tick-h"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        <span id="in-hero-eyebrow-location"></span>
+        <span class="sep">—</span>
+        <span id="in-hero-eyebrow-session"></span>
+      </div>
+      <h1 class="in-hero-title">
+        <span id="in-hero-title-main"></span><br>
+        <span class="accent" id="in-hero-title-accent"></span>
+      </h1>
+      <p class="hero-sub" id="in-hero-description"></p>
+      <div class="hero-meta-row" id="in-hero-meta-row">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+    <div class="hero-tickruler tick-marks"></div>
+  </div>
+
+  <!-- Content grid -->
+  <div class="in-content">
+
+    <!-- LEFT (in DOM order — RTL visual): Event details -->
+    <div class="col-details">
+
+      <!-- Urgency banner -->
+      <div class="in-urgency fade-enter" id="urgency-banner" style="display:none;">
+        <div class="dot pulse-dot"></div>
+        <div style="flex:1">
+          <div class="txt" id="in-urgency-text"></div>
+          <div class="bar"><div id="in-urgency-bar" style="width:0%"></div></div>
+        </div>
+        <button class="close" aria-label="סגירה" onclick="document.getElementById('urgency-banner').style.display='none'">×</button>
+      </div>
+
+      <!-- Brief -->
+      <div class="in-brief">
+        <div class="in-eyebrow">בקצרה</div>
+        <p id="in-brief-text"></p>
+      </div>
+
+      <!-- Detail grid -->
+      <div class="in-detail-grid" id="in-detail-grid">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Mobile inline CTA (hidden on desktop) -->
+      <button class="in-cta-inline" id="in-cta-inline" type="button">
+        <span>הרשמה לערב</span>
+        <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+      </button>
+
+      <!-- Mobile tabs bar (hidden on desktop) -->
+      <div class="in-tabs-bar" role="tablist">
+        <button type="button" data-tab="agenda" data-active="true">סדר יום</button>
+        <button type="button" data-tab="speakers" data-active="false">דוברים</button>
+        <button type="button" data-tab="faqs" data-active="false">שאלות</button>
+      </div>
+
+      <!-- Agenda -->
+      <section class="in-section in-tabs-content" id="in-agenda-section" data-tab-panel="agenda" data-active="true">
+        <div class="in-section-head">
+          <h3>סדר-היום</h3>
+          <span class="meta" id="in-agenda-meta">3 שעות</span>
+        </div>
+        <ol class="in-agenda" id="in-agenda-list">
+          <!-- Populated by JS -->
+        </ol>
+      </section>
+
+      <!-- Speakers -->
+      <section class="in-section in-tabs-content" id="in-speakers-section" data-tab-panel="speakers" data-active="false">
+        <div class="in-section-head">
+          <h3>מחכים להיפגש איתכם</h3>
+          <span class="meta"></span>
+        </div>
+        <div class="in-speakers" id="in-speakers-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- FAQ (mobile-only duplicate, lives inside tabs) -->
+      <section class="in-section in-tabs-content in-faq-mobile-only" id="in-faq-mobile-section" data-tab-panel="faqs" data-active="false">
+        <div class="in-section-head">
+          <h3>שאלות נפוצות</h3>
+          <span class="meta">FAQ</span>
+        </div>
+        <div class="in-faqs-list">
+          <!-- Populated by JS -->
+        </div>
+        <a href="contact.html" class="in-faq-contact-mobile">צרו קשר ישיר <span class="material-symbols-outlined" style="font-size:16px">arrow_back</span></a>
+      </section>
+
+      <!-- Track record -->
+      <section class="in-section" id="in-track-record-section">
+        <div class="in-track-head">
+          <div>
+            <div class="eyebrow" id="in-track-subtitle"></div>
+            <h3 id="in-track-title"></h3>
+          </div>
+          <a href="properties.html" class="link">כל העסקאות <span class="material-symbols-outlined" style="font-size:14px">arrow_back</span></a>
+        </div>
+        <div class="in-deals" id="in-deals-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT: Registration form -->
+    <div class="col-form">
+      <form class="in-form-card" id="in-form" novalidate>
+        <div class="in-form-head">
+          <div class="row">
+            <span class="date" id="in-form-date-display"></span>
+            <span class="counter"><span id="step-counter">1</span>/3 שלב</span>
+          </div>
+          <h2>הרשמה לערב</h2>
+          <div class="tagline">הטופס לוקח כ-90 שניות, אישור יישלח לאימייל</div>
+          <div class="in-stepper">
+            <button type="button" class="active" data-step="0">
+              <div class="bar"></div>
+              <div class="row">
+                <span class="n">01</span>
+                <span class="label-txt">פרטים אישיים</span>
+              </div>
+            </button>
+            <button type="button" data-step="1" disabled>
+              <div class="bar"></div>
+              <div class="row">
+                <span class="n">02</span>
+                <span class="label-txt">פרופיל השקעה</span>
+              </div>
+            </button>
+            <button type="button" data-step="2" disabled>
+              <div class="bar"></div>
+              <div class="row">
+                <span class="n">03</span>
+                <span class="label-txt">אישור</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="in-form-body">
+
+          <!-- STEP 0: Contact -->
+          <div class="step active" data-step="0">
+            <div class="in-grid-2">
+              <label class="in-field" data-field="firstName">
+                <div class="head">
+                  <span class="lbl">שם פרטי</span>
+                  <span class="err">שדה חובה</span>
+                </div>
+                <input type="text" name="firstName" class="rtl-input" placeholder="ישראל">
+              </label>
+              <label class="in-field" data-field="lastName">
+                <div class="head">
+                  <span class="lbl">שם משפחה</span>
+                  <span class="err">שדה חובה</span>
+                </div>
+                <input type="text" name="lastName" class="rtl-input" placeholder="ישראלי">
+              </label>
+            </div>
+            <label class="in-field" data-field="email">
+              <div class="head">
+                <span class="lbl">אימייל</span>
+                <span class="hint">נשלח אליכם אישור הגעה</span>
+                <span class="err">כתובת לא תקינה</span>
+              </div>
+              <input type="email" name="email" class="ltr-input" placeholder="you@email.com">
+            </label>
+            <label class="in-field" data-field="phone">
+              <div class="head">
+                <span class="lbl">טלפון נייד</span>
+                <span class="hint">ליצירת קשר ביום האירוע</span>
+                <span class="err">מספר לא תקין</span>
+              </div>
+              <input type="tel" name="phone" class="ltr-input" placeholder="050-000-0000">
+            </label>
+            <div class="in-field">
+              <div class="head"><span class="lbl">הגעה</span></div>
+              <div class="in-seg cols-2" data-seg="bringGuest">
+                <button type="button" class="seg-btn" data-value="alone" data-active="true">לבד</button>
+                <button type="button" class="seg-btn" data-value="plus1" data-active="false">עם מלווה +1</button>
+              </div>
+            </div>
+            <label class="in-field scale-in" data-field="guestName" id="guest-field" style="display:none">
+              <div class="head">
+                <span class="lbl">שם המלווה</span>
+                <span class="err">נא להזין שם אורח</span>
+              </div>
+              <input type="text" name="guestName" class="rtl-input" placeholder="שם מלא">
+            </label>
+          </div>
+
+          <!-- STEP 1: Profile -->
+          <div class="step" data-step="1">
+            <div class="in-field" data-field="investedBefore">
+              <div class="head">
+                <span class="lbl">האם השקעת בנדל״ן בחו״ל בעבר?</span>
+                <span class="err">נא לבחור</span>
+              </div>
+              <div class="in-seg cols-2" data-seg="investedBefore">
+                <button type="button" class="seg-btn" data-value="yes" data-active="false">כן</button>
+                <button type="button" class="seg-btn" data-value="no" data-active="false">לא · מתעניין</button>
+              </div>
+            </div>
+            <div class="in-range-block">
+              <div class="top">
+                <span class="lbl">טווח השקעה מתוכנן</span>
+                <span class="val" id="range-label">$250K – $350K</span>
+              </div>
+              <input type="range" min="50" max="500" step="50" value="250" id="range-input" name="range">
+              <div class="ticks">
+                <span>$50K</span>
+                <span>$150K</span>
+                <span>$250K</span>
+                <span>$350K</span>
+                <span>$500K</span>
+              </div>
+            </div>
+            <div class="in-field" data-field="readiness">
+              <div class="head">
+                <span class="lbl">מתי תרצה להתחיל להשקיע?</span>
+                <span class="err">נא לבחור</span>
+              </div>
+              <div class="in-chips" data-chips="readiness">
+                <button type="button" class="chip" data-value="החודש">החודש</button>
+                <button type="button" class="chip" data-value="רבעון קרוב">רבעון קרוב</button>
+                <button type="button" class="chip" data-value="חצי שנה">חצי שנה</button>
+                <button type="button" class="chip" data-value="סקרן/ית בלבד">סקרן/ית בלבד</button>
+              </div>
+            </div>
+            <label class="in-field" data-field="source">
+              <div class="head">
+                <span class="lbl">איך הגעת אלינו?</span>
+                <span class="hint">אופציונלי</span>
+              </div>
+              <div class="in-select-wrap">
+                <select name="source" class="rtl-input">
+                  <option value="">בחר/י</option>
+                  <option>חבר/ה המליצ/ה</option>
+                  <option>פייסבוק / אינסטגרם</option>
+                  <option>גוגל</option>
+                  <option>אחר</option>
+                </select>
+                <span class="chevron material-symbols-outlined">expand_more</span>
+              </div>
+            </label>
+          </div>
+
+          <!-- STEP 2: Review -->
+          <div class="step" data-step="2">
+            <div class="in-review">
+              <div class="head-eyebrow">סיכום</div>
+              <ul class="in-review-list" id="review-list">
+                <li class="in-review-row"><div class="body"><div class="k">שם</div><div class="v" data-review="name"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="0">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">אימייל</div><div class="v" data-review="email"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="0">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">טלפון</div><div class="v" data-review="phone"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="0">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">הגעה</div><div class="v" data-review="guest"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="0">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">ניסיון בחו״ל</div><div class="v" data-review="investedBefore"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="1">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">טווח השקעה</div><div class="v" data-review="range"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="1">עריכה</button></li>
+                <li class="in-review-row"><div class="body"><div class="k">מתי להתחיל</div><div class="v" data-review="readiness"><span class="empty">—</span></div></div><button type="button" class="edit" data-jump="1">עריכה</button></li>
+              </ul>
+            </div>
+            <label class="in-field" data-field="note">
+              <div class="head">
+                <span class="lbl">משהו שנדע מראש?</span>
+                <span class="hint">אופציונלי · שאלות, העדפות תזונה</span>
+              </div>
+              <textarea name="note" rows="3" class="rtl-input" placeholder="..."></textarea>
+            </label>
+            <div class="in-terms" id="terms-block">
+              <label>
+                <input type="checkbox" name="agree" id="agree-input">
+                <span class="body">אני מאשר/ת את <a href="terms.html">תנאי השימוש</a> ו<a href="privacy.html">מדיניות הפרטיות</a>. מובהר כי אין באמור המלצה להשקעה.</span>
+              </label>
+              <div class="agree-err">נדרש אישור</div>
+              <label>
+                <input type="checkbox" name="updates" checked>
+                <span class="body">הצטרפות לעדכונים שקטים על עסקאות עתידיות (WhatsApp/Email — ניתן לביטול בכל עת)</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="in-form-foot">
+          <button type="button" class="back-btn" id="back-btn" style="visibility:hidden">
+            <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+            חזרה
+          </button>
+          <span class="secure" id="secure-note">הפרטים שלך מאובטחים · SSL</span>
+          <button type="button" class="next-btn" id="next-btn">
+            <span id="next-label">המשך</span>
+            <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- FAQ (desktop only) -->
+  <section class="in-faq in-faq-desktop-only" id="in-faq-section">
+    <div>
+      <div class="in-eyebrow">FAQ</div>
+      <h3>שאלות שעולות<br>לפני ערב משקיעים</h3>
+      <p>משהו שלא מופיע כאן? כתבו לנו — אנחנו נשמח לשוחח איתכם בטלפון</p>
+      <a href="contact.html" class="contact-link">צרו קשר ישיר <span class="material-symbols-outlined" style="font-size:16px">arrow_back</span></a>
+    </div>
+    <div id="in-faq-list" class="in-faqs-list">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+</div>
+<!-- /in-main-content -->
+
+<!-- Site Footer (same as other pages) -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links"><h4>ניווט מהיר</h4>
+      <a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="investor-nights.html">כנסי משקיעים</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+    </div>
+    <div class="footer-links"><h4>מידע נוסף</h4>
+      <a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+    </div>
+    <div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
+      <div class="footer-brand">
+        <p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p>
+      </div>
+      <div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px">
+        <a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a>
+        <a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות</span>
+    <span class="footer-bottom-contact"><span data-setting="email_info">safecapital2024@gmail.com</span> | <span data-setting="phone_footer">054-7828550</span></span>
+  </div>
+</footer>
+
+<!-- Mobile sticky CTA (populated by JS, hidden on desktop) -->
+<div class="in-sticky-cta" id="in-sticky-cta"></div>
+
+<script src="js/shared.js?v=2"></script>
+<script src="js/settings.js"></script>
+<script src="js/investor-nights.js?v=4"></script>
+
+</body>
+</html>

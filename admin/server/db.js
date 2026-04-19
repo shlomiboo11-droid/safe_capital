@@ -449,6 +449,123 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
 
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_created ON contact_submissions(created_at DESC);
 
+-- Event registrations (investor nights)
+CREATE TABLE IF NOT EXISTS event_registrations (
+  id                 SERIAL PRIMARY KEY,
+  event_slug         TEXT NOT NULL DEFAULT 'may-2026-tlv',
+  first_name         TEXT NOT NULL,
+  last_name          TEXT NOT NULL,
+  email              TEXT NOT NULL,
+  phone              TEXT NOT NULL,
+  guest_name         TEXT,
+  investor_type      TEXT,
+  invested_before    TEXT,
+  range_k            INTEGER,
+  readiness          TEXT,
+  source             TEXT,
+  note               TEXT,
+  agree_terms        BOOLEAN DEFAULT FALSE,
+  subscribe_updates  BOOLEAN DEFAULT TRUE,
+  created_at         TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_event_registrations_event ON event_registrations(event_slug);
+CREATE INDEX IF NOT EXISTS idx_event_registrations_created ON event_registrations(created_at DESC);
+
+-- ── Investor Events (כנסי משקיעים) ──────────────────────────
+CREATE TABLE IF NOT EXISTS events (
+  id                          SERIAL PRIMARY KEY,
+  slug                        TEXT UNIQUE NOT NULL,
+  is_active                   BOOLEAN DEFAULT FALSE,
+  is_published                BOOLEAN DEFAULT FALSE,
+
+  -- Hero
+  hero_eyebrow_location       TEXT,
+  hero_eyebrow_session        TEXT,
+  hero_title_main             TEXT,
+  hero_title_accent           TEXT,
+  hero_description            TEXT,
+  hero_image_url              TEXT,
+
+  -- Event core
+  event_date                  DATE,
+  event_time_start            TEXT,
+  event_time_end              TEXT,
+  event_date_display_full     TEXT,
+  event_date_display_short    TEXT,
+
+  -- Venue
+  venue_name                  TEXT,
+  venue_address               TEXT,
+  venue_short                 TEXT,
+  venue_full_address          TEXT,
+
+  -- Capacity
+  seats_total                 INT DEFAULT 40,
+  seats_taken                 INT DEFAULT 0,
+
+  -- Investment info
+  min_investment_display      TEXT DEFAULT '$50,000',
+  roi_target_display          TEXT DEFAULT 'עד 20%',
+  roi_spec                    TEXT DEFAULT 'שנתי · ברוטו',
+  holding_period              TEXT DEFAULT '6-12 חודשים',
+
+  -- Brief
+  brief_text                  TEXT,
+
+  -- Track record section title
+  track_record_title          TEXT DEFAULT 'העסקאות שלנו',
+  track_record_subtitle       TEXT DEFAULT 'TRACK RECORD',
+
+  -- WhatsApp / Calendar
+  whatsapp_number             TEXT DEFAULT '972547828550',
+  gcal_title                  TEXT,
+  gcal_description            TEXT,
+
+  -- JSON sub-entities
+  agenda                      JSONB DEFAULT '[]'::jsonb,
+  speakers                    JSONB DEFAULT '[]'::jsonb,
+  faqs                        JSONB DEFAULT '[]'::jsonb,
+
+  created_at                  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at                  TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Only one event can be is_active = true at any time
+CREATE UNIQUE INDEX IF NOT EXISTS events_one_active
+  ON events (is_active) WHERE is_active = TRUE;
+
+-- Featured deals join table
+CREATE TABLE IF NOT EXISTS event_featured_deals (
+  id                          SERIAL PRIMARY KEY,
+  event_id                    INT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  deal_id                     INT REFERENCES deals(id) ON DELETE SET NULL,
+  fallback_address            TEXT,
+  fallback_deal_number        TEXT,
+  fallback_raised_display     TEXT,
+  fallback_investor_count     INT,
+  fallback_roi_display        TEXT,
+  sort_order                  INT DEFAULT 0,
+  override_status_label       TEXT,
+  override_status_tone        TEXT,
+  override_note               TEXT,
+  created_at                  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_event_featured_deals_event ON event_featured_deals(event_id);
+
+-- Migration: add event_id to event_registrations
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'event_registrations' AND column_name = 'event_id'
+  ) THEN
+    ALTER TABLE event_registrations ADD COLUMN event_id INT REFERENCES events(id) ON DELETE SET NULL;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_event_registrations_event_id ON event_registrations(event_id);
+
     `);
     console.log('Database schema initialized.');
   } finally {

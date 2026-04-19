@@ -125,17 +125,29 @@ body {
     color: #022445;
     padding: 0.25rem;
     font-size: 1.5rem;
+    -webkit-tap-highlight-color: transparent;
+}
+.site-nav .mobile-menu-btn:focus { outline: none; }
+.site-nav .mobile-menu-btn:focus-visible {
+    outline: 2px solid #022445;
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 /* Mobile nav dropdown */
 .site-nav .mobile-nav {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
     background: rgba(251, 249, 246, 0.97);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
-.site-nav .mobile-nav.open { max-height: 400px; }
+.site-nav .mobile-nav.open {
+    /* Tall enough to fit all menu items + CTA without ever clipping */
+    max-height: 720px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
 .site-nav .mobile-nav a {
     display: block;
     padding: 0.75rem 2rem;

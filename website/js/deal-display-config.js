@@ -95,6 +95,74 @@ const DEAL_DISPLAY_CONFIG = {
   }
 };
 
+// ── EXPANDED PANEL CONFIG ────────────────────────────────────────────────────
+// Maps each property_status → ordered list of section ids to render in the
+// expanded deal panel. Section ids are dispatched to render functions in
+// deals.js. Same config drives both desktop and mobile.
+//
+// Available section ids:
+//   fundraising-bar · gallery-before-after · gallery-during · gallery-after-only
+//   key-metrics · description · timeline · specs · cost-breakdown · comps
+//   renovation-progress · plan-vs-actual · post-sale-summary · whatsapp-cta
+
+const EXPANDED_PANEL_CONFIG = {
+  sourcing: [
+    'description',
+    'key-metrics',
+    'timeline',
+    'whatsapp-cta'
+  ],
+  purchased: [
+    'fundraising-bar',
+    'gallery-before-after',
+    'key-metrics',
+    'description',
+    'specs',
+    'cost-breakdown',
+    'timeline',
+    'comps',
+    'whatsapp-cta'
+  ],
+  planning: [
+    'fundraising-bar',
+    'gallery-before-after',
+    'key-metrics',
+    'description',
+    'specs',
+    'cost-breakdown',
+    'timeline',
+    'comps',
+    'whatsapp-cta'
+  ],
+  renovation: [
+    'renovation-progress',
+    'timeline',
+    'gallery-during',
+    'key-metrics',
+    'specs',
+    'description',
+    'cost-breakdown',
+    'whatsapp-cta'
+  ],
+  selling: [
+    'gallery-after-only',
+    'specs',
+    'key-metrics',
+    'timeline',
+    'description',
+    'whatsapp-cta'
+  ],
+  sold: [
+    'plan-vs-actual',
+    'gallery-before-after',
+    'specs',
+    'timeline',
+    'post-sale-summary',
+    'whatsapp-cta'
+  ]
+};
+
 window.getDisplayStatus = getDisplayStatus;
 window.DEAL_DISPLAY_CONFIG = DEAL_DISPLAY_CONFIG;
+window.EXPANDED_PANEL_CONFIG = EXPANDED_PANEL_CONFIG;
 window.formatMoney = formatMoney;
