@@ -276,26 +276,26 @@ function renderReviewStep() {
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-surface-container-low p-5 rounded-lg text-center">
         <div class="text-sm text-on-surface-variant mb-1 font-bold">עלות רכישה</div>
-        <div class="text-xl font-bold font-inter text-primary" dir="ltr">
+        <div class="text-xl font-bold font-inter text-primary" dir="ltr" id="card-purchase">
           ${summary.purchase_price ? formatCurrency(summary.purchase_price) : '—'}
         </div>
       </div>
       <div class="bg-surface-container-low p-5 rounded-lg text-center">
         <div class="text-sm text-on-surface-variant mb-1 font-bold">עלות שיפוץ</div>
-        <div class="text-xl font-bold font-inter text-primary" dir="ltr">
+        <div class="text-xl font-bold font-inter text-primary" dir="ltr" id="card-renovation">
           ${summary.renovation_cost ? formatCurrency(summary.renovation_cost) : '—'}
         </div>
       </div>
       <div class="bg-surface-container-low p-5 rounded-lg text-center">
         <div class="text-sm text-on-surface-variant mb-1 font-bold">עלויות נוספות</div>
-        <div class="text-xl font-bold font-inter text-primary" dir="ltr">
+        <div class="text-xl font-bold font-inter text-primary" dir="ltr" id="card-additional">
           ${additionalCosts > 0 ? formatCurrency(additionalCosts) : '—'}
         </div>
         <div class="text-xs text-gray-400 mt-1">מימון, החזקה, מכירה</div>
       </div>
       <div class="bg-surface-container-low p-5 rounded-lg text-center">
         <div class="text-sm text-on-surface-variant mb-1 font-bold">מחיר מכירה (ARV)</div>
-        <div class="text-xl font-bold font-inter text-secondary" dir="ltr">
+        <div class="text-xl font-bold font-inter text-secondary" dir="ltr" id="card-arv">
           ${summary.arv ? formatCurrency(summary.arv) : '—'}
         </div>
       </div>
@@ -476,6 +476,7 @@ function renderReviewStep() {
   }
 
   container.innerHTML = propertyHtml + cardsHtml + descriptionHtml + calculatorHtml + renovationHtml + financingHtml + crossCheckHtml + specsHtml;
+  recalcAllTotals();
 }
 
 // ── Recalculate all totals when any amount changes ──────────
@@ -486,7 +487,7 @@ function recalcAllTotals() {
   // Recalc each category total
   for (let ci = 0; ci < calculator.length; ci++) {
     const cat = calculator[ci];
-    const newTotal = (cat.items || []).reduce((sum, item) => sum + (item.amount || 0), 0);
+    const newTotal = (cat.items || []).reduce((sum, item) => sum + parseAmount(item.amount), 0);
     cat.total = newTotal;
     const el = document.getElementById(`cat-total-${ci}`);
     if (el) el.textContent = formatCurrency(newTotal);
@@ -494,9 +495,13 @@ function recalcAllTotals() {
 
   // Recalc summary
   const summary = aiResult.summary || {};
-  const totalInvestment = calculator.reduce((sum, cat) => sum + (cat.total || 0), 0);
+  const REVENUE_RX = /הכנס|תקבול|\bARV\b|revenue|income/i;
+  const isRevenueCat = (cat) => cat.type === 'revenue' || REVENUE_RX.test(cat.category || '');
+  const totalInvestment = calculator
+    .filter(cat => !isRevenueCat(cat))
+    .reduce((sum, cat) => sum + parseAmount(cat.total), 0);
   summary.total_investment = totalInvestment;
-  const netProfit = (summary.arv || 0) - totalInvestment;
+  const netProfit = parseAmount(summary.arv) - totalInvestment;
   summary.net_profit = netProfit;
 
   const profitEl = document.getElementById('net-profit-display');
@@ -506,12 +511,41 @@ function recalcAllTotals() {
   }
 
   // Recalc renovation total
+  let renoPhasesTotal = 0;
   if (aiResult.renovation_plan && aiResult.renovation_plan.phases) {
-    const renoTotal = aiResult.renovation_plan.phases.reduce((sum, p) => sum + (p.amount || 0), 0);
-    aiResult.renovation_plan.total_cost = renoTotal;
+    renoPhasesTotal = aiResult.renovation_plan.phases.reduce((sum, p) => sum + parseAmount(p.amount), 0);
+    aiResult.renovation_plan.total_cost = renoPhasesTotal;
     const renoEl = document.getElementById('reno-total-display');
-    if (renoEl) renoEl.textContent = formatCurrency(renoTotal);
+    if (renoEl) renoEl.textContent = formatCurrency(renoPhasesTotal);
   }
+
+  // ── Sync top cards ──────────────────────────
+  const PURCHASE_RX = /רכיש|purchase/i;
+  const RENO_RX = /שיפוץ|renovation/i;
+  const purchaseCat = calculator.find(c => PURCHASE_RX.test(c.category || ''));
+  const renoCat = calculator.find(c => RENO_RX.test(c.category || ''));
+
+  const purchaseAmt = purchaseCat
+    ? parseAmount(purchaseCat.total)
+    : parseAmount(summary.purchase_price);
+
+  const renoAmt = renoPhasesTotal > 0
+    ? renoPhasesTotal
+    : (renoCat ? parseAmount(renoCat.total) : 0);
+
+  summary.purchase_price = purchaseAmt;
+  summary.renovation_cost = renoAmt;
+
+  const additional = totalInvestment - purchaseAmt - renoAmt;
+
+  const setCard = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = (val && val > 0) ? formatCurrency(val) : '—';
+  };
+  setCard('card-purchase', purchaseAmt);
+  setCard('card-renovation', renoAmt);
+  setCard('card-additional', additional);
+  setCard('card-arv', parseAmount(summary.arv));
 }
 
 // ── Helpers ──────────────────────────────────────────────────
