@@ -442,7 +442,7 @@ router.get('/:id/featured-deals', async (req, res) => {
 router.post('/:id/featured-deals', async (req, res) => {
   const { id } = req.params;
   const {
-    deal_id, sort_order,
+    deal_id, sort_order, is_hidden,
     fallback_address, fallback_deal_number,
     fallback_raised_display, fallback_investor_count, fallback_roi_display,
     override_status_label, override_status_tone, override_note
@@ -461,14 +461,14 @@ router.post('/:id/featured-deals', async (req, res) => {
 
     const result = await pool.query(`
       INSERT INTO event_featured_deals
-        (event_id, deal_id, sort_order,
+        (event_id, deal_id, sort_order, is_hidden,
          fallback_address, fallback_deal_number,
          fallback_raised_display, fallback_investor_count, fallback_roi_display,
          override_status_label, override_status_tone, override_note)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING id
     `, [
-      id, deal_id || null, finalOrder,
+      id, deal_id || null, finalOrder, !!is_hidden,
       fallback_address || null, fallback_deal_number || null,
       fallback_raised_display || null, fallback_investor_count != null ? parseInt(fallback_investor_count) : null, fallback_roi_display || null,
       override_status_label || null, override_status_tone || null, override_note || null
@@ -486,7 +486,7 @@ router.put('/:id/featured-deals/:fdId', async (req, res) => {
   const { fdId } = req.params;
   try {
     const fields = [
-      'deal_id', 'sort_order',
+      'deal_id', 'sort_order', 'is_hidden',
       'fallback_address', 'fallback_deal_number',
       'fallback_raised_display', 'fallback_investor_count', 'fallback_roi_display',
       'override_status_label', 'override_status_tone', 'override_note'

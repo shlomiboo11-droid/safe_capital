@@ -11,10 +11,10 @@ function renderSpeakersTab(data) {
   c.innerHTML = `
     <div class="card p-6">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-bold">דוברים</h3>
+        <h3 class="text-lg font-bold">צוות</h3>
         <button class="btn btn-primary btn-sm" onclick="addSpeakerItem()">
           <span class="material-symbols-outlined text-sm">add</span>
-          הוסף דובר
+          הוסף איש צוות
         </button>
       </div>
 
@@ -23,7 +23,7 @@ function renderSpeakersTab(data) {
       <div class="flex justify-end mt-6">
         <button class="btn btn-primary px-8" onclick="saveSpeakers()">
           <span class="material-symbols-outlined text-lg">save</span>
-          שמור דוברים
+          שמור צוות
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@ function renderSpeakersList() {
   const list = document.getElementById('speakersList');
   if (!list) return;
   if (_speakerItems.length === 0) {
-    list.innerHTML = '<div class="text-sm text-gray-400 text-center py-6">אין דוברים — לחץ "הוסף דובר"</div>';
+    list.innerHTML = '<div class="text-sm text-gray-400 text-center py-6">אין אנשי צוות — לחץ "הוסף איש צוות"</div>';
     return;
   }
   list.innerHTML = _speakerItems.map((it, idx) => `
@@ -64,7 +64,7 @@ function renderSpeakersList() {
           <input type="text" class="form-input" value="${escAttrS(it.role)}" oninput="updateSpeaker(${idx}, 'role', this.value)" placeholder="מייסד, מנהל כספים">
         </div>
         <div class="md:col-span-2">
-          <label class="form-label">תמונת דובר (URL)</label>
+          <label class="form-label">תמונת איש צוות (URL)</label>
           <input type="text" class="form-input ltr" dir="ltr" value="${escAttrS(it.image_url)}" oninput="updateSpeaker(${idx}, 'image_url', this.value)" placeholder="https://...">
         </div>
       </div>
@@ -94,7 +94,7 @@ async function saveSpeakers() {
   }));
   try {
     await API.put(`/events/${currentEvent.id}`, { speakers: payload });
-    showToast('הדוברים נשמרו');
+    showToast('הצוות נשמר');
     currentEvent.speakers = payload;
   } catch (err) {
     showToast(err.message, 'error');

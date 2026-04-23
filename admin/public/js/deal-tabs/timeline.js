@@ -15,7 +15,6 @@
 const TIMELINE_STAGES = [
   { label: 'גיוס משקיעים', status: 'fundraising' },
   { label: 'רכישת הנכס',   status: 'purchased' },
-  { label: 'אישורי בנייה', status: 'planning' },
   { label: 'שיפוץ',        status: 'renovation' },
   { label: 'מכירה',        status: 'selling' },
   { label: 'נמכר',         status: 'sold' }
@@ -23,9 +22,13 @@ const TIMELINE_STAGES = [
 
 /**
  * Determine the index of the current stage based on property_status.
- * Returns -1 if the status doesn't match any stage (e.g. 'sourcing').
+ * Legacy statuses are mapped to the closest current stage:
+ *   sourcing → 0 (גיוס משקיעים)
+ *   planning → 1 (רכישת הנכס)
  */
 function getActiveStageIndex(propertyStatus) {
+  if (propertyStatus === 'sourcing') return 0;
+  if (propertyStatus === 'planning') return 1;
   return TIMELINE_STAGES.findIndex(s => s.status === propertyStatus);
 }
 

@@ -21,7 +21,7 @@ router.get('/deals', async (req, res) => {
         sale_price_tooltip, fundraising_goal, min_investment,
         opens_at_date, sold_at_date, renovation_progress_percent,
         sale_completion_note, actual_purchase_price, actual_sale_price,
-        profit_distributed,
+        profit_distributed, investor_roi_cap_percent,
         sort_order, created_at
       FROM deals
       WHERE is_published = true
@@ -148,9 +148,11 @@ router.get('/deals', async (req, res) => {
       raisedByDeal[row.deal_id] = parseFloat(row.total_raised);
     }
 
-    const expectedRoiByDeal = {};
+    // expected_roi_percent is computed LIVE below per-deal (project profit / fundraising_goal, capped by investor_roi_cap_percent)
+    // plannedRoiResult is kept as legacy fallback only if live calc can't be done.
+    const legacyRoiByDeal = {};
     for (const row of plannedRoiResult.rows) {
-      expectedRoiByDeal[row.deal_id] = row.planned_roi != null ? parseFloat(row.planned_roi) : null;
+      legacyRoiByDeal[row.deal_id] = row.planned_roi != null ? parseFloat(row.planned_roi) : null;
     }
 
     const investorCountByDeal = {};
@@ -171,6 +173,17 @@ router.get('/deals', async (req, res) => {
         (sum, c) => sum + parseFloat(c.total_planned || 0), 0
       );
       const expectedSalePrice = parseFloat(deal.expected_sale_price || 0);
+
+      // Live investor ROI: profit / fundraising_goal × 100, capped at investor_roi_cap_percent
+      const expectedProfit = (expectedSalePrice > 0 && totalPlanned > 0) ? (expectedSalePrice - totalPlanned) : null;
+      const investorCap = parseFloat(deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20);
+      let investorRoi = null;
+      if (expectedProfit != null && fundraisingGoal > 0) {
+        const rawRoi = (expectedProfit / fundraisingGoal) * 100;
+        investorRoi = Math.max(0, Math.min(investorCap, rawRoi));
+      } else if (legacyRoiByDeal[deal.id] != null) {
+        investorRoi = Math.min(investorCap, legacyRoiByDeal[deal.id]);
+      }
 
       return {
         id: deal.id,
@@ -196,14 +209,12 @@ router.get('/deals', async (req, res) => {
         created_at: deal.created_at,
         // Computed helpers
         total_cost: totalPlanned > 0 ? totalPlanned : null,
-        expected_profit: (expectedSalePrice > 0 && totalPlanned > 0)
-          ? (expectedSalePrice - totalPlanned)
-          : null,
+        expected_profit: expectedProfit,
         fundraising_percent: fundraisingGoal > 0
           ? Math.round((fundraisingRaised / fundraisingGoal) * 100)
           : 0,
-        // Investor-facing display fields
-        expected_roi_percent: expectedRoiByDeal[deal.id] != null ? expectedRoiByDeal[deal.id] : null,
+        // Investor-facing display fields (live, capped)
+        expected_roi_percent: investorRoi,
         investor_count: investorCountByDeal[deal.id] || 0,
         waitlist_count: waitlistCountByDeal[deal.id] || 0,
         spots_remaining: (parseFloat(deal.min_investment) > 0 && fundraisingGoal > 0)
@@ -298,21 +309,35 @@ router.get('/active-event', async (req, res) => {
       return res.status(404).json({ error: 'No active event' });
     }
 
-    // Load featured deals with join to deals table for live data
+    // Auto-pull: all published deals, left-joined to per-event overrides.
+    // event_featured_deals rows with is_hidden=true are excluded.
     const fdRes = await pool.query(`
-      SELECT efd.*,
-        d.id              AS linked_deal_id,
-        d.deal_number     AS deal_number,
-        d.name            AS deal_name,
-        d.full_address    AS deal_full_address,
-        d.thumbnail_url   AS deal_thumbnail,
-        d.property_status AS deal_property_status,
-        d.fundraising_goal AS deal_fundraising_goal,
-        d.is_published    AS deal_is_published
-      FROM event_featured_deals efd
-      LEFT JOIN deals d ON efd.deal_id = d.id
-      WHERE efd.event_id = $1
-      ORDER BY efd.sort_order ASC, efd.id ASC
+      SELECT
+        d.id                  AS linked_deal_id,
+        d.deal_number         AS deal_number,
+        d.name                AS deal_name,
+        d.full_address        AS deal_full_address,
+        d.thumbnail_url       AS deal_thumbnail,
+        d.property_status     AS deal_property_status,
+        d.fundraising_goal    AS deal_fundraising_goal,
+        d.is_published        AS deal_is_published,
+        d.sort_order          AS deal_sort_order,
+        efd.id                AS id,
+        COALESCE(efd.sort_order, d.sort_order, 0) AS sort_order,
+        efd.override_status_label,
+        efd.override_status_tone,
+        efd.override_note,
+        efd.fallback_address,
+        efd.fallback_deal_number,
+        efd.fallback_raised_display,
+        efd.fallback_investor_count,
+        efd.fallback_roi_display
+      FROM deals d
+      LEFT JOIN event_featured_deals efd
+        ON efd.deal_id = d.id AND efd.event_id = $1
+      WHERE d.is_published = TRUE
+        AND (efd.is_hidden IS NULL OR efd.is_hidden = FALSE)
+      ORDER BY sort_order ASC, d.id DESC
     `, [event.id]);
 
     // Fetch aggregate data for linked deals (raised + investor count + planned roi)
@@ -354,6 +379,7 @@ router.get('/active-event', async (req, res) => {
         sort_order: r.sort_order,
         deal_id: r.linked_deal_id,
         deal_number: r.deal_number || r.fallback_deal_number || null,
+        name: r.deal_name || null,
         address: r.deal_full_address || r.deal_name || r.fallback_address || '',
         thumbnail_url: r.deal_thumbnail || null,
         property_status: r.deal_property_status || null,
@@ -361,7 +387,7 @@ router.get('/active-event', async (req, res) => {
         raised_display: r.fallback_raised_display || (raised != null ? '$' + Math.round(raised).toLocaleString('en-US') : null),
         investor_count: count != null ? count : r.fallback_investor_count,
         roi_percent: roi,
-        roi_display: r.fallback_roi_display || (roi != null ? roi + '%' : null),
+        roi_display: r.fallback_roi_display || (roi != null ? Math.round(roi) + '%' : null),
         status_label: r.override_status_label || null,
         status_tone: r.override_status_tone || null,
         note: r.override_note || null

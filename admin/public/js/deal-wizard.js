@@ -565,7 +565,12 @@ async function saveDealFromExtraction() {
   btn.innerHTML = '<span class="extraction-spinner"></span> שומר...';
 
   try {
-    const result = await API.post('/extract/create-and-apply', aiResult);
+    const REVENUE_RX = /הכנס|תקבול|\bARV\b|revenue|income/i;
+    const payload = {
+      ...aiResult,
+      calculator: (aiResult.calculator || []).filter(c => c.type !== 'revenue' && !REVENUE_RX.test(c.category || ''))
+    };
+    const result = await API.post('/extract/create-and-apply', payload);
     showToast('העסקה נוצרה בהצלחה!');
     setTimeout(() => {
       window.location.href = `/deal?id=${result.deal_id}`;

@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS event_registrations (
 CREATE INDEX IF NOT EXISTS idx_event_registrations_event ON event_registrations(event_slug);
 CREATE INDEX IF NOT EXISTS idx_event_registrations_created ON event_registrations(created_at DESC);
 
--- ── Investor Events (כנסי משקיעים) ──────────────────────────
+-- ── Investor Events (ערב משקיעים) ──────────────────────────
 CREATE TABLE IF NOT EXISTS events (
   id                          SERIAL PRIMARY KEY,
   slug                        TEXT UNIQUE NOT NULL,
@@ -553,6 +553,9 @@ CREATE TABLE IF NOT EXISTS event_featured_deals (
 );
 
 CREATE INDEX IF NOT EXISTS idx_event_featured_deals_event ON event_featured_deals(event_id);
+
+-- Migration: add is_hidden to event_featured_deals (hide auto-pulled deals per event)
+ALTER TABLE event_featured_deals ADD COLUMN IF NOT EXISTS is_hidden BOOLEAN DEFAULT FALSE;
 
 -- Migration: add event_id to event_registrations
 DO $$ BEGIN

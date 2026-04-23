@@ -5,6 +5,7 @@
 function renderPropertyTab(data) {
   const deal = data.deal;
   const specs = data.specs || [];
+  const images = data.images || [];
   const container = document.getElementById('tab-property');
 
   container.innerHTML = `
@@ -113,7 +114,6 @@ function renderPropertyTab(data) {
               <option value="fundraising" ${deal.property_status === 'fundraising' ? 'selected' : ''}>גיוס משקיעים</option>
               <option value="sourcing" ${deal.property_status === 'sourcing' ? 'selected' : ''}>איתור</option>
               <option value="purchased" ${deal.property_status === 'purchased' ? 'selected' : ''}>נרכש</option>
-              <option value="planning" ${deal.property_status === 'planning' ? 'selected' : ''}>בתכנון</option>
               <option value="renovation" ${deal.property_status === 'renovation' ? 'selected' : ''}>בשיפוץ</option>
               <option value="selling" ${deal.property_status === 'selling' ? 'selected' : ''}>למכירה</option>
               <option value="sold" ${deal.property_status === 'sold' ? 'selected' : ''}>נמכר</option>
@@ -133,8 +133,20 @@ function renderPropertyTab(data) {
             <input type="number" name="sort_order" class="form-input" value="${deal.sort_order || 0}">
           </div>
           <div>
-            <label class="form-label">תמונה ראשית (URL)</label>
-            <input type="url" name="thumbnail_url" class="form-input ltr" dir="ltr" value="${deal.thumbnail_url || ''}">
+            <label class="form-label">תמונה ראשית</label>
+            <select name="thumbnail_url" class="form-input ltr" dir="ltr" id="thumbnailPicker" onchange="updateThumbnailPreview(this.value)">
+              <option value="">— ללא תמונה —</option>
+              ${images.map(img => `
+                <option value="${(img.image_url || '').replace(/"/g, '&quot;')}" ${deal.thumbnail_url === img.image_url ? 'selected' : ''}>
+                  ${(img.category || 'כללי')} — ${(img.alt_text || img.image_url.split('/').pop() || '').slice(0, 60)}
+                </option>
+              `).join('')}
+              ${deal.thumbnail_url && !images.some(i => i.image_url === deal.thumbnail_url) ? `<option value="${deal.thumbnail_url.replace(/"/g, '&quot;')}" selected>(URL חיצוני) ${deal.thumbnail_url.split('/').pop()}</option>` : ''}
+            </select>
+            <img id="thumbnailPreview" src="${deal.thumbnail_url || ''}" alt=""
+              class="mt-2 rounded ${deal.thumbnail_url ? '' : 'hidden'}"
+              style="max-height: 80px; max-width: 100%;"
+              onerror="this.style.display='none'">
           </div>
           <div>
             <label class="form-label">תאריך פתיחה לגיוס</label>
@@ -247,4 +259,16 @@ function renderPropertyTab(data) {
       showToast(err.message, 'error');
     }
   });
+}
+
+function updateThumbnailPreview(url) {
+  const img = document.getElementById('thumbnailPreview');
+  if (!img) return;
+  if (url) {
+    img.src = url;
+    img.style.display = '';
+    img.classList.remove('hidden');
+  } else {
+    img.style.display = 'none';
+  }
 }

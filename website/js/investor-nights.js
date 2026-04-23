@@ -322,31 +322,41 @@
       var badgeClass = 'badge ' + statusTone;
       var statusBadge = statusLabel ? '<div class="' + esc(badgeClass) + '">' + esc(statusLabel) + '</div>' : '';
 
-      // Keep original visual (icon + idx) to preserve pixel-perfect match.
-      // Thumbnail from live deal is not used here by design — layout stays identical to the static mockup.
+      // Thumbnail: use deal image if present, fall back to icon placeholder
+      var thumbUrl = d.thumbnail_url || '';
+      if (thumbUrl && thumbUrl.charAt(0) === '/') {
+        thumbUrl = API_BASE + thumbUrl;
+      }
+      var thumbInner = thumbUrl
+        ? '<img src="' + esc(thumbUrl) + '" alt="' + esc(d.address || '') + '" onerror="this.outerHTML=\'<div class=&quot;icon&quot;><span class=&quot;material-symbols-outlined&quot;>home</span></div>\'">'
+        : '<div class="icon"><span class="material-symbols-outlined">home</span></div>';
       var thumb = '<div class="thumb">'
-        + '<div class="icon"><span class="material-symbols-outlined">home</span></div>'
+        + thumbInner
         + (d.deal_number ? '<div class="idx">#' + esc(d.deal_number) + '</div>' : '')
         + '</div>';
 
-      var roiDisplay = d.roi_display || '—';
-      var roiHtml;
-      if (/^[\+\-]?\d/.test(roiDisplay) || roiDisplay.indexOf('%') >= 0) {
-        roiHtml = '<div class="v accent">' + esc(roiDisplay) + '</div>';
-      } else {
-        roiHtml = '<div class="v accent">' + esc(roiDisplay) + '</div>';
+      // ROI: whole-number percent; different label for sold vs in-progress
+      var roiDisplay = '—';
+      if (d.roi_percent != null) {
+        roiDisplay = Math.round(d.roi_percent) + '%';
+      } else if (d.roi_display) {
+        roiDisplay = d.roi_display;
       }
+      var isSold = (d.property_status === 'sold');
+      var roiLabel = isSold ? 'תשואה למשקיע' : 'תשואה צפויה למשקיע';
+
+      // Property name: prefer deal.name, else first segment of address
+      var propName = d.name || (d.address ? String(d.address).split(',')[0].trim() : '');
 
       return [
         '<div class="in-deal-row">',
         thumb,
         '  <div class="main">',
-        '    <div class="addr">' + esc(d.address || '') + '</div>',
+        '    <div class="addr">' + esc(propName) + '</div>',
         statusBadge,
         '  </div>',
-        '  <div class="cell"><div class="k">גיוס כולל</div><div class="v">' + esc(d.raised_display || '—') + '</div></div>',
         '  <div class="cell"><div class="k">משקיעים</div><div class="v">' + esc(d.investor_count != null ? d.investor_count : '—') + '</div></div>',
-        '  <div class="cell"><div class="k">תשואה</div>' + roiHtml + '</div>',
+        '  <div class="cell"><div class="k">' + roiLabel + '</div><div class="v accent">' + esc(roiDisplay) + '</div></div>',
         '</div>'
       ].join('');
     }).join('');
@@ -501,10 +511,10 @@
     var next = qs('#next-btn');
     var label = qs('#next-label');
     if (state.step > 0) {
-      back.style.visibility = 'visible';
+      back.style.display = '';
       secure.style.display = 'none';
     } else {
-      back.style.visibility = 'hidden';
+      back.style.display = 'none';
       secure.style.display = '';
     }
     label.textContent = state.step < 2 ? 'המשך' : 'אישור הרשמה';

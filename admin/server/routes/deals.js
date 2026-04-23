@@ -178,7 +178,9 @@ router.get('/:id', async (req, res) => {
     const totalRaised = investors.reduce((sum, i) => sum + parseFloat(i.amount || 0), 0);
     const totalIncome = cashflow.filter(c => c.type === 'income').reduce((sum, c) => sum + parseFloat(c.amount), 0);
     const totalExpense = cashflow.filter(c => c.type === 'expense').reduce((sum, c) => sum + parseFloat(c.amount), 0);
-    const expectedSalePrice = parseFloat(deal.expected_sale_price || 0);
+    const expectedSalePrice = parseFloat(deal.expected_sale_price || deal.arv || 0);
+    const actualSalePrice = parseFloat(deal.actual_sale_price || 0);
+    const effectiveSalePrice = actualSalePrice > 0 ? actualSalePrice : expectedSalePrice;
     const fundraisingGoal = parseFloat(deal.fundraising_goal || 0);
 
     // Summary by funding source
@@ -203,23 +205,41 @@ router.get('/:id', async (req, res) => {
       documents,
       uploadedDocs,
       renovationPlan,
-      computed: {
-        totalPlanned,
-        totalActual,
-        deviation: totalActual - totalPlanned,
-        deviationPercent: totalPlanned > 0 ? ((totalActual - totalPlanned) / totalPlanned * 100) : 0,
-        plannedProfit: expectedSalePrice - totalPlanned,
-        actualProfit: expectedSalePrice - totalActual,
-        plannedROI: totalPlanned > 0 ? ((expectedSalePrice - totalPlanned) / totalPlanned * 100) : 0,
-        actualROI: totalActual > 0 ? ((expectedSalePrice - totalActual) / totalActual * 100) : 0,
-        totalRaised,
-        fundraisingPercent: fundraisingGoal > 0 ? (totalRaised / fundraisingGoal * 100) : 0,
-        remainingToRaise: fundraisingGoal - totalRaised,
-        totalIncome,
-        totalExpense,
-        cashflowBalance: totalIncome - totalExpense,
-        byFundingSource
-      }
+      computed: (() => {
+        const plannedProfit = expectedSalePrice - totalPlanned;
+        const actualProfit = totalActual > 0 ? (effectiveSalePrice - totalActual) : null;
+        const investorCap = parseFloat(deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20);
+        // Project ROI: profit / fundraising_goal × 100 (uncapped)
+        const projectPlannedROI = fundraisingGoal > 0 ? (plannedProfit / fundraisingGoal * 100) : null;
+        const projectActualROI = (fundraisingGoal > 0 && actualProfit != null) ? (actualProfit / fundraisingGoal * 100) : null;
+        // Investor ROI: same but capped
+        const investorPlannedROI = projectPlannedROI != null ? Math.max(0, Math.min(investorCap, projectPlannedROI)) : null;
+        const investorActualROI = projectActualROI != null ? Math.max(0, Math.min(investorCap, projectActualROI)) : null;
+        return {
+          totalPlanned,
+          totalActual,
+          deviation: totalActual - totalPlanned,
+          deviationPercent: totalPlanned > 0 ? ((totalActual - totalPlanned) / totalPlanned * 100) : 0,
+          plannedProfit,
+          actualProfit,
+          // Legacy cost-based ROI (kept for backwards compatibility with any other reader)
+          plannedROI: totalPlanned > 0 ? ((expectedSalePrice - totalPlanned) / totalPlanned * 100) : 0,
+          actualROI: totalActual > 0 ? ((effectiveSalePrice - totalActual) / totalActual * 100) : null,
+          // New: project ROI (uncapped) + investor ROI (capped)
+          projectPlannedROI,
+          projectActualROI,
+          investorPlannedROI,
+          investorActualROI,
+          investorCap,
+          totalRaised,
+          fundraisingPercent: fundraisingGoal > 0 ? (totalRaised / fundraisingGoal * 100) : 0,
+          remainingToRaise: fundraisingGoal - totalRaised,
+          totalIncome,
+          totalExpense,
+          cashflowBalance: totalIncome - totalExpense,
+          byFundingSource
+        };
+      })()
     });
   } catch (err) {
     console.error('Get deal error:', err);
@@ -340,7 +360,7 @@ router.put('/:id', async (req, res) => {
       'thumbnail_url', 'description', 'project_duration',
       'purchase_price', 'arv', 'expected_sale_price', 'sale_price_tooltip',
       'actual_purchase_price', 'actual_arv', 'actual_sale_price',
-      'fundraising_goal', 'min_investment',
+      'fundraising_goal', 'min_investment', 'investor_roi_cap_percent',
       'opens_at_date', 'sold_at_date', 'renovation_progress_percent', 'sale_completion_note',
       'profit_distributed'
     ];

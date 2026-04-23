@@ -159,19 +159,29 @@ function renderFinancialTab(data) {
       <h3 class="text-lg font-bold mb-4">סיכום תשואה</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="text-center p-4 bg-gray-50 rounded-lg">
-          <div class="text-2xl font-bold font-inter text-primary" id="roi-planned-pct">${formatPercent(computed.plannedROI)}</div>
-          <div class="text-xs text-gray-500 mt-1">תשואה (תכנון)</div>
+          <div class="text-2xl font-bold font-inter text-primary" id="roi-project-planned">${computed.projectPlannedROI != null ? formatPercent(computed.projectPlannedROI) : '--'}</div>
+          <div class="text-xs text-gray-500 mt-1">תשואה על הפרויקט (תכנון)</div>
         </div>
         <div class="text-center p-4 bg-gray-50 rounded-lg">
-          <div class="text-2xl font-bold font-inter text-primary" id="roi-actual-pct">${formatPercent(computed.actualROI)}</div>
-          <div class="text-xs text-gray-500 mt-1">תשואה (מעודכן)</div>
+          <div class="text-2xl font-bold font-inter text-primary" id="roi-project-actual">${computed.projectActualROI != null ? formatPercent(computed.projectActualROI) : '--'}</div>
+          <div class="text-xs text-gray-500 mt-1">תשואה על הפרויקט (מעודכן)</div>
         </div>
+        <div class="text-center p-4 bg-gray-50 rounded-lg">
+          <div class="text-2xl font-bold font-inter text-secondary" id="roi-investor-planned">${computed.investorPlannedROI != null ? formatPercent(computed.investorPlannedROI) : '--'}</div>
+          <div class="text-xs text-gray-500 mt-1">תשואה למשקיע (תכנון, תקרה ${computed.investorCap || 20}%)</div>
+        </div>
+        <div class="text-center p-4 bg-gray-50 rounded-lg">
+          <div class="text-2xl font-bold font-inter text-secondary" id="roi-investor-actual">${computed.investorActualROI != null ? formatPercent(computed.investorActualROI) : '--'}</div>
+          <div class="text-xs text-gray-500 mt-1">תשואה למשקיע (מעודכן)</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mt-4">
         <div class="text-center p-4 bg-gray-50 rounded-lg">
           <div class="text-2xl font-bold font-inter text-primary" id="roi-planned-profit">${formatCurrency(computed.plannedProfit)}</div>
-          <div class="text-xs text-gray-500 mt-1">רווח (תכנון)</div>
+          <div class="text-xs text-gray-500 mt-1">רווח צפוי (תכנון)</div>
         </div>
         <div class="text-center p-4 bg-gray-50 rounded-lg">
-          <div class="text-2xl font-bold font-inter ${computed.actualProfit >= 0 ? 'text-green-700' : 'text-red-700'}" id="roi-actual-profit">${formatCurrency(computed.actualProfit)}</div>
+          <div class="text-2xl font-bold font-inter ${computed.actualProfit == null ? 'text-primary' : (computed.actualProfit >= 0 ? 'text-green-700' : 'text-red-700')}" id="roi-actual-profit">${computed.actualProfit != null ? formatCurrency(computed.actualProfit) : '--'}</div>
           <div class="text-xs text-gray-500 mt-1">רווח (מעודכן)</div>
         </div>
       </div>

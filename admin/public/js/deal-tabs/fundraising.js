@@ -49,7 +49,7 @@ function renderFundraisingTab(data) {
     <!-- Fundraising Settings -->
     <div class="card p-6 mb-6">
       <h3 class="text-lg font-bold mb-4">הגדרות גיוס</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="form-label">יעד גיוס</label>
           <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
@@ -63,6 +63,13 @@ function renderFundraisingTab(data) {
             value="${formatCurrency(minInvestment)}"
             onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
             onchange="saveDealField('min_investment', parseAmount(this.value))">
+        </div>
+        <div>
+          <label class="form-label">תקרת תשואה למשקיע (%)</label>
+          <input type="number" step="0.1" min="0" max="100" class="form-input ltr" dir="ltr"
+            value="${deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20}"
+            onchange="saveDealField('investor_roi_cap_percent', parseFloat(this.value) || 0)">
+          <div class="text-xs text-gray-400 mt-1">ברירת מחדל: 20%</div>
         </div>
       </div>
     </div>

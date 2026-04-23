@@ -1,265 +1,184 @@
 /**
- * Event Tab: Featured Deals
- * Links deals from the deals table OR falls back to manual data.
+ * Event Tab: Featured Deals (auto-pull model)
+ * All published deals from the dashboard are shown on the event page automatically.
+ * This tab lets the admin hide specific deals per-event and set per-event override fields.
  */
-let _allDealsCache = null;
+let _publishedDeals = [];     // from GET /api/deals (filtered to is_published)
+let _eventOverrides = {};     // map: deal_id -> { id, is_hidden, sort_order, override_status_label, override_status_tone, override_note }
 
-function renderFeaturedDealsTab(data) {
+async function renderFeaturedDealsTab(data) {
   const c = document.getElementById('tab-featured-deals');
-  const items = data.featured_deals || [];
-
   c.innerHTML = `
     <div class="card p-6">
-      <div class="flex items-center justify-between mb-4">
+      <div class="mb-4">
         <h3 class="text-lg font-bold">עסקאות מוצגות בעמוד האירוע</h3>
-        <button class="btn btn-primary btn-sm" onclick="openAddFeaturedDeal()">
-          <span class="material-symbols-outlined text-sm">add</span>
-          הוסף עסקה
-        </button>
+        <p class="text-sm text-gray-500 mt-2">
+          כל העסקאות המפורסמות בדאשבורד נמשכות אוטומטית. אפשר להסתיר עסקאות ספציפיות מהאירוע או להוסיף הערת תצוגה פר-עסקה.
+        </p>
       </div>
-
-      <p class="text-sm text-gray-500 mb-4">
-        שורה שמקושרת לעסקה קיימת תמשוך נתונים חיים (גיוס, משקיעים, סטטוס).
-        ניתן גם להזין נתוני fallback שיוצגו אם אין עסקה מקושרת.
-      </p>
-
-      <div id="featuredDealsList" class="space-y-3"></div>
-    </div>
-
-    <!-- Add/Edit Modal -->
-    <div id="fdModal" class="modal-overlay hidden">
-      <div class="modal-box" style="max-width:40rem;">
-        <div class="flex items-center justify-between mb-5">
-          <h2 class="text-lg font-bold" id="fdModalTitle">הוספת עסקה</h2>
-          <button onclick="closeFdModal()" class="text-gray-400 hover:text-gray-600">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
-        <form id="fdForm" class="space-y-4">
-          <input type="hidden" id="fdId">
-
-          <div>
-            <label class="form-label">קישור לעסקה קיימת (אופציונלי)</label>
-            <select id="fdDealId" class="form-select">
-              <option value="">— ללא עסקה מקושרת (שימוש ב-fallback) —</option>
-            </select>
-            <div class="text-xs text-gray-400 mt-1">
-              אם בוחרים עסקה — הכתובת, תמונה, סטטוס, גיוס ומשקיעים נשלפים אוטומטית מהעסקה
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <label class="form-label">Fallback — כתובת</label>
-              <input type="text" id="fdFallbackAddress" class="form-input" placeholder="Mountain Ave 206">
-            </div>
-            <div>
-              <label class="form-label">Fallback — מספר עסקה</label>
-              <input type="text" id="fdFallbackDealNumber" class="form-input ltr" dir="ltr" placeholder="2">
-            </div>
-            <div>
-              <label class="form-label">Fallback — גיוס כולל (תצוגה)</label>
-              <input type="text" id="fdFallbackRaised" class="form-input ltr" dir="ltr" placeholder="$268,194">
-            </div>
-            <div>
-              <label class="form-label">Fallback — מספר משקיעים</label>
-              <input type="number" id="fdFallbackInvestorCount" class="form-input ltr font-inter" dir="ltr" placeholder="4">
-            </div>
-            <div>
-              <label class="form-label">Fallback — תשואה (תצוגה)</label>
-              <input type="text" id="fdFallbackRoi" class="form-input" placeholder="20%">
-            </div>
-            <div>
-              <label class="form-label">סדר תצוגה</label>
-              <input type="number" id="fdSortOrder" class="form-input ltr" dir="ltr" value="0">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 border-t pt-4">
-            <div>
-              <label class="form-label">Override — תווית סטטוס</label>
-              <input type="text" id="fdOverrideStatusLabel" class="form-input" placeholder="בתהליך שיפוץ / הושלמה / בשיווק">
-            </div>
-            <div>
-              <label class="form-label">Override — טון הסטטוס</label>
-              <select id="fdOverrideStatusTone" class="form-select">
-                <option value="">— ברירת מחדל —</option>
-                <option value="active">active (צהוב — בשיפוץ)</option>
-                <option value="marketing">marketing (כחול — בשיווק)</option>
-                <option value="done">done (ירוק — הושלם)</option>
-              </select>
-            </div>
-            <div class="md:col-span-2">
-              <label class="form-label">Override — הערה</label>
-              <input type="text" id="fdOverrideNote" class="form-input" placeholder="הערה קצרה שמופיעה על הכרטיס">
-            </div>
-          </div>
-
-          <div class="flex gap-3 pt-2">
-            <button type="submit" class="btn btn-primary flex-1">שמור</button>
-            <button type="button" onclick="closeFdModal()" class="btn btn-secondary">ביטול</button>
-          </div>
-        </form>
+      <div id="featuredDealsList" class="space-y-2"><div class="text-sm text-gray-400 py-4 text-center">טוען...</div></div>
+      <div class="flex justify-end mt-6">
+        <button class="btn btn-primary px-8" onclick="saveFeaturedOverrides()">
+          <span class="material-symbols-outlined text-lg">save</span>
+          שמור שינויים
+        </button>
       </div>
     </div>
   `;
 
-  renderFeaturedDealsList(items);
-  loadAllDealsForPicker();
-}
-
-async function loadAllDealsForPicker() {
-  if (_allDealsCache) return _allDealsCache;
-  try {
-    const data = await API.get('/deals');
-    _allDealsCache = data.deals || [];
-    // Populate select
-    const sel = document.getElementById('fdDealId');
-    if (sel) {
-      _allDealsCache.forEach(d => {
-        const opt = document.createElement('option');
-        opt.value = d.id;
-        opt.textContent = `#${d.deal_number || '—'} · ${d.name || d.full_address || 'ללא שם'}`;
-        sel.appendChild(opt);
-      });
+  // Build overrides map from existing event_featured_deals rows (only rows linked to a deal)
+  _eventOverrides = {};
+  for (const r of (data.featured_deals || [])) {
+    if (r.deal_id != null) {
+      _eventOverrides[r.deal_id] = {
+        id: r.id,
+        is_hidden: !!r.is_hidden,
+        sort_order: r.sort_order || 0,
+        override_status_label: r.override_status_label || '',
+        override_status_tone: r.override_status_tone || '',
+        override_note: r.override_note || ''
+      };
     }
-    return _allDealsCache;
+  }
+
+  // Fetch all deals and filter to published
+  try {
+    const list = await API.get('/deals');
+    const all = (list.deals || list) || [];
+    _publishedDeals = all.filter(d => d.is_published);
+    // Sort by per-event sort_order override (if present), else by deal's sort_order, else by id desc
+    _publishedDeals.sort((a, b) => {
+      const ao = _eventOverrides[a.id]?.sort_order ?? a.sort_order ?? 0;
+      const bo = _eventOverrides[b.id]?.sort_order ?? b.sort_order ?? 0;
+      if (ao !== bo) return ao - bo;
+      return b.id - a.id;
+    });
+    renderPublishedDealsList();
   } catch (err) {
-    console.error('Failed to load deals:', err);
-    return [];
+    document.getElementById('featuredDealsList').innerHTML = `<div class="text-sm text-red-500 py-4 text-center">שגיאה בטעינה: ${err.message}</div>`;
   }
 }
 
-function renderFeaturedDealsList(items) {
+function renderPublishedDealsList() {
   const list = document.getElementById('featuredDealsList');
   if (!list) return;
-  if (items.length === 0) {
-    list.innerHTML = '<div class="text-sm text-gray-400 text-center py-6">אין עסקאות מוצגות</div>';
+  if (_publishedDeals.length === 0) {
+    list.innerHTML = '<div class="text-sm text-gray-400 py-4 text-center">אין עסקאות מפורסמות בדאשבורד</div>';
     return;
   }
-  list.innerHTML = items.map(item => {
-    const linked = item.deal_id != null;
-    const address = item.deal_full_address || item.deal_name || item.fallback_address || '(ללא כתובת)';
-    const dealNumber = item.deal_number || item.fallback_deal_number || '';
-    const linkedBadge = linked
-      ? '<span class="badge badge-green text-xs">מקושר לעסקה</span>'
-      : '<span class="badge badge-gray text-xs">Fallback בלבד</span>';
-
+  list.innerHTML = _publishedDeals.map((d, idx) => {
+    const ov = _eventOverrides[d.id] || {};
+    const hidden = !!ov.is_hidden;
+    const num = d.deal_number != null ? '#' + d.deal_number : '';
+    const addr = d.full_address || d.name || '—';
+    const status = d.property_status || '';
     return `
-      <div class="border border-gray-200 rounded-lg p-4 flex items-start gap-4">
-        ${item.deal_thumbnail
-          ? `<img src="${escAttrFd(item.deal_thumbnail)}" class="w-20 h-20 object-cover rounded" alt="">`
-          : `<div class="w-20 h-20 bg-gray-100 rounded flex items-center justify-center"><span class="material-symbols-outlined text-gray-400">home</span></div>`
-        }
-        <div style="flex:1;min-width:0;">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="font-bold">${escHtmlFd(address)}</span>
-            ${dealNumber ? `<span class="badge badge-gray text-xs font-inter">#${escHtmlFd(dealNumber)}</span>` : ''}
-            ${linkedBadge}
+      <div class="border border-gray-200 rounded-lg p-4 ${hidden ? 'opacity-50' : ''}" data-deal-id="${d.id}">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="moveFeaturedDeal(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>
+              <span class="material-symbols-outlined text-sm">arrow_upward</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="moveFeaturedDeal(${idx}, 1)" ${idx === _publishedDeals.length - 1 ? 'disabled' : ''}>
+              <span class="material-symbols-outlined text-sm">arrow_downward</span>
+            </button>
+            <div class="flex-1 min-w-0">
+              <div class="font-bold text-sm text-primary truncate">${escAttrF(addr)}</div>
+              <div class="text-xs text-gray-500 font-inter mt-0.5">
+                ${num ? '<span class="ml-2">' + escAttrF(num) + '</span>' : ''}
+                ${status ? '<span>' + escAttrF(status) + '</span>' : ''}
+              </div>
+            </div>
           </div>
-          <div class="text-xs text-gray-500">
-            גיוס: ${escHtmlFd(item.fallback_raised_display || '—')} ·
-            משקיעים: ${escHtmlFd(item.fallback_investor_count || '—')} ·
-            תשואה: ${escHtmlFd(item.fallback_roi_display || '—')}
+          <label class="flex items-center gap-2 cursor-pointer shrink-0">
+            <input type="checkbox" class="w-4 h-4 rounded accent-primary" ${hidden ? 'checked' : ''} onchange="toggleHidden(${d.id}, this.checked)">
+            <span class="text-xs text-gray-600">הסתר מהאירוע</span>
+          </label>
+        </div>
+        <details class="mt-3">
+          <summary class="text-xs font-bold text-gray-500 cursor-pointer hover:text-primary">הגדרות תצוגה מותאמות (אופציונלי)</summary>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+            <div>
+              <label class="form-label text-xs">תווית סטטוס</label>
+              <input type="text" class="form-input text-sm" value="${escAttrF(ov.override_status_label || '')}"
+                placeholder="למשל: הושלמה" onchange="updateOverride(${d.id}, 'override_status_label', this.value)">
+            </div>
+            <div>
+              <label class="form-label text-xs">גוון (active / marketing / done)</label>
+              <input type="text" class="form-input text-sm" value="${escAttrF(ov.override_status_tone || '')}"
+                placeholder="active" onchange="updateOverride(${d.id}, 'override_status_tone', this.value)">
+            </div>
+            <div>
+              <label class="form-label text-xs">הערה</label>
+              <input type="text" class="form-input text-sm" value="${escAttrF(ov.override_note || '')}"
+                placeholder="מכירה צפויה בקרוב" onchange="updateOverride(${d.id}, 'override_note', this.value)">
+            </div>
           </div>
-          ${item.override_status_label
-            ? `<div class="text-xs mt-1"><span class="badge badge-blue text-xs">${escHtmlFd(item.override_status_label)}</span></div>`
-            : ''
-          }
-        </div>
-        <div class="flex gap-1">
-          <button class="btn btn-secondary btn-sm" onclick='openEditFeaturedDeal(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
-            <span class="material-symbols-outlined text-sm">edit</span>
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="deleteFeaturedDeal(${item.id})">
-            <span class="material-symbols-outlined text-sm">delete</span>
-          </button>
-        </div>
+        </details>
       </div>
     `;
   }).join('');
 }
 
-function openAddFeaturedDeal() {
-  document.getElementById('fdId').value = '';
-  document.getElementById('fdModalTitle').textContent = 'הוספת עסקה';
-  document.getElementById('fdDealId').value = '';
-  document.getElementById('fdFallbackAddress').value = '';
-  document.getElementById('fdFallbackDealNumber').value = '';
-  document.getElementById('fdFallbackRaised').value = '';
-  document.getElementById('fdFallbackInvestorCount').value = '';
-  document.getElementById('fdFallbackRoi').value = '';
-  document.getElementById('fdSortOrder').value = (currentEventData.featured_deals || []).length;
-  document.getElementById('fdOverrideStatusLabel').value = '';
-  document.getElementById('fdOverrideStatusTone').value = '';
-  document.getElementById('fdOverrideNote').value = '';
-  document.getElementById('fdModal').classList.remove('hidden');
+function toggleHidden(dealId, isHidden) {
+  if (!_eventOverrides[dealId]) _eventOverrides[dealId] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
+  _eventOverrides[dealId].is_hidden = !!isHidden;
+  renderPublishedDealsList();
 }
 
-function openEditFeaturedDeal(item) {
-  document.getElementById('fdId').value = item.id;
-  document.getElementById('fdModalTitle').textContent = 'עריכת עסקה';
-  document.getElementById('fdDealId').value = item.deal_id || '';
-  document.getElementById('fdFallbackAddress').value = item.fallback_address || '';
-  document.getElementById('fdFallbackDealNumber').value = item.fallback_deal_number || '';
-  document.getElementById('fdFallbackRaised').value = item.fallback_raised_display || '';
-  document.getElementById('fdFallbackInvestorCount').value = item.fallback_investor_count != null ? item.fallback_investor_count : '';
-  document.getElementById('fdFallbackRoi').value = item.fallback_roi_display || '';
-  document.getElementById('fdSortOrder').value = item.sort_order || 0;
-  document.getElementById('fdOverrideStatusLabel').value = item.override_status_label || '';
-  document.getElementById('fdOverrideStatusTone').value = item.override_status_tone || '';
-  document.getElementById('fdOverrideNote').value = item.override_note || '';
-  document.getElementById('fdModal').classList.remove('hidden');
+function updateOverride(dealId, field, value) {
+  if (!_eventOverrides[dealId]) _eventOverrides[dealId] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
+  _eventOverrides[dealId][field] = value;
 }
 
-function closeFdModal() {
-  document.getElementById('fdModal').classList.add('hidden');
+function moveFeaturedDeal(idx, dir) {
+  const tgt = idx + dir;
+  if (tgt < 0 || tgt >= _publishedDeals.length) return;
+  [_publishedDeals[idx], _publishedDeals[tgt]] = [_publishedDeals[tgt], _publishedDeals[idx]];
+  // Write new sort_orders to overrides
+  _publishedDeals.forEach((d, i) => {
+    if (!_eventOverrides[d.id]) _eventOverrides[d.id] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
+    _eventOverrides[d.id].sort_order = i;
+  });
+  renderPublishedDealsList();
 }
 
-document.addEventListener('submit', async (e) => {
-  if (e.target.id !== 'fdForm') return;
-  e.preventDefault();
-
-  const id = document.getElementById('fdId').value;
-  const body = {
-    deal_id: document.getElementById('fdDealId').value ? parseInt(document.getElementById('fdDealId').value) : null,
-    fallback_address: document.getElementById('fdFallbackAddress').value.trim(),
-    fallback_deal_number: document.getElementById('fdFallbackDealNumber').value.trim(),
-    fallback_raised_display: document.getElementById('fdFallbackRaised').value.trim(),
-    fallback_investor_count: document.getElementById('fdFallbackInvestorCount').value ? parseInt(document.getElementById('fdFallbackInvestorCount').value) : null,
-    fallback_roi_display: document.getElementById('fdFallbackRoi').value.trim(),
-    sort_order: parseInt(document.getElementById('fdSortOrder').value) || 0,
-    override_status_label: document.getElementById('fdOverrideStatusLabel').value.trim(),
-    override_status_tone: document.getElementById('fdOverrideStatusTone').value,
-    override_note: document.getElementById('fdOverrideNote').value.trim()
-  };
-
-  try {
-    if (id) {
-      await API.put(`/events/${currentEvent.id}/featured-deals/${id}`, body);
-      showToast('העסקה עודכנה');
-    } else {
-      await API.post(`/events/${currentEvent.id}/featured-deals`, body);
-      showToast('העסקה נוספה');
+async function saveFeaturedOverrides() {
+  const toUpsert = [];
+  for (const d of _publishedDeals) {
+    const ov = _eventOverrides[d.id];
+    if (!ov) continue;
+    const hasData = ov.is_hidden || ov.override_status_label || ov.override_status_tone || ov.override_note || ov.sort_order;
+    if (hasData || ov.id) {
+      toUpsert.push({ deal_id: d.id, ...ov });
     }
-    closeFdModal();
-    reloadEvent((data) => renderFeaturedDealsTab(data));
-  } catch (err) {
-    showToast(err.message, 'error');
   }
-});
 
-async function deleteFeaturedDeal(fdId) {
-  const ok = await confirmAction('להסיר את העסקה מהאירוע?');
-  if (!ok) return;
   try {
-    await API.delete(`/events/${currentEvent.id}/featured-deals/${fdId}`);
-    showToast('הוסר');
-    reloadEvent((data) => renderFeaturedDealsTab(data));
+    for (const row of toUpsert) {
+      if (row.id) {
+        await API.put(`/events/${currentEvent.id}/featured-deals/${row.id}`, {
+          sort_order: row.sort_order,
+          is_hidden: row.is_hidden,
+          override_status_label: row.override_status_label || null,
+          override_status_tone: row.override_status_tone || null,
+          override_note: row.override_note || null
+        });
+      } else {
+        await API.post(`/events/${currentEvent.id}/featured-deals`, {
+          deal_id: row.deal_id,
+          sort_order: row.sort_order,
+          is_hidden: row.is_hidden,
+          override_status_label: row.override_status_label || null,
+          override_status_tone: row.override_status_tone || null,
+          override_note: row.override_note || null
+        });
+      }
+    }
+    showToast('ההגדרות נשמרו');
   } catch (err) {
-    showToast(err.message, 'error');
+    showToast(err.message || 'שגיאה', 'error');
   }
 }
 
-function escAttrFd(v) { return v == null ? '' : String(v).replace(/"/g, '&quot;'); }
-function escHtmlFd(v) { return v == null ? '' : String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function escAttrF(v) { return v == null ? '' : String(v).replace(/"/g, '&quot;'); }

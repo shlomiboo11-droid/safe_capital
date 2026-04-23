@@ -215,12 +215,15 @@ router.post('/create-and-apply', async (req, res) => {
 
     const dealId = createResult.rows[0].id;
 
-    // Insert cost categories from calculator
+    // Insert cost categories from calculator (skip revenue categories — they are not costs)
+    const REVENUE_RX = /הכנס|תקבול|\bARV\b|revenue|income/i;
+    const isRevenueCat = (c) => c?.type === 'revenue' || REVENUE_RX.test(c?.category || '');
     if (calculator && calculator.length > 0) {
       for (let ci = 0; ci < calculator.length; ci++) {
         const cat = calculator[ci];
+        if (isRevenueCat(cat)) continue;
         const catResult = await client.query(
-          'INSERT INTO deal_cost_categories (deal_id, name, sort_order, is_default) VALUES ($1, $2, $3, TRUE) RETURNING id',
+          'INSERT INTO deal_cost_categories (deal_id, name, sort_order, is_default) VALUES ($1, $2, $3, FALSE) RETURNING id',
           [dealId, cat.category, ci + 1]
         );
         const catId = catResult.rows[0].id;

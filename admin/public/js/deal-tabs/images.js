@@ -113,8 +113,7 @@ async function renderImagesTab(data) {
                 <span class="material-symbols-outlined text-sm">link_off</span>
               </button>
             ` : `
-              <button class="btn btn-secondary btn-sm" onclick="openDriveLinkModal('${cat.key}')" title="קשר תיקיית Google Drive"
-                ${!_driveStatus.connected ? 'disabled' : ''}>
+              <button class="btn btn-secondary btn-sm" onclick="openDriveLinkModal('${cat.key}')" title="קשר תיקיית Google Drive">
                 <span class="material-symbols-outlined text-sm">folder_shared</span>
                 Google Drive
               </button>
@@ -180,12 +179,12 @@ async function renderImagesTab(data) {
         <p class="text-sm text-gray-500 mb-2" id="driveLinkCategoryLabel"></p>
 
         <div class="mb-4">
-          <label class="form-label">Folder ID</label>
+          <label class="form-label">קישור התיקייה או Folder ID</label>
           <input type="text" id="driveFolderIdInput" class="form-input ltr text-sm" dir="ltr"
-            placeholder="1A2B3C4D5E6F7G8H9I0J..." >
+            placeholder="https://drive.google.com/drive/folders/1A2B3C..." >
           <p class="text-xs text-gray-400 mt-2">
-            ה-ID נמצא בסוף ה-URL של התיקייה ב-Google Drive.<br>
-            לדוגמה: drive.google.com/drive/folders/<strong>1A2B3C...</strong>
+            הדבק את כתובת התיקייה המלאה מהדפדפן, או רק את ה-ID.<br>
+            המערכת תזהה אוטומטית.
           </p>
         </div>
 
@@ -319,7 +318,8 @@ let _pendingLinkCategory = null;
 
 function openDriveLinkModal(category) {
   if (!_driveStatus.connected) {
-    showToast('יש לחבר חשבון Google Drive קודם', 'error');
+    showToast('יש לחבר חשבון Google Drive קודם — מעביר לחיבור...', 'error');
+    setTimeout(() => connectGoogleDrive(), 1200);
     return;
   }
   _pendingLinkCategory = category;
@@ -335,10 +335,20 @@ function closeDriveLinkModal() {
   _pendingLinkCategory = null;
 }
 
+function extractDriveFolderId(input) {
+  if (!input) return '';
+  const s = input.trim();
+  const m = s.match(/\/folders\/([a-zA-Z0-9_-]+)/) || s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(s)) return s;
+  return '';
+}
+
 async function submitDriveLink() {
-  const folderId = document.getElementById('driveFolderIdInput').value.trim();
+  const raw = document.getElementById('driveFolderIdInput').value.trim();
+  const folderId = extractDriveFolderId(raw);
   if (!folderId) {
-    showToast('יש להזין Folder ID', 'error');
+    showToast('לא זוהה Folder ID תקין — הדבק קישור מלא לתיקייה', 'error');
     return;
   }
 

@@ -292,20 +292,26 @@ router.post('/sync/:dealId/:category', authenticate, async (req, res) => {
 
     const driveFiles = listRes.data.files || [];
 
-    // Get existing images (match by drive file ID in URL)
-    const existingRows = await pool.query(
+    let added = 0;
+
+    // Migrate any existing rows from old thumbnail URL to the new proxy URL
+    await pool.query(
+      `UPDATE deal_images
+         SET image_url = '/api/google-drive/file/' || substring(image_url FROM 'id=([a-zA-Z0-9_-]+)')
+       WHERE deal_id = $1 AND category = $2 AND image_url LIKE 'https://drive.google.com/thumbnail%'`,
+      [dealId, category]
+    );
+
+    const refreshedRows = await pool.query(
       'SELECT image_url FROM deal_images WHERE deal_id=$1 AND category=$2',
       [dealId, category]
     );
-    const existingUrls = new Set(existingRows.rows.map(r => r.image_url));
-
-    let added = 0;
+    const existingUrlsNow = new Set(refreshedRows.rows.map(r => r.image_url));
 
     for (const file of driveFiles) {
-      // Use Google Drive direct image URL (no local download needed)
-      const driveImageUrl = `https://drive.google.com/thumbnail?id=${file.id}&sz=w1200`;
+      const driveImageUrl = `/api/google-drive/file/${file.id}`;
 
-      if (existingUrls.has(driveImageUrl)) continue;
+      if (existingUrlsNow.has(driveImageUrl)) continue;
 
       try {
         await pool.query(
@@ -331,6 +337,41 @@ router.post('/sync/:dealId/:category', authenticate, async (req, res) => {
       return res.status(401).json({ error: 'חיבור Google Drive פג תוקף. יש להתחבר מחדש דרך ההגדרות.' });
     }
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Image proxy (unauthenticated; file IDs are opaque & only exposed after sync) ──
+
+// GET /api/google-drive/file/:fileId — stream file bytes through server
+router.get('/file/:fileId', async (req, res) => {
+  const { fileId } = req.params;
+  if (!/^[a-zA-Z0-9_-]{10,}$/.test(fileId)) {
+    return res.status(400).send('invalid file id');
+  }
+  try {
+    const check = await pool.query(
+      `SELECT 1 FROM deal_images WHERE image_url LIKE $1 LIMIT 1`,
+      [`%${fileId}%`]
+    );
+    if (check.rows.length === 0) return res.status(404).send('not found');
+
+    const drive = await getAuthenticatedDrive();
+    const meta = await drive.files.get({ fileId, fields: 'mimeType' });
+    const mime = meta.data.mimeType || 'application/octet-stream';
+    const stream = await drive.files.get(
+      { fileId, alt: 'media' },
+      { responseType: 'stream' }
+    );
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    stream.data.on('error', (e) => {
+      console.error('Drive stream error:', e.message);
+      if (!res.headersSent) res.status(502).send('stream error');
+    });
+    stream.data.pipe(res);
+  } catch (err) {
+    console.error('Drive proxy error:', err.message);
+    res.status(500).send('proxy error');
   }
 });
 

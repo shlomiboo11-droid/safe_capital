@@ -50,37 +50,35 @@ function formatUSD(value) {
 
 // ── Timeline renderer ────────────────────────────────────────────────────────
 
-// Map property_status to timeline step index for fallback sync
-const STATUS_TO_STEP_INDEX = {
-  sourcing: 0,
-  purchased: 1,
-  planning: 2,
-  renovation: 3,
-  selling: 4,
-  sold: 5
-};
+// Unified 5-stage pipeline — must stay in sync with admin
+// (admin/public/js/deal-tabs/timeline.js → TIMELINE_STAGES)
+const TIMELINE_STAGES = [
+  { label: 'גיוס',   status: 'fundraising' },
+  { label: 'רכישה',  status: 'purchased' },
+  { label: 'שיפוץ',  status: 'renovation' },
+  { label: 'מכירה',  status: 'selling' },
+  { label: 'נמכר',   status: 'sold' }
+];
 
-function renderTimeline(steps, propertyStatus) {
-  if (!steps || steps.length === 0) return '';
+// Map legacy statuses to current stages
+function getActiveStageIndex(propertyStatus) {
+  if (propertyStatus === 'sourcing') return 0;
+  if (propertyStatus === 'planning') return 1;
+  const idx = TIMELINE_STAGES.findIndex(s => s.status === propertyStatus);
+  return idx === -1 ? 0 : idx;
+}
 
-  // Sync timeline with property_status if timeline data is stale
-  const expectedIndex = STATUS_TO_STEP_INDEX[propertyStatus] || 0;
-  steps.forEach((step, i) => {
-    if (i < expectedIndex) {
-      step.status = 'completed';
-    } else if (i === expectedIndex) {
-      step.status = 'active';
-    } else {
-      step.status = 'pending';
-    }
-  });
+function buildStageList(propertyStatus) {
+  const activeIdx = getActiveStageIndex(propertyStatus);
+  return TIMELINE_STAGES.map((stage, i) => ({
+    step_name: stage.label,
+    status: i < activeIdx ? 'completed' : i === activeIdx ? 'active' : 'pending'
+  }));
+}
 
-  // Calculate progress percentage
-  let activeIndex = -1;
-  steps.forEach((step, i) => {
-    if (step.status === 'completed') activeIndex = i;
-    if (step.status === 'active' && activeIndex < i) activeIndex = i;
-  });
+function renderTimeline(propertyStatus) {
+  const steps = buildStageList(propertyStatus);
+  const activeIndex = getActiveStageIndex(propertyStatus);
   const progressPct = steps.length > 1 ? Math.round((activeIndex / (steps.length - 1)) * 100) : 0;
 
   const stepsHtml = steps.map(step => {
@@ -112,21 +110,9 @@ function renderTimeline(steps, propertyStatus) {
 
 // ── Mobile timeline renderer ─────────────────────────────────────────────────
 
-function renderMobileTimeline(steps, propertyStatus) {
-  if (!steps || steps.length === 0) return '';
-
-  const expectedIndex = STATUS_TO_STEP_INDEX[propertyStatus] || 0;
-  steps.forEach((step, i) => {
-    if (i < expectedIndex) step.status = 'completed';
-    else if (i === expectedIndex) step.status = 'active';
-    else step.status = 'pending';
-  });
-
-  let activeIndex = -1;
-  steps.forEach((step, i) => {
-    if (step.status === 'completed') activeIndex = i;
-    if (step.status === 'active' && activeIndex < i) activeIndex = i;
-  });
+function renderMobileTimeline(propertyStatus) {
+  const steps = buildStageList(propertyStatus);
+  const activeIndex = getActiveStageIndex(propertyStatus);
   const progressPct = steps.length > 1 ? Math.round((activeIndex / (steps.length - 1)) * 100) : 0;
 
   const stepsHtml = steps.map(step => {
@@ -428,8 +414,7 @@ function renderProgress(progressConfig, deal, opts) {
 
   if (progressConfig.type === 'timeline') {
     const bottom = cfgText('bottom');
-    const steps = Array.isArray(deal.timeline) ? deal.timeline : [];
-    return renderCollapsedTimeline(steps, bottom, isMobileView);
+    return renderCollapsedTimeline(deal.property_status, bottom, isMobileView);
   }
 
   if (progressConfig.type === 'investors-enjoyed') {
@@ -447,16 +432,9 @@ function renderProgress(progressConfig, deal, opts) {
 }
 
 // Compact horizontal timeline for collapsed renovation card
-function renderCollapsedTimeline(steps, bottomText, isMobileView) {
-  if (!steps || steps.length === 0) {
-    // Fallback to a generic 4-step timeline if no DB steps
-    steps = [
-      { step_name: 'רכישה',  status: 'completed' },
-      { step_name: 'תכנון',  status: 'completed' },
-      { step_name: 'שיפוץ',  status: 'active' },
-      { step_name: 'מכירה',  status: 'pending' }
-    ];
-  }
+// Driven by property_status using the unified TIMELINE_STAGES (synced with admin dashboard)
+function renderCollapsedTimeline(propertyStatus, bottomText, isMobileView) {
+  const steps = buildStageList(propertyStatus);
   const dotColor = (s) => s === 'completed' ? '#984349' : (s === 'active' ? '#984349' : '#c4c6cf');
   const dotFill  = (s) => s === 'pending' ? 'transparent' : dotColor(s);
   const labelColor = (s) => s === 'pending' ? '#43474e' : '#022445';
@@ -841,7 +819,7 @@ function renderDescriptionSection(deal) {
 }
 
 function renderTimelineSection(deal) {
-  const html = renderTimeline(deal.timeline, deal.property_status);
+  const html = renderTimeline(deal.property_status);
   return html ? `<div>${html}</div>` : '';
 }
 
@@ -1050,7 +1028,7 @@ function renderMobileDescription(deal) {
 }
 
 function renderMobileTimelineSection(deal) {
-  return renderMobileTimeline(deal.timeline, deal.property_status);
+  return renderMobileTimeline(deal.property_status);
 }
 
 function renderMobileFundraisingBarSection(deal) {
