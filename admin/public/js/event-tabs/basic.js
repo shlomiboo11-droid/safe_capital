@@ -32,6 +32,15 @@ function renderBasicTab(data) {
         </div>
       </div>
 
+      <!-- Agenda (collapsible) -->
+      <details class="card p-0 overflow-hidden">
+        <summary class="p-6 cursor-pointer select-none flex items-center justify-between hover:bg-gray-50">
+          <h3 class="text-lg font-bold">סדר היום</h3>
+          <span class="material-symbols-outlined text-gray-400 agenda-chevron">expand_more</span>
+        </summary>
+        <div class="border-t border-gray-200 p-6" id="tab-agenda"></div>
+      </details>
+
       <!-- Venue -->
       <div class="card p-6">
         <h3 class="text-lg font-bold mb-4">מיקום</h3>

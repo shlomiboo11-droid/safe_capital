@@ -7,25 +7,22 @@ function renderAgendaTab(data) {
   const items = Array.isArray(data.event.agenda) ? [...data.event.agenda] : [];
 
   c.innerHTML = `
-    <div class="card p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-bold">סדר היום</h3>
-        <button class="btn btn-primary btn-sm" onclick="addAgendaItem()">
-          <span class="material-symbols-outlined text-sm">add</span>
-          הוסף שורה
-        </button>
-      </div>
+    <div class="flex items-center justify-end mb-4">
+      <button class="btn btn-primary btn-sm" onclick="addAgendaItem()">
+        <span class="material-symbols-outlined text-sm">add</span>
+        הוסף שורה
+      </button>
+    </div>
 
-      <div id="agendaList" class="space-y-3">
-        ${items.length === 0 ? '<div class="text-sm text-gray-400 text-center py-6">אין פריטים — לחץ "הוסף שורה"</div>' : ''}
-      </div>
+    <div id="agendaList" class="space-y-3">
+      ${items.length === 0 ? '<div class="text-sm text-gray-400 text-center py-6">אין פריטים — לחץ "הוסף שורה"</div>' : ''}
+    </div>
 
-      <div class="flex justify-end mt-6">
-        <button class="btn btn-primary px-8" onclick="saveAgenda()">
-          <span class="material-symbols-outlined text-lg">save</span>
-          שמור סדר יום
-        </button>
-      </div>
+    <div class="flex justify-end mt-6">
+      <button class="btn btn-primary px-8" onclick="saveAgenda()">
+        <span class="material-symbols-outlined text-lg">save</span>
+        שמור סדר יום
+      </button>
     </div>
   `;
 
