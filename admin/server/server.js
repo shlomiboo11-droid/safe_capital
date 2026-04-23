@@ -11,6 +11,9 @@ require('./db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Vercel/proxy headers so req.protocol reflects original https scheme
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet({
   contentSecurityPolicy: false,

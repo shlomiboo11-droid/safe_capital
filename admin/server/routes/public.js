@@ -8,6 +8,15 @@ const pool = require('../db');
 
 const router = express.Router();
 
+// Image URLs stored as relative `/api/google-drive/file/:id` only resolve when
+// the consumer is on the admin host. Cross-origin consumers (the website)
+// must receive absolute URLs.
+function absolutize(url, req) {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.startsWith('/api/')) return url;
+  return `${req.protocol}://${req.get('host')}${url}`;
+}
+
 // GET /api/public/deals — returns all published deals with related data
 router.get('/deals', async (req, res) => {
   try {
@@ -122,7 +131,7 @@ router.get('/deals', async (req, res) => {
     const imagesByDeal = {};
     for (const img of imagesResult.rows) {
       if (!imagesByDeal[img.deal_id]) imagesByDeal[img.deal_id] = [];
-      imagesByDeal[img.deal_id].push(img);
+      imagesByDeal[img.deal_id].push({ ...img, image_url: absolutize(img.image_url, req) });
     }
 
     const catsByDeal = {};
@@ -196,7 +205,7 @@ router.get('/deals', async (req, res) => {
         fundraising_status: deal.fundraising_status,
         is_featured: deal.is_featured,
         is_expandable: deal.is_expandable,
-        thumbnail_url: deal.thumbnail_url,
+        thumbnail_url: absolutize(deal.thumbnail_url, req),
         description: deal.description,
         project_duration: deal.project_duration,
         purchase_price: deal.purchase_price,
@@ -381,7 +390,7 @@ router.get('/active-event', async (req, res) => {
         deal_number: r.deal_number || r.fallback_deal_number || null,
         name: r.deal_name || null,
         address: r.deal_full_address || r.deal_name || r.fallback_address || '',
-        thumbnail_url: r.deal_thumbnail || null,
+        thumbnail_url: absolutize(r.deal_thumbnail, req) || null,
         property_status: r.deal_property_status || null,
         raised_amount: raised,
         raised_display: r.fallback_raised_display || (raised != null ? '$' + Math.round(raised).toLocaleString('en-US') : null),
@@ -406,7 +415,7 @@ router.get('/active-event', async (req, res) => {
         hero_title_main: event.hero_title_main,
         hero_title_accent: event.hero_title_accent,
         hero_description: event.hero_description,
-        hero_image_url: event.hero_image_url,
+        hero_image_url: absolutize(event.hero_image_url, req),
 
         event_date: event.event_date,
         event_time_start: event.event_time_start,
@@ -563,7 +572,7 @@ router.get('/articles', async (req, res) => {
     const result = await pool.query(sql, [...params, limit, offset]);
 
     res.json({
-      articles: result.rows,
+      articles: result.rows.map(a => ({ ...a, thumbnail_url: absolutize(a.thumbnail_url, req) })),
       pagination: {
         page,
         limit,
@@ -592,7 +601,8 @@ router.get('/articles/:slug', async (req, res) => {
       return res.status(404).json({ error: 'Article not found' });
     }
 
-    res.json({ article: result.rows[0] });
+    const article = { ...result.rows[0], thumbnail_url: absolutize(result.rows[0].thumbnail_url, req) };
+    res.json({ article });
   } catch (err) {
     console.error('Public article error:', err);
     res.status(500).json({ error: 'Server error' });
