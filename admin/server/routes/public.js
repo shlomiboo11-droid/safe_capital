@@ -318,16 +318,18 @@ router.get('/active-event', async (req, res) => {
     // event_featured_deals rows with is_hidden=true are excluded.
     const fdRes = await pool.query(`
       SELECT
-        d.id                  AS linked_deal_id,
-        d.deal_number         AS deal_number,
-        d.name                AS deal_name,
-        d.full_address        AS deal_full_address,
-        d.thumbnail_url       AS deal_thumbnail,
-        d.property_status     AS deal_property_status,
-        d.fundraising_goal    AS deal_fundraising_goal,
-        d.is_published        AS deal_is_published,
-        d.sort_order          AS deal_sort_order,
-        efd.id                AS id,
+        d.id                        AS linked_deal_id,
+        d.deal_number               AS deal_number,
+        d.name                      AS deal_name,
+        d.full_address              AS deal_full_address,
+        d.thumbnail_url             AS deal_thumbnail,
+        d.property_status           AS deal_property_status,
+        d.fundraising_goal          AS deal_fundraising_goal,
+        d.expected_sale_price       AS deal_expected_sale_price,
+        d.investor_roi_cap_percent  AS deal_investor_roi_cap_percent,
+        d.is_published              AS deal_is_published,
+        d.sort_order                AS deal_sort_order,
+        efd.id                      AS id,
         COALESCE(efd.sort_order, d.sort_order, 0) AS sort_order,
         efd.override_status_label,
         efd.override_status_tone,
@@ -345,13 +347,15 @@ router.get('/active-event', async (req, res) => {
       ORDER BY sort_order ASC, d.id DESC
     `, [event.id]);
 
-    // Fetch aggregate data for linked deals (raised + investor count + planned roi)
+    // Fetch aggregate data for linked deals:
+    //   raised + investor count + planned roi (legacy) + total_planned (for LIVE roi)
     const dealIds = fdRes.rows.map(r => r.linked_deal_id).filter(Boolean);
     const raisedMap = {};
     const investorCountMap = {};
-    const roiMap = {};
+    const legacyRoiMap = {};
+    const totalPlannedMap = {};
     if (dealIds.length > 0) {
-      const [raisedRes, countRes, roiRes] = await Promise.all([
+      const [raisedRes, countRes, roiRes, plannedRes] = await Promise.all([
         pool.query(
           `SELECT deal_id, COALESCE(SUM(amount), 0) AS total_raised
            FROM deal_investors WHERE deal_id = ANY($1) GROUP BY deal_id`,
@@ -366,18 +370,41 @@ router.get('/active-event', async (req, res) => {
           `SELECT deal_id, planned_roi FROM deal_financials_snapshot
            WHERE deal_id = ANY($1)`,
           [dealIds]
+        ),
+        pool.query(
+          `SELECT cc.deal_id, COALESCE(SUM(ci.planned_amount), 0) AS total_planned
+           FROM deal_cost_categories cc
+           LEFT JOIN deal_cost_items ci ON ci.category_id = cc.id
+           WHERE cc.deal_id = ANY($1)
+           GROUP BY cc.deal_id`,
+          [dealIds]
         )
       ]);
       for (const r of raisedRes.rows) raisedMap[r.deal_id] = parseFloat(r.total_raised);
       for (const r of countRes.rows) investorCountMap[r.deal_id] = r.cnt;
-      for (const r of roiRes.rows) roiMap[r.deal_id] = r.planned_roi != null ? parseFloat(r.planned_roi) : null;
+      for (const r of roiRes.rows) legacyRoiMap[r.deal_id] = r.planned_roi != null ? parseFloat(r.planned_roi) : null;
+      for (const r of plannedRes.rows) totalPlannedMap[r.deal_id] = parseFloat(r.total_planned || 0);
     }
 
     const featured_deals = fdRes.rows.map(r => {
       const live = r.linked_deal_id != null;
       const raised = live && raisedMap[r.linked_deal_id] != null ? raisedMap[r.linked_deal_id] : null;
       const count = live && investorCountMap[r.linked_deal_id] != null ? investorCountMap[r.linked_deal_id] : null;
-      const roi = live && roiMap[r.linked_deal_id] != null ? roiMap[r.linked_deal_id] : null;
+
+      // LIVE investor ROI — same formula as /deals endpoint:
+      //   profit / fundraising_goal × 100, capped at investor_roi_cap_percent (default 20)
+      const fundraisingGoal = parseFloat(r.deal_fundraising_goal || 0);
+      const expectedSalePrice = parseFloat(r.deal_expected_sale_price || 0);
+      const totalPlanned = totalPlannedMap[r.linked_deal_id] || 0;
+      const expectedProfit = (expectedSalePrice > 0 && totalPlanned > 0) ? (expectedSalePrice - totalPlanned) : null;
+      const investorCap = parseFloat(r.deal_investor_roi_cap_percent != null ? r.deal_investor_roi_cap_percent : 20);
+      let roi = null;
+      if (live && expectedProfit != null && fundraisingGoal > 0) {
+        const rawRoi = (expectedProfit / fundraisingGoal) * 100;
+        roi = Math.max(0, Math.min(investorCap, rawRoi));
+      } else if (live && legacyRoiMap[r.linked_deal_id] != null) {
+        roi = Math.min(investorCap, legacyRoiMap[r.linked_deal_id]);
+      }
 
       return {
         id: r.id,
