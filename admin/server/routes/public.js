@@ -5,6 +5,7 @@
 
 const express = require('express');
 const pool = require('../db');
+const { sendEventRegistrationEmail } = require('../services/email');
 
 const router = express.Router();
 
@@ -537,6 +538,31 @@ router.post('/event-registration', async (req, res) => {
     );
 
     res.json({ success: true, id: result.rows[0].id });
+
+    // Fire-and-forget confirmation email. Never blocks the response;
+    // errors are logged inside the service and never thrown.
+    (async () => {
+      try {
+        const eventId = event_id ? parseInt(event_id) : null;
+        const slug = event_slug || 'may-2026-tlv';
+        const evRes = await pool.query(
+          `SELECT hero_title_main, hero_title_accent,
+                  event_date_display_full, event_time_start, event_time_end,
+                  venue_name, venue_address, venue_full_address
+             FROM events
+            WHERE ($1::int IS NOT NULL AND id = $1) OR slug = $2
+            LIMIT 1`,
+          [eventId, slug]
+        );
+        const eventRow = evRes.rows[0] || {};
+        await sendEventRegistrationEmail(
+          { first_name, last_name, email, phone, guest_name },
+          eventRow
+        );
+      } catch (mailErr) {
+        console.error('[email] Post-registration email path failed:', mailErr.message);
+      }
+    })();
   } catch (err) {
     console.error('Event registration error:', err);
     res.status(500).json({ error: 'Server error' });
