@@ -8,14 +8,10 @@ const pool = require('../db');
 
 const router = express.Router();
 
-// Image URLs stored as relative `/api/google-drive/file/:id` only resolve when
-// the consumer is on the admin host. Cross-origin consumers (the website)
-// must receive absolute URLs.
-function absolutize(url, req) {
-  if (!url || typeof url !== 'string') return url;
-  if (!url.startsWith('/api/')) return url;
-  return `${req.protocol}://${req.get('host')}${url}`;
-}
+// NOTE: image URLs are returned as relative paths (e.g. `/api/google-drive/file/:id`,
+// `/uploads/...`). Clients (website + admin) prepend ADMIN_HOST themselves —
+// see website/js/deals.js which does `ADMIN_HOST + image_url`. Do NOT absolutize
+// here or you'll cause double-host URLs on the website side.
 
 // GET /api/public/deals — returns all published deals with related data
 router.get('/deals', async (req, res) => {
@@ -131,7 +127,7 @@ router.get('/deals', async (req, res) => {
     const imagesByDeal = {};
     for (const img of imagesResult.rows) {
       if (!imagesByDeal[img.deal_id]) imagesByDeal[img.deal_id] = [];
-      imagesByDeal[img.deal_id].push({ ...img, image_url: absolutize(img.image_url, req) });
+      imagesByDeal[img.deal_id].push(img);
     }
 
     const catsByDeal = {};
@@ -205,7 +201,7 @@ router.get('/deals', async (req, res) => {
         fundraising_status: deal.fundraising_status,
         is_featured: deal.is_featured,
         is_expandable: deal.is_expandable,
-        thumbnail_url: absolutize(deal.thumbnail_url, req),
+        thumbnail_url: deal.thumbnail_url,
         description: deal.description,
         project_duration: deal.project_duration,
         purchase_price: deal.purchase_price,
@@ -390,7 +386,7 @@ router.get('/active-event', async (req, res) => {
         deal_number: r.deal_number || r.fallback_deal_number || null,
         name: r.deal_name || null,
         address: r.deal_full_address || r.deal_name || r.fallback_address || '',
-        thumbnail_url: absolutize(r.deal_thumbnail, req) || null,
+        thumbnail_url: r.deal_thumbnail || null,
         property_status: r.deal_property_status || null,
         raised_amount: raised,
         raised_display: r.fallback_raised_display || (raised != null ? '$' + Math.round(raised).toLocaleString('en-US') : null),
@@ -415,7 +411,7 @@ router.get('/active-event', async (req, res) => {
         hero_title_main: event.hero_title_main,
         hero_title_accent: event.hero_title_accent,
         hero_description: event.hero_description,
-        hero_image_url: absolutize(event.hero_image_url, req),
+        hero_image_url: event.hero_image_url,
 
         event_date: event.event_date,
         event_time_start: event.event_time_start,
@@ -572,7 +568,7 @@ router.get('/articles', async (req, res) => {
     const result = await pool.query(sql, [...params, limit, offset]);
 
     res.json({
-      articles: result.rows.map(a => ({ ...a, thumbnail_url: absolutize(a.thumbnail_url, req) })),
+      articles: result.rows,
       pagination: {
         page,
         limit,
@@ -601,8 +597,7 @@ router.get('/articles/:slug', async (req, res) => {
       return res.status(404).json({ error: 'Article not found' });
     }
 
-    const article = { ...result.rows[0], thumbnail_url: absolutize(result.rows[0].thumbnail_url, req) };
-    res.json({ article });
+    res.json({ article: result.rows[0] });
   } catch (err) {
     console.error('Public article error:', err);
     res.status(500).json({ error: 'Server error' });
