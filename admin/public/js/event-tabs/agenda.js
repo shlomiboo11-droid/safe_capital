@@ -47,10 +47,11 @@ function renderAgendaList() {
   list.innerHTML = _agendaItems.map((it, idx) => `
     <div class="border border-gray-200 rounded-lg p-4" data-idx="${idx}">
       <div class="flex items-center justify-between mb-3">
-        <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
+        <div class="flex items-center gap-2">
+          <button type="button" class="drag-handle" aria-label="גרור למיקום אחר"><span class="material-symbols-outlined">drag_indicator</span></button>
+          <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
+        </div>
         <div class="flex gap-1">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="moveAgendaItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="העלה"><span class="material-symbols-outlined text-sm">arrow_upward</span></button>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="moveAgendaItem(${idx}, 1)" ${idx === _agendaItems.length - 1 ? 'disabled' : ''} title="הורד"><span class="material-symbols-outlined text-sm">arrow_downward</span></button>
           <button type="button" class="btn btn-secondary btn-sm" onclick="removeAgendaItem(${idx})" title="מחק"><span class="material-symbols-outlined text-sm">delete</span></button>
         </div>
       </div>
@@ -74,6 +75,18 @@ function renderAgendaList() {
       </div>
     </div>
   `).join('');
+
+  _wireAgendaSortable();
+}
+
+function _wireAgendaSortable() {
+  if (typeof initSortableList !== 'function') return;
+  initSortableList({
+    containerSelector: '#agendaList',
+    handleSelector: '.drag-handle',
+    items: _agendaItems,
+    onReorder: () => { saveAgenda(); renderAgendaList(); }
+  });
 }
 
 function addAgendaItem() {
@@ -83,15 +96,6 @@ function addAgendaItem() {
 
 function removeAgendaItem(idx) {
   _agendaItems.splice(idx, 1);
-  renderAgendaList();
-}
-
-function moveAgendaItem(idx, dir) {
-  const tgt = idx + dir;
-  if (tgt < 0 || tgt >= _agendaItems.length) return;
-  const tmp = _agendaItems[idx];
-  _agendaItems[idx] = _agendaItems[tgt];
-  _agendaItems[tgt] = tmp;
   renderAgendaList();
 }
 

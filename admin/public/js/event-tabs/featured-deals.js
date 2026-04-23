@@ -73,14 +73,11 @@ function renderPublishedDealsList() {
     const addr = d.full_address || d.name || '—';
     const status = d.property_status || '';
     return `
-      <div class="border border-gray-200 rounded-lg p-4 ${hidden ? 'opacity-50' : ''}" data-deal-id="${d.id}">
+      <div class="border border-gray-200 rounded-lg p-4 ${hidden ? 'opacity-50' : ''}" data-idx="${idx}" data-deal-id="${d.id}">
         <div class="flex items-center justify-between gap-4">
           <div class="flex items-center gap-3 flex-1 min-w-0">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="moveFeaturedDeal(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>
-              <span class="material-symbols-outlined text-sm">arrow_upward</span>
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="moveFeaturedDeal(${idx}, 1)" ${idx === _publishedDeals.length - 1 ? 'disabled' : ''}>
-              <span class="material-symbols-outlined text-sm">arrow_downward</span>
+            <button type="button" class="drag-handle" aria-label="גרור למיקום אחר">
+              <span class="material-symbols-outlined">drag_indicator</span>
             </button>
             <div class="flex-1 min-w-0">
               <div class="font-bold text-sm text-primary truncate">${escAttrF(addr)}</div>
@@ -118,6 +115,25 @@ function renderPublishedDealsList() {
       </div>
     `;
   }).join('');
+
+  _wireFeaturedDealsSortable();
+}
+
+function _wireFeaturedDealsSortable() {
+  if (typeof initSortableList !== 'function') return;
+  initSortableList({
+    containerSelector: '#featuredDealsList',
+    handleSelector: '.drag-handle',
+    items: _publishedDeals,
+    onReorder: () => {
+      _publishedDeals.forEach((d, i) => {
+        if (!_eventOverrides[d.id]) _eventOverrides[d.id] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
+        _eventOverrides[d.id].sort_order = i;
+      });
+      saveFeaturedOverrides();
+      renderPublishedDealsList();
+    }
+  });
 }
 
 function toggleHidden(dealId, isHidden) {
@@ -129,18 +145,6 @@ function toggleHidden(dealId, isHidden) {
 function updateOverride(dealId, field, value) {
   if (!_eventOverrides[dealId]) _eventOverrides[dealId] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
   _eventOverrides[dealId][field] = value;
-}
-
-function moveFeaturedDeal(idx, dir) {
-  const tgt = idx + dir;
-  if (tgt < 0 || tgt >= _publishedDeals.length) return;
-  [_publishedDeals[idx], _publishedDeals[tgt]] = [_publishedDeals[tgt], _publishedDeals[idx]];
-  // Write new sort_orders to overrides
-  _publishedDeals.forEach((d, i) => {
-    if (!_eventOverrides[d.id]) _eventOverrides[d.id] = { is_hidden: false, sort_order: 0, override_status_label: '', override_status_tone: '', override_note: '' };
-    _eventOverrides[d.id].sort_order = i;
-  });
-  renderPublishedDealsList();
 }
 
 async function saveFeaturedOverrides() {

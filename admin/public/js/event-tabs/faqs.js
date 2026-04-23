@@ -42,10 +42,11 @@ function renderFaqsList() {
   list.innerHTML = _faqItems.map((it, idx) => `
     <div class="border border-gray-200 rounded-lg p-4" data-idx="${idx}">
       <div class="flex items-center justify-between mb-3">
-        <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
+        <div class="flex items-center gap-2">
+          <button type="button" class="drag-handle" aria-label="גרור למיקום אחר"><span class="material-symbols-outlined">drag_indicator</span></button>
+          <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
+        </div>
         <div class="flex gap-1">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="moveFaq(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}><span class="material-symbols-outlined text-sm">arrow_upward</span></button>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="moveFaq(${idx}, 1)" ${idx === _faqItems.length - 1 ? 'disabled' : ''}><span class="material-symbols-outlined text-sm">arrow_downward</span></button>
           <button type="button" class="btn btn-secondary btn-sm" onclick="removeFaq(${idx})"><span class="material-symbols-outlined text-sm">delete</span></button>
         </div>
       </div>
@@ -61,6 +62,18 @@ function renderFaqsList() {
       </div>
     </div>
   `).join('');
+
+  _wireFaqsSortable();
+}
+
+function _wireFaqsSortable() {
+  if (typeof initSortableList !== 'function') return;
+  initSortableList({
+    containerSelector: '#faqsList',
+    handleSelector: '.drag-handle',
+    items: _faqItems,
+    onReorder: () => { saveFaqs(); renderFaqsList(); }
+  });
 }
 
 function addFaqItem() {
@@ -68,12 +81,6 @@ function addFaqItem() {
   renderFaqsList();
 }
 function removeFaq(idx) { _faqItems.splice(idx, 1); renderFaqsList(); }
-function moveFaq(idx, dir) {
-  const tgt = idx + dir;
-  if (tgt < 0 || tgt >= _faqItems.length) return;
-  [_faqItems[idx], _faqItems[tgt]] = [_faqItems[tgt], _faqItems[idx]];
-  renderFaqsList();
-}
 function updateFaq(idx, field, value) { _faqItems[idx][field] = value; }
 
 async function saveFaqs() {

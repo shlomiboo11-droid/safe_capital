@@ -1216,3 +1216,33 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
 .comp-inline-input:focus {
   border-bottom-color: #022445;
 }
+
+
+/* Sortable drag handle */
+.drag-handle {
+  cursor: grab;
+  color: rgba(67, 71, 78, 0.4);
+  background: transparent;
+  border: 0;
+  padding: 8px;
+  min-width: 32px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.drag-handle:hover {
+  color: #022445;
+  background: rgba(2, 36, 69, 0.05);
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.drag-handle .material-symbols-outlined {
+  font-size: 20px;
+}
+.sortable-ghost { opacity: 0.4; }
+.sortable-drag  { opacity: 0.9; }
+.sortable-chosen { background: rgba(2, 36, 69, 0.03); }
