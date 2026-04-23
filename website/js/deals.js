@@ -317,7 +317,11 @@ function renderMobileCostAccordion(categories) {
       </div>
     </div>`).join('');
 
-  return `<div class="px-5 mb-6 space-y-2">${items}</div>`;
+  return `
+    <div class="px-5 mb-6">
+      <h3 class="text-md font-bold text-[#022445] mb-3">פירוט עלויות</h3>
+      <div class="space-y-2">${items}</div>
+    </div>`;
 }
 
 // ── Mobile WhatsApp CTA ─────────────────────────────────────────────────────
@@ -375,6 +379,15 @@ function renderBadge(badgeConfig, deal) {
   }
 
   return `<span class="deal-badge deal-badge--${badgeConfig.style}">${iconHtml}${text}</span>`;
+}
+
+function renderFundraisingSecondaryBadge(deal) {
+  const displayStatus = getDisplayStatus(deal);
+  if (displayStatus === 'active') return '';
+  if (deal.fundraising_status !== 'active') return '';
+  return `<span class="deal-badge deal-badge--filled-crimson">
+    <span class="deal-badge__dot" aria-hidden="true"></span>גיוס משקיעים פתוח
+  </span>`;
 }
 
 function renderProgress(progressConfig, deal, opts) {
@@ -533,6 +546,7 @@ function renderMobileDealCard(deal, index) {
   const thumbSrc = deal.thumbnail_url ? (ADMIN_HOST + deal.thumbnail_url) : '';
 
   const badgeHtml    = renderBadge(config.badge, deal);
+  const secondaryBadgeHtml = renderFundraisingSecondaryBadge(deal);
   const numbersHtml  = renderNumbersRow(config.numbers, deal, { mobile: true });
   const progressHtml = renderProgress(config.progress, deal, { mobile: true });
   const ctaHtml      = renderCTA(config.cta, isExpandable);
@@ -560,7 +574,7 @@ function renderMobileDealCard(deal, index) {
       <div class="deal-header cursor-pointer">
         <div class="p-3 relative">
           ${imageHtml}
-          <div class="absolute top-6 right-6">${badgeHtml}</div>
+          <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">${badgeHtml}${secondaryBadgeHtml}</div>
           <div class="absolute top-6 left-6">${dealNumRibbon}</div>
         </div>
         <div class="px-4 pb-4 flex flex-col gap-4">
@@ -856,7 +870,7 @@ function renderCostBreakdownSection(deal) {
   return `
     <div class="bg-surface-container-low rounded-xl p-8 md:p-12">
       <div class="flex flex-col md:flex-row-reverse justify-between items-start md:items-center mb-8 gap-4">
-        <h3 class="text-2xl font-extrabold text-primary">פירוט פיננסי</h3>
+        <h3 class="text-2xl font-extrabold text-primary">פירוט עלויות</h3>
       </div>
       ${catsHtml}
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center items-center">
@@ -1280,13 +1294,226 @@ function renderMobileComps(deal) {
     </div>`;
 }
 
+// ── Unified gallery (category tabs + carousel) ──────────────────────────────
+
+const GALLERY_CATEGORY_ORDER = ['before', 'after', 'during', 'rendering'];
+const GALLERY_CATEGORY_LABELS = {
+  before:    'לפני',
+  after:     'אחרי',
+  during:    'במהלך השיפוץ',
+  rendering: 'הדמיות'
+};
+
+function buildGalleryImagesMap(deal) {
+  const map = {};
+  const imgs = Array.isArray(deal.images) ? deal.images : [];
+  for (const cat of GALLERY_CATEGORY_ORDER) {
+    const list = imgs
+      .filter(i => i.category === cat)
+      .map(i => ({ image_url: ADMIN_HOST + i.image_url, alt_text: i.alt_text || '' }));
+    if (list.length > 0) map[cat] = list;
+  }
+  return map;
+}
+
+function renderUnifiedGallery(deal) {
+  const imagesMap = buildGalleryImagesMap(deal);
+  const activeCategories = Object.keys(imagesMap);
+  if (activeCategories.length === 0) return '';
+
+  const initialCategory = activeCategories[0];
+  const initialList = imagesMap[initialCategory];
+  const firstImg = initialList[0];
+  const jsonAttr = JSON.stringify(imagesMap).replace(/'/g, '&#39;');
+
+  const showTabs = activeCategories.length > 1;
+  const showNav = initialList.length > 1;
+
+  const tabsHtml = showTabs ? `
+    <div class="flex gap-2 mt-4 flex-wrap">
+      ${activeCategories.map(cat => {
+        const isActive = cat === initialCategory;
+        const activeClasses = 'bg-primary text-white';
+        const idleClasses = 'bg-surface-container-low text-on-surface-variant';
+        return `
+          <button type="button"
+                  data-gallery-tab="${cat}"
+                  data-active="${isActive}"
+                  onclick="switchGalleryCategory(event, '${deal.id}', '${cat}')"
+                  class="px-5 py-2 rounded-full text-sm font-bold transition ${isActive ? activeClasses : idleClasses}">
+            ${GALLERY_CATEGORY_LABELS[cat] || cat}
+          </button>`;
+      }).join('')}
+    </div>` : '';
+
+  return `
+    <div>
+      <h3 class="text-2xl font-extrabold text-primary mb-6">גלריה</h3>
+      <div class="unified-gallery-wrapper"
+           data-gallery-deal-id="${deal.id}"
+           data-active-category="${initialCategory}"
+           data-active-index="0"
+           data-gallery-images='${jsonAttr}'>
+        <div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-low">
+          <img data-gallery-main class="w-full h-full object-cover" src="${firstImg.image_url}" alt="${firstImg.alt_text}" loading="lazy"/>
+          <button type="button" data-gallery-nav="prev"
+                  onclick="galleryNavigate(event, '${deal.id}', 'prev')"
+                  aria-label="קודם"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center hover:bg-white transition"
+                  style="${showNav ? '' : 'display:none'}">
+            <span class="material-symbols-outlined text-primary">chevron_right</span>
+          </button>
+          <button type="button" data-gallery-nav="next"
+                  onclick="galleryNavigate(event, '${deal.id}', 'next')"
+                  aria-label="הבא"
+                  class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center hover:bg-white transition"
+                  style="${showNav ? '' : 'display:none'}">
+            <span class="material-symbols-outlined text-primary">chevron_left</span>
+          </button>
+          <div data-gallery-indicator dir="ltr"
+               class="absolute bottom-3 left-3 bg-black/50 text-white rounded-full px-3 py-1 text-xs font-label"
+               style="${showNav ? '' : 'display:none'}">
+            1 / ${initialList.length}
+          </div>
+        </div>
+        ${tabsHtml}
+      </div>
+    </div>`;
+}
+
+function renderMobileUnifiedGallery(deal) {
+  const imagesMap = buildGalleryImagesMap(deal);
+  const activeCategories = Object.keys(imagesMap);
+  if (activeCategories.length === 0) return '';
+
+  const initialCategory = activeCategories[0];
+  const initialList = imagesMap[initialCategory];
+  const firstImg = initialList[0];
+  const jsonAttr = JSON.stringify(imagesMap).replace(/'/g, '&#39;');
+
+  const showTabs = activeCategories.length > 1;
+  const showNav = initialList.length > 1;
+
+  const tabsHtml = showTabs ? `
+    <div class="flex gap-2 mt-3 overflow-x-auto" style="scrollbar-width:none">
+      ${activeCategories.map(cat => {
+        const isActive = cat === initialCategory;
+        const activeClasses = 'bg-primary text-white';
+        const idleClasses = 'bg-surface-container-low text-on-surface-variant';
+        return `
+          <button type="button"
+                  data-gallery-tab="${cat}"
+                  data-active="${isActive}"
+                  onclick="switchGalleryCategory(event, '${deal.id}', '${cat}')"
+                  class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold transition ${isActive ? activeClasses : idleClasses}">
+            ${GALLERY_CATEGORY_LABELS[cat] || cat}
+          </button>`;
+      }).join('')}
+    </div>` : '';
+
+  return `
+    <div class="px-5 mb-6">
+      <h3 class="text-md font-bold text-[#022445] mb-3">גלריה</h3>
+      <div class="unified-gallery-wrapper"
+           data-gallery-deal-id="${deal.id}"
+           data-active-category="${initialCategory}"
+           data-active-index="0"
+           data-gallery-images='${jsonAttr}'>
+        <div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-low">
+          <img data-gallery-main class="w-full h-full object-cover" src="${firstImg.image_url}" alt="${firstImg.alt_text}" loading="lazy"/>
+          <button type="button" data-gallery-nav="prev"
+                  onclick="galleryNavigate(event, '${deal.id}', 'prev')"
+                  aria-label="קודם"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center"
+                  style="${showNav ? '' : 'display:none'}">
+            <span class="material-symbols-outlined text-primary" style="font-size:1.1rem">chevron_right</span>
+          </button>
+          <button type="button" data-gallery-nav="next"
+                  onclick="galleryNavigate(event, '${deal.id}', 'next')"
+                  aria-label="הבא"
+                  class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center"
+                  style="${showNav ? '' : 'display:none'}">
+            <span class="material-symbols-outlined text-primary" style="font-size:1.1rem">chevron_left</span>
+          </button>
+          <div data-gallery-indicator dir="ltr"
+               class="absolute bottom-2 left-2 bg-black/50 text-white rounded-full px-2 py-0.5 text-xs font-label"
+               style="${showNav ? '' : 'display:none'}">
+            1 / ${initialList.length}
+          </div>
+        </div>
+        ${tabsHtml}
+      </div>
+    </div>`;
+}
+
+window.switchGalleryCategory = function(event, dealId, category) {
+  if (event) event.stopPropagation();
+  const wrappers = document.querySelectorAll(`.unified-gallery-wrapper[data-gallery-deal-id="${dealId}"]`);
+  wrappers.forEach(wrapper => {
+    wrapper.dataset.activeCategory = category;
+    wrapper.dataset.activeIndex = '0';
+    updateGalleryView(wrapper);
+  });
+};
+
+window.galleryNavigate = function(event, dealId, direction) {
+  if (event) event.stopPropagation();
+  const wrappers = document.querySelectorAll(`.unified-gallery-wrapper[data-gallery-deal-id="${dealId}"]`);
+  wrappers.forEach(wrapper => {
+    const images = JSON.parse(wrapper.dataset.galleryImages || '{}');
+    const cat = wrapper.dataset.activeCategory;
+    const list = images[cat] || [];
+    if (list.length === 0) return;
+    let idx = parseInt(wrapper.dataset.activeIndex || '0', 10);
+    if (direction === 'next') idx = (idx + 1) % list.length;
+    else idx = (idx - 1 + list.length) % list.length;
+    wrapper.dataset.activeIndex = String(idx);
+    updateGalleryView(wrapper);
+  });
+};
+
+function updateGalleryView(wrapper) {
+  const images = JSON.parse(wrapper.dataset.galleryImages || '{}');
+  const cat = wrapper.dataset.activeCategory;
+  const list = images[cat] || [];
+  const idx = parseInt(wrapper.dataset.activeIndex || '0', 10);
+  const current = list[idx];
+
+  const mainImg = wrapper.querySelector('[data-gallery-main]');
+  if (mainImg && current) {
+    mainImg.src = current.image_url;
+    mainImg.alt = current.alt_text || '';
+  }
+
+  const indicator = wrapper.querySelector('[data-gallery-indicator]');
+  if (indicator) {
+    indicator.textContent = `${idx + 1} / ${list.length}`;
+    indicator.style.display = list.length > 1 ? '' : 'none';
+  }
+
+  const prev = wrapper.querySelector('[data-gallery-nav="prev"]');
+  const next = wrapper.querySelector('[data-gallery-nav="next"]');
+  if (prev) prev.style.display = list.length > 1 ? '' : 'none';
+  if (next) next.style.display = list.length > 1 ? '' : 'none';
+
+  wrapper.querySelectorAll('[data-gallery-tab]').forEach(btn => {
+    const isActive = btn.dataset.galleryTab === cat;
+    btn.dataset.active = isActive ? 'true' : 'false';
+    if (isActive) {
+      btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      btn.classList.add('bg-primary', 'text-white');
+    } else {
+      btn.classList.remove('bg-primary', 'text-white');
+      btn.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+    }
+  });
+}
+
 // ── Section dispatcher ──────────────────────────────────────────────────────
 
 const SECTION_RENDERERS_DESKTOP = {
   'fundraising-bar':      (d) => renderFundraisingBarSection(d),
-  'gallery-before-after': (d) => renderGallery(d.images, 'before-after'),
-  'gallery-during':       (d) => renderGallery(d.images, 'during'),
-  'gallery-after-only':   (d) => renderGallery(d.images, 'after-only'),
+  'unified-gallery':      (d) => renderUnifiedGallery(d),
   'key-metrics':          (d) => renderKeyMetricsSection(d),
   'description':          (d) => renderDescriptionSection(d),
   'specs':                (d) => renderSpecsSection(d),
@@ -1301,9 +1528,7 @@ const SECTION_RENDERERS_DESKTOP = {
 
 const SECTION_RENDERERS_MOBILE = {
   'fundraising-bar':      (d) => renderMobileFundraisingBarSection(d),
-  'gallery-before-after': (d) => renderMobileGallerySection(d, 'before-after'),
-  'gallery-during':       (d) => renderMobileGallerySection(d, 'during'),
-  'gallery-after-only':   (d) => renderMobileGallerySection(d, 'after-only'),
+  'unified-gallery':      (d) => renderMobileUnifiedGallery(d),
   'key-metrics':          (d) => renderMobileKeyMetrics(d),
   'description':          (d) => renderMobileDescription(d),
   'specs':                (d) => renderMobileSpecsSection(d),
@@ -1349,6 +1574,7 @@ function renderDealCard(deal, index) {
     : `<div class="deal-card-thumb" style="background:#f5f3f0"></div>`;
 
   const badgeHtml    = renderBadge(config.badge, deal);
+  const secondaryBadgeHtml = renderFundraisingSecondaryBadge(deal);
   const numbersHtml  = renderNumbersRow(config.numbers, deal, { mobile: false });
   const progressHtml = renderProgress(config.progress, deal);
   const ctaHtml      = renderCTA(config.cta, isExpandable);
@@ -1376,7 +1602,7 @@ function renderDealCard(deal, index) {
           <div class="flex items-center gap-4 min-w-0" style="width:30%">
             ${thumbHtml}
             <div class="flex flex-col min-w-0">
-              ${badgeHtml}
+              <div class="flex flex-col gap-1 items-start">${badgeHtml}${secondaryBadgeHtml}</div>
               <h3 class="deal-card-title mt-2 truncate">${deal.name || ''}</h3>
               ${subtitle ? `<div class="deal-card-subtitle truncate">${subtitle}</div>` : ''}
             </div>

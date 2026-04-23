@@ -101,74 +101,63 @@ const DEAL_DISPLAY_CONFIG = {
 // deals.js. Same config drives both desktop and mobile.
 //
 // Available section ids:
-//   fundraising-bar · gallery-before-after · gallery-during · gallery-after-only
+//   fundraising-bar · unified-gallery
 //   key-metrics · description · timeline · specs · cost-breakdown · comps
 //   renovation-progress · plan-vs-actual · post-sale-summary · whatsapp-cta
 
 const EXPANDED_PANEL_CONFIG = {
   sourcing: [
-    'gallery-before-after',
+    'description',
+    'unified-gallery',
     'key-metrics',
-    'fundraising-bar',
+    'specs',
     'comps',
     'cost-breakdown',
-    'description',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ],
   purchased: [
-    'gallery-before-after',
+    'description',
+    'unified-gallery',
     'key-metrics',
-    'fundraising-bar',
+    'specs',
     'comps',
     'cost-breakdown',
-    'description',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ],
   planning: [
-    'gallery-before-after',
+    'description',
+    'unified-gallery',
     'key-metrics',
-    'fundraising-bar',
+    'specs',
     'comps',
     'cost-breakdown',
-    'description',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ],
   renovation: [
-    'gallery-during',
+    'description',
+    'unified-gallery',
     'key-metrics',
-    'fundraising-bar',
-    'renovation-progress',
+    'specs',
     'comps',
     'cost-breakdown',
-    'description',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ],
   selling: [
-    'gallery-after-only',
+    'description',
+    'unified-gallery',
     'key-metrics',
-    'fundraising-bar',
+    'specs',
     'comps',
     'cost-breakdown',
-    'description',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ],
   sold: [
-    'gallery-before-after',
+    'description',
+    'unified-gallery',
     'plan-vs-actual',
+    'specs',
     'comps',
     'post-sale-summary',
-    'timeline',
-    'specs',
     'whatsapp-cta'
   ]
 };
