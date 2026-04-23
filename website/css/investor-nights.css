@@ -1079,9 +1079,9 @@ body.in-body { background: #fbf9f6; }
   cursor: pointer;
 }
 .in-terms input[type="checkbox"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
   margin: 2px 0 0 0;
   padding: 0;
   width: 20px;
@@ -1091,17 +1091,19 @@ body.in-body { background: #fbf9f6; }
   max-width: 20px;
   max-height: 20px;
   flex: 0 0 20px;
-  border: 1.5px solid #43474e;
+  border: 1.5px solid #43474e !important;
   border-radius: 4px;
-  background: #ffffff;
+  background: #ffffff !important;
+  background-image: none !important;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
   transition: background-color .15s, border-color .15s;
 }
 .in-terms input[type="checkbox"]:checked {
-  background: #022445;
-  border-color: #022445;
+  background: #022445 !important;
+  background-image: none !important;
+  border-color: #022445 !important;
 }
 .in-terms input[type="checkbox"]:checked::after {
   content: '';
