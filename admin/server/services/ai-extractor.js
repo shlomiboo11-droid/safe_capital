@@ -236,4 +236,73 @@ ${JSON_SCHEMA}
   return result;
 }
 
-module.exports = { analyzeAllDocuments };
+/**
+ * Regenerate deal description + card summary based on existing deal data.
+ *
+ * Uses the SAME prompt as the wizard for `deal_description` (line 113 JSON_SCHEMA
+ * above) — identical instructions, identical output. Adds a second field
+ * `card_summary` with strict rules: Hebrew only, no digits/numbers, max 15 words.
+ *
+ * @param {object} deal - Deal row from DB (at minimum: name, full_address, city,
+ *   state, project_duration, purchase_price, arv, expected_sale_price,
+ *   description, and related summary fields if available)
+ * @returns {{ deal_description: string, card_summary: string }}
+ */
+async function regenerateDescription(deal) {
+  // Build a compact context block from the current deal record.
+  const ctx = {
+    שם: deal.name || null,
+    כתובת_מלאה: deal.full_address || null,
+    עיר: deal.city || null,
+    מדינה: deal.state || null,
+    משך_פרויקט: deal.project_duration || null,
+    מחיר_רכישה: deal.purchase_price || null,
+    ARV: deal.arv || null,
+    מחיר_מכירה_צפוי: deal.expected_sale_price || null,
+    רווח_צפוי:
+      (deal.expected_sale_price && deal.purchase_price)
+        ? (parseFloat(deal.expected_sale_price) - parseFloat(deal.purchase_price))
+        : null,
+    תיאור_קיים: deal.description || null
+  };
+
+  const userPrompt = `יש לך נתוני עסקת נדל"ן קיימת (fix-and-flip בבירמינגהם אלבמה למשקיעים ישראלים).
+צור מחדש את שני השדות הבאים בהתבסס על הנתונים.
+
+החזר JSON בפורמט הבא בלבד, ללא markdown וללא טקסט נוסף:
+
+{
+  "deal_description": "3 שורות שיווקיות בעברית שמתארות את העסקה למשקיעים. כתוב בשפה מקצועית ומשכנעת. כלול: מיקום הנכס ויתרונותיו, היקף השיפוץ והתוצאה הצפויה, והתשואה הצפויה למשקיעים.",
+  "card_summary": "תקציר שיווקי של עד 15 מילים בעברית בלבד, בלי מספרים/ספרות/אחוזים. ברמה רגשית וחלקה, כאילו זה כותרת משנה על כרטיס במהלך גלילה. דוגמה: 'נכס יוקרתי בשכונה מבוקשת עם פוטנציאל השבחה משמעותי ותשואה אטרקטיבית למשקיעים.'"
+}
+
+כללים מחייבים עבור card_summary:
+- עברית בלבד
+- אסור בהחלט להשתמש בספרות (0-9), סימני $, אחוזים, או כל מספר שכתוב במילים (למשל "שלושה חדרים", "עשרים אחוז" — אסור)
+- עד 15 מילים בסך הכל
+- שפה שיווקית, חלקה, רגשית, בלי מונחים טכניים
+
+נתוני העסקה:
+${JSON.stringify(ctx, null, 2)}`;
+
+  const messages = [{ role: 'user', content: userPrompt }];
+
+  let result;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const responseText = await callClaude(messages, SYSTEM_PROMPT, 1024);
+      result = parseAIJson(responseText);
+      break;
+    } catch (err) {
+      console.error(`Regenerate description attempt ${attempt + 1} failed:`, err.message);
+      if (attempt === 1) throw err;
+    }
+  }
+
+  return {
+    deal_description: (result && result.deal_description) || '',
+    card_summary: (result && result.card_summary) || ''
+  };
+}
+
+module.exports = { analyzeAllDocuments, regenerateDescription };

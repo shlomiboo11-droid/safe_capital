@@ -2,6 +2,7 @@ const express = require('express');
 const pool = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { logAudit } = require('../helpers/audit');
+const { regenerateDescription } = require('../services/ai-extractor');
 
 const router = express.Router();
 router.use(authenticate, authorize('super_admin', 'manager'));
@@ -357,7 +358,7 @@ router.put('/:id', async (req, res) => {
       'deal_number', 'name', 'full_address', 'city', 'state', 'zillow_url',
       'property_status', 'fundraising_status',
       'is_featured', 'is_expandable', 'is_published', 'sort_order',
-      'thumbnail_url', 'description', 'project_duration',
+      'thumbnail_url', 'description', 'card_summary', 'project_duration',
       'purchase_price', 'arv', 'expected_sale_price', 'sale_price_tooltip',
       'actual_purchase_price', 'actual_arv', 'actual_sale_price',
       'fundraising_goal', 'min_investment', 'investor_roi_cap_percent',
@@ -399,6 +400,37 @@ router.put('/:id', async (req, res) => {
     }
     console.error('Update deal error:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/deals/:id/regenerate-description — regenerate AI description + card summary
+router.post('/:id/regenerate-description', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dealResult = await pool.query('SELECT * FROM deals WHERE id = $1', [id]);
+    const deal = dealResult.rows[0];
+    if (!deal) return res.status(404).json({ error: 'Deal not found' });
+
+    const { deal_description, card_summary } = await regenerateDescription(deal);
+
+    await pool.query(
+      `UPDATE deals
+         SET description = $1,
+             card_summary = $2,
+             updated_at = NOW()
+       WHERE id = $3`,
+      [deal_description || null, card_summary || null, id]
+    );
+
+    await logAudit(req.user.id, 'regenerate_description', 'deal', id, {
+      description_length: (deal_description || '').length,
+      card_summary_length: (card_summary || '').length
+    });
+
+    res.json({ description: deal_description, card_summary });
+  } catch (err) {
+    console.error('Regenerate description error:', err);
+    res.status(500).json({ error: err.message || 'Server error' });
   }
 });
 

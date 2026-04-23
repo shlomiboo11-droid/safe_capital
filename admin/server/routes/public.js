@@ -22,7 +22,7 @@ router.get('/deals', async (req, res) => {
       SELECT
         id, deal_number, name, full_address, city, state,
         property_status, fundraising_status,
-        is_featured, is_expandable, thumbnail_url, description,
+        is_featured, is_expandable, thumbnail_url, description, card_summary,
         project_duration, purchase_price, arv, expected_sale_price,
         sale_price_tooltip, fundraising_goal, min_investment,
         opens_at_date, sold_at_date, renovation_progress_percent,
@@ -52,7 +52,8 @@ router.get('/deals', async (req, res) => {
       investorsResult,
       plannedRoiResult,
       investorCountResult,
-      waitlistCountResult
+      waitlistCountResult,
+      compsResult
     ] = await Promise.all([
       pool.query(
         `SELECT * FROM deal_images WHERE deal_id = ANY($1) ORDER BY category, sort_order`,
@@ -106,6 +107,13 @@ router.get('/deals', async (req, res) => {
          FROM deal_waitlist
          WHERE deal_id = ANY($1)
          GROUP BY deal_id`,
+        [dealIds]
+      ),
+      pool.query(
+        `SELECT deal_id, address, sale_price, days_on_market, bedrooms, bathrooms, sqft
+         FROM deal_comps
+         WHERE deal_id = ANY($1)
+         ORDER BY deal_id, sale_price DESC`,
         [dealIds]
       )
     ]);
@@ -171,6 +179,12 @@ router.get('/deals', async (req, res) => {
       waitlistCountByDeal[row.deal_id] = row.waitlist_count;
     }
 
+    const compsByDeal = {};
+    for (const row of compsResult.rows) {
+      if (!compsByDeal[row.deal_id]) compsByDeal[row.deal_id] = [];
+      compsByDeal[row.deal_id].push(row);
+    }
+
     // Assemble final deal objects
     const enrichedDeals = deals.map(deal => {
       const fundraisingGoal = parseFloat(deal.fundraising_goal || 0);
@@ -178,6 +192,8 @@ router.get('/deals', async (req, res) => {
       const totalPlanned = (catsByDeal[deal.id] || []).reduce(
         (sum, c) => sum + parseFloat(c.total_planned || 0), 0
       );
+      const totalActual = (catsByDeal[deal.id] || []).reduce((sum, c) =>
+        sum + (c.items || []).reduce((s, i) => s + parseFloat(i.actual_amount || 0), 0), 0);
       const expectedSalePrice = parseFloat(deal.expected_sale_price || 0);
 
       // Live investor ROI: profit / fundraising_goal × 100, capped at investor_roi_cap_percent
@@ -204,6 +220,7 @@ router.get('/deals', async (req, res) => {
         is_expandable: deal.is_expandable,
         thumbnail_url: deal.thumbnail_url,
         description: deal.description,
+        card_summary: deal.card_summary,
         project_duration: deal.project_duration,
         purchase_price: deal.purchase_price,
         arv: deal.arv,
@@ -215,6 +232,7 @@ router.get('/deals', async (req, res) => {
         created_at: deal.created_at,
         // Computed helpers
         total_cost: totalPlanned > 0 ? totalPlanned : null,
+        total_actual_cost: totalActual > 0 ? totalActual : null,
         expected_profit: expectedProfit,
         fundraising_percent: fundraisingGoal > 0
           ? Math.round((fundraisingRaised / fundraisingGoal) * 100)
@@ -241,7 +259,8 @@ router.get('/deals', async (req, res) => {
         images: imagesByDeal[deal.id] || [],
         cost_categories: catsByDeal[deal.id] || [],
         timeline: timelineByDeal[deal.id] || [],
-        specs: specsByDeal[deal.id] || []
+        specs: specsByDeal[deal.id] || [],
+        comps: compsByDeal[deal.id] || []
       };
     });
 

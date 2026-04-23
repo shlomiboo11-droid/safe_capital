@@ -107,57 +107,68 @@ const DEAL_DISPLAY_CONFIG = {
 
 const EXPANDED_PANEL_CONFIG = {
   sourcing: [
-    'description',
+    'gallery-before-after',
     'key-metrics',
+    'fundraising-bar',
+    'comps',
+    'cost-breakdown',
+    'description',
     'timeline',
+    'specs',
     'whatsapp-cta'
   ],
   purchased: [
-    'fundraising-bar',
     'gallery-before-after',
     'key-metrics',
-    'description',
-    'specs',
-    'cost-breakdown',
-    'timeline',
+    'fundraising-bar',
     'comps',
+    'cost-breakdown',
+    'description',
+    'timeline',
+    'specs',
     'whatsapp-cta'
   ],
   planning: [
-    'fundraising-bar',
     'gallery-before-after',
     'key-metrics',
-    'description',
-    'specs',
-    'cost-breakdown',
-    'timeline',
+    'fundraising-bar',
     'comps',
+    'cost-breakdown',
+    'description',
+    'timeline',
+    'specs',
     'whatsapp-cta'
   ],
   renovation: [
-    'renovation-progress',
-    'timeline',
     'gallery-during',
     'key-metrics',
-    'specs',
-    'description',
+    'fundraising-bar',
+    'renovation-progress',
+    'comps',
     'cost-breakdown',
+    'description',
+    'timeline',
+    'specs',
     'whatsapp-cta'
   ],
   selling: [
     'gallery-after-only',
-    'specs',
     'key-metrics',
-    'timeline',
+    'fundraising-bar',
+    'comps',
+    'cost-breakdown',
     'description',
+    'timeline',
+    'specs',
     'whatsapp-cta'
   ],
   sold: [
-    'plan-vs-actual',
     'gallery-before-after',
-    'specs',
-    'timeline',
+    'plan-vs-actual',
+    'comps',
     'post-sale-summary',
+    'timeline',
+    'specs',
     'whatsapp-cta'
   ]
 };

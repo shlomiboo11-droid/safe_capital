@@ -195,8 +195,20 @@ function renderPropertyTab(data) {
 
       <!-- Description -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold mb-4">תיאור העסקה</h3>
-        <textarea name="description" class="form-input" rows="6" placeholder="2-3 פסקאות שמתארות את העסקה...">${deal.description || ''}</textarea>
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
+          <h3 class="text-lg font-bold">תיאור העסקה</h3>
+          <button type="button" id="regenerateDescriptionBtn" class="btn btn-secondary btn-sm" onclick="regenerateDealDescription()">
+            <span class="material-symbols-outlined text-sm">auto_awesome</span>
+            <span id="regenerateDescriptionBtnLabel">רענן תיאור ב-AI</span>
+          </button>
+        </div>
+        <textarea name="description" id="dealDescriptionField" class="form-input" rows="6" placeholder="2-3 פסקאות שמתארות את העסקה...">${deal.description || ''}</textarea>
+
+        <div class="mt-4">
+          <label class="form-label">תקציר לכרטיסיה</label>
+          <textarea name="card_summary" id="dealCardSummaryField" class="form-input" rows="2" maxlength="200" placeholder="עד 15 מילים בעברית, בלי מספרים — ייווצר אוטומטית עם הכפתור למעלה">${deal.card_summary || ''}</textarea>
+          <p class="text-xs text-gray-500 mt-1">תקציר שיווקי קצר לכרטיס הנכס באתר. עד 15 מילים בעברית, ללא מספרים. ניתן לעריכה ידנית.</p>
+        </div>
       </div>
 
       <!-- Save Button -->
@@ -229,6 +241,7 @@ function renderPropertyTab(data) {
       is_featured: form.is_featured.checked,
       is_expandable: form.is_expandable.checked,
       description: form.description.value.trim(),
+      card_summary: form.card_summary ? form.card_summary.value.trim() : '',
       opens_at_date: form.opens_at_date.value || null,
       sold_at_date: form.sold_at_date.value || null,
       renovation_progress_percent: form.renovation_progress_percent.value === '' ? null : parseFloat(form.renovation_progress_percent.value),
@@ -259,6 +272,37 @@ function renderPropertyTab(data) {
       showToast(err.message, 'error');
     }
   });
+}
+
+async function regenerateDealDescription() {
+  if (typeof currentDeal === 'undefined' || !currentDeal || !currentDeal.id) {
+    showToast('לא נמצאה עסקה פעילה', 'error');
+    return;
+  }
+  const btn = document.getElementById('regenerateDescriptionBtn');
+  const label = document.getElementById('regenerateDescriptionBtnLabel');
+  const descField = document.getElementById('dealDescriptionField');
+  const cardField = document.getElementById('dealCardSummaryField');
+  const originalLabel = label ? label.textContent : '';
+
+  if (btn) btn.disabled = true;
+  if (label) label.textContent = 'מייצר תיאור חדש...';
+
+  try {
+    const data = await API.post(`/deals/${currentDeal.id}/regenerate-description`, {});
+    if (descField && typeof data.description === 'string') {
+      descField.value = data.description;
+    }
+    if (cardField && typeof data.card_summary === 'string') {
+      cardField.value = data.card_summary;
+    }
+    showToast('התיאור והתקציר עודכנו');
+  } catch (err) {
+    showToast(err.message || 'כשל ביצירת תיאור', 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+    if (label) label.textContent = originalLabel || 'רענן תיאור ב-AI';
+  }
 }
 
 function updateThumbnailPreview(url) {

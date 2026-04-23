@@ -225,35 +225,28 @@ function renderMobileGallery(images) {
 // ── Mobile metrics grid ─────────────────────────────────────────────────────
 
 function renderMobileMetrics(deal) {
-  const purchasePrice = deal.purchase_price;
-  const totalCost = deal.total_cost;
-  const arv = deal.arv;
-  const expectedProfit = deal.expected_profit;
+  const totalCost         = deal.total_cost;
+  const fundraisingGoal   = deal.fundraising_goal;
+  const expectedSalePrice = deal.expected_sale_price;
 
-  let html = '<div class="px-5 mb-6"><div class="grid grid-cols-2 gap-4">';
+  let html = '<div class="px-5 mb-6"><div class="grid grid-cols-1 gap-3">';
 
-  if (purchasePrice) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg">
-      <p class="text-[10px] text-[#43474e] uppercase mb-1">מחיר רכישה</p>
-      <p class="text-lg font-bold font-label">${formatUSD(purchasePrice)}</p>
-    </div>`;
-  }
   if (totalCost) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg">
-      <p class="text-[10px] text-[#43474e] uppercase mb-1">עלות פרויקט</p>
-      <p class="text-lg font-bold font-label">${formatUSD(totalCost)}</p>
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+      <p class="text-xs text-[#43474e] font-bold">עלות פרויקט כוללת</p>
+      <p class="text-lg font-bold font-label text-[#022445]">${formatUSD(totalCost)}</p>
     </div>`;
   }
-  if (arv) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg border-r-4 border-[#984349]">
-      <p class="text-[10px] text-[#984349] font-bold uppercase mb-1">שווי שוק סופי (ARV)</p>
-      <p class="text-lg font-bold font-label">${formatUSD(arv)}</p>
+  if (fundraisingGoal) {
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+      <p class="text-xs text-[#43474e] font-bold">סכום לגיוס</p>
+      <p class="text-lg font-bold font-label text-[#022445]">${formatUSD(fundraisingGoal)}</p>
     </div>`;
   }
-  if (expectedProfit) {
-    html += `<div class="bg-[#ffdada] p-4 rounded-lg">
-      <p class="text-[10px] text-[#792b32] font-bold uppercase mb-1">רווח משוער</p>
-      <p class="text-lg font-bold font-label text-[#792b32]">${formatUSD(expectedProfit)}</p>
+  if (expectedSalePrice) {
+    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+      <p class="text-xs text-[#43474e] font-bold">מחיר מכירה צפוי</p>
+      <p class="text-lg font-bold font-label text-[#984349]">${formatUSD(expectedSalePrice)}</p>
     </div>`;
   }
 
@@ -296,7 +289,17 @@ function renderMobileSpecs(specs) {
 function renderMobileCostAccordion(categories) {
   if (!categories || categories.length === 0) return '';
 
-  const items = categories.map(cat => `
+  // Filter items with planned_amount > 0, then drop categories with no items / zero total.
+  const filteredCats = (categories || [])
+    .map(cat => {
+      const items = (cat.items || []).filter(i => parseFloat(i.planned_amount || 0) > 0);
+      return { ...cat, items };
+    })
+    .filter(cat => cat.items.length > 0 && parseFloat(cat.total_planned || 0) > 0);
+
+  if (filteredCats.length === 0) return '';
+
+  const items = filteredCats.map(cat => `
     <div class="bg-[#f5f3f0] p-3 rounded-lg">
       <div class="flex justify-between items-center cursor-pointer cost-category-header-mobile" onclick="toggleMobileCostCategory(this)">
         <span class="text-sm font-bold">${cat.name}</span>
@@ -306,7 +309,7 @@ function renderMobileCostAccordion(categories) {
         </div>
       </div>
       <div class="mobile-cost-items" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
-        ${(cat.items || []).map(item => `
+        ${cat.items.map(item => `
           <div class="flex justify-between py-2 border-t border-[#eae8e5] text-sm">
             <span class="text-[#43474e]">${item.name}</span>
             <span class="font-label font-medium">${formatUSD(item.planned_amount)}</span>
@@ -604,8 +607,18 @@ function renderFundraisingBar(deal) {
 function renderCostCategories(categories) {
   if (!categories || categories.length === 0) return '';
 
-  const catsHtml = categories.map(cat => {
-    const itemsHtml = (cat.items || []).map(item => `
+  // Filter items with planned_amount > 0, then skip categories with no items / zero total.
+  const filteredCats = (categories || [])
+    .map(cat => {
+      const items = (cat.items || []).filter(i => parseFloat(i.planned_amount || 0) > 0);
+      return { ...cat, items };
+    })
+    .filter(cat => cat.items.length > 0 && parseFloat(cat.total_planned || 0) > 0);
+
+  if (filteredCats.length === 0) return '';
+
+  const catsHtml = filteredCats.map(cat => {
+    const itemsHtml = cat.items.map(item => `
       <div class="flex justify-between py-2 px-8 border-b border-outline-variant/10">
         <span class="text-on-surface-variant text-sm">${item.name}</span>
         <span class="font-label font-medium text-sm">${formatUSD(item.planned_amount)}</span>
@@ -758,54 +771,44 @@ function renderGallery(images, mode = 'before-after') {
 // ── Per-status section renderers (desktop) ──────────────────────────────────
 
 function renderKeyMetricsSection(deal) {
-  const purchasePrice    = deal.purchase_price;
-  const totalCost        = deal.total_cost;
-  const arv              = deal.arv;
-  const expectedProfit   = deal.expected_profit;
-  const expectedRoi      = deal.expected_roi_percent;
-  const duration         = deal.project_duration;
+  const totalCost         = deal.total_cost;
+  const fundraisingGoal   = deal.fundraising_goal;
+  const expectedSalePrice = deal.expected_sale_price;
+  const tooltipId         = `tooltip-sale-price-km-${deal.id}`;
+  const tooltipHtml = deal.sale_price_tooltip
+    ? `<button class="tooltip-trigger" data-tooltip="${tooltipId}" onclick="event.stopPropagation()">?</button>
+       <div id="${tooltipId}" class="tooltip-popup hidden">${deal.sale_price_tooltip}</div>`
+    : '';
 
   const cells = [
-    purchasePrice && `
-      <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">רכישה</p>
-        <p class="text-2xl font-bold text-primary font-label">${formatUSD(purchasePrice)}</p>
-      </div>`,
     totalCost && `
       <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">עלות כוללת</p>
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">עלות פרויקט כוללת</p>
         <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
       </div>`,
-    arv && `
+    fundraisingGoal && `
       <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">שווי עתידי (ARV)</p>
-        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(arv)}</p>
+        <p class="text-xs text-on-surface-variant mb-1 font-bold">סכום לגיוס</p>
+        <p class="text-2xl font-bold text-primary font-label">${formatUSD(fundraisingGoal)}</p>
       </div>`,
-    expectedProfit && `
+    expectedSalePrice && `
       <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">רווח צפוי</p>
-        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(expectedProfit)}</p>
-      </div>`,
-    expectedRoi != null && `
-      <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">תשואה צפויה</p>
-        <p class="text-2xl font-bold text-secondary font-label">${Number(expectedRoi).toFixed(1)}%</p>
+        <div class="flex items-center gap-1 mb-1">
+          <p class="text-xs text-on-surface-variant font-bold">מחיר מכירה צפוי</p>
+          ${tooltipHtml}
+        </div>
+        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(expectedSalePrice)}</p>
       </div>`
   ].filter(Boolean).join('');
 
-  if (!cells && !duration) return '';
+  if (!cells) return '';
 
   return `
     <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-6">נתוני מפתח</h3>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <h3 class="text-2xl font-extrabold text-primary mb-6">נתונים כלליים</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         ${cells}
       </div>
-      ${duration ? `
-        <div class="mt-4 bg-primary text-on-primary p-6 rounded-lg flex justify-between items-center">
-          <span class="text-sm font-bold">משך זמן הפרויקט</span>
-          <span class="text-xl font-bold font-label">${duration}</span>
-        </div>` : ''}
     </div>`;
 }
 
@@ -930,26 +933,46 @@ function renderRenovationProgress(deal) {
 }
 
 function renderPlanVsActual(deal) {
-  // Only renders for sold deals; rows hide gracefully when actual is missing.
-  const isHigherBetter = (key) => ['roi', 'profit', 'sale_price', 'arv'].includes(key);
-  const fmt = (n, suffix = '') => (n == null || n === '') ? '—' : (typeof n === 'number' ? Math.round(n).toLocaleString('en-US') : n) + suffix;
   const fmtMoney = (n) => (n == null || n === '') ? '—' : formatUSD(n);
   const fmtPct = (n) => (n == null || n === '') ? '—' : Number(n).toFixed(1) + '%';
 
   const rows = [
-    { label: 'תשואה (ROI)',     planned: fmtPct(deal.expected_roi_percent),  actual: fmtPct(deal.actual_roi_percent),       key: 'roi',         pNum: deal.expected_roi_percent,  aNum: deal.actual_roi_percent },
-    { label: 'רווח שחולק',       planned: fmtMoney(deal.expected_profit),     actual: fmtMoney(deal.profit_distributed),      key: 'profit',      pNum: deal.expected_profit,       aNum: deal.profit_distributed },
-    { label: 'משך עסקה',         planned: deal.project_duration || '—',        actual: deal.actual_duration_months ? deal.actual_duration_months + ' חודשים' : '—', key: 'duration',  pNum: parseFloat(String(deal.project_duration).match(/\d+/)?.[0]),  aNum: deal.actual_duration_months },
-    { label: 'מחיר מכירה',       planned: fmtMoney(deal.expected_sale_price),  actual: fmtMoney(deal.actual_sale_price),      key: 'sale_price',  pNum: deal.expected_sale_price,   aNum: deal.actual_sale_price },
-    { label: 'מחיר רכישה',       planned: fmtMoney(deal.purchase_price),       actual: fmtMoney(deal.actual_purchase_price),  key: 'purchase',    pNum: deal.purchase_price,        aNum: deal.actual_purchase_price },
-    { label: 'שווי שוק (ARV)',   planned: fmtMoney(deal.arv),                  actual: fmtMoney(deal.actual_arv),             key: 'arv',         pNum: deal.arv,                   aNum: deal.actual_arv }
+    {
+      label: 'עלות פרויקט כוללת',
+      planned: fmtMoney(deal.total_cost),
+      actual:  fmtMoney(deal.total_actual_cost),
+      key: 'total_cost', isHigherBetter: false,
+      pNum: deal.total_cost, aNum: deal.total_actual_cost
+    },
+    {
+      label: 'משך הפרויקט',
+      planned: deal.project_duration || '—',
+      actual:  deal.actual_duration_months ? deal.actual_duration_months + ' חודשים' : '—',
+      key: 'duration', isHigherBetter: false,
+      pNum: parseFloat(String(deal.project_duration || '').match(/\d+/)?.[0]),
+      aNum: deal.actual_duration_months
+    },
+    {
+      label: 'מחיר מכירה',
+      planned: fmtMoney(deal.expected_sale_price),
+      actual:  fmtMoney(deal.actual_sale_price),
+      key: 'sale_price', isHigherBetter: true,
+      pNum: deal.expected_sale_price, aNum: deal.actual_sale_price
+    },
+    {
+      label: 'תשואה למשקיע',
+      planned: fmtPct(deal.expected_roi_percent),
+      actual:  fmtPct(deal.actual_roi_percent),
+      key: 'roi', isHigherBetter: true,
+      pNum: deal.expected_roi_percent, aNum: deal.actual_roi_percent
+    }
   ];
 
   const colorFor = (row) => {
     if (row.aNum == null || row.pNum == null || row.aNum === '' || row.pNum === '') return 'text-primary';
     const a = Number(row.aNum), p = Number(row.pNum);
     if (isNaN(a) || isNaN(p)) return 'text-primary';
-    const better = isHigherBetter(row.key) ? a >= p : a <= p;
+    const better = row.isHigherBetter ? a >= p : a <= p;
     return better ? 'text-secondary' : 'text-on-surface-variant';
   };
 
@@ -991,24 +1014,76 @@ function renderPostSaleSummary(deal) {
 }
 
 function renderComps(deal) {
-  // comps not currently exposed by API — render only if data is present.
   const comps = Array.isArray(deal.comps) ? deal.comps : [];
-  if (comps.length === 0) return '';
 
-  const cells = comps.slice(0, 6).map(c => `
-    <div class="bg-surface-container-low p-6 rounded-lg">
-      <p class="text-sm text-on-surface-variant mb-2">${c.address || ''}</p>
-      <p class="text-2xl font-extrabold text-primary font-label">${formatUSD(c.sale_price || c.price)}</p>
-      ${c.sqft ? `<p class="text-xs text-on-surface-variant mt-2">${c.sqft.toLocaleString('en-US')} sqft</p>` : ''}
-    </div>`).join('');
+  // Extract our property's sqft & bedrooms from specs (fuzzy match)
+  const specs = Array.isArray(deal.specs) ? deal.specs : [];
+  const findSpec = (patterns) => {
+    for (const s of specs) {
+      const name = String(s.spec_name || '').toLowerCase();
+      if (patterns.some(p => name.includes(p))) {
+        return s.value_after || s.value_before || null;
+      }
+    }
+    return null;
+  };
+  const ourSqft     = findSpec(['sqft', 'שטח', 'גודל', 'square']);
+  const ourBedrooms = findSpec(['bedroom', 'חדר']);
+  const ourPrice    = deal.arv;
+
+  const fmtSqft = (v) => (v == null || v === '') ? '—' : (typeof v === 'number' ? v.toLocaleString('en-US') : v);
+  const fmtBeds = (v) => (v == null || v === '') ? '—' : v;
+  const fmtDOM  = (v) => (v == null || v === '') ? '—' : v + ' ימים';
+
+  // Row 1: our property
+  const ourRow = `
+    <tr class="bg-surface-container-low border-b border-outline-variant/10">
+      <td class="py-4 px-4 font-bold text-primary">
+        <div class="flex items-center gap-2">
+          <span class="text-xs bg-primary text-white px-2 py-0.5 rounded font-bold">הנכס שלנו</span>
+        </div>
+      </td>
+      <td class="py-4 px-4 text-left font-label font-bold text-primary">${fmtSqft(ourSqft)}</td>
+      <td class="py-4 px-4 text-left font-label font-bold text-primary">${fmtBeds(ourBedrooms)}</td>
+      <td class="py-4 px-4 text-left font-label font-bold text-secondary">${formatUSD(ourPrice)}</td>
+      <td class="py-4 px-4 text-left font-label text-on-surface-variant">—</td>
+    </tr>`;
+
+  const compsRows = comps.map(c => `
+    <tr class="border-b border-outline-variant/10">
+      <td class="py-4 px-4 text-on-surface-variant text-sm">${c.address || '—'}</td>
+      <td class="py-4 px-4 text-left font-label">${fmtSqft(c.sqft)}</td>
+      <td class="py-4 px-4 text-left font-label">${fmtBeds(c.bedrooms)}</td>
+      <td class="py-4 px-4 text-left font-label font-bold text-primary">${formatUSD(c.sale_price)}</td>
+      <td class="py-4 px-4 text-left font-label text-on-surface-variant">${fmtDOM(c.days_on_market)}</td>
+    </tr>`).join('');
+
+  const emptyNote = comps.length === 0
+    ? `<p class="text-sm text-on-surface-variant mt-4">עדיין לא נאספו נכסים דומים.</p>`
+    : '';
 
   return `
     <div>
       <h3 class="text-2xl font-extrabold text-primary mb-2">השוואת נכסים בשכונה</h3>
       <p class="text-sm text-on-surface-variant mb-6">נכסים דומים שנמכרו לאחרונה — האישוש לשווי המתוכנן</p>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        ${cells}
+      <div class="overflow-x-auto">
+        <table class="w-full text-right">
+          <thead>
+            <tr class="text-xs text-outline uppercase tracking-wider border-b border-outline-variant/30">
+              <th class="pb-4 px-4 font-bold text-right">כתובת</th>
+              <th class="pb-4 px-4 font-bold text-left">גודל (sqft)</th>
+              <th class="pb-4 px-4 font-bold text-left">חדרים</th>
+              <th class="pb-4 px-4 font-bold text-left">מחיר שנמכר</th>
+              <th class="pb-4 px-4 font-bold text-left">זמן בשוק</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            ${ourRow}
+            ${compsRows}
+          </tbody>
+        </table>
       </div>
+      ${emptyNote}
     </div>`;
 }
 
@@ -1091,12 +1166,10 @@ function renderMobilePlanVsActual(deal) {
   const fmtPct = (n) => (n == null || n === '') ? '—' : Number(n).toFixed(1) + '%';
 
   const rows = [
-    { label: 'תשואה',         planned: fmtPct(deal.expected_roi_percent),  actual: fmtPct(deal.actual_roi_percent) },
-    { label: 'רווח שחולק',    planned: fmtMoney(deal.expected_profit),     actual: fmtMoney(deal.profit_distributed) },
-    { label: 'משך',           planned: deal.project_duration || '—',        actual: deal.actual_duration_months ? deal.actual_duration_months + ' חוד׳' : '—' },
-    { label: 'מחיר מכירה',    planned: fmtMoney(deal.expected_sale_price),  actual: fmtMoney(deal.actual_sale_price) },
-    { label: 'מחיר רכישה',    planned: fmtMoney(deal.purchase_price),       actual: fmtMoney(deal.actual_purchase_price) },
-    { label: 'ARV',           planned: fmtMoney(deal.arv),                  actual: fmtMoney(deal.actual_arv) }
+    { label: 'עלות כוללת',  planned: fmtMoney(deal.total_cost),           actual: fmtMoney(deal.total_actual_cost) },
+    { label: 'משך',          planned: deal.project_duration || '—',         actual: deal.actual_duration_months ? deal.actual_duration_months + ' חוד׳' : '—' },
+    { label: 'מחיר מכירה',   planned: fmtMoney(deal.expected_sale_price),   actual: fmtMoney(deal.actual_sale_price) },
+    { label: 'תשואה',        planned: fmtPct(deal.expected_roi_percent),    actual: fmtPct(deal.actual_roi_percent) }
   ];
 
   const rowsHtml = rows.map(r => `
@@ -1137,16 +1210,73 @@ function renderMobilePostSaleSummary(deal) {
 
 function renderMobileComps(deal) {
   const comps = Array.isArray(deal.comps) ? deal.comps : [];
-  if (comps.length === 0) return '';
-  const items = comps.slice(0, 4).map(c => `
-    <div class="bg-[#f5f3f0] p-3 rounded-lg">
-      <p class="text-xs text-[#43474e] mb-1">${c.address || ''}</p>
-      <p class="text-base font-extrabold font-label text-[#022445]">${formatUSD(c.sale_price || c.price)}</p>
-    </div>`).join('');
+
+  const specs = Array.isArray(deal.specs) ? deal.specs : [];
+  const findSpec = (patterns) => {
+    for (const s of specs) {
+      const name = String(s.spec_name || '').toLowerCase();
+      if (patterns.some(p => name.includes(p))) {
+        return s.value_after || s.value_before || null;
+      }
+    }
+    return null;
+  };
+  const ourSqft     = findSpec(['sqft', 'שטח', 'גודל', 'square']);
+  const ourBedrooms = findSpec(['bedroom', 'חדר']);
+  const ourPrice    = deal.arv;
+
+  const fmtSqft = (v) => (v == null || v === '') ? '—' : (typeof v === 'number' ? v.toLocaleString('en-US') : v);
+  const fmtBeds = (v) => (v == null || v === '') ? '—' : v;
+  const fmtDOM  = (v) => (v == null || v === '') ? '—' : v + ' ימים';
+
+  const ourRow = `
+    <tr class="bg-[#eae8e5]">
+      <td class="py-2 px-2 font-bold text-[#022445] text-xs">
+        <span class="bg-[#022445] text-white px-1.5 py-0.5 rounded text-[10px]">הנכס שלנו</span>
+      </td>
+      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${fmtSqft(ourSqft)}</td>
+      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${fmtBeds(ourBedrooms)}</td>
+      <td class="py-2 px-1 text-left font-label font-bold text-[#984349] text-xs">${formatUSD(ourPrice)}</td>
+      <td class="py-2 px-1 text-left font-label text-[#43474e] text-xs">—</td>
+    </tr>`;
+
+  const compsRows = comps.map(c => {
+    const addr = c.address ? String(c.address).split(',')[0] : '—';
+    return `
+    <tr>
+      <td class="py-2 px-2 text-[#43474e] text-xs truncate" style="max-width:90px">${addr}</td>
+      <td class="py-2 px-1 text-left font-label text-xs">${fmtSqft(c.sqft)}</td>
+      <td class="py-2 px-1 text-left font-label text-xs">${fmtBeds(c.bedrooms)}</td>
+      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${formatUSD(c.sale_price)}</td>
+      <td class="py-2 px-1 text-left font-label text-[#43474e] text-xs">${fmtDOM(c.days_on_market)}</td>
+    </tr>`;
+  }).join('');
+
+  const emptyNote = comps.length === 0
+    ? `<p class="text-xs text-[#43474e] mt-2 px-3">עדיין לא נאספו נכסים דומים.</p>`
+    : '';
+
   return `
-    <div class="px-5 mb-6">
-      <h3 class="text-md font-bold text-[#022445] mb-3">השוואת נכסים בשכונה</h3>
-      <div class="grid grid-cols-2 gap-2">${items}</div>
+    <div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+      <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">השוואת נכסים בשכונה</h3>
+      <div class="bg-[#f5f3f0] overflow-x-auto">
+        <table class="w-full text-sm" style="table-layout:auto">
+          <thead class="bg-[#eae8e5]">
+            <tr>
+              <th class="py-2 px-2 text-right font-bold text-[10px]">כתובת</th>
+              <th class="py-2 px-1 text-left font-bold text-[10px]">sqft</th>
+              <th class="py-2 px-1 text-left font-bold text-[10px]">חדרים</th>
+              <th class="py-2 px-1 text-left font-bold text-[10px]">מחיר</th>
+              <th class="py-2 px-1 text-left font-bold text-[10px]">זמן</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#eae8e5]">
+            ${ourRow}
+            ${compsRows}
+          </tbody>
+        </table>
+      </div>
+      ${emptyNote}
     </div>`;
 }
 

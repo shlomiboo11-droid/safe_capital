@@ -289,6 +289,16 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- Migration: add card_summary to deals (short marketing blurb for property card)
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'deals' AND column_name = 'card_summary'
+  ) THEN
+    ALTER TABLE deals ADD COLUMN card_summary TEXT;
+  END IF;
+END $$;
+
 -- Multiple images per comp
 CREATE TABLE IF NOT EXISTS deal_comp_images (
   id          SERIAL PRIMARY KEY,
