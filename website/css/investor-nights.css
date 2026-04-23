@@ -411,18 +411,6 @@ body.in-body { background: #fbf9f6; }
   height: 100%;
   background: linear-gradient(to left, #984349, #022445);
 }
-.in-urgency .close {
-  border: 0;
-  background: transparent;
-  font-size: 20px;
-  line-height: 1;
-  color: rgba(67,71,78,.5);
-  cursor: pointer;
-  width: 24px; height: 24px;
-  display: flex; align-items: center; justify-content: center;
-}
-.in-urgency .close:hover { color: #43474e; }
-
 /* Eyebrow */
 .in-eyebrow {
   font-family: 'Inter', sans-serif;
@@ -1809,15 +1797,20 @@ body.in-body { background: #fbf9f6; }
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 40;
+    z-index: 60;
     padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    background: rgba(251,249,246,0.85);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    backdrop-filter: blur(16px) saturate(180%);
+    background: #fbf9f6;
     box-shadow: 0 -4px 20px rgba(2,36,69,0.08);
     align-items: center;
     gap: 12px;
     transition: opacity .3s ease, transform .3s ease;
+  }
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .in-sticky-cta {
+      background: rgba(251,249,246,0.95);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+    }
   }
   .in-sticky-cta.hidden {
     opacity: 0;
@@ -1862,5 +1855,48 @@ body.in-body { background: #fbf9f6; }
     white-space: nowrap;
   }
   .in-sticky-cta .btn:active { transform: scale(.98); }
+
+  /* Thank-you page — mobile */
+  .in-ty-wrap {
+    margin: 80px auto 32px;
+    padding: 0 16px;
+  }
+  .in-ty-hero .content {
+    padding: 28px 20px;
+  }
+  .in-ty-hero .confirmed {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .in-ty-hero .confirmed .ico {
+    width: 32px;
+    height: 32px;
+  }
+  .in-ty-hero .confirmed .ico .material-symbols-outlined { font-size: 18px; }
+  .in-ty-hero .confirmed .label { font-size: 11px; }
+  .in-ty-hero h2 {
+    font-size: 26px;
+    line-height: 1.25;
+  }
+  .in-ty-hero p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .in-ty-body {
+    padding: 24px 20px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .in-ty-body .left h3 { font-size: 20px; }
+  .in-ty-body .infos {
+    margin-top: 16px;
+  }
+  .in-ty-body .infos .box { padding: 12px 8px; }
+  .in-ty-body .infos .box .n { font-size: 16px; }
+  .in-ty-body .infos .box .k { font-size: 10px; }
+  .in-ty-body .right a {
+    padding: 12px;
+    font-size: 14px;
+  }
 
 }
