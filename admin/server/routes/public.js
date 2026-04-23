@@ -17,7 +17,7 @@ const router = express.Router();
 // GET /api/public/deals — returns all published deals with related data
 router.get('/deals', async (req, res) => {
   try {
-    // Fetch all published deals ordered by sort_order then created_at
+    // Fetch all published deals ordered by deal_number DESC (newest first)
     const dealsResult = await pool.query(`
       SELECT
         id, deal_number, name, full_address, city, state,
@@ -31,7 +31,7 @@ router.get('/deals', async (req, res) => {
         sort_order, created_at
       FROM deals
       WHERE is_published = true
-      ORDER BY sort_order ASC, created_at DESC
+      ORDER BY deal_number DESC NULLS LAST
     `);
 
     const deals = dealsResult.rows;
