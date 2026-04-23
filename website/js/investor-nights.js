@@ -446,20 +446,6 @@
     ].join('');
     var ctaBtn = qs('#in-sticky-cta-btn');
     if (ctaBtn) ctaBtn.addEventListener('click', scrollToForm);
-
-    var form = qs('#in-form');
-    if (form && 'IntersectionObserver' in window) {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            el.classList.add('hidden');
-          } else {
-            el.classList.remove('hidden');
-          }
-        });
-      }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
-      observer.observe(form);
-    }
   }
 
   function renderFormHeader() {
