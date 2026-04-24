@@ -63,20 +63,23 @@ function renderPropertyTab(data) {
           </a>
         </div>
 
-        ${deal.thumbnail_url ? `
-        <div class="mb-4 rounded-lg overflow-hidden" style="max-height: 240px;">
-          <img src="${deal.thumbnail_url}" alt="${deal.name || 'Property'}" class="w-full object-cover" style="max-height: 240px;"
-            onerror="this.parentElement.style.display='none'">
-        </div>
-        ` : ''}
-
-        ${deal.full_address ? `
-        <div class="mb-4">
-          <iframe
-            src="https://maps.google.com/maps?q=${encodeURIComponent(deal.full_address)}&output=embed"
-            width="100%" height="300" style="border:0; border-radius: 0.75rem;"
-            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+        ${(deal.thumbnail_url || deal.full_address) ? `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" dir="ltr">
+          ${deal.full_address ? `
+          <div class="rounded-lg overflow-hidden" style="height: 260px;">
+            <iframe
+              src="https://maps.google.com/maps?q=${encodeURIComponent(deal.full_address)}&output=embed"
+              width="100%" height="260" style="border:0;"
+              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          ` : '<div></div>'}
+          ${deal.thumbnail_url ? `
+          <div class="rounded-lg overflow-hidden" style="height: 260px;">
+            <img src="${deal.thumbnail_url}" alt="${deal.name || 'Property'}" class="w-full h-full object-cover"
+              onerror="this.parentElement.style.display='none'">
+          </div>
+          ` : '<div></div>'}
         </div>
         ` : ''}
 

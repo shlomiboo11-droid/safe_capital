@@ -403,6 +403,67 @@ router.post('/:id/deactivate', async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────
+// POST /api/events/:id/duplicate — create a draft copy of this event
+// Copies core fields + agenda/speakers/faqs, but NOT registrations, featured_deals,
+// is_active, is_published. New event gets a fresh slug.
+// ─────────────────────────────────────────────────────────────
+router.post('/:id/duplicate', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const src = await pool.query('SELECT * FROM events WHERE id = $1', [id]);
+    if (!src.rows[0]) return res.status(404).json({ error: 'Event not found' });
+    const ev = src.rows[0];
+
+    // Unique slug: "<original>-copy", then "-copy-2", etc.
+    const baseSlug = (ev.slug || 'event') + '-copy';
+    let finalSlug = baseSlug;
+    let counter = 1;
+    while (true) {
+      const ex = await pool.query('SELECT id FROM events WHERE slug = $1', [finalSlug]);
+      if (ex.rows.length === 0) break;
+      counter += 1;
+      finalSlug = baseSlug + '-' + counter;
+    }
+
+    const result = await pool.query(`
+      INSERT INTO events (
+        slug, event_date, event_time_start, event_time_end,
+        venue_name, venue_address, venue_short, venue_full_address,
+        hero_title_main, hero_title_accent, hero_eyebrow_location, hero_eyebrow_session,
+        hero_description, hero_image_url,
+        event_date_display_full, event_date_display_short,
+        seats_total, seats_taken,
+        min_investment_display, roi_target_display, roi_spec, holding_period,
+        brief_text, track_record_title, track_record_subtitle,
+        whatsapp_number, gcal_title, gcal_description,
+        agenda, speakers, faqs,
+        is_active, is_published
+      ) VALUES (
+        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,
+        FALSE, FALSE
+      ) RETURNING id, slug
+    `, [
+      finalSlug, ev.event_date, ev.event_time_start, ev.event_time_end,
+      ev.venue_name, ev.venue_address, ev.venue_short, ev.venue_full_address,
+      ev.hero_title_main, ev.hero_title_accent, ev.hero_eyebrow_location, ev.hero_eyebrow_session,
+      ev.hero_description, ev.hero_image_url,
+      ev.event_date_display_full, ev.event_date_display_short,
+      ev.seats_total, 0,
+      ev.min_investment_display, ev.roi_target_display, ev.roi_spec, ev.holding_period,
+      ev.brief_text, ev.track_record_title, ev.track_record_subtitle,
+      ev.whatsapp_number, ev.gcal_title, ev.gcal_description,
+      ev.agenda || '[]', ev.speakers || '[]', ev.faqs || '[]'
+    ]);
+
+    await logAudit(req.user.id, 'duplicate', 'event', result.rows[0].id, { from: id, slug: finalSlug });
+    res.status(201).json({ id: result.rows[0].id, slug: result.rows[0].slug, message: 'Event duplicated' });
+  } catch (err) {
+    console.error('Duplicate event error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
 // DELETE /api/events/:id — delete event
 // ─────────────────────────────────────────────────────────────
 router.delete('/:id', async (req, res) => {

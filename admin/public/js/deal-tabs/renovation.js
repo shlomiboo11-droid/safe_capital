@@ -62,13 +62,6 @@ function renderRenovationTab(data) {
       </div>
     </div>
 
-    <!-- Total Cost Hero -->
-    <div class="card p-8 mb-6 text-center bg-primary text-white rounded-2xl">
-      <div class="text-sm font-medium text-white/70 mb-2">עלות כוללת לשיפוץ</div>
-      <div class="text-5xl font-bold font-inter mb-1" id="renovation-total-display">${totalCost ? formatCurrency(totalCost) : '—'}</div>
-      ${plan.ai_summary ? `<p class="mt-4 text-sm text-white/80 max-w-2xl mx-auto leading-relaxed">${escapeHtmlRenovation(plan.ai_summary)}</p>` : ''}
-    </div>
-
     <!-- Progress Bar (financial — % of budget spent on renovation) -->
     <div class="card p-5 mb-6">
       <div class="flex items-center justify-between mb-3">

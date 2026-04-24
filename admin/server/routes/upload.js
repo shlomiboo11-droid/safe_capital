@@ -42,6 +42,37 @@ const upload = multer({
   }
 });
 
+// Dedicated image storage for speakers/team photos (and other generic image needs).
+// Files land in public/uploads/speakers/ so the existing /uploads static handler serves them.
+const speakerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadDir, 'speakers');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+    cb(null, `${Date.now()}_${base}${ext}`);
+  }
+});
+const speakerUpload = multer({
+  storage: speakerStorage,
+  limits: { fileSize: 8 * 1024 * 1024 }, // 8MB — plenty for a profile photo
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.jpg', '.jpeg', '.png', '.webp'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, allowed.includes(ext));
+  }
+});
+
+// POST /api/upload/speaker-image — single image upload, returns { url }
+router.post('/speaker-image', speakerUpload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded (allowed: jpg, png, webp; max 8MB)' });
+  const url = `/uploads/speakers/${req.file.filename}`;
+  res.status(201).json({ url, filename: req.file.originalname });
+});
+
 // POST /api/upload/:dealId — upload file(s) for a deal
 router.post('/:dealId', upload.array('files', 20), async (req, res) => {
   const { dealId } = req.params;

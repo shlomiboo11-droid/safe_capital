@@ -65,8 +65,20 @@ function renderSpeakersList() {
           <input type="text" class="form-input" value="${escAttrS(it.role)}" oninput="updateSpeaker(${idx}, 'role', this.value)" placeholder="מייסד, מנהל כספים">
         </div>
         <div class="md:col-span-2">
-          <label class="form-label">תמונת איש צוות (URL)</label>
-          <input type="text" class="form-input ltr" dir="ltr" value="${escAttrS(it.image_url)}" oninput="updateSpeaker(${idx}, 'image_url', this.value)" placeholder="https://...">
+          <label class="form-label">תמונת איש צוות</label>
+          <div class="flex items-center gap-3 flex-wrap">
+            <img id="speaker-preview-${idx}" src="${escAttrS(it.image_url)}" alt=""
+              style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid #e5e7eb;${it.image_url ? '' : 'display:none;'}"
+              onerror="this.style.display='none'">
+            <input type="file" id="speaker-file-${idx}" accept="image/png,image/jpeg,image/webp" style="display:none;"
+              onchange="handleSpeakerFile(${idx}, this.files[0])">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('speaker-file-${idx}').click()">
+              <span class="material-symbols-outlined text-sm">upload</span>
+              ${it.image_url ? 'החלף תמונה' : 'בחר תמונה'}
+            </button>
+            ${it.image_url ? `<button type="button" class="btn btn-secondary btn-sm" onclick="clearSpeakerImage(${idx})"><span class="material-symbols-outlined text-sm">close</span>הסר</button>` : ''}
+            <span id="speaker-upload-status-${idx}" class="text-xs text-gray-500"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -109,3 +121,39 @@ async function saveSpeakers() {
 }
 
 function escAttrS(v) { return v == null ? '' : String(v).replace(/"/g, '&quot;'); }
+
+async function handleSpeakerFile(idx, file) {
+  if (!file) return;
+  const status = document.getElementById('speaker-upload-status-' + idx);
+  const MAX = 8 * 1024 * 1024;
+  if (file.size > MAX) {
+    if (status) status.textContent = 'הקובץ גדול מ-8MB';
+    return;
+  }
+  if (status) status.textContent = 'מעלה...';
+  try {
+    const form = new FormData();
+    form.append('file', file);
+    const token = API.getToken ? API.getToken() : localStorage.getItem('sc_token');
+    const res = await fetch('/api/upload/speaker-image', {
+      method: 'POST',
+      headers: token ? { Authorization: 'Bearer ' + token } : {},
+      body: form
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || ('HTTP ' + res.status));
+    }
+    const data = await res.json();
+    _speakerItems[idx].image_url = data.url;
+    if (status) status.textContent = 'נשמר. לחץ "שמור צוות" כדי לעדכן.';
+    renderSpeakersList();
+  } catch (err) {
+    if (status) status.textContent = 'העלאה נכשלה: ' + err.message;
+  }
+}
+
+function clearSpeakerImage(idx) {
+  _speakerItems[idx].image_url = '';
+  renderSpeakersList();
+}
