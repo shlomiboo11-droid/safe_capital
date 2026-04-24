@@ -304,7 +304,57 @@
         .deal-expanded.open {
             max-height: 9999px;
             padding: 2rem 1.5rem 3rem;
+            overflow: visible;
+            position: relative;
         }
+        /* Sticky CTA needs no ancestor overflow:hidden — open the card wrapper */
+        .deal-card-v2:has(.deal-expanded.open) { overflow: visible; }
+
+        /* ===== Expanded panel — section rhythm (desktop) =====
+           Varied spacing for intentional hierarchy instead of uniform gaps.
+           Tight pairing: description → gallery, metrics → specs.
+           Breathing room before major blocks (comps, cost-breakdown, CTA). */
+        .deal-expanded.open > .deal-section { margin-top: 4rem; }
+        .deal-expanded.open > .deal-section:first-child { margin-top: 0; }
+        .deal-expanded.open > .deal-section--gallery { margin-top: 2rem; }
+        .deal-expanded.open > .deal-section--specs { margin-top: 2.5rem; }
+        .deal-expanded.open > .deal-section--cost-breakdown { margin-top: 5rem; }
+        .deal-expanded.open > .deal-section--cta { margin-top: 5rem; }
+        .deal-expanded.open > .deal-section--post-sale { margin-top: 3rem; }
+
+        /* ===== Sticky CTA — floats inside the open panel =====
+           Appears at bottom of viewport while scrolling inside an open deal.
+           Solid navy (no gradient), matching final CTA block. */
+        .deal-sticky-cta {
+            position: sticky;
+            bottom: 1.25rem;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            margin-inline: auto;
+            width: fit-content;
+            padding: 0.75rem 1.5rem;
+            background: #022445;
+            color: #ffffff;
+            border-radius: 9999px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
+            font-size: var(--fs-body-sm);
+            box-shadow: 0 8px 24px rgba(2, 36, 69, 0.18);
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .deal-sticky-cta:hover { background: #1e3a5c; }
+        .deal-sticky-cta:active { transform: translateY(1px); }
+        .deal-sticky-cta:focus-visible {
+            outline: 2px solid #984349;
+            outline-offset: 3px;
+        }
+        .deal-sticky-cta .material-symbols-outlined { font-size: 1.125rem; }
+        @media (max-width: 767px) { .deal-sticky-cta { display: none; } }
 
         /* Deal arrow rotation on open */
         .deal-arrow {
@@ -741,7 +791,7 @@
 <script src="js/shared.js?v=2"></script>
 <script src="js/settings.js"></script>
 <script src="js/deal-display-config.js?v=12"></script>
-<script src="js/deals.js?v=22"></script>
+<script src="js/deals.js?v=23"></script>
 <script>
 // Cost category accordion toggle — called from dynamically rendered HTML
 function toggleCostCategory(header) {

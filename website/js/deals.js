@@ -634,18 +634,18 @@ function renderCostCategories(categories) {
   const catsHtml = filteredCats.map(cat => {
     const itemsHtml = cat.items.map(item => `
       <div class="flex justify-between py-2 px-8 border-b border-outline-variant/10">
-        <span class="text-on-surface-variant text-sm">${item.name}</span>
-        <span class="font-label font-medium text-sm">${formatUSD(item.planned_amount)}</span>
+        <span class="t-body-xs text-on-surface-variant">${item.name}</span>
+        <span class="t-body-xs font-label font-medium">${formatUSD(item.planned_amount)}</span>
       </div>`).join('');
 
     return `
       <div class="cost-category mb-2">
         <div class="cost-category-header" onclick="toggleCostCategory(this)">
           <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-primary text-lg cost-category-arrow">expand_more</span>
-            <span class="font-bold text-on-surface">${cat.name}</span>
+            <span class="material-symbols-outlined text-primary cost-category-arrow" style="font-size:1.25rem">expand_more</span>
+            <span class="t-body font-bold text-on-surface">${cat.name}</span>
           </div>
-          <span class="font-label font-bold text-primary">${formatUSD(cat.total_planned)}</span>
+          <span class="t-body font-label font-bold text-primary">${formatUSD(cat.total_planned)}</span>
         </div>
         <div class="cost-category-items">
           ${itemsHtml}
@@ -672,13 +672,13 @@ function renderSpecs(specs) {
     <div class="overflow-x-auto">
       <table class="w-full text-right">
         <thead>
-          <tr class="text-xs text-outline uppercase tracking-wider border-b border-outline-variant/30">
+          <tr class="t-label text-on-surface-variant border-b border-outline-variant/30">
             <th class="pb-4 font-bold">מפרט</th>
             <th class="pb-4 font-bold">לפני</th>
             <th class="pb-4 font-bold">אחרי</th>
           </tr>
         </thead>
-        <tbody class="text-sm">
+        <tbody class="t-body-xs">
           ${rowsHtml}
         </tbody>
       </table>
@@ -785,43 +785,47 @@ function renderGallery(images, mode = 'before-after') {
 // ── Per-status section renderers (desktop) ──────────────────────────────────
 
 function renderKeyMetricsSection(deal) {
-  const totalCost         = deal.total_cost;
   const fundraisingGoal   = deal.fundraising_goal;
   const expectedSalePrice = deal.expected_sale_price;
+  const expectedProfit    = deal.expected_profit;
   const tooltipId         = `tooltip-sale-price-km-${deal.id}`;
   const tooltipHtml = deal.sale_price_tooltip
     ? `<button class="tooltip-trigger" data-tooltip="${tooltipId}" onclick="event.stopPropagation()">?</button>
        <div id="${tooltipId}" class="tooltip-popup hidden">${deal.sale_price_tooltip}</div>`
     : '';
 
-  const cells = [
-    totalCost && `
-      <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">עלות פרויקט כוללת</p>
-        <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
+  if (!expectedSalePrice && !expectedProfit && !fundraisingGoal) return '';
+
+  const heroCell = expectedSalePrice ? `
+    <div class="deal-metric-hero md:col-span-2 bg-surface-container-low rounded-2xl p-8 flex flex-col justify-center">
+      <div class="flex items-center gap-1 mb-2">
+        <p class="t-label font-bold text-on-surface-variant" style="letter-spacing:0.03em">מחיר מכירה צפוי</p>
+        ${tooltipHtml}
+      </div>
+      <p class="t-metric-xl font-extrabold text-secondary font-label">${formatUSD(expectedSalePrice)}</p>
+    </div>` : '';
+
+  const sideCells = [
+    expectedProfit && `
+      <div class="bg-surface-container-low rounded-2xl p-6 flex flex-col justify-center">
+        <p class="t-label font-bold text-on-surface-variant mb-2" style="letter-spacing:0.03em">רווח צפוי</p>
+        <p class="t-metric font-bold text-primary font-label">${formatUSD(expectedProfit)}</p>
       </div>`,
     fundraisingGoal && `
-      <div class="bg-surface-container-low p-6 rounded-lg">
-        <p class="text-xs text-on-surface-variant mb-1 font-bold">סכום לגיוס</p>
-        <p class="text-2xl font-bold text-primary font-label">${formatUSD(fundraisingGoal)}</p>
-      </div>`,
-    expectedSalePrice && `
-      <div class="bg-surface-container-low p-6 rounded-lg">
-        <div class="flex items-center gap-1 mb-1">
-          <p class="text-xs text-on-surface-variant font-bold">מחיר מכירה צפוי</p>
-          ${tooltipHtml}
-        </div>
-        <p class="text-2xl font-bold text-secondary font-label">${formatUSD(expectedSalePrice)}</p>
+      <div class="bg-surface-container-low rounded-2xl p-6 flex flex-col justify-center">
+        <p class="t-label font-bold text-on-surface-variant mb-2" style="letter-spacing:0.03em">סכום לגיוס</p>
+        <p class="t-metric font-bold text-primary font-label">${formatUSD(fundraisingGoal)}</p>
       </div>`
   ].filter(Boolean).join('');
 
-  if (!cells) return '';
-
   return `
-    <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-6">נתונים כלליים</h3>
+    <div class="deal-section deal-section--metrics">
+      <h3 class="t-h3 font-extrabold text-primary mb-6">נתונים כלליים</h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        ${cells}
+        ${heroCell}
+        <div class="flex flex-col gap-4">
+          ${sideCells}
+        </div>
       </div>
     </div>`;
 }
@@ -829,9 +833,9 @@ function renderKeyMetricsSection(deal) {
 function renderDescriptionSection(deal) {
   if (!deal.description) return '';
   return `
-    <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-4">תכנית העסקה</h3>
-      <p class="text-on-surface-variant leading-relaxed">${deal.description}</p>
+    <div class="deal-section deal-section--description">
+      <h3 class="t-h3 font-extrabold text-primary mb-4">תכנית העסקה</h3>
+      <p class="t-body text-on-surface-variant leading-relaxed" style="max-width:65ch">${deal.description}</p>
     </div>`;
 }
 
@@ -848,8 +852,8 @@ function renderSpecsSection(deal) {
   const html = renderSpecs(deal.specs);
   if (!html) return '';
   return `
-    <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-6">מפרט הנכס</h3>
+    <div class="deal-section deal-section--specs">
+      <h3 class="t-h3 font-extrabold text-primary mb-6">מפרט הנכס</h3>
       ${html}
     </div>`;
 }
@@ -858,53 +862,31 @@ function renderCostBreakdownSection(deal) {
   const catsHtml = renderCostCategories(deal.cost_categories);
   if (!catsHtml) return '';
 
-  const totalCost         = deal.total_cost;
-  const expectedSalePrice = deal.expected_sale_price;
-  const expectedProfit    = deal.expected_profit;
-  const tooltipId         = `tooltip-sale-price-${deal.id}`;
-  const tooltipHtml = deal.sale_price_tooltip
-    ? `<button class="tooltip-trigger" data-tooltip="${tooltipId}" onclick="event.stopPropagation()">?</button>
-       <div id="${tooltipId}" class="tooltip-popup hidden">${deal.sale_price_tooltip}</div>`
-    : '';
+  const totalCost = deal.total_cost;
 
   return `
-    <div class="bg-surface-container-low rounded-xl p-8 md:p-12">
+    <div class="deal-section deal-section--cost-breakdown bg-surface-container-low rounded-2xl p-8 md:p-12">
       <div class="flex flex-col md:flex-row-reverse justify-between items-start md:items-center mb-8 gap-4">
-        <h3 class="text-2xl font-extrabold text-primary">פירוט עלויות</h3>
+        <h3 class="t-h2 font-extrabold text-primary">פירוט עלויות</h3>
       </div>
       ${catsHtml}
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 mt-8 border-t border-primary/10 text-center items-center">
-        ${totalCost ? `
-        <div>
-          <p class="text-xs text-on-surface-variant mb-1 font-bold">סך השקעה</p>
-          <p class="text-2xl font-bold text-primary font-label">${formatUSD(totalCost)}</p>
-        </div>` : ''}
-        ${expectedSalePrice ? `
-        <div>
-          <div class="flex items-center gap-1 mb-1 justify-center">
-            <p class="text-xs text-on-surface-variant font-bold">מחיר מכירה צפוי</p>
-            ${tooltipHtml}
-          </div>
-          <p class="text-2xl font-bold text-primary font-label">${formatUSD(expectedSalePrice)}</p>
-        </div>` : ''}
-        ${expectedProfit ? `
-        <div class="bg-secondary/5 p-4 rounded-lg">
-          <p class="text-xs text-secondary mb-1 font-extrabold">רווח צפוי</p>
-          <p class="text-3xl font-extrabold text-secondary font-label">${formatUSD(expectedProfit)}</p>
-        </div>` : ''}
-      </div>
+      ${totalCost ? `
+      <div class="flex justify-between items-baseline pt-6 mt-6 border-t-2 border-primary/20">
+        <span class="t-body font-bold text-on-surface">סך עלות פרויקט</span>
+        <span class="t-metric font-extrabold text-primary font-label">${formatUSD(totalCost)}</span>
+      </div>` : ''}
     </div>`;
 }
 
 function renderWhatsAppCTASection() {
   return `
-    <div>
-      <div class="rounded-xl p-8 md:p-12 text-center" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
-        <p class="text-lg text-white/90 leading-relaxed mb-6">
+    <div class="deal-section deal-section--cta">
+      <div class="rounded-2xl p-8 md:p-12 text-center" style="background:#022445">
+        <p class="t-body-lg text-white/90 leading-relaxed mb-6">
           מעוניינים להשקיע בעסקה הזו? רוצים לדעת מתי כנס המשקיעים הבא?
         </p>
         <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
-           class="inline-block bg-whatsapp text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 active:scale-95 transition-all">
+           class="inline-block bg-whatsapp text-white px-8 py-4 rounded-2xl font-bold t-body-lg hover:opacity-90 active:scale-95 transition-all">
           <span class="flex items-center gap-3 justify-center">
             <span>לחצו כאן כדי להצטרף לקבוצת הווצאפ שלנו</span>
             <span class="material-symbols-outlined" data-weight="fill">chat</span>
@@ -933,16 +915,16 @@ function renderRenovationProgress(deal) {
   const clamped = Math.min(Math.max(Number(pct) || 0, 0), 100);
 
   return `
-    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] rounded-2xl p-8 md:p-12 text-white">
+    <div class="deal-section deal-section--renovation-progress rounded-2xl p-8 md:p-12 text-white" style="background:#022445">
       <div class="flex items-baseline justify-between mb-6">
-        <h3 class="text-2xl font-extrabold">התקדמות השיפוץ</h3>
-        <span class="font-label font-extrabold" style="font-size:3.5rem;line-height:1">${clamped}%</span>
+        <h3 class="t-h3 font-extrabold">התקדמות השיפוץ</h3>
+        <span class="t-display font-label font-extrabold" style="line-height:1">${clamped}%</span>
       </div>
       <div class="w-full h-3 bg-white/15 rounded-full overflow-hidden">
         <div class="h-full bg-secondary rounded-full" style="width:${clamped}%"></div>
       </div>
       ${deal.project_duration ? `
-        <p class="mt-4 text-sm text-white/80">משך פרויקט מתוכנן: <strong>${deal.project_duration}</strong></p>` : ''}
+        <p class="mt-4 t-body-sm text-white/80">משך פרויקט מתוכנן: <strong>${deal.project_duration}</strong></p>` : ''}
     </div>`;
 }
 
@@ -998,19 +980,19 @@ function renderPlanVsActual(deal) {
     </tr>`).join('');
 
   return `
-    <div class="bg-surface-container-low rounded-2xl p-8 md:p-12">
-      <h3 class="text-2xl font-extrabold text-primary mb-2">התוצאה: תוכנית מול מציאות</h3>
-      <p class="text-sm text-on-surface-variant mb-8">השוואה מלאה בין מה שתכננו למה שקרה בפועל</p>
+    <div class="deal-section deal-section--plan-vs-actual bg-surface-container-low rounded-2xl p-8 md:p-12">
+      <h3 class="t-h2 font-extrabold text-primary mb-2">התוצאה: תוכנית מול מציאות</h3>
+      <p class="t-body-sm text-on-surface-variant mb-8">השוואה מלאה בין מה שתכננו למה שקרה בפועל</p>
       <div class="overflow-x-auto">
         <table class="w-full text-right">
           <thead>
-            <tr class="text-xs text-outline uppercase tracking-wider border-b border-outline-variant/30">
+            <tr class="t-label text-on-surface-variant border-b border-outline-variant/30">
               <th class="pb-4 font-bold">פרמטר</th>
               <th class="pb-4 font-bold text-center">מתוכנן</th>
               <th class="pb-4 font-bold text-center">בפועל</th>
             </tr>
           </thead>
-          <tbody class="text-sm">
+          <tbody class="t-body-xs">
             ${rowsHtml}
           </tbody>
         </table>
@@ -1021,9 +1003,9 @@ function renderPlanVsActual(deal) {
 function renderPostSaleSummary(deal) {
   if (!deal.sale_completion_note) return '';
   return `
-    <div class="bg-surface-container-low rounded-xl p-8 md:p-10">
-      <h3 class="text-xl font-extrabold text-primary mb-3">סיכום העסקה</h3>
-      <p class="text-on-surface-variant leading-relaxed">${deal.sale_completion_note}</p>
+    <div class="deal-section deal-section--post-sale bg-surface-container-low rounded-2xl p-8 md:p-10">
+      <h3 class="t-h4 font-extrabold text-primary mb-3">סיכום העסקה</h3>
+      <p class="t-body text-on-surface-variant leading-relaxed" style="max-width:65ch">${deal.sale_completion_note}</p>
     </div>`;
 }
 
@@ -1054,7 +1036,7 @@ function renderComps(deal) {
     <tr class="bg-surface-container-low border-b border-outline-variant/10">
       <td class="py-4 px-4 font-bold text-primary">
         <div class="flex items-center gap-2">
-          <span class="text-xs bg-primary text-white px-2 py-0.5 rounded font-bold">הנכס שלנו</span>
+          <span class="t-label bg-primary text-white px-2 py-0.5 rounded font-bold">הנכס שלנו</span>
         </div>
       </td>
       <td class="py-4 px-4 text-left font-label font-bold text-primary">${fmtSqft(ourSqft)}</td>
@@ -1065,7 +1047,7 @@ function renderComps(deal) {
 
   const compsRows = comps.map(c => `
     <tr class="border-b border-outline-variant/10">
-      <td class="py-4 px-4 text-on-surface-variant text-sm">${c.address || '—'}</td>
+      <td class="py-4 px-4 t-body-xs text-on-surface-variant">${c.address || '—'}</td>
       <td class="py-4 px-4 text-left font-label">${fmtSqft(c.sqft)}</td>
       <td class="py-4 px-4 text-left font-label">${fmtBeds(c.bedrooms)}</td>
       <td class="py-4 px-4 text-left font-label font-bold text-primary">${formatUSD(c.sale_price)}</td>
@@ -1073,17 +1055,17 @@ function renderComps(deal) {
     </tr>`).join('');
 
   const emptyNote = comps.length === 0
-    ? `<p class="text-sm text-on-surface-variant mt-4">עדיין לא נאספו נכסים דומים.</p>`
+    ? `<p class="t-body-sm text-on-surface-variant mt-4">עדיין לא נאספו נכסים דומים.</p>`
     : '';
 
   return `
-    <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-2">השוואת נכסים בשכונה</h3>
-      <p class="text-sm text-on-surface-variant mb-6">נכסים דומים שנמכרו לאחרונה — האישוש לשווי המתוכנן</p>
+    <div class="deal-section deal-section--comps">
+      <h3 class="t-h3 font-extrabold text-primary mb-2">השוואת נכסים בשכונה</h3>
+      <p class="t-body-sm text-on-surface-variant mb-6">נכסים דומים שנמכרו לאחרונה — האישוש לשווי המתוכנן</p>
       <div class="overflow-x-auto">
         <table class="w-full text-right">
           <thead>
-            <tr class="text-xs text-outline uppercase tracking-wider border-b border-outline-variant/30">
+            <tr class="t-label text-on-surface-variant border-b border-outline-variant/30">
               <th class="pb-4 px-4 font-bold text-right">כתובת</th>
               <th class="pb-4 px-4 font-bold text-left">גודל (sqft)</th>
               <th class="pb-4 px-4 font-bold text-left">חדרים</th>
@@ -1091,7 +1073,7 @@ function renderComps(deal) {
               <th class="pb-4 px-4 font-bold text-left">זמן בשוק</th>
             </tr>
           </thead>
-          <tbody class="text-sm">
+          <tbody class="t-body-xs">
             ${ourRow}
             ${compsRows}
           </tbody>
@@ -1340,21 +1322,21 @@ function renderUnifiedGallery(deal) {
                   data-gallery-tab="${cat}"
                   data-active="${isActive}"
                   onclick="switchGalleryCategory(event, '${deal.id}', '${cat}')"
-                  class="px-5 py-2 rounded-full text-sm font-bold transition ${isActive ? activeClasses : idleClasses}">
+                  class="px-5 py-2 rounded-full t-body-xs font-bold transition ${isActive ? activeClasses : idleClasses}">
             ${GALLERY_CATEGORY_LABELS[cat] || cat}
           </button>`;
       }).join('')}
     </div>` : '';
 
   return `
-    <div>
-      <h3 class="text-2xl font-extrabold text-primary mb-6">גלריה</h3>
+    <div class="deal-section deal-section--gallery">
+      <h3 class="t-h3 font-extrabold text-primary mb-6">גלריה</h3>
       <div class="unified-gallery-wrapper"
            data-gallery-deal-id="${deal.id}"
            data-active-category="${initialCategory}"
            data-active-index="0"
            data-gallery-images='${jsonAttr}'>
-        <div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-low">
+        <div class="relative aspect-video rounded-2xl overflow-hidden bg-surface-container-low">
           <img data-gallery-main class="w-full h-full object-cover" src="${firstImg.image_url}" alt="${firstImg.alt_text}" loading="lazy"/>
           <button type="button" data-gallery-nav="prev"
                   onclick="galleryNavigate(event, '${deal.id}', 'prev')"
@@ -1371,7 +1353,7 @@ function renderUnifiedGallery(deal) {
             <span class="material-symbols-outlined text-primary">chevron_left</span>
           </button>
           <div data-gallery-indicator dir="ltr"
-               class="absolute bottom-3 left-3 bg-black/50 text-white rounded-full px-3 py-1 text-xs font-label"
+               class="absolute bottom-3 left-3 bg-black/50 text-white rounded-full px-3 py-1 t-label font-label"
                style="${showNav ? '' : 'display:none'}">
             1 / ${initialList.length}
           </div>
@@ -1581,8 +1563,16 @@ function renderDealCard(deal, index) {
 
   const subtitle = locationSubtitle(deal);
 
+  const stickyCtaHtml = isExpandable
+    ? `<a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
+         class="deal-sticky-cta" aria-label="הצטרפות לקבוצת הווצאפ">
+         <span class="material-symbols-outlined" data-weight="fill">chat</span>
+         <span>מעוניינים? הצטרפו לקבוצה</span>
+       </a>`
+    : '';
+
   const expandedHtml = isExpandable
-    ? `<div class="deal-expanded space-y-16">${renderExpandedContent(deal)}</div>`
+    ? `<div class="deal-expanded">${renderExpandedContent(deal)}${stickyCtaHtml}</div>`
     : `<div class="deal-expanded"></div>`;
 
   const accentStripHtml = config.accentStrip
