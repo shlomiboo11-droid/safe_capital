@@ -124,7 +124,13 @@ router.get('/', async (req, res) => {
       SELECT e.*,
         (SELECT COUNT(*)::int FROM event_registrations er
           WHERE er.event_id = e.id OR (er.event_id IS NULL AND er.event_slug = e.slug)) AS registrations_count,
-        (SELECT COUNT(*)::int FROM event_featured_deals efd WHERE efd.event_id = e.id) AS featured_deals_count
+        (SELECT COUNT(*)::int
+           FROM deals d
+           LEFT JOIN event_featured_deals efd
+             ON efd.deal_id = d.id AND efd.event_id = e.id
+          WHERE d.is_published = TRUE
+            AND (efd.is_hidden IS NULL OR efd.is_hidden = FALSE)
+        ) AS featured_deals_count
       FROM events e
       ORDER BY e.is_active DESC, e.event_date DESC NULLS LAST, e.created_at DESC
     `);

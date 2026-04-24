@@ -1,0 +1,392 @@
+<!doctype html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<title>Safe Capital · Deal Report · {{property.name}}</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+</head>
+<body>
+
+{{!-- ═══════════════════════════════════════════════════════════════
+     COVER PAGE
+     ═══════════════════════════════════════════════════════════════ --}}
+<section class="page cover">
+  <div class="cover__hero">
+    <img src="{{property.heroImage}}" alt="{{property.name}}"/>
+  </div>
+  <div class="cover__logo">
+    <span class="cover__logo-mark">SAFE CAPITAL</span>
+    <span>Private Investor Report</span>
+  </div>
+  <div class="cover__content">
+    <div class="cover__overline">DEAL BRIEF · No. {{property.dealNumber}}</div>
+    <h1 class="cover__title">{{property.name}}</h1>
+    <p class="cover__subtitle">{{property.city}}, {{property.state}} · שכונת מאונטן ברוק</p>
+    <div class="cover__meta">
+      <div class="cover__meta-block">
+        <div class="cover__meta-label">Report Date</div>
+        <div class="cover__meta-value">{{meta.reportDate}}</div>
+      </div>
+      <div class="cover__meta-block">
+        <div class="cover__meta-label">Reference</div>
+        <div class="cover__meta-value">{{meta.reportNumber}}</div>
+      </div>
+      <div class="cover__meta-block">
+        <div class="cover__meta-label">Status</div>
+        <div class="cover__meta-value">{{property.status}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{!-- ═══════════════════════════════════════════════════════════════
+     SECTION 01 — THE DEAL (2 pages)
+     ═══════════════════════════════════════════════════════════════ --}}
+<section class="page page--tone-base">
+  <div class="section-header">
+    <div class="section-header__number">01</div>
+    <div class="section-header__eyebrow">THE DEAL</div>
+    <h2 class="section-header__title">העסקה</h2>
+  </div>
+
+  <div class="grid-60-40 mt-md">
+    <div>
+      <p class="t-lede">{{narrative.dealSummary}}</p>
+      <p>{{narrative.propertyStory}}</p>
+
+      <div class="pull-stat mt-md">
+        <div class="pull-stat__number num">${{format financials.purchasePrice}}</div>
+        <p class="pull-stat__body">מחיר הרכישה — כ-65% מהשווי הצפוי אחרי השיפוץ. זה התקרה העליונה של מה שאנחנו מאשרים לעצמנו, ומתחת לתקרה הזו אנחנו לא קונים.</p>
+      </div>
+
+      <div class="pull-stat">
+        <div class="pull-stat__number num">${{format financials.expectedSalePrice}}</div>
+        <p class="pull-stat__body">מחיר המכירה הצפוי (ARV) — מבוסס על שלושה נכסים דומים שנמכרו בשכונה ב-12 החודשים האחרונים, עם טווח של 1.35 עד 1.53 מיליון דולר.</p>
+      </div>
+
+      <div class="pull-stat">
+        <div class="pull-stat__number num accent">{{financials.expectedRoiPercent}}%</div>
+        <p class="pull-stat__body">תשואה צפויה למשקיע — מכסה של 20% על הקרן. אם העסקה תניב יותר, החלק שמעל נחשב רווח של השותפים (ראה "מפל הרווחים").</p>
+      </div>
+    </div>
+
+    <div class="keyfacts">
+      <div class="keyfacts__title">עובדות מפתח</div>
+      <h3 class="keyfacts__headline">סקירה פיננסית</h3>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">השקעה מינ׳</span>
+        <span class="keyfacts__value">${{format financials.minInvestment}}</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">יעד גיוס</span>
+        <span class="keyfacts__value">${{format financials.fundraisingGoal}}</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">גויס עד כה</span>
+        <span class="keyfacts__value">${{format financials.fundraisingRaised}} ({{financials.fundraisingPercent}}%)</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">משקיעים</span>
+        <span class="keyfacts__value">{{financials.investorCount}}</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">משך</span>
+        <span class="keyfacts__value">{{financials.projectDuration}}</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">השלמה צפויה</span>
+        <span class="keyfacts__value">{{financials.expectedCompletion}}</span>
+      </div>
+      <div class="keyfacts__row">
+        <span class="keyfacts__label">רווח צפוי</span>
+        <span class="keyfacts__value keyfacts__value--accent">${{format financials.expectedProfit}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">02</span>
+  </div>
+</section>
+
+<section class="page page--tone-lowest">
+  <div class="t-overline mb-sm">01 · THE DEAL (continued)</div>
+  <h3 class="t-h2">לוח זמנים של הפרויקט</h3>
+  <p class="t-body" style="max-width:78%">השיפוץ מנוהל בחמישה שלבים מוגדרים מראש. המשקיעים מקבלים עדכון בתוך קבוצת הוואטסאפ הייעודית של העסקה בכל פעם ששלב מסתיים, כולל תמונות, חשבוניות עבודה, ואבני דרך שהושלמו.</p>
+
+  <div class="timeline">
+    <div class="timeline__phase timeline__phase--done">
+      <div class="timeline__dot"></div>
+      <div class="timeline__label">גיוס</div>
+      <div class="timeline__date">מרץ 2026</div>
+    </div>
+    <div class="timeline__phase timeline__phase--done">
+      <div class="timeline__dot"></div>
+      <div class="timeline__label">רכישה</div>
+      <div class="timeline__date">אפריל 2026</div>
+    </div>
+    <div class="timeline__phase timeline__phase--active">
+      <div class="timeline__dot"></div>
+      <div class="timeline__label">שיפוץ</div>
+      <div class="timeline__date">מאי–דצמ׳ 2026</div>
+    </div>
+    <div class="timeline__phase timeline__phase--upcoming">
+      <div class="timeline__dot"></div>
+      <div class="timeline__label">מכירה</div>
+      <div class="timeline__date">ינו׳ 2027</div>
+    </div>
+    <div class="timeline__phase timeline__phase--upcoming">
+      <div class="timeline__dot"></div>
+      <div class="timeline__label">סגירה</div>
+      <div class="timeline__date">פבר׳ 2027</div>
+    </div>
+  </div>
+
+  <div class="grid-60-40 mt-lg">
+    <div>
+      <h3 class="t-h3">היקף השיפוץ</h3>
+      <p>{{narrative.renovationScope}}</p>
+
+      <h3 class="t-h3 mt-lg">פירוט עלויות עיקרי</h3>
+      <div class="cost-list">
+        {{#each financials.costBreakdown}}
+        <div class="cost-row">
+          <span class="cost-row__name">{{this.name}}</span>
+          <span class="cost-row__amount num">${{format this.amount}}</span>
+        </div>
+        {{/each}}
+        <div class="cost-row cost-row--total">
+          <span class="cost-row__name">סך עלות הפרויקט</span>
+          <span class="cost-row__amount num">${{format financials.totalCost}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="t-h3">מפרט הנכס</h3>
+      <table class="specs">
+        <thead>
+          <tr>
+            <th>מפרט</th>
+            <th>לפני</th>
+            <th>אחרי</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each specs}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td class="num">{{this.before}}</td>
+            <td class="num">{{this.after}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">03</span>
+  </div>
+</section>
+
+<section class="page page--tone-base">
+  <div class="t-overline mb-sm">01 · THE DEAL (continued)</div>
+  <h3 class="t-h2">השוואת נכסים דומים בשכונה</h3>
+  <p class="t-body" style="max-width:82%">שלושה נכסים שנמכרו בשכונת מאונטן ברוק ב-12 החודשים האחרונים. שניים מתוכם נמכרו מעל למחיר המבוקש. זמן ההחזקה הממוצע בשוק היה 19 יום.</p>
+
+  <table class="comps">
+    <thead>
+      <tr>
+        <th>כתובת</th>
+        <th>שטח (sqft)</th>
+        <th>חדרי שינה</th>
+        <th>מחיר מכירה</th>
+        <th>ימים בשוק</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="comps__own">
+        <td>
+          <span class="comps__tag">הנכס שלנו · צפוי</span><br/>
+          {{property.address}}
+        </td>
+        <td class="num">3,000</td>
+        <td class="num">5</td>
+        <td class="num">${{format financials.expectedSalePrice}}</td>
+        <td class="num">—</td>
+      </tr>
+      <tr><td colspan="5" class="comps__rowspacer"></td></tr>
+      {{#each comps}}
+      <tr>
+        <td>{{this.address}}</td>
+        <td class="num">{{format this.sqft}}</td>
+        <td class="num">{{this.bedrooms}}</td>
+        <td class="num">${{format this.salePrice}}</td>
+        <td class="num">{{this.daysOnMarket}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <div class="img-grid mt-xl no-break">
+    <div>
+      <div class="img-frame"><img src="assets/oxmoor/before-1.jpg" alt="מבט חוץ — לפני השיפוץ"/></div>
+      <div class="img-caption">מצב נוכחי · חזית הנכס</div>
+    </div>
+    <div>
+      <div class="img-frame"><img src="assets/oxmoor/rendering-1.jpg" alt="הדמיה אדריכלית — אחרי"/></div>
+      <div class="img-caption">הדמיה אדריכלית · לאחר שיפוץ</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">04</span>
+  </div>
+</section>
+
+{{!-- ═══════════════════════════════════════════════════════════════
+     SECTION 02 — BIRMINGHAM, ALABAMA
+     ═══════════════════════════════════════════════════════════════ --}}
+<section class="page page--tone-lowest">
+  <div class="section-header">
+    <div class="section-header__number">02</div>
+    <div class="section-header__eyebrow">BIRMINGHAM, ALABAMA</div>
+    <h2 class="section-header__title">העיר</h2>
+  </div>
+
+  <p class="t-lede mt-md">{{birmingham.intro}}</p>
+  <p>{{birmingham.marketFundamentals}}</p>
+
+  <div class="grid-3 mt-lg no-break">
+    <div class="stat-block">
+      <div class="stat-block__label">מטרופולין</div>
+      <div class="stat-block__number stat-block__number--navy num">1.1M</div>
+      <div class="stat-block__description">תושבים באזור המטרופוליטני</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-block__label">מחיר חציוני</div>
+      <div class="stat-block__number num">$148K</div>
+      <div class="stat-block__description">נמוך מהחציון הלאומי של 420 אלף דולר</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-block__label">אבטלה</div>
+      <div class="stat-block__number stat-block__number--navy num">2.9%</div>
+      <div class="stat-block__description">נמוך מהממוצע הארצי בסוף 2025</div>
+    </div>
+  </div>
+
+  <h3 class="t-h3 mt-lg">המעסיקים הגדולים — מי קונה את הבתים</h3>
+  <p>{{birmingham.employers}}</p>
+
+  <h3 class="t-h3 mt-lg">למה דווקא בירמינגהם</h3>
+  <p>{{birmingham.whyHere}}</p>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">05</span>
+  </div>
+</section>
+
+{{!-- ═══════════════════════════════════════════════════════════════
+     SECTION 03 — WHO WE ARE
+     ═══════════════════════════════════════════════════════════════ --}}
+<section class="page page--tone-base">
+  <div class="section-header">
+    <div class="section-header__number">03</div>
+    <div class="section-header__eyebrow">SAFE CAPITAL</div>
+    <h2 class="section-header__title">מי אנחנו</h2>
+  </div>
+
+  <div class="grid-60-40 mt-md">
+    <div>
+      <p class="t-lede">{{company.story}}</p>
+
+      <div class="waterfall no-break">
+        <div class="waterfall__overline">PROFIT WATERFALL</div>
+        <h3 class="waterfall__headline">{{company.profitWaterfall.headline}}</h3>
+        <p class="waterfall__body">{{company.profitWaterfall.body}}</p>
+      </div>
+
+      <h3 class="t-h3 mt-lg">הכסף שלנו על השולחן</h3>
+      <p>{{company.skinInTheGame}}</p>
+    </div>
+
+    <div>
+      <div class="t-label mb-sm">השותפים</div>
+      <div class="partners">
+        {{#each company.partners}}
+        <div class="partner no-break">
+          <h4 class="partner__name">{{this.name}}</h4>
+          <div class="partner__role">{{this.role}}</div>
+          <p class="partner__bio">{{this.bio}}</p>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">06</span>
+  </div>
+</section>
+
+{{!-- ═══════════════════════════════════════════════════════════════
+     SECTION 04 — OUR WORK METHOD
+     ═══════════════════════════════════════════════════════════════ --}}
+<section class="page page--tone-lowest">
+  <div class="section-header">
+    <div class="section-header__number">04</div>
+    <div class="section-header__eyebrow">OUR METHOD</div>
+    <h2 class="section-header__title">שיטת העבודה</h2>
+  </div>
+
+  <p class="t-lede mt-md" style="max-width:85%">ארבעה עקרונות פשוטים שקובעים אם אנחנו קונים עסקה — ואיך היא מנוהלת אחרי שכן.</p>
+
+  <div class="method-step no-break">
+    <div class="method-step__number num">01</div>
+    <div>
+      <h3 class="method-step__title">מקור הנכסים</h3>
+      <p class="method-step__body">{{method.sourcing}}</p>
+    </div>
+  </div>
+
+  <div class="method-step no-break">
+    <div class="method-step__number num">02</div>
+    <div>
+      <h3 class="method-step__title">הערכה ובדיקה</h3>
+      <p class="method-step__body">{{method.evaluation}}</p>
+    </div>
+  </div>
+
+  <div class="method-step no-break">
+    <div class="method-step__number num">03</div>
+    <div>
+      <h3 class="method-step__title">ניהול השיפוץ</h3>
+      <p class="method-step__body">{{method.renovation}}</p>
+    </div>
+  </div>
+
+  <div class="method-step no-break">
+    <div class="method-step__number num">04</div>
+    <div>
+      <h3 class="method-step__title">יציאה מהעסקה</h3>
+      <p class="method-step__body">{{method.exit}}</p>
+    </div>
+  </div>
+
+  <p class="disclaimer mt-xl">{{disclaimer}}</p>
+
+  <div class="page-footer">
+    <span class="page-footer__mark">SAFE CAPITAL · {{property.name}}</span>
+    <span class="page-footer__page">07</span>
+  </div>
+</section>
+
+</body>
+</html>
