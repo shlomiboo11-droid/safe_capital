@@ -29,7 +29,7 @@ function renderRenovationTab(data) {
   }
 
   const phases = plan.phases || [];
-  const totalCost = plan.total_cost;
+  const manualOverride = plan.total_cost_manual_override === true;
 
   // Calculate completion stats
   const completedCount = phases.filter(p => p.completed).length;
@@ -38,6 +38,10 @@ function renderRenovationTab(data) {
 
   // Calculate sum of phase costs
   const phasesSum = phases.reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
+
+  // If not overridden, total_cost should always reflect the sum of phases.
+  // If overridden, show the manually-saved value.
+  const totalCost = manualOverride ? plan.total_cost : phasesSum;
 
   // Readonly helper
   const ro = !renovationEditMode;
@@ -65,31 +69,38 @@ function renderRenovationTab(data) {
       ${plan.ai_summary ? `<p class="mt-4 text-sm text-white/80 max-w-2xl mx-auto leading-relaxed">${escapeHtmlRenovation(plan.ai_summary)}</p>` : ''}
     </div>
 
-    ${totalCount > 0 ? `
-    <!-- Progress Bar -->
+    <!-- Progress Bar (financial — % of budget spent on renovation) -->
     <div class="card p-5 mb-6">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary">task_alt</span>
           <span class="font-bold text-sm">התקדמות שיפוץ</span>
+          <span class="text-xs text-gray-400 mr-1">(לפי הוצאות שנרשמו)</span>
         </div>
-        <span class="text-sm font-inter font-bold text-primary" id="renovation-progress-label">${completedCount}/${totalCount} שלבים הושלמו</span>
+        <span class="text-sm font-inter font-bold text-primary" id="renovation-progress-label">—</span>
       </div>
       <div class="progress-bar" style="height: 10px;">
-        <div class="progress-fill" id="renovation-progress-fill" style="width: ${completionPct}%; background: ${completionPct === 100 ? '#166534' : '#022445'};"></div>
+        <div class="progress-fill" id="renovation-progress-fill" style="width: 0%; background: #022445;"></div>
       </div>
+      <div class="text-xs text-gray-500 mt-2" id="renovation-progress-money">—</div>
+      ${totalCount > 0 ? `<div class="text-xs text-gray-400 mt-1">${completedCount}/${totalCount} שלבי תשלום סומנו כהושלמו</div>` : ''}
     </div>
-    ` : ''}
 
     <!-- Edit Total Cost -->
     <div class="card p-5 mb-6 ${ro ? 'opacity-60 pointer-events-none' : ''}" id="renovation-edit-total-section">
       <div class="flex items-center gap-4">
         <label class="form-label mb-0 whitespace-nowrap">עלות כוללת (עריכה ידנית)</label>
         <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr font-bold w-48 ${roClass}"
+          id="renovation-total-input"
           value="${totalCost ? formatCurrency(totalCost) : ''}"
           ${roAttr}
           onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-          onchange="updateRenovationField('total_cost', parseAmount(this.value))">
+          onchange="handleTotalCostManualEdit(this.value)">
+      </div>
+      <div class="mt-2 text-xs text-gray-500" id="renovation-total-helper">
+        ${manualOverride
+          ? `<span class="text-secondary">ערך ידני</span> · <a href="javascript:void(0)" onclick="revertTotalCostToAuto()" class="text-primary underline hover:no-underline">חזור לחישוב אוטומטי</a>`
+          : `<span class="material-symbols-outlined align-middle" style="font-size:14px;">sync</span> מסונכרן אוטומטית מטבלת שלבי תשלום`}
       </div>
     </div>
 
@@ -202,6 +213,42 @@ function renderRenovationTab(data) {
     </div>
     `}
   `;
+
+  // Load live financial progress (renovation expenses / renovation budget)
+  loadRenovationFinancialProgress();
+}
+
+/**
+ * Fetch and render the financial renovation progress from the server.
+ * Updates #renovation-progress-label, #renovation-progress-fill, #renovation-progress-money.
+ */
+async function loadRenovationFinancialProgress() {
+  const label = document.getElementById('renovation-progress-label');
+  const fill = document.getElementById('renovation-progress-fill');
+  const money = document.getElementById('renovation-progress-money');
+  if (!label || !fill || !money || !currentDeal || !currentDeal.id) return;
+
+  try {
+    const data = await API.get(`/deals/${currentDeal.id}/renovation-progress`);
+    const pct = data.percent;
+    const spent = data.spent || 0;
+    const budget = data.budget || 0;
+
+    if (pct == null) {
+      label.textContent = 'אין תקציב מוגדר';
+      fill.style.width = '0%';
+      money.textContent = budget > 0 ? '' : 'הגדר עלות כוללת לשיפוץ כדי לראות אחוז התקדמות';
+      return;
+    }
+
+    label.textContent = `${pct}% הושלמו`;
+    fill.style.width = pct + '%';
+    fill.style.background = pct >= 100 ? '#166534' : '#022445';
+    money.textContent = `${formatCurrency(spent)} מתוך ${formatCurrency(budget)}`;
+  } catch (err) {
+    console.error('Failed to load renovation progress:', err);
+    label.textContent = '—';
+  }
 }
 
 // ── Edit Mode Toggle ─────────────────────────────────────────
@@ -232,7 +279,10 @@ async function handlePhaseCostChange(phaseIdx, rawValue) {
 
 /**
  * Recalculate the total_cost as SUM of all phase costs,
- * update display, and save to server.
+ * update display, and save to server — only if NOT in manual override mode.
+ *
+ * When manual override is active, phase sum is still shown in the table footer,
+ * but the total_cost field (and stored value) is left untouched.
  */
 async function autoRecalcRenovationTotal() {
   try {
@@ -240,24 +290,108 @@ async function autoRecalcRenovationTotal() {
     const plan = data.plan;
     if (!plan || !plan.phases) return;
 
-    const newTotal = plan.phases.reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
+    const newSum = plan.phases.reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
+
+    // Always refresh the phase-sum footer
+    const phasesSum = document.getElementById('renovation-phases-sum');
+    if (phasesSum) phasesSum.textContent = formatCurrency(newSum);
+
+    const isManualOverride = plan.total_cost_manual_override === true;
+    if (isManualOverride) {
+      // Don't touch total_cost when user has taken manual control
+      return;
+    }
 
     // Update the total_cost on server
-    await API.put(`/deals/${currentDeal.id}/renovation-plan`, { total_cost: newTotal });
+    await API.put(`/deals/${currentDeal.id}/renovation-plan`, { total_cost: newSum });
 
     // Update display without full re-render
     const totalDisplay = document.getElementById('renovation-total-display');
-    if (totalDisplay) totalDisplay.textContent = formatCurrency(newTotal);
+    if (totalDisplay) totalDisplay.textContent = formatCurrency(newSum);
 
-    const phasesSum = document.getElementById('renovation-phases-sum');
-    if (phasesSum) phasesSum.textContent = formatCurrency(newTotal);
+    // Update the editable input too (it may be showing the stale value)
+    const totalInput = document.getElementById('renovation-total-input');
+    if (totalInput && document.activeElement !== totalInput) {
+      totalInput.value = newSum ? formatCurrency(newSum) : '';
+    }
 
     // Update currentDealData for consistency
     if (currentDealData && currentDealData.renovationPlan) {
-      currentDealData.renovationPlan.total_cost = newTotal;
+      currentDealData.renovationPlan.total_cost = newSum;
     }
   } catch (err) {
     showToast(`שגיאה בחישוב סה"כ: ${err.message}`, 'error');
+  }
+}
+
+// ── Manual Override Handlers ────────────────────────────────
+
+/**
+ * User edited the total_cost field directly — switch to manual override mode.
+ */
+async function handleTotalCostManualEdit(rawValue) {
+  const newTotal = parseAmount(rawValue);
+  try {
+    await API.put(`/deals/${currentDeal.id}/renovation-plan`, {
+      total_cost: newTotal,
+      total_cost_manual_override: true
+    });
+
+    // Update local state + UI without full re-render
+    if (currentDealData && currentDealData.renovationPlan) {
+      currentDealData.renovationPlan.total_cost = newTotal;
+      currentDealData.renovationPlan.total_cost_manual_override = true;
+    }
+
+    const totalDisplay = document.getElementById('renovation-total-display');
+    if (totalDisplay) totalDisplay.textContent = newTotal ? formatCurrency(newTotal) : '—';
+
+    const helper = document.getElementById('renovation-total-helper');
+    if (helper) {
+      helper.innerHTML = `<span class="text-secondary">ערך ידני</span> · <a href="javascript:void(0)" onclick="revertTotalCostToAuto()" class="text-primary underline hover:no-underline">חזור לחישוב אוטומטי</a>`;
+    }
+  } catch (err) {
+    showToast(`שגיאה בעדכון: ${err.message}`, 'error');
+  }
+}
+
+/**
+ * Revert to automatic mode: clear override flag and recalc from phases.
+ */
+async function revertTotalCostToAuto() {
+  try {
+    const data = await API.get(`/deals/${currentDeal.id}/renovation-plan`);
+    const plan = data.plan;
+    if (!plan) return;
+
+    const newSum = (plan.phases || []).reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
+
+    await API.put(`/deals/${currentDeal.id}/renovation-plan`, {
+      total_cost: newSum,
+      total_cost_manual_override: false
+    });
+
+    // Update local state
+    if (currentDealData && currentDealData.renovationPlan) {
+      currentDealData.renovationPlan.total_cost = newSum;
+      currentDealData.renovationPlan.total_cost_manual_override = false;
+    }
+
+    // Update UI in place
+    const totalDisplay = document.getElementById('renovation-total-display');
+    if (totalDisplay) totalDisplay.textContent = newSum ? formatCurrency(newSum) : '—';
+
+    const totalInput = document.getElementById('renovation-total-input');
+    if (totalInput) totalInput.value = newSum ? formatCurrency(newSum) : '';
+
+    const helper = document.getElementById('renovation-total-helper');
+    if (helper) {
+      helper.innerHTML = `<span class="material-symbols-outlined align-middle" style="font-size:14px;">sync</span> מסונכרן אוטומטית מטבלת שלבי תשלום`;
+    }
+
+    showToast('חזר לחישוב אוטומטי');
+  } catch (err) {
+    showToast(`שגיאה: ${err.message}`, 'error');
   }
 }
 
@@ -293,25 +427,18 @@ async function togglePhaseCompletion(phaseIdx, isCompleted) {
       }
     }
 
-    // Update progress bar
+    // The top progress bar now shows FINANCIAL progress (expenses/budget), not phase count.
+    // Marking a phase as completed does not affect the financial progress bar directly;
+    // it only updates the small "X/Y phases completed" sub-line. Re-fetch for consistency.
     const phases = plan.phases;
-    const completedCount = phases.filter(p => p.completed).length;
-    const totalCount = phases.length;
-    const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
-    const label = document.getElementById('renovation-progress-label');
-    if (label) label.textContent = `${completedCount}/${totalCount} שלבים הושלמו`;
-
-    const fill = document.getElementById('renovation-progress-fill');
-    if (fill) {
-      fill.style.width = pct + '%';
-      fill.style.background = pct === 100 ? '#166534' : '#022445';
-    }
 
     // Update currentDealData
     if (currentDealData && currentDealData.renovationPlan) {
       currentDealData.renovationPlan.phases = phases;
     }
+
+    // Refresh financial progress from server (cheap call, keeps UI in sync)
+    loadRenovationFinancialProgress();
 
   } catch (err) {
     showToast(`שגיאה בעדכון השלמה: ${err.message}`, 'error');
@@ -353,9 +480,11 @@ async function deleteRenovationPhase(phaseIdx) {
     plan.phases = plan.phases.map((p, i) => ({ ...p, phase_number: i + 1 }));
     await API.put(`/deals/${currentDeal.id}/renovation-plan`, { phases: plan.phases });
 
-    // Also recalculate total
-    const newTotal = plan.phases.reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
-    await API.put(`/deals/${currentDeal.id}/renovation-plan`, { total_cost: newTotal });
+    // Also recalculate total — only if not in manual override mode
+    if (plan.total_cost_manual_override !== true) {
+      const newTotal = plan.phases.reduce((sum, p) => sum + (p.cost != null ? p.cost : (p.amount || 0)), 0);
+      await API.put(`/deals/${currentDeal.id}/renovation-plan`, { total_cost: newTotal });
+    }
 
     showToast('שלב נמחק');
     reloadDeal(renderRenovationTab);

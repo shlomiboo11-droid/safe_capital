@@ -151,6 +151,32 @@ a.card * { text-decoration: none; }
   margin-bottom: 0.375rem;
 }
 
+/* Read-only mirror display — matches .form-input height, non-editable */
+.form-input-readonly {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px dashed #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  background: #f5f3f0;
+  color: #43474e;
+  direction: rtl;
+  cursor: default;
+  user-select: text;
+  min-height: 2.625rem;
+  display: flex;
+  align-items: center;
+}
+.form-input-readonly.ltr {
+  direction: ltr;
+  font-family: 'Inter', sans-serif;
+}
+.form-help-readonly {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.375rem;
+}
+
 /* Number inputs — always LTR */
 input[type="number"] {
   direction: ltr;

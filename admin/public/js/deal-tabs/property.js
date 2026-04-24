@@ -40,7 +40,11 @@ function renderPropertyTab(data) {
           </div>
           <div>
             <label class="form-label">משך הפרויקט</label>
-            <input type="text" name="project_duration" class="form-input ltr" dir="ltr" value="${deal.project_duration || ''}" placeholder="8 Months">
+            <div class="flex items-center gap-2">
+              <input type="number" name="project_duration" class="form-input ltr font-inter" dir="ltr" min="1" max="60" step="1"
+                value="${(deal.project_duration || '').toString().match(/\d+/)?.[0] || ''}" placeholder="8">
+              <span class="text-sm" style="color: var(--color-text-muted, #43474e); white-space: nowrap;">חודשים</span>
+            </div>
           </div>
         </div>
       </div>
@@ -158,10 +162,8 @@ function renderPropertyTab(data) {
           </div>
           <div>
             <label class="form-label">אחוז התקדמות שיפוץ</label>
-            <div class="relative">
-              <input type="number" name="renovation_progress_percent" class="form-input ltr font-inter" dir="ltr" min="0" max="100" step="1" value="${deal.renovation_progress_percent != null ? deal.renovation_progress_percent : ''}">
-              <span class="absolute top-1/2 -translate-y-1/2 left-3 text-sm text-gray-500 pointer-events-none">%</span>
-            </div>
+            <input type="number" name="renovation_progress_percent" class="form-input ltr font-inter" dir="ltr" min="0" max="100" step="1" value="${deal.renovation_progress_percent != null ? deal.renovation_progress_percent : ''}">
+            <div class="text-xs text-gray-500 mt-1">מחושב אוטומטית מהוצאות שיפוץ שנרשמו (תזרים / תקציב). ניתן גם להזין ערך ידני — הוא יידרס בהוצאה הבאה.</div>
           </div>
           <div class="md:col-span-2">
             <label class="form-label">הערת סיום עסקה</label>
@@ -232,7 +234,7 @@ function renderPropertyTab(data) {
       city: form.city.value.trim(),
       state: form.state.value.trim(),
       zillow_url: form.zillow_url.value.trim(),
-      project_duration: form.project_duration.value.trim(),
+      project_duration: form.project_duration.value.trim() === '' ? '' : String(parseInt(form.project_duration.value, 10) || ''),
       property_status: form.property_status.value,
       fundraising_status: form.fundraising_status.value,
       sort_order: parseInt(form.sort_order.value) || 0,

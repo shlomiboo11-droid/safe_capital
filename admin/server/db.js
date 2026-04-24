@@ -579,6 +579,18 @@ END $$;
 
 CREATE INDEX IF NOT EXISTS idx_event_registrations_event_id ON event_registrations(event_id);
 
+-- Migration: add total_cost_manual_override to deal_renovation_plan
+-- When TRUE, total_cost is frozen at a manually-entered value.
+-- When FALSE (default), total_cost auto-syncs as sum of phase costs.
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'deal_renovation_plan' AND column_name = 'total_cost_manual_override'
+  ) THEN
+    ALTER TABLE deal_renovation_plan ADD COLUMN total_cost_manual_override BOOLEAN DEFAULT FALSE;
+  END IF;
+END $$;
+
     `);
     console.log('Database schema initialized.');
   } finally {

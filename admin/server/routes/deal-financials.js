@@ -2,6 +2,8 @@ const express = require('express');
 const pool = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { logAudit } = require('../helpers/audit');
+const cashflowRouter = require('./deal-cashflow');
+const recalcRenovationProgress = cashflowRouter.recalcRenovationProgress;
 
 const router = express.Router();
 router.use(authenticate, authorize('super_admin', 'manager'));
@@ -187,24 +189,27 @@ router.get('/:dealId/renovation-plan', async (req, res) => {
 
 // POST /api/deals/:dealId/renovation-plan — create or replace
 router.post('/:dealId/renovation-plan', async (req, res) => {
-  const { total_cost, phases, ai_summary } = req.body;
+  const { total_cost, phases, ai_summary, total_cost_manual_override } = req.body;
   const phasesJson = JSON.stringify(phases || []);
+  const overrideFlag = total_cost_manual_override === true;
 
   try {
     const existing = await pool.query('SELECT id FROM deal_renovation_plan WHERE deal_id = $1', [req.params.dealId]);
     if (existing.rows[0]) {
       await pool.query(`
         UPDATE deal_renovation_plan
-        SET total_cost = $1, phases_json = $2, ai_summary = $3, updated_at = NOW()
-        WHERE deal_id = $4
-      `, [total_cost || null, phasesJson, ai_summary || null, req.params.dealId]);
+        SET total_cost = $1, phases_json = $2, ai_summary = $3, total_cost_manual_override = $4, updated_at = NOW()
+        WHERE deal_id = $5
+      `, [total_cost || null, phasesJson, ai_summary || null, overrideFlag, req.params.dealId]);
+      await recalcRenovationProgress(req.params.dealId);
       res.json({ message: 'Renovation plan updated' });
     } else {
       const result = await pool.query(`
-        INSERT INTO deal_renovation_plan (deal_id, total_cost, phases_json, ai_summary)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO deal_renovation_plan (deal_id, total_cost, phases_json, ai_summary, total_cost_manual_override)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING id
-      `, [req.params.dealId, total_cost || null, phasesJson, ai_summary || null]);
+      `, [req.params.dealId, total_cost || null, phasesJson, ai_summary || null, overrideFlag]);
+      await recalcRenovationProgress(req.params.dealId);
       res.status(201).json({ id: result.rows[0].id, message: 'Renovation plan created' });
     }
   } catch (err) {
@@ -215,7 +220,7 @@ router.post('/:dealId/renovation-plan', async (req, res) => {
 
 // PUT /api/deals/:dealId/renovation-plan — partial update
 router.put('/:dealId/renovation-plan', async (req, res) => {
-  const { total_cost, phases, ai_summary } = req.body;
+  const { total_cost, phases, ai_summary, total_cost_manual_override } = req.body;
 
   const sets = ['updated_at = NOW()'];
   const vals = [];
@@ -224,11 +229,13 @@ router.put('/:dealId/renovation-plan', async (req, res) => {
   if (total_cost !== undefined) { sets.push(`total_cost = $${paramIdx++}`); vals.push(total_cost); }
   if (phases !== undefined) { sets.push(`phases_json = $${paramIdx++}`); vals.push(JSON.stringify(phases)); }
   if (ai_summary !== undefined) { sets.push(`ai_summary = $${paramIdx++}`); vals.push(ai_summary); }
+  if (total_cost_manual_override !== undefined) { sets.push(`total_cost_manual_override = $${paramIdx++}`); vals.push(total_cost_manual_override === true); }
 
   vals.push(req.params.dealId);
 
   try {
     await pool.query(`UPDATE deal_renovation_plan SET ${sets.join(', ')} WHERE deal_id = $${paramIdx}`, vals);
+    await recalcRenovationProgress(req.params.dealId);
     res.json({ message: 'Renovation plan updated' });
   } catch (err) {
     console.error('Update renovation plan error:', err);

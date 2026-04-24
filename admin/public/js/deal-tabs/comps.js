@@ -12,6 +12,12 @@ function renderCompsTab(data) {
   const ourData = _buildOurData(deal, data.specs || [], data.images || []);
   const hasComps = comps.length > 0;
 
+  // Auto-search disabled only when deal has no address at all (we can still search with partial specs)
+  const autoSearchReady = !!(deal.full_address && deal.full_address.length > 4);
+  const autoSearchTooltip = autoSearchReady
+    ? 'חיפוש 5 נכסים דומים באזור לפי מפרטי הנכס'
+    : 'הגדר כתובת מלאה לעסקה כדי להפעיל חיפוש אוטומטי';
+
   container.innerHTML = `
     <!-- Add Comp -->
     <div class="card p-6 mb-6">
@@ -20,6 +26,15 @@ function renderCompsTab(data) {
           <span class="material-symbols-outlined text-primary text-xl">compare_arrows</span>
           <h3 class="text-lg font-bold">נכסים דומים</h3>
         </div>
+        <button type="button"
+                class="btn btn-secondary btn-sm"
+                onclick="openCompAutoSearch()"
+                id="compAutoSearchBtn"
+                title="${autoSearchTooltip}"
+                ${autoSearchReady ? '' : 'disabled'}>
+          <span class="material-symbols-outlined text-sm">travel_explore</span>
+          חיפוש נכסים דומים אוטומטית
+        </button>
       </div>
       <div class="flex items-end gap-3">
         <div class="flex-1">
@@ -106,6 +121,38 @@ function renderCompsTab(data) {
       <div id="compsMapContainer"></div>
     </div>
     ` : ''}
+
+    <!-- Auto-Search Candidates Modal -->
+    <div id="compAutoSearchModal" class="modal-overlay hidden" onclick="if(event.target===this)closeCompAutoSearch()">
+      <div class="modal-box" style="max-width:56rem;width:95%;">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">travel_explore</span>
+            <h2 class="text-lg font-bold">חיפוש אוטומטי של נכסים דומים</h2>
+          </div>
+          <button onclick="closeCompAutoSearch()" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div id="compSearchTargetSummary" class="text-xs text-gray-500 mb-3"></div>
+
+        <div id="compSearchStatus" class="mb-4"></div>
+
+        <div id="compSearchResults" class="space-y-3"></div>
+
+        <div id="compSearchFooter" class="mt-5 flex items-center justify-between hidden">
+          <div id="compSearchSelectedCount" class="text-sm text-gray-600">0 נבחרו</div>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-secondary btn-sm" onclick="closeCompAutoSearch()">ביטול</button>
+            <button class="btn btn-primary btn-sm" id="compSearchUploadBtn" onclick="uploadSelectedCompCandidates()" disabled>
+              <span class="material-symbols-outlined text-sm">upload</span>
+              <span id="compSearchUploadLabel">העלה נבחרים</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Comp Image Gallery Modal -->
     <div id="compGalleryModal" class="modal-overlay hidden" onclick="if(event.target===this)closeCompGallery()">
@@ -380,6 +427,153 @@ async function addCompFromZillow() {
     btn.disabled = false;
     btn.innerHTML = orig;
   }
+}
+
+// ── Auto-search candidates (Top 5 similar + nearby) ──────────
+
+let _autoSearchCandidates = [];
+
+function openCompAutoSearch() {
+  const modal = document.getElementById('compAutoSearchModal');
+  const results = document.getElementById('compSearchResults');
+  const status = document.getElementById('compSearchStatus');
+  const footer = document.getElementById('compSearchFooter');
+  const summary = document.getElementById('compSearchTargetSummary');
+
+  modal.classList.remove('hidden');
+  results.innerHTML = '';
+  footer.classList.add('hidden');
+  summary.textContent = '';
+  status.innerHTML = `
+    <div class="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 rounded-lg p-3">
+      <span class="material-symbols-outlined animate-spin">refresh</span>
+      מחפש נכסים דומים באזור... (עד 15 שניות)
+    </div>`;
+
+  _fetchCompCandidates().catch(err => {
+    status.innerHTML = `<div class="text-sm text-red-700 bg-red-50 rounded-lg p-3">${err.message || 'שגיאה לא ידועה'}</div>`;
+  });
+}
+
+function closeCompAutoSearch() {
+  document.getElementById('compAutoSearchModal').classList.add('hidden');
+  _autoSearchCandidates = [];
+}
+
+async function _fetchCompCandidates() {
+  const status = document.getElementById('compSearchStatus');
+  const resultsEl = document.getElementById('compSearchResults');
+  const footer = document.getElementById('compSearchFooter');
+  const summary = document.getElementById('compSearchTargetSummary');
+
+  const resp = await API.post(`/deals/${currentDeal.id}/comps/search-candidates`, {});
+  const results = resp.results || [];
+  _autoSearchCandidates = results;
+
+  // Show target summary
+  const t = resp.target || {};
+  const bits = [];
+  if (t.address) bits.push(`כתובת יעד: ${t.address}`);
+  if (t.sqft) bits.push(`${t.sqft.toLocaleString()} sqft`);
+  if (t.bedrooms) bits.push(`${t.bedrooms} חד' שינה`);
+  if (t.bathrooms) bits.push(`${t.bathrooms} חד' רחצה`);
+  if (t.price) bits.push(`ARV ~$${Math.round(t.price).toLocaleString()}`);
+  summary.textContent = bits.join('  •  ');
+
+  if (results.length === 0) {
+    status.innerHTML = `<div class="text-sm text-yellow-800 bg-yellow-50 rounded-lg p-3">לא נמצאו נכסים דומים באזור שתואמים לקריטריונים.</div>`;
+    return;
+  }
+
+  status.innerHTML = `<div class="text-sm text-green-700 bg-green-50 rounded-lg p-3">נמצאו ${results.length} נכסים. סמן את אלה שברצונך להוסיף, ולחץ "העלה נבחרים".</div>`;
+
+  resultsEl.innerHTML = results.map((r, i) => _candidateCard(r, i)).join('');
+  footer.classList.remove('hidden');
+  _updateSelectedCount();
+}
+
+function _candidateCard(c, idx) {
+  const statusLabel = c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD' ? 'נמכר' :
+                      c.home_status === 'FOR_SALE' ? 'למכירה' : 'Zestimate';
+  const statusColor = c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD' ? 'bg-green-100 text-green-800' :
+                      c.home_status === 'FOR_SALE' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700';
+  const img = c.thumbnail_url
+    ? `<img src="${c.thumbnail_url}" alt="" class="w-full h-full object-cover">`
+    : `<div class="flex items-center justify-center h-full text-gray-300"><span class="material-symbols-outlined text-3xl">home</span></div>`;
+
+  return `
+    <label class="flex gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer" style="background:#fbf9f6;">
+      <input type="checkbox"
+             class="comp-candidate-checkbox mt-1"
+             data-idx="${idx}"
+             onchange="_updateSelectedCount()"
+             style="width:1.125rem;height:1.125rem;accent-color:#022445;">
+      <div class="w-28 h-20 rounded overflow-hidden flex-shrink-0" style="background:#f5f3f0;">${img}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-2">
+          <div class="text-sm font-semibold text-gray-900 truncate">${c.address || '—'}</div>
+          <span class="text-xs px-2 py-0.5 rounded-full ${statusColor} flex-shrink-0">${statusLabel}</span>
+        </div>
+        <div class="flex items-center gap-4 mt-1 text-xs text-gray-600 font-inter">
+          <span class="font-semibold text-gray-900">${c.sale_price ? '$' + c.sale_price.toLocaleString() : '—'}</span>
+          <span>${c.sqft ? c.sqft.toLocaleString() + ' sqft' : '—'}</span>
+          <span>${c.bedrooms || '—'} bd / ${c.bathrooms || '—'} ba</span>
+        </div>
+        ${c.zillow_url ? `<a href="${c.zillow_url}" target="_blank" class="text-xs text-blue-600 hover:underline mt-1 inline-block" onclick="event.stopPropagation();">פתח ב-Zillow ↗</a>` : ''}
+      </div>
+    </label>
+  `;
+}
+
+function _updateSelectedCount() {
+  const checked = document.querySelectorAll('.comp-candidate-checkbox:checked');
+  const count = checked.length;
+  const counter = document.getElementById('compSearchSelectedCount');
+  const btn = document.getElementById('compSearchUploadBtn');
+  const label = document.getElementById('compSearchUploadLabel');
+  if (counter) counter.textContent = `${count} נבחרו`;
+  if (btn) btn.disabled = count === 0;
+  if (label) label.textContent = count > 0 ? `העלה ${count} נכסים שנבחרו` : 'העלה נבחרים';
+}
+
+async function uploadSelectedCompCandidates() {
+  const checked = [...document.querySelectorAll('.comp-candidate-checkbox:checked')];
+  if (checked.length === 0) return;
+
+  const selected = checked.map(cb => _autoSearchCandidates[parseInt(cb.dataset.idx)]).filter(Boolean);
+  const btn = document.getElementById('compSearchUploadBtn');
+  const label = document.getElementById('compSearchUploadLabel');
+  const status = document.getElementById('compSearchStatus');
+
+  btn.disabled = true;
+  let ok = 0, fail = 0;
+
+  for (let i = 0; i < selected.length; i++) {
+    const c = selected[i];
+    label.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מעלה ${i + 1} מתוך ${selected.length}...`;
+    try {
+      await API.post(`/deals/${currentDeal.id}/comps/fetch-zillow`, {
+        addressOrUrl: c.zillow_url || c.address
+      });
+      ok++;
+    } catch (err) {
+      console.error('Failed to upload candidate', c.address, err);
+      fail++;
+    }
+  }
+
+  status.innerHTML = fail === 0
+    ? `<div class="text-sm text-green-700 bg-green-50 rounded-lg p-3">הועלו ${ok} נכסים בהצלחה.</div>`
+    : `<div class="text-sm text-yellow-800 bg-yellow-50 rounded-lg p-3">הועלו ${ok} נכסים. ${fail} נכשלו.</div>`;
+
+  label.textContent = 'סיים';
+  btn.disabled = false;
+  showToast(fail === 0 ? `${ok} נכסים נוספו` : `${ok} נוספו, ${fail} נכשלו`, fail === 0 ? 'success' : 'error');
+
+  setTimeout(() => {
+    closeCompAutoSearch();
+    reloadDeal(renderCompsTab);
+  }, 1200);
 }
 
 // ── AI Analysis ──────────────────────────────────────────────

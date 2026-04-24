@@ -62,22 +62,18 @@ function renderFinancialTab(data) {
       </div>
     </div>
 
-    <!-- Fundraising goal (quick) -->
+    <!-- Fundraising goal (read-only mirror from "גיוס הון" tab) -->
     <div class="card p-6 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="form-label">סכום יעד לגיוס</label>
-          <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
-            value="${deal.fundraising_goal ? formatCurrency(deal.fundraising_goal) : ''}"
-            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-            onchange="saveDealField('fundraising_goal', parseAmount(this.value))">
+          <div class="form-input-readonly ltr">${deal.fundraising_goal ? formatCurrency(deal.fundraising_goal) : '—'}</div>
+          <div class="form-help-readonly">נערך בטאב "גיוס הון"</div>
         </div>
         <div>
           <label class="form-label">סכום מינימום להשקעה</label>
-          <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
-            value="${formatCurrency(deal.min_investment || 50000)}"
-            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-            onchange="saveDealField('min_investment', parseAmount(this.value))">
+          <div class="form-input-readonly ltr">${formatCurrency(deal.min_investment || 50000)}</div>
+          <div class="form-help-readonly">נערך בטאב "גיוס הון"</div>
         </div>
       </div>
     </div>

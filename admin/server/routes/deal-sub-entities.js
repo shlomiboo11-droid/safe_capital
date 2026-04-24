@@ -658,6 +658,218 @@ router.post('/:dealId/comps/fetch-zillow', async (req, res) => {
   }
 });
 
+// ── Comp: Auto search candidates (Top-N similar properties) ────
+//
+// Pulls similar + nearby properties from private-zillow RapidAPI
+// (/similar returns FOR_SALE comps, /nearby returns Zestimate-based neighbors),
+// merges, filters by the deal's specs (sqft / beds / baths / price ranges),
+// scores by similarity, and returns the Top 5 candidates.
+//
+// This is a *search* only — the user selects which candidates to promote
+// into real comps via the existing /comps/fetch-zillow endpoint.
+
+router.post('/:dealId/comps/search-candidates', async (req, res) => {
+  const { dealId } = req.params;
+
+  try {
+    // 1. Load deal + specs + existing comps
+    const [dealRes, specsRes, compsRes] = await Promise.all([
+      pool.query('SELECT * FROM deals WHERE id = $1', [dealId]),
+      pool.query('SELECT * FROM deal_specs WHERE deal_id = $1', [dealId]),
+      pool.query('SELECT zillow_url, address FROM deal_comps WHERE deal_id = $1', [dealId])
+    ]);
+
+    const deal = dealRes.rows[0];
+    if (!deal) return res.status(404).json({ error: 'עסקה לא נמצאה' });
+
+    const addressQuery = deal.full_address || deal.name;
+    if (!addressQuery || addressQuery.length < 5) {
+      return res.status(400).json({
+        error: 'missing_address',
+        message_he: 'חסרה כתובת מלאה לעסקה. הגדר את "כתובת מלאה" לפני החיפוש.'
+      });
+    }
+
+    // Target specs from deal_specs (value_after for after-renovation target)
+    let targetSqft = 0, targetBed = 0, targetBath = 0;
+    for (const spec of specsRes.rows) {
+      const name = (spec.spec_name || '').toLowerCase();
+      const val = spec.value_after || spec.value_before || '';
+      if (name.includes('שטח') || name.includes('sqft') || name.includes('square')) {
+        targetSqft = parseFloat(String(val).replace(/[^0-9.]/g, '')) || 0;
+      }
+      if (name.includes('חדרי שינה') || name.includes('bedroom') || name.includes('bed')) {
+        targetBed = parseInt(val) || 0;
+      }
+      if (name.includes('חדרי רחצה') || name.includes('bathroom') || name.includes('bath')) {
+        targetBath = parseFloat(val) || 0;
+      }
+    }
+    const targetPrice = parseFloat(deal.arv || deal.expected_sale_price || deal.purchase_price || 0) || 0;
+
+    // 2. Call both endpoints in parallel
+    const apiKey = process.env.RAPIDAPI_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'RAPIDAPI_KEY לא מוגדר' });
+
+    const RAPIDAPI_HOST = 'private-zillow.p.rapidapi.com';
+    const encodedAddr = encodeURIComponent(addressQuery);
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-rapidapi-host': RAPIDAPI_HOST,
+      'x-rapidapi-key': apiKey
+    };
+    const opts = { headers, signal: AbortSignal.timeout(20000) };
+
+    let similarJson = null;
+    let nearbyJson = null;
+    let zillowBlocked = false;
+
+    await Promise.all([
+      fetch(`https://${RAPIDAPI_HOST}/similar?byaddress=${encodedAddr}`, opts)
+        .then(r => {
+          if (r.status === 429) { zillowBlocked = true; return null; }
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .then(j => { similarJson = j; })
+        .catch(() => { zillowBlocked = true; }),
+      fetch(`https://${RAPIDAPI_HOST}/nearby?byaddress=${encodedAddr}`, opts)
+        .then(r => {
+          if (r.status === 429) { zillowBlocked = true; return null; }
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .then(j => { nearbyJson = j; })
+        .catch(() => {})
+    ]);
+
+    if (zillowBlocked && !similarJson && !nearbyJson) {
+      return res.status(502).json({
+        error: 'zillow_blocked',
+        message_he: 'שירות החיפוש לא זמין כרגע. נסה שוב בעוד מספר דקות.'
+      });
+    }
+
+    // 3. Merge + normalize candidates
+    const raw = [
+      ...((similarJson?.similar_properties?.propertyDetails) || []),
+      ...((nearbyJson?.nearby_properties) || [])
+    ];
+
+    // Build a set of already-added zillow URLs (normalized) to exclude
+    const existingSet = new Set();
+    for (const c of compsRes.rows) {
+      if (c.zillow_url) existingSet.add(String(c.zillow_url).split('?')[0]);
+    }
+
+    // Normalize candidates, dedupe by zpid, exclude existing
+    const seenZpid = new Set();
+    const candidates = [];
+    for (const p of raw) {
+      if (!p || !p.zpid) continue;
+      if (seenZpid.has(p.zpid)) continue;
+      seenZpid.add(p.zpid);
+
+      const zillowUrl = p.hdpUrl ? `https://www.zillow.com${p.hdpUrl}` : null;
+      if (zillowUrl && existingSet.has(zillowUrl.split('?')[0])) continue;
+
+      const addrParts = [p.address?.streetAddress, p.address?.city, p.address?.state, p.address?.zipcode]
+        .filter(Boolean);
+      const fullAddr = addrParts.join(', ');
+
+      // Skip candidate if it matches deal's own address (substring match)
+      if (fullAddr && addressQuery && fullAddr.toLowerCase().includes(
+        (deal.full_address || '').split(',')[0].toLowerCase().trim()
+      ) && (deal.full_address || '').length > 5) {
+        continue;
+      }
+
+      candidates.push({
+        zpid: p.zpid,
+        zillow_url: zillowUrl,
+        address: fullAddr || null,
+        sale_price: p.price || null,
+        sqft: p.livingArea || null,
+        bedrooms: p.bedrooms || null,
+        bathrooms: p.bathrooms || null,
+        home_status: p.homeStatus || null,
+        home_type: p.homeType || null,
+        thumbnail_url: p.miniCardPhotos?.[0]?.url || null,
+        latitude: p.latitude || null,
+        longitude: p.longitude || null,
+      });
+    }
+
+    // 4. Filter by tolerance bands (only when we have target values to compare)
+    const filtered = candidates.filter(c => {
+      // sqft within ±25% (more lenient than 15% to ensure we get 5 results)
+      if (targetSqft > 0 && c.sqft) {
+        const ratio = c.sqft / targetSqft;
+        if (ratio < 0.70 || ratio > 1.35) return false;
+      }
+      // bedrooms within ±1
+      if (targetBed > 0 && c.bedrooms) {
+        if (Math.abs(c.bedrooms - targetBed) > 1) return false;
+      }
+      // bathrooms within ±1
+      if (targetBath > 0 && c.bathrooms) {
+        if (Math.abs(c.bathrooms - targetBath) > 1) return false;
+      }
+      // price within ±30%
+      if (targetPrice > 0 && c.sale_price) {
+        const ratio = c.sale_price / targetPrice;
+        if (ratio < 0.65 || ratio > 1.40) return false;
+      }
+      return true;
+    });
+
+    // 5. Score by weighted similarity (lower = better)
+    function score(c) {
+      let s = 0;
+      if (targetSqft > 0 && c.sqft)     s += Math.pow((c.sqft - targetSqft) / targetSqft, 2) * 3;
+      if (targetPrice > 0 && c.sale_price) s += Math.pow((c.sale_price - targetPrice) / targetPrice, 2) * 3;
+      if (targetBed > 0 && c.bedrooms)  s += Math.pow(c.bedrooms - targetBed, 2) * 0.3;
+      if (targetBath > 0 && c.bathrooms) s += Math.pow(c.bathrooms - targetBath, 2) * 0.3;
+      // Slight bonus for RECENTLY_SOLD over FOR_SALE (rare but possible)
+      if (c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD') s -= 0.5;
+      return s;
+    }
+    filtered.sort((a, b) => score(a) - score(b));
+
+    // Top 5: start with filter-passers; if fewer than 5, pad with next-best from unfiltered.
+    // This ensures users always see something useful even when specs are unusual (e.g. $1.35M ARV in a $500K neighborhood).
+    let results = filtered.slice(0, 5);
+    if (results.length < 5) {
+      const filteredSet = new Set(filtered.map(c => c.zpid));
+      const extra = candidates
+        .filter(c => !filteredSet.has(c.zpid))
+        .sort((a, b) => score(a) - score(b))
+        .slice(0, 5 - results.length);
+      results = [...results, ...extra];
+    }
+
+    res.json({
+      results,
+      target: {
+        address: addressQuery,
+        sqft: targetSqft || null,
+        bedrooms: targetBed || null,
+        bathrooms: targetBath || null,
+        price: targetPrice || null,
+      },
+      stats: {
+        total_fetched: raw.length,
+        after_dedupe: candidates.length,
+        after_filter: filtered.length,
+        returned: results.length,
+      }
+    });
+  } catch (err) {
+    console.error('Comp search-candidates error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Comp: Geocode missing lat/lng ──────────────────────────
 
 router.post('/:dealId/comps/geocode', async (req, res) => {

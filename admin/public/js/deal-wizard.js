@@ -257,8 +257,10 @@ function renderReviewStep() {
       </div>
       <div class="field-row">
         <label class="form-label mb-0">משך פרויקט</label>
-        <input type="text" class="form-input text-sm" value="${info.project_duration_months ? info.project_duration_months + ' חודשים' : ''}"
+        <input type="number" min="1" max="60" step="1" class="form-input ltr text-sm" dir="ltr"
+          value="${info.project_duration_months || ''}" placeholder="8"
           onchange="aiResult.property_info.project_duration_months = parseInt(this.value) || null">
+        <span class="text-sm" style="color: #6b7280; white-space: nowrap;">חודשים</span>
       </div>
     </div>
   </div>`;
