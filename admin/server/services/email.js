@@ -231,7 +231,27 @@ async function sendEventRegistrationEmail(registration, event) {
   }
 }
 
+// Generic mailer for ad-hoc notifications (e.g., article bot approval queue).
+async function sendMail({ to, subject, html, text }) {
+  const transporter = getTransporter();
+  if (!transporter) return { sent: false, skipped: true };
+  try {
+    const info = await transporter.sendMail({
+      from: getFromAddress(),
+      to: Array.isArray(to) ? to.join(', ') : to,
+      subject,
+      html: html || undefined,
+      text: text || (html ? html.replace(/<[^>]+>/g, '') : '')
+    });
+    return { sent: true, messageId: info.messageId };
+  } catch (err) {
+    console.error('[email] sendMail failed:', err.message);
+    return { sent: false, error: err };
+  }
+}
+
 module.exports = {
   sendEventRegistrationEmail,
+  sendMail,
   isConfigured
 };

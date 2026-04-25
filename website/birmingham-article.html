@@ -466,8 +466,38 @@ async function loadArticle() {
       coverWrap.classList.remove('hidden');
     }
 
-    // Body
-    document.getElementById('article-body').innerHTML = article.body || '';
+    // Body — render paragraphs if plain text, or raw HTML if already formatted
+    var body = article.body || '';
+    var bodyEl = document.getElementById('article-body');
+    if (body && !/<p\b|<h[1-6]\b|<ul\b|<ol\b|<div\b/i.test(body)) {
+      // Plain-text — split on double newlines into paragraphs
+      bodyEl.innerHTML = body.split(/\n\s*\n/).map(function(p) {
+        var inner = p.replace(/\n/g, '<br>');
+        return inner.trim() ? '<p>' + inner + '</p>' : '';
+      }).join('');
+    } else {
+      bodyEl.innerHTML = body;
+    }
+
+    // References (bot-generated research articles have a sources list)
+    var refs = article.article_references || [];
+    if (Array.isArray(refs) && refs.length > 0) {
+      var refsHtml = '<h3 style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid #e4e2df;font-family:Heebo;font-weight:700;font-size:1.1rem;color:#022445;margin-bottom:0.75rem;">מקורות</h3>'
+        + '<ul style="list-style:none;padding:0;margin:0;font-family:Inter,Heebo,sans-serif;font-size:0.875rem;">'
+        + refs.map(function(r) {
+            if (!r || !r.url) return '';
+            var name = r.name || r.url;
+            var note = r.note ? ' — <span style="color:#6b7280;">' + r.note + '</span>' : '';
+            return '<li style="margin-bottom:0.5rem;"><a href="' + r.url + '" target="_blank" rel="noopener noreferrer" style="color:#022445;text-decoration:underline;">' + name + '</a>' + note + '</li>';
+          }).join('')
+        + '</ul>';
+      bodyEl.insertAdjacentHTML('beforeend', refsHtml);
+    } else if (article.source_url && article.source_name) {
+      // Fallback: show the primary source if no references array
+      bodyEl.insertAdjacentHTML('beforeend',
+        '<p style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid #e4e2df;font-size:0.875rem;color:#6b7280;">מבוסס על: <a href="' + article.source_url + '" target="_blank" rel="noopener noreferrer" style="color:#022445;text-decoration:underline;">' + article.source_name + '</a></p>'
+      );
+    }
 
     // Share buttons
     setupShareButtons(article.title || '');

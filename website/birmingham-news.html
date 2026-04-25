@@ -245,11 +245,19 @@ tailwind.config = {
 <div class="max-w-5xl mx-auto px-6 md:px-12">
 <h2 class="text-2xl font-extrabold font-headline text-primary mb-6">כתבות ועדכונים</h2>
 
-<!-- Category Filter -->
+<!-- Region Filter (geography) -->
+<div class="flex gap-2 mb-3 overflow-x-auto no-scrollbar pb-2">
+<button class="cat-tab active" data-region="all">כל האזורים</button>
+<button class="cat-tab" data-region="us">ארה"ב</button>
+<button class="cat-tab" data-region="birmingham">בירמינגהם</button>
+<button class="cat-tab" data-region="israel">ישראל</button>
+</div>
+
+<!-- Category Filter (topic) -->
 <div class="flex gap-2 mb-8 overflow-x-auto no-scrollbar pb-2">
 <button class="cat-tab active" data-category="all">הכל</button>
 <button class="cat-tab" data-category="market">שוק</button>
-<button class="cat-tab" data-category="neighborhoods">שכונות</button>
+<button class="cat-tab" data-category="neighborhood">שכונות</button>
 <button class="cat-tab" data-category="infrastructure">תשתיות</button>
 </div>
 
@@ -351,13 +359,21 @@ async function loadBriefing() {
 // ── Articles ──
 let currentPage = 1;
 let currentCategory = 'all';
+let currentRegion = 'all';
 let totalPages = 1;
 let featuredSlug = null;
 
 const CATEGORY_LABELS = {
   market: 'שוק',
+  neighborhood: 'שכונות',
   neighborhoods: 'שכונות',
-  infrastructure: 'תשתיות'
+  infrastructure: 'תשתיות',
+  news: 'כללי'
+};
+const REGION_LABELS = {
+  us: 'ארה"ב',
+  birmingham: 'בירמינגהם',
+  israel: 'ישראל'
 };
 
 function renderArticleCard(article) {
@@ -369,17 +385,34 @@ function renderArticleCard(article) {
   const catBadge = catLabel
     ? '<span class="inline-block bg-primary/8 text-primary text-xs font-bold px-2 py-0.5 rounded-full">' + catLabel + '</span>'
     : '';
-
-  const dateHtml = article.published_at
-    ? '<span class="text-xs text-on-surface-variant font-label">' + formatHebrewDate(article.published_at) + '</span>'
+  const regionLabel = REGION_LABELS[article.region] || '';
+  const regionBadge = regionLabel
+    ? '<span class="inline-block bg-secondary/8 text-secondary text-xs font-bold px-2 py-0.5 rounded-full">' + regionLabel + '</span>'
     : '';
 
-  return '<a href="birmingham-article.html?slug=' + article.slug + '" class="article-card block bg-white rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] overflow-hidden text-right no-underline">'
+  const dateSource = article.source_published_at || article.publish_date || article.published_at;
+  const dateHtml = dateSource
+    ? '<span class="text-xs text-on-surface-variant font-label">' + formatHebrewDate(dateSource) + '</span>'
+    : '';
+
+  const body = article.summary_he || article.subtitle || '';
+  // Research-mode articles have substantial body content (>500 chars); they open internally.
+  // Short aggregator-style articles with only a source_url open externally.
+  const isResearchArticle = (article.body_length || 0) > 500;
+  const isExternal = !isResearchArticle && !!article.source_url;
+  const href = isExternal ? article.source_url : ('birmingham-article.html?slug=' + article.slug);
+  const linkAttrs = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const sourceLine = article.source_name
+    ? '<div class="text-xs text-on-surface-variant/70 mt-2 font-label">' + (isResearchArticle ? 'מבוסס על: ' : '') + article.source_name + '</div>'
+    : '';
+
+  return '<a href="' + href + '"' + linkAttrs + ' class="article-card block bg-white rounded-xl shadow-[0_8px_24px_rgba(27,28,26,0.04)] overflow-hidden text-right no-underline">'
     + thumbHtml
     + '<div class="p-5">'
-    + '<div class="flex items-center gap-2 mb-2">' + catBadge + dateHtml + '</div>'
+    + '<div class="flex items-center gap-2 mb-2 flex-wrap">' + regionBadge + catBadge + dateHtml + '</div>'
     + '<h3 class="text-base font-bold font-headline text-primary mb-1 leading-snug">' + (article.title || '') + '</h3>'
-    + '<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">' + (article.subtitle || '') + '</p>'
+    + '<p class="text-sm text-on-surface-variant line-clamp-3 leading-relaxed">' + body + '</p>'
+    + sourceLine
     + '</div></a>';
 }
 
@@ -410,7 +443,7 @@ function renderFeaturedArticle(article) {
   section.classList.remove('hidden');
 }
 
-async function loadArticles(page, category, append) {
+async function loadArticles(page, category, region, append) {
   const grid = document.getElementById('articles-grid');
   const loadingEl = document.getElementById('articles-loading');
   const emptyEl = document.getElementById('articles-empty');
@@ -423,16 +456,17 @@ async function loadArticles(page, category, append) {
   }
 
   const catParam = category && category !== 'all' ? '&category=' + category : '';
+  const regionParam = region && region !== 'all' ? '&region=' + region : '';
 
   try {
-    const res = await fetch(ADMIN_HOST + '/api/public/articles?page=' + page + '&limit=9' + catParam, {
+    const res = await fetch(ADMIN_HOST + '/api/public/articles?page=' + page + '&limit=9' + catParam + regionParam, {
       headers: { 'Accept': 'application/json' }
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
     const articles = data.articles || [];
-    totalPages = data.total_pages || 1;
+    totalPages = (data.pagination && data.pagination.pages) || data.total_pages || 1;
 
     loadingEl.classList.add('hidden');
     if (loadingEl.parentNode === grid) grid.removeChild(loadingEl);
@@ -447,7 +481,7 @@ async function loadArticles(page, category, append) {
 
     // First article on first page (no filter) becomes featured
     let startIdx = 0;
-    if (page === 1 && category === 'all' && articles.length > 0 && !featuredSlug) {
+    if (page === 1 && category === 'all' && region === 'all' && articles.length > 0 && !featuredSlug) {
       renderFeaturedArticle(articles[0]);
       startIdx = 1;
     }
@@ -473,21 +507,28 @@ async function loadArticles(page, category, append) {
   }
 }
 
-// Category filter clicks
+// Filter clicks — category vs region determined by which attribute the button has
 document.querySelectorAll('.cat-tab').forEach(function(tab) {
   tab.addEventListener('click', function() {
-    document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+    const isRegion = this.dataset.region !== undefined;
+    const isCategory = this.dataset.category !== undefined;
+    // Only deactivate siblings in the same group
+    const parent = this.parentElement;
+    parent.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
     this.classList.add('active');
-    currentCategory = this.dataset.category;
+    if (isRegion) currentRegion = this.dataset.region;
+    if (isCategory) currentCategory = this.dataset.category;
     currentPage = 1;
-    loadArticles(currentPage, currentCategory, false);
+    featuredSlug = null;
+    document.getElementById('featured-section')?.classList.add('hidden');
+    loadArticles(currentPage, currentCategory, currentRegion, false);
   });
 });
 
 // Load more button
 document.getElementById('load-more-btn').addEventListener('click', function() {
   currentPage++;
-  loadArticles(currentPage, currentCategory, true);
+  loadArticles(currentPage, currentCategory, currentRegion, true);
 });
 
 // Fade-in animation
@@ -501,7 +542,7 @@ document.querySelectorAll('.fade-up').forEach(function(el) { fadeObserver.observ
 // Init
 function init() {
   loadBriefing();
-  loadArticles(1, 'all', false);
+  loadArticles(1, 'all', 'all', false);
 }
 
 if (document.readyState === 'loading') {

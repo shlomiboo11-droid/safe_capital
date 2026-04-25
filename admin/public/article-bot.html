@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הגדרות בוט כתבות | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/events" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">event</span>
+        <span>ערב משקיעים</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/article-bot" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>בוט כתבות</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <main class="main-content">
+
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">בוט כתבות</h1>
+      <p class="text-sm text-gray-500 mt-1">סורק את הרשת בכל שבוע ומוצא כתבות איכותיות בנדל"ן ובמאקרו שמעניינות משקיע ישראלי. מציע טיוטות — Admin מאשר ידנית כל כתבה לפני שהיא עולה לאתר.</p>
+    </div>
+
+    <!-- Status card -->
+    <div class="card p-5 mb-5">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div class="text-xs text-gray-500 mb-1 font-inter">מצב נוכחי</div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <span id="enabledBadge" class="badge badge-gray">—</span>
+            <span class="text-sm text-gray-600">הפעלה אחרונה:</span>
+            <span id="lastRunLabel" class="text-sm font-inter">—</span>
+          </div>
+        </div>
+        <button id="runBotBtn" class="btn btn-primary" onclick="runBotNow()">
+          <span class="material-symbols-outlined">travel_explore</span>
+          הפעל בוט עכשיו
+        </button>
+      </div>
+      <div id="lastRunNote" class="text-xs text-gray-500 mt-2"></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="card p-5 mb-5">
+      <h3 class="text-lg font-bold mb-4">הגדרות</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="form-label">בוט פעיל?</label>
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="fieldEnabled" style="width:1.2rem;height:1.2rem;">
+            <span class="text-sm text-gray-600">כאשר פעיל, הבוט ירוץ אוטומטית לפי התדירות שנקבעה</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">תדירות (cron)</label>
+          <input type="text" id="fieldFrequency" class="form-input ltr font-inter" dir="ltr" placeholder="0 6 * * 0">
+          <div class="text-xs text-gray-400 mt-1">ברירת מחדל: "0 6 * * 0" = יום ראשון 06:00 UTC</div>
+        </div>
+        <div class="md:col-span-2">
+          <label class="form-label">אזורים פעילים</label>
+          <div class="flex gap-4 flex-wrap">
+            <label class="flex items-center gap-2"><input type="checkbox" class="region-cb" value="us"> <span>US — מאקרו אמריקאי</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" class="region-cb" value="birmingham"> <span>Birmingham, AL</span></label>
+            <label class="flex items-center gap-2"><input type="checkbox" class="region-cb" value="israel"> <span>Israel</span></label>
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <label class="form-label">דומיינים מורשים (מופרדים בפסיק או שורה)</label>
+          <textarea id="fieldSources" class="form-input ltr font-inter" dir="ltr" rows="5" placeholder="bloomberg.com, wsj.com, ..."></textarea>
+          <div class="text-xs text-gray-400 mt-1">הבוט יעדיף מקורות מהרשימה. אל תכלול https:// — רק דומיין.</div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-5">
+        <button class="btn btn-primary" onclick="saveSettings()">
+          <span class="material-symbols-outlined">save</span>
+          שמור הגדרות
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script>
+    if (!requireAuth()) throw new Error('redirect');
+    (function() {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent = user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      try { return new Date(iso).toLocaleString('he-IL'); } catch (_) { return iso; }
+    }
+
+    async function loadSettings() {
+      try {
+        const data = await API.get('/content/bot-settings');
+        const s = data.settings || {};
+        document.getElementById('fieldEnabled').checked = !!s.enabled;
+        document.getElementById('fieldFrequency').value = s.frequency_cron || '0 6 * * 0';
+        document.getElementById('fieldSources').value = (s.allowed_sources || []).join('\n');
+        const regions = s.regions || [];
+        document.querySelectorAll('.region-cb').forEach(cb => { cb.checked = regions.includes(cb.value); });
+
+        document.getElementById('enabledBadge').textContent = s.enabled ? 'פעיל' : 'כבוי';
+        document.getElementById('enabledBadge').className = 'badge ' + (s.enabled ? 'badge-green' : 'badge-gray');
+        document.getElementById('lastRunLabel').textContent = fmtDate(s.last_run_at);
+        const note = [];
+        if (s.last_run_status) note.push('סטטוס: ' + s.last_run_status);
+        if (s.last_run_articles_created != null) note.push('כתבות שנוצרו: ' + s.last_run_articles_created);
+        if (s.last_run_note) note.push(s.last_run_note);
+        document.getElementById('lastRunNote').textContent = note.join(' · ');
+      } catch (err) {
+        showToast('שגיאה בטעינת הגדרות: ' + (err.message || ''), 'error');
+      }
+    }
+
+    async function saveSettings() {
+      const enabled = document.getElementById('fieldEnabled').checked;
+      const frequency_cron = document.getElementById('fieldFrequency').value.trim();
+      const regions = Array.from(document.querySelectorAll('.region-cb')).filter(cb => cb.checked).map(cb => cb.value);
+      const raw = document.getElementById('fieldSources').value;
+      const allowed_sources = raw.split(/[\s,]+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      try {
+        await API.put('/content/bot-settings', { enabled, frequency_cron, regions, allowed_sources });
+        showToast('ההגדרות נשמרו');
+        loadSettings();
+      } catch (err) {
+        showToast(err.message || 'שגיאה בשמירה', 'error');
+      }
+    }
+
+    async function runBotNow() {
+      const btn = document.getElementById('runBotBtn');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined">hourglass_empty</span> הבוט רץ...';
+      try {
+        const res = await API.post('/content/articles/generate', {});
+        const count = res.created_count || 0;
+        if (count > 0) {
+          showToast(`הבוט מצא ${count} כתבות חדשות. בדוק את תור האישור.`);
+        } else {
+          showToast('הבוט רץ — אין כתבות חדשות השבוע.');
+        }
+        loadSettings();
+      } catch (err) {
+        showToast(err.message || 'הבוט נכשל', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

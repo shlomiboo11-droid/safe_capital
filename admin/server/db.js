@@ -413,6 +413,43 @@ CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
 CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(is_published, publish_date);
 CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category);
 
+-- Articles bot: extra columns for AI-generated articles with approval workflow
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS source_url TEXT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS source_name TEXT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS source_published_at TIMESTAMPTZ;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS region TEXT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS summary_he TEXT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'draft';
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS rejected_reason TEXT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS generated_by_bot BOOLEAN DEFAULT false;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS approved_by_user_id INT;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS article_references JSONB DEFAULT '[]'::jsonb;
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS research_topics JSONB DEFAULT '[]'::jsonb;
+
+CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_articles_region ON articles(region, is_published);
+
+-- Articles bot settings (singleton row, id=1)
+CREATE TABLE IF NOT EXISTS article_bot_settings (
+  id INT PRIMARY KEY DEFAULT 1,
+  enabled BOOLEAN DEFAULT true,
+  frequency_cron TEXT DEFAULT '0 6 * * 0',
+  allowed_sources TEXT[] DEFAULT ARRAY[
+    'bloomberg.com','wsj.com','reuters.com','apnews.com','al.com',
+    'nytimes.com','ft.com','calcalist.co.il','themarker.com','globes.co.il',
+    'cnbc.com','marketwatch.com','bizjournals.com'
+  ],
+  regions TEXT[] DEFAULT ARRAY['us','birmingham','israel'],
+  last_run_at TIMESTAMPTZ,
+  last_run_status TEXT,
+  last_run_note TEXT,
+  last_run_articles_created INT,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT article_bot_settings_singleton CHECK (id = 1)
+);
+
+INSERT INTO article_bot_settings (id) VALUES (1) ON CONFLICT DO NOTHING;
+
 -- Weekly briefing
 CREATE TABLE IF NOT EXISTS weekly_briefing (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -42,6 +42,15 @@
         <span class="material-symbols-outlined text-xl">settings</span>
         <span>הגדרות אתר</span>
       </a>
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/article-bot" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>בוט כתבות</span>
+      </a>
     </nav>
     <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
       <div class="flex items-center justify-between">
@@ -63,15 +72,42 @@
   <!-- Main -->
   <main class="main-content">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">ניהול כתבות</h1>
         <p class="text-sm text-gray-500 mt-1" id="articleCount"></p>
       </div>
-      <a href="/article-edit" class="btn btn-primary">
-        <span class="material-symbols-outlined text-lg">add</span>
-        כתבה חדשה
-      </a>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="/article-bot" class="btn btn-secondary">
+          <span class="material-symbols-outlined text-lg">smart_toy</span>
+          הגדרות בוט
+        </a>
+        <button id="runBotBtn" class="btn btn-secondary" onclick="runBotNow()" title="הפעלה ידנית של בוט הכתבות">
+          <span class="material-symbols-outlined text-lg">travel_explore</span>
+          הפעל בוט עכשיו
+        </button>
+        <a href="/article-edit" class="btn btn-primary">
+          <span class="material-symbols-outlined text-lg">add</span>
+          כתבה חדשה
+        </a>
+      </div>
+    </div>
+
+    <!-- Status filter tabs -->
+    <div class="flex gap-2 mb-4 flex-wrap" id="statusFilter">
+      <button data-status="" class="filter-chip active" onclick="setStatusFilter('')">הכל <span class="count" data-count=""></span></button>
+      <button data-status="pending" class="filter-chip" onclick="setStatusFilter('pending')">ממתין לאישור <span class="count" data-count="pending"></span></button>
+      <button data-status="published" class="filter-chip" onclick="setStatusFilter('published')">מפורסם <span class="count" data-count="published"></span></button>
+      <button data-status="approved" class="filter-chip" onclick="setStatusFilter('approved')">מאושר (לא פורסם) <span class="count" data-count="approved"></span></button>
+      <button data-status="rejected" class="filter-chip" onclick="setStatusFilter('rejected')">נדחה <span class="count" data-count="rejected"></span></button>
+    </div>
+
+    <!-- Region filter -->
+    <div class="flex gap-2 mb-6 flex-wrap" id="regionFilter">
+      <button data-region="" class="filter-chip-sm active" onclick="setRegionFilter('')">כל האזורים</button>
+      <button data-region="us" class="filter-chip-sm" onclick="setRegionFilter('us')">US</button>
+      <button data-region="birmingham" class="filter-chip-sm" onclick="setRegionFilter('birmingham')">Birmingham</button>
+      <button data-region="israel" class="filter-chip-sm" onclick="setRegionFilter('israel')">Israel</button>
     </div>
 
     <!-- Table -->
@@ -80,11 +116,11 @@
         <table class="data-table" id="articlesTable">
           <thead>
             <tr>
-              <th>כותרת</th>
+              <th>כותרת + מקור</th>
+              <th>אזור</th>
               <th>קטגוריה</th>
               <th>סטטוס</th>
               <th>תאריך</th>
-              <th>מודגשת</th>
               <th>פעולות</th>
             </tr>
           </thead>
@@ -98,10 +134,19 @@
     <!-- Empty state -->
     <div id="emptyState" style="display:none;" class="text-center py-20">
       <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">article</span>
-      <h3 class="text-xl font-bold text-gray-400 mt-4">אין כתבות עדיין</h3>
-      <p class="text-sm text-gray-400 mt-2">צור כתבה חדשה כדי להתחיל</p>
+      <h3 class="text-xl font-bold text-gray-400 mt-4">אין כתבות בפילטר הזה</h3>
+      <p class="text-sm text-gray-400 mt-2">נסה לשנות את הסינון או להפעיל את הבוט</p>
     </div>
   </main>
+
+  <style>
+    .filter-chip { padding: 0.45rem 0.9rem; border: 1px solid #e5e7eb; border-radius: 999px; background: #fff; font-size: 0.875rem; color: #374151; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; }
+    .filter-chip:hover { background: #f9fafb; }
+    .filter-chip.active { background: #022445; color: #fff; border-color: #022445; }
+    .filter-chip .count { font-size: 0.72rem; opacity: 0.75; }
+    .filter-chip-sm { padding: 0.3rem 0.7rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; font-size: 0.8rem; color: #6b7280; cursor: pointer; font-family: Inter, sans-serif; }
+    .filter-chip-sm.active { background: #f5f3f0; color: #022445; border-color: #d1d5db; font-weight: 600; }
+  </style>
 
   <script src="/js/api.js"></script>
   <script src="/js/utils.js"></script>
@@ -122,17 +167,43 @@
 
     const CATEGORY_LABELS = { news: 'כללי', market: 'שוק', neighborhood: 'שכונות', infrastructure: 'תשתיות' };
     const CATEGORY_COLORS = { news: 'gray', market: 'blue', neighborhood: 'green', infrastructure: 'yellow' };
+    const REGION_LABELS = { us: 'US', birmingham: 'Birmingham', israel: 'Israel' };
+    const STATUS_LABELS = { pending: 'ממתין', approved: 'מאושר', published: 'מפורסם', rejected: 'נדחה', draft: 'טיוטה' };
+    const STATUS_COLORS = { pending: 'yellow', approved: 'blue', published: 'green', rejected: 'red', draft: 'gray' };
+
+    let _filterStatus = new URLSearchParams(location.search).get('status') || '';
+    let _filterRegion = new URLSearchParams(location.search).get('region') || '';
 
     function escapeHtml(str) {
       if (!str) return '';
-      return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function setStatusFilter(s) { _filterStatus = s; syncFilterUI(); loadArticles(); }
+    function setRegionFilter(r) { _filterRegion = r; syncFilterUI(); loadArticles(); }
+
+    function syncFilterUI() {
+      document.querySelectorAll('#statusFilter .filter-chip').forEach(b => {
+        b.classList.toggle('active', (b.dataset.status || '') === _filterStatus);
+      });
+      document.querySelectorAll('#regionFilter .filter-chip-sm').forEach(b => {
+        b.classList.toggle('active', (b.dataset.region || '') === _filterRegion);
+      });
     }
 
     async function loadArticles() {
       try {
-        const data = await API.get('/content/articles');
+        const qs = new URLSearchParams();
+        if (_filterStatus) qs.set('status', _filterStatus);
+        if (_filterRegion) qs.set('region', _filterRegion);
+        const data = await API.get('/content/articles' + (qs.toString() ? '?' + qs.toString() : ''));
         const articles = data.articles || [];
-        document.getElementById('articleCount').textContent = `${articles.length} כתבות`;
+        const counts = data.counts || {};
+        document.getElementById('articleCount').textContent = `${articles.length} כתבות בתצוגה`;
+        document.querySelectorAll('#statusFilter .count').forEach(el => {
+          const k = el.dataset.count;
+          el.textContent = k && counts[k] ? `· ${counts[k]}` : '';
+        });
 
         if (articles.length === 0) {
           document.getElementById('articlesTable').style.display = 'none';
@@ -145,7 +216,7 @@
         renderTable(articles);
       } catch (err) {
         document.getElementById('articlesBody').innerHTML =
-          '<tr><td colspan="6" class="text-center py-8 text-red-500">שגיאה בטעינה</td></tr>';
+          '<tr><td colspan="6" class="text-center py-8 text-red-500">שגיאה בטעינה: ' + escapeHtml(err.message || '') + '</td></tr>';
       }
     }
 
@@ -156,57 +227,77 @@
         const catColor = CATEGORY_COLORS[a.category] || 'gray';
         const date = a.publish_date
           ? new Date(a.publish_date).toLocaleDateString('he-IL')
-          : new Date(a.created_at).toLocaleDateString('he-IL');
-        const published = a.is_published;
-        const featured = a.is_featured;
+          : a.source_published_at
+            ? new Date(a.source_published_at).toLocaleDateString('he-IL')
+            : new Date(a.created_at).toLocaleDateString('he-IL');
+        const status = a.status || (a.is_published ? 'published' : 'draft');
+        const statusLabel = STATUS_LABELS[status] || status;
+        const statusColor = STATUS_COLORS[status] || 'gray';
+        const region = a.region ? (REGION_LABELS[a.region] || a.region) : '—';
+        const botMark = a.generated_by_bot ? '<span title="נוצר ע"י בוט" class="material-symbols-outlined text-sm" style="color:#984349;vertical-align:middle;">smart_toy</span> ' : '';
+
+        const isPending = status === 'pending';
+        const isPublished = status === 'published';
+
+        const idStr = String(a.id).replace(/'/g, "\\'");
+        const actions = [
+          `<a href="/article-edit?id=${encodeURIComponent(a.id)}" class="btn btn-secondary btn-sm" title="עריכה"><span class="material-symbols-outlined text-sm">edit</span></a>`
+        ];
+        if (isPending) {
+          actions.unshift(`<button class="btn btn-sm" style="background:#065f46;color:#fff;" onclick="approveArticle('${idStr}')" title="אשר ופרסם"><span class="material-symbols-outlined text-sm">check</span></button>`);
+          actions.push(`<button class="btn btn-secondary btn-sm" onclick="rejectArticle('${idStr}')" title="דחה"><span class="material-symbols-outlined text-sm">close</span></button>`);
+        } else if (isPublished) {
+          actions.push(`<button class="btn btn-secondary btn-sm" onclick="unpublishArticle('${idStr}')" title="הסר מהאתר"><span class="material-symbols-outlined text-sm">visibility_off</span></button>`);
+        }
+        actions.push(`<button class="btn btn-secondary btn-sm" title="מחיקה" onclick="deleteArticle('${idStr}')"><span class="material-symbols-outlined text-sm">delete</span></button>`);
+
+        const sourceLine = a.source_url
+          ? `<div class="text-xs text-gray-400 mt-0.5 font-inter" dir="ltr" style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(a.source_name || '')} · <a href="${escapeHtml(a.source_url)}" target="_blank" rel="noopener" class="hover:underline">${escapeHtml(a.source_url)}</a></div>`
+          : (a.subtitle ? `<div class="text-xs text-gray-400 mt-0.5">${escapeHtml(a.subtitle)}</div>` : '');
 
         return `<tr>
           <td>
-            <a href="/article-edit?id=${a.id}" class="font-medium text-primary hover:underline">${escapeHtml(a.title)}</a>
-            ${a.subtitle ? `<div class="text-xs text-gray-400 mt-0.5">${escapeHtml(a.subtitle)}</div>` : ''}
+            ${botMark}<a href="/article-edit?id=${a.id}" class="font-medium text-primary hover:underline">${escapeHtml(a.title)}</a>
+            ${sourceLine}
           </td>
+          <td><span class="text-xs font-inter" style="color:#6b7280;">${region}</span></td>
           <td><span class="badge badge-${catColor}">${cat}</span></td>
-          <td>
-            <button class="badge badge-${published ? 'green' : 'gray'} cursor-pointer hover:opacity-80"
-              onclick="togglePublish(${a.id}, ${!published})" title="${published ? 'לחץ להעברה לטיוטה' : 'לחץ לפרסום'}">
-              ${published ? 'מפורסם' : 'טיוטה'}
-            </button>
-          </td>
+          <td><span class="badge badge-${statusColor}">${statusLabel}</span></td>
           <td class="font-inter text-sm" dir="ltr">${date}</td>
-          <td>
-            <button class="cursor-pointer hover:opacity-80" onclick="toggleFeatured(${a.id}, ${!featured})" title="${featured ? 'הסר הדגשה' : 'הדגש'}">
-              <span class="material-symbols-outlined text-lg" style="color: ${featured ? '#eab308' : '#d1d5db'}; font-variation-settings: 'FILL' ${featured ? 1 : 0};">star</span>
-            </button>
-          </td>
-          <td>
-            <div class="flex gap-1">
-              <a href="/article-edit?id=${a.id}" class="btn btn-secondary btn-sm" title="עריכה">
-                <span class="material-symbols-outlined text-sm">edit</span>
-              </a>
-              <button class="btn btn-secondary btn-sm" title="מחיקה" onclick="deleteArticle(${a.id})">
-                <span class="material-symbols-outlined text-sm">delete</span>
-              </button>
-            </div>
-          </td>
+          <td><div class="flex gap-1">${actions.join('')}</div></td>
         </tr>`;
       }).join('');
     }
 
-    async function togglePublish(id, newVal) {
+    async function approveArticle(id) {
       try {
-        await API.put(`/content/articles/${id}`, { is_published: newVal });
+        await API.put(`/content/articles/${id}/approve`, {});
+        showToast('הכתבה אושרה ופורסמה');
         loadArticles();
       } catch (err) {
-        showToast(err.message || 'שגיאה בעדכון', 'error');
+        showToast(err.message || 'שגיאה באישור', 'error');
       }
     }
 
-    async function toggleFeatured(id, newVal) {
+    async function rejectArticle(id) {
+      const reason = prompt('סיבת הדחייה (אופציונלי):', '');
+      if (reason === null) return;
       try {
-        await API.put(`/content/articles/${id}`, { is_featured: newVal });
+        await API.put(`/content/articles/${id}/reject`, { reason });
+        showToast('הכתבה נדחתה');
         loadArticles();
       } catch (err) {
-        showToast(err.message || 'שגיאה בעדכון', 'error');
+        showToast(err.message || 'שגיאה בדחייה', 'error');
+      }
+    }
+
+    async function unpublishArticle(id) {
+      try {
+        await API.put(`/content/articles/${id}/unpublish`, {});
+        showToast('הוסרה מהאתר');
+        loadArticles();
+      } catch (err) {
+        showToast(err.message || 'שגיאה', 'error');
       }
     }
 
@@ -222,7 +313,30 @@
       }
     }
 
+    async function runBotNow() {
+      const btn = document.getElementById('runBotBtn');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined text-lg">hourglass_empty</span> הבוט רץ...';
+      try {
+        const res = await API.post('/content/articles/generate', {});
+        const count = res.created_count || 0;
+        if (count > 0) {
+          showToast(`הבוט מצא ${count} כתבות חדשות. נשלח מייל למנהלים.`);
+        } else {
+          showToast('הבוט רץ בהצלחה — אין כתבות חדשות השבוע.');
+        }
+        setStatusFilter('pending');
+      } catch (err) {
+        showToast(err.message || 'הבוט נכשל', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
     // Init
+    syncFilterUI();
     loadArticles();
   </script>
 </body>

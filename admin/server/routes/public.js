@@ -607,20 +607,26 @@ router.post('/contact', async (req, res) => {
 });
 
 // GET /api/public/articles — published articles with pagination
+// Supports: ?region=us|birmingham|israel and ?category=news|market|neighborhood|infrastructure
 router.get('/articles', async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 12));
     const offset = (page - 1) * limit;
     const category = req.query.category || null;
+    const region = req.query.region || null;
 
-    let where = 'WHERE is_published = true';
+    let where = "WHERE is_published = true AND (status IS NULL OR status = 'published')";
     const params = [];
     let paramIdx = 1;
 
     if (category) {
       where += ` AND category = $${paramIdx++}`;
       params.push(category);
+    }
+    if (region) {
+      where += ` AND region = $${paramIdx++}`;
+      params.push(region);
     }
 
     // Count total for pagination
@@ -630,7 +636,10 @@ router.get('/articles', async (req, res) => {
     const total = parseInt(countResult.rows[0].total);
 
     const sql = `
-      SELECT id, title, subtitle, slug, thumbnail_url, category, tags,
+      SELECT id, title, subtitle, slug, thumbnail_url, category, region, tags,
+             source_url, source_name, source_published_at, summary_he,
+             article_references, research_topics,
+             LENGTH(body) as body_length,
              is_featured, publish_date, author, seo_title, seo_description, created_at
       FROM articles ${where}
       ORDER BY publish_date DESC NULLS LAST, created_at DESC
@@ -658,7 +667,9 @@ router.get('/articles', async (req, res) => {
 router.get('/articles/:slug', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, title, subtitle, slug, body, thumbnail_url, category, tags,
+      `SELECT id, title, subtitle, slug, body, thumbnail_url, category, region, tags,
+              source_url, source_name, source_published_at, summary_he,
+              article_references, research_topics,
               is_featured, publish_date, author, seo_title, seo_description, created_at
        FROM articles
        WHERE slug = $1 AND is_published = true`,

@@ -72,6 +72,7 @@ app.use('/images', express.static(path.join(__dirname, '..', '..', 'website', 'i
 // Rate-limit the contact form specifically to prevent spam/DoS
 app.use('/api/public/contact', contactLimiter);
 app.use('/api/public', require('./routes/public'));
+app.use('/api/cron', require('./routes/cron'));
 
 // API Routes
 app.use('/api/auth', loginLimiter, require('./routes/auth'));
@@ -132,6 +133,7 @@ app.get('*', (req, res) => {
     '/investor': 'investor.html',
     '/articles': 'articles.html',
     '/article-edit': 'article-edit.html',
+    '/article-bot': 'article-bot.html',
     '/weekly-briefing': 'weekly-briefing.html',
     '/content-pages': 'content-pages.html',
     '/content-agents': 'content-agents.html',

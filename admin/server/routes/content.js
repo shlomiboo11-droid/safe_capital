@@ -9,15 +9,93 @@ router.use(authenticate, authorize('super_admin', 'manager'));
 // ── Articles ─────────────────────────────────────────────────────────
 
 // GET /api/content/articles — all articles (including drafts)
+// Supports filters: ?status=pending&region=us (both optional, combinable)
 router.get('/articles', async (req, res) => {
   try {
-    const result = await pool.query(`
+    const where = [];
+    const params = [];
+    let p = 1;
+    if (req.query.status) { where.push(`status = $${p++}`); params.push(req.query.status); }
+    if (req.query.region) { where.push(`region = $${p++}`); params.push(req.query.region); }
+    const sql = `
       SELECT * FROM articles
-      ORDER BY created_at DESC
+      ${where.length ? 'WHERE ' + where.join(' AND ') : ''}
+      ORDER BY
+        CASE status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 WHEN 'published' THEN 2 WHEN 'rejected' THEN 3 ELSE 4 END,
+        created_at DESC
+    `;
+    const result = await pool.query(sql, params);
+    // Also return queue counts for UI badges
+    const counts = await pool.query(`
+      SELECT status, COUNT(*)::int AS c FROM articles
+      WHERE status IN ('pending','approved','published','rejected')
+      GROUP BY status
     `);
-    res.json({ articles: result.rows });
+    const countMap = {};
+    for (const r of counts.rows) countMap[r.status] = r.c;
+    res.json({ articles: result.rows, counts: countMap });
   } catch (err) {
     console.error('List articles error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PUT /api/content/articles/:id/approve — approve and publish
+router.put('/articles/:id/approve', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      UPDATE articles
+      SET status = 'published',
+          is_published = true,
+          publish_date = COALESCE(publish_date, NOW()),
+          approved_by_user_id = $2,
+          updated_at = NOW()
+      WHERE id = $1 AND status IN ('pending','approved','rejected','draft')
+      RETURNING id, status
+    `, [req.params.id, req.user.id]);
+    if (!result.rows[0]) return res.status(404).json({ error: 'Article not found' });
+    await logAudit(req.user.id, 'approve', 'article', null, { id: req.params.id });
+    res.json({ message: 'Article approved and published', status: result.rows[0].status });
+  } catch (err) {
+    console.error('Approve article error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PUT /api/content/articles/:id/reject — reject with reason
+router.put('/articles/:id/reject', async (req, res) => {
+  try {
+    const reason = (req.body && req.body.reason) || null;
+    const result = await pool.query(`
+      UPDATE articles
+      SET status = 'rejected',
+          is_published = false,
+          rejected_reason = $2,
+          updated_at = NOW()
+      WHERE id = $1
+      RETURNING id
+    `, [req.params.id, reason]);
+    if (!result.rows[0]) return res.status(404).json({ error: 'Article not found' });
+    await logAudit(req.user.id, 'reject', 'article', null, { id: req.params.id, reason });
+    res.json({ message: 'Article rejected' });
+  } catch (err) {
+    console.error('Reject article error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PUT /api/content/articles/:id/unpublish — pull an already-published article
+router.put('/articles/:id/unpublish', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      UPDATE articles SET status = 'approved', is_published = false, updated_at = NOW()
+      WHERE id = $1 RETURNING id
+    `, [req.params.id]);
+    if (!result.rows[0]) return res.status(404).json({ error: 'Article not found' });
+    await logAudit(req.user.id, 'unpublish', 'article', null, { id: req.params.id });
+    res.json({ message: 'Article unpublished' });
+  } catch (err) {
+    console.error('Unpublish article error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -86,7 +164,10 @@ router.put('/articles/:id', async (req, res) => {
     const fields = [
       'title', 'subtitle', 'slug', 'body', 'thumbnail_url', 'category',
       'tags', 'is_published', 'is_featured', 'publish_date', 'author',
-      'seo_title', 'seo_description'
+      'seo_title', 'seo_description',
+      // bot/approval workflow columns
+      'source_url', 'source_name', 'source_published_at', 'region',
+      'summary_he', 'status', 'rejected_reason'
     ];
 
     const updates = [];
@@ -140,6 +221,58 @@ router.delete('/articles/:id', async (req, res) => {
   } catch (err) {
     console.error('Delete article error:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ── Articles Bot ─────────────────────────────────────────────────────
+
+// GET /api/content/bot-settings
+router.get('/bot-settings', async (req, res) => {
+  try {
+    const r = await pool.query('SELECT * FROM article_bot_settings WHERE id = 1');
+    res.json({ settings: r.rows[0] });
+  } catch (err) {
+    console.error('Get bot settings error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// PUT /api/content/bot-settings
+router.put('/bot-settings', async (req, res) => {
+  try {
+    const { enabled, frequency_cron, allowed_sources, regions } = req.body || {};
+    const updates = [];
+    const values = [];
+    let p = 1;
+    if (enabled !== undefined) { updates.push(`enabled = $${p++}`); values.push(!!enabled); }
+    if (frequency_cron !== undefined) { updates.push(`frequency_cron = $${p++}`); values.push(frequency_cron || null); }
+    if (Array.isArray(allowed_sources)) { updates.push(`allowed_sources = $${p++}`); values.push(allowed_sources); }
+    if (Array.isArray(regions)) { updates.push(`regions = $${p++}`); values.push(regions); }
+    if (!updates.length) return res.status(400).json({ error: 'No fields to update' });
+    updates.push('updated_at = NOW()');
+    await pool.query(`UPDATE article_bot_settings SET ${updates.join(', ')} WHERE id = 1`, values);
+    await logAudit(req.user.id, 'update', 'article_bot_settings', null, req.body);
+    res.json({ message: 'Settings updated' });
+  } catch (err) {
+    console.error('Update bot settings error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/content/articles/generate — manual trigger of the bot
+// Body: { dry_run?: boolean }
+router.post('/articles/generate', async (req, res) => {
+  const articleBot = require('../services/article-bot');
+  try {
+    const result = await articleBot.runScan({
+      triggeredByUserId: req.user.id,
+      dryRun: req.body && req.body.dry_run === true
+    });
+    await logAudit(req.user.id, 'generate', 'articles_bot', null, result);
+    res.json(result);
+  } catch (err) {
+    console.error('Generate articles error:', err);
+    res.status(500).json({ error: err.message || 'Server error' });
   }
 });
 
