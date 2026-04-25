@@ -58,9 +58,6 @@ function buildDirectionsLink(fullAddress) {
 
 function buildEventRegistrationHtml(registration, event) {
   const firstName = escapeHtml(registration.first_name || '');
-  const guestLine = registration.guest_name
-    ? `עם מלווה: ${escapeHtml(registration.guest_name)}`
-    : 'ללא מלווה';
 
   const eventTitleMain = escapeHtml(event.hero_title_main || 'ערב משקיעים');
   const eventTitleAccent = escapeHtml(event.hero_title_accent || '');
@@ -146,7 +143,6 @@ function buildEventRegistrationHtml(registration, event) {
                   <tr><td style="padding:2px 0;"><span style="color:#43474e;">שם:</span> <strong>${firstName} ${escapeHtml(registration.last_name || '')}</strong></td></tr>
                   <tr><td style="padding:2px 0;"><span style="color:#43474e;">טלפון:</span> <strong dir="ltr" style="unicode-bidi:embed;">${escapeHtml(registration.phone || '')}</strong></td></tr>
                   <tr><td style="padding:2px 0;"><span style="color:#43474e;">אימייל:</span> <strong dir="ltr" style="unicode-bidi:embed;">${escapeHtml(registration.email || '')}</strong></td></tr>
-                  <tr><td style="padding:2px 0;">${guestLine}</td></tr>
                 </table>
               </div>
             </td>
@@ -197,7 +193,6 @@ function buildEventRegistrationText(registration, event) {
   lines.push(`שם: ${registration.first_name || ''} ${registration.last_name || ''}`);
   lines.push(`טלפון: ${registration.phone || ''}`);
   lines.push(`אימייל: ${registration.email || ''}`);
-  if (registration.guest_name) lines.push(`מלווה: ${registration.guest_name}`);
   lines.push('', 'נתראה באירוע,', 'צוות Safe Capital');
   return lines.join('\n');
 }

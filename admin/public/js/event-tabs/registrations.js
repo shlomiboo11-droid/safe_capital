@@ -25,7 +25,6 @@ function renderRegistrationsTab(data) {
                   <th class="text-right py-2 px-2">שם</th>
                   <th class="text-right py-2 px-2">אימייל</th>
                   <th class="text-right py-2 px-2">טלפון</th>
-                  <th class="text-right py-2 px-2">מלווה</th>
                   <th class="text-right py-2 px-2">ניסיון</th>
                   <th class="text-right py-2 px-2">טווח</th>
                   <th class="text-right py-2 px-2">מתי</th>
@@ -39,7 +38,6 @@ function renderRegistrationsTab(data) {
                     <td class="py-2 px-2 font-medium">${escHtmlR(r.first_name)} ${escHtmlR(r.last_name)}</td>
                     <td class="py-2 px-2 ltr text-gray-600 font-inter" dir="ltr">${escHtmlR(r.email)}</td>
                     <td class="py-2 px-2 ltr text-gray-600 font-inter" dir="ltr">${escHtmlR(r.phone)}</td>
-                    <td class="py-2 px-2">${r.guest_name ? '+1 · ' + escHtmlR(r.guest_name) : 'לבד'}</td>
                     <td class="py-2 px-2">${investedLabel(r.invested_before)}</td>
                     <td class="py-2 px-2 font-inter">${rangeLabel(r.range_k)}</td>
                     <td class="py-2 px-2">${escHtmlR(r.readiness || '—')}</td>

@@ -504,7 +504,6 @@ CREATE TABLE IF NOT EXISTS event_registrations (
   last_name          TEXT NOT NULL,
   email              TEXT NOT NULL,
   phone              TEXT NOT NULL,
-  guest_name         TEXT,
   investor_type      TEXT,
   invested_before    TEXT,
   range_k            INTEGER,

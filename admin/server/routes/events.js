@@ -165,7 +165,7 @@ router.get('/:id', async (req, res) => {
         ORDER BY efd.sort_order ASC, efd.id ASC
       `, [req.params.id]),
       pool.query(`
-        SELECT id, first_name, last_name, email, phone, guest_name,
+        SELECT id, first_name, last_name, email, phone,
                invested_before, range_k, readiness, source, note,
                agree_terms, subscribe_updates, created_at
         FROM event_registrations

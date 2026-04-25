@@ -512,7 +512,6 @@ router.post('/event-registration', async (req, res) => {
       last_name,
       email,
       phone,
-      guest_name,
       investor_type,
       invested_before,
       range_k,
@@ -532,10 +531,10 @@ router.post('/event-registration', async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO event_registrations
-        (event_id, event_slug, first_name, last_name, email, phone, guest_name,
+        (event_id, event_slug, first_name, last_name, email, phone,
          investor_type, invested_before, range_k, readiness, source, note,
          agree_terms, subscribe_updates)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
        RETURNING id`,
       [
         event_id ? parseInt(event_id) : null,
@@ -544,7 +543,6 @@ router.post('/event-registration', async (req, res) => {
         last_name,
         email,
         phone,
-        guest_name || null,
         investor_type || null,
         invested_before || null,
         range_k || null,
@@ -575,7 +573,7 @@ router.post('/event-registration', async (req, res) => {
         );
         const eventRow = evRes.rows[0] || {};
         await sendEventRegistrationEmail(
-          { first_name, last_name, email, phone, guest_name },
+          { first_name, last_name, email, phone },
           eventRow
         );
       } catch (mailErr) {

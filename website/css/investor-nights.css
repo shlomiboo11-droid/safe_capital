@@ -10,6 +10,13 @@ body.in-body {
   display: flex;
   flex-direction: column;
 }
+/* This page doesn't load Tailwind's preflight, so the global box-sizing:border-box
+   reset is missing. Without it, .mobile-nav links blow up to 77px (min-height
+   stacks with padding under content-box). Restore the canonical reset here. */
+body.in-body,
+body.in-body *,
+body.in-body *::before,
+body.in-body *::after { box-sizing: border-box; }
 body.in-body > .site-nav { flex: 0 0 auto; }
 body.in-body > .site-footer { flex: 0 0 auto; margin-top: auto; }
 body.in-body > .in-loading,
@@ -1353,7 +1360,36 @@ body.in-body { background: #fbf9f6; }
   color: #43474e;
   margin-top: 4px;
 }
-.in-ty-body .right { display: flex; flex-direction: column; gap: 12px; }
+.in-ty-body .left .meta-rows {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.in-ty-body .left .meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #43474e;
+  font-size: 14px;
+}
+.in-ty-body .left .meta-icon {
+  font-size: 18px;
+  color: #022445;
+  flex-shrink: 0;
+}
+.in-ty-body .left .meta-text { line-height: 1.4; }
+
+.in-ty-body .right { display: flex; flex-direction: column; gap: 12px; align-items: stretch; justify-content: center; box-sizing: border-box; }
+.in-ty-body .right * { box-sizing: border-box; }
+.in-ty-body .right .wa-cta { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+.in-ty-body .right .wa-prompt {
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  color: #43474e;
+  text-align: center;
+  margin: 4px 0 0 0;
+}
 .in-ty-body .right a {
   width: 100%;
   border-radius: 6px;
@@ -1379,13 +1415,32 @@ body.in-body { background: #fbf9f6; }
 }
 .in-ty-body .right a.back:hover { color: #022445; }
 
+.in-ty-footer {
+  padding: 20px 40px 32px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid rgba(196,198,207,.2);
+}
+.in-ty-footer a.back {
+  color: #43474e;
+  text-decoration: none;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  transition: color .15s;
+}
+.in-ty-footer a.back:hover { color: #022445; }
+
 /* ============================================================
    Mobile (< 1024px)
    ============================================================ */
 @media (max-width: 1023px) {
 
-  /* Reserve space for floating sticky CTA */
+  /* Reserve space for floating sticky CTA — only on pages that have one
+     (the registration form). The thank-you page has no sticky CTA, so the
+     padding would just be empty white space below the footer. */
   body.in-body { padding-bottom: 80px; }
+  body.in-body:has(.in-ty-wrap) { padding-bottom: 0; }
 
   /* Show mobile-only elements */
   .in-cta-inline { display: flex; }
@@ -1859,7 +1914,7 @@ body.in-body { background: #fbf9f6; }
   /* Thank-you page — mobile */
   .in-ty-wrap {
     margin: 80px auto 32px;
-    padding: 0 16px;
+    padding: 0 6px;
   }
   .in-ty-hero .content {
     padding: 28px 20px;
@@ -1894,6 +1949,12 @@ body.in-body { background: #fbf9f6; }
   .in-ty-body .infos .box { padding: 12px 8px; }
   .in-ty-body .infos .box .n { font-size: 16px; }
   .in-ty-body .infos .box .k { font-size: 10px; }
+  .in-ty-body .right {
+    max-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
   .in-ty-body .right a {
     padding: 12px;
     font-size: 14px;

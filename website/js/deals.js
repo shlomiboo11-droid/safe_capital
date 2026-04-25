@@ -266,8 +266,8 @@ function renderMobileSpecs(specs) {
       <td class="py-3 px-2 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
     </tr>`).join('');
 
-  return `<div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
-    <div class="bg-[#f5f3f0] overflow-hidden">
+  return `<div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+    <div class="bg-[#f5f3f0] overflow-hidden rounded-lg">
       <table class="w-full text-sm" style="table-layout:fixed">
         <thead class="bg-[#eae8e5]">
           <tr>
@@ -1176,9 +1176,9 @@ function renderMobilePlanVsActual(deal) {
     </tr>`).join('');
 
   return `
-    <div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
       <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">תוכנית מול מציאות</h3>
-      <div class="bg-[#f5f3f0] overflow-hidden">
+      <div class="bg-[#f5f3f0] overflow-hidden rounded-lg">
         <table class="w-full text-sm" style="table-layout:fixed">
           <thead class="bg-[#eae8e5]">
             <tr>
@@ -1253,9 +1253,9 @@ function renderMobileComps(deal) {
     : '';
 
   return `
-    <div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
       <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">השוואת נכסים בשכונה</h3>
-      <div class="bg-[#f5f3f0] overflow-x-auto">
+      <div class="bg-[#f5f3f0] overflow-x-auto rounded-lg">
         <table class="w-full text-sm" style="table-layout:auto">
           <thead class="bg-[#eae8e5]">
             <tr>

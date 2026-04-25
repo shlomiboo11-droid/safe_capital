@@ -9,8 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="css/tokens.css" rel="stylesheet"/>
 <link href="css/typography.css" rel="stylesheet"/>
-<link href="css/shared.css?v=14" rel="stylesheet"/>
-<link href="css/investor-nights.css?v=13" rel="stylesheet"/>
+<link href="css/shared.css?v=15" rel="stylesheet"/>
+<link href="css/investor-nights.css?v=23" rel="stylesheet"/>
 </head>
 <body class="bg-background text-on-background font-body in-body">
 
@@ -45,23 +45,23 @@
       <div class="in-ty-hero">
         <div class="blueprint-overlay" style="position:absolute;inset:0;opacity:.4"></div>
         <div class="content">
-          <div class="confirmed">
-            <div class="ico"><span class="material-symbols-outlined">check</span></div>
-            <div class="label">CONFIRMED · SESSION 011</div>
-          </div>
           <h2>אנחנו שומרים לך מקום,<br><span id="ty-name">שלומי</span>.</h2>
-          <p>אישור רשמי נשלח ל-<span class="email-underline" id="ty-email">your@email.com</span>. נציג מהצוות ייצור איתך קשר בטלפון ב-24 השעות הקרובות.</p>
+          <p>אישור רשמי נשלח ל-<span class="email-underline" id="ty-email">your@email.com</span>. עדכונים על האירוע יישלחו לכאן ולקבוצת הווצאפ — ודא שהמייל תקין ושאתה רשום לקבוצה.</p>
         </div>
       </div>
       <div class="in-ty-body">
         <div class="left">
           <div class="label">המפגש שלך</div>
           <h3 id="ty-date-full">טוען...</h3>
-          <div class="when" id="ty-when"></div>
-          <div class="infos">
-            <div class="box"><div class="n" id="ty-days">T-?</div><div class="k">ימים לאירוע</div></div>
-            <div class="box"><div class="n" id="ty-seats">1</div><div class="k">מושבים שמורים</div></div>
-            <div class="box"><div class="n">Smart</div><div class="k">קוד לבוש</div></div>
+          <div class="meta-rows">
+            <div class="meta-row">
+              <span class="material-symbols-outlined meta-icon">schedule</span>
+              <span class="meta-text" dir="ltr" id="ty-time">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="material-symbols-outlined meta-icon">place</span>
+              <span class="meta-text" id="ty-place">—</span>
+            </div>
           </div>
         </div>
         <div class="right">
@@ -69,12 +69,17 @@
             <span class="material-symbols-outlined" style="font-size:18px">event</span>
             הוספה ליומן
           </a>
-          <a class="wa" id="wa-link" href="#" target="_blank" rel="noopener">
-            <span class="material-symbols-outlined" style="font-size:18px">chat</span>
-            צרו איתי קשר ב-WhatsApp
-          </a>
-          <a class="back" href="index.html">חזרה לעמוד הבית</a>
+          <div class="wa-cta">
+            <p class="wa-prompt">עדיין לא נכנסת לקבוצת העדכונים שלנו?</p>
+            <a class="wa" id="wa-link" data-setting-href="whatsapp_group" href="#" target="_blank" rel="noopener">
+              <span class="material-symbols-outlined" style="font-size:18px">chat</span>
+              הצטרפות לקבוצת הווצאפ
+            </a>
+          </div>
         </div>
+      </div>
+      <div class="in-ty-footer">
+        <a class="back" href="index.html">חזרה לעמוד הבית</a>
       </div>
     </div>
   </div>
@@ -115,14 +120,11 @@
     var params = new URLSearchParams(location.search);
     var fn = params.get('fn') || 'משקיע/ה יקר/ה';
     var email = params.get('email') || '';
-    var guests = params.get('guests') === '1' ? 2 : 1;
 
     var nameEl = document.getElementById('ty-name');
     if (nameEl) nameEl.textContent = fn;
     var emailEl = document.getElementById('ty-email');
     if (emailEl) emailEl.textContent = email || 'האימייל שלך';
-    var seatsEl = document.getElementById('ty-seats');
-    if (seatsEl) seatsEl.textContent = String(guests);
 
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
     function toIcsUtc(dateStr, timeStr) {
@@ -144,25 +146,19 @@
       var dateFullEl = document.getElementById('ty-date-full');
       if (dateFullEl) dateFullEl.textContent = ev.event_date_display_full || '';
 
-      // When line
-      var whenEl = document.getElementById('ty-when');
-      if (whenEl) {
-        var when = (ev.event_time_start || '') + (ev.event_time_end ? ' – ' + ev.event_time_end : '');
-        if (ev.venue_name || ev.venue_address) {
-          when += ' · ' + (ev.venue_name || '') + (ev.venue_address ? ', ' + ev.venue_address : '');
-        }
-        whenEl.textContent = when;
+      // Time row — explicit LTR, earlier time on the left visually
+      var timeEl = document.getElementById('ty-time');
+      if (timeEl) {
+        var startT = ev.event_time_start || '';
+        var endT = ev.event_time_end || '';
+        timeEl.textContent = (startT && endT) ? (startT + ' – ' + endT) : (startT || endT || '—');
       }
 
-      // Days countdown
-      if (ev.event_date) {
-        try {
-          var eventDate = new Date(ev.event_date + 'T' + (ev.event_time_start || '19:30') + ':00+03:00');
-          var today = new Date();
-          var diffDays = Math.max(0, Math.ceil((eventDate - today) / (1000 * 60 * 60 * 24)));
-          var daysEl = document.getElementById('ty-days');
-          if (daysEl) daysEl.textContent = 'T-' + diffDays;
-        } catch (e) {}
+      // Place row
+      var placeEl = document.getElementById('ty-place');
+      if (placeEl) {
+        var place = (ev.venue_name || '') + (ev.venue_address ? ', ' + ev.venue_address : '');
+        placeEl.textContent = place || '—';
       }
 
       // Google Calendar
@@ -179,12 +175,7 @@
           if (calLink) calLink.href = gcal;
         } catch (e) {}
       }
-
-      // WhatsApp
-      var waNum = ev.whatsapp_number || '972547828550';
-      var waMsg = 'היי, נרשמתי לערב משקיעים';
-      var waLink = document.getElementById('wa-link');
-      if (waLink) waLink.href = 'https://wa.me/' + waNum + '?text=' + encodeURIComponent(waMsg);
+      // WhatsApp link is wired by settings.js via data-setting-href="whatsapp_group"
     }
 
     function fallbackData() {

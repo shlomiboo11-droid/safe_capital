@@ -22,8 +22,6 @@
     lastName: '',
     email: '',
     phone: '',
-    bringGuest: 'alone',
-    guestName: '',
     investedBefore: '',
     range: '250',
     readiness: '',
@@ -461,7 +459,6 @@
       if (!state.lastName.trim()) e.lastName = 'שדה חובה';
       if (!validEmail(state.email)) e.email = 'כתובת לא תקינה';
       if (!validPhone(state.phone)) e.phone = 'מספר לא תקין';
-      if (state.bringGuest === 'plus1' && !state.guestName.trim()) e.guestName = 'נא להזין שם אורח';
     } else if (step === 1) {
       if (!state.investedBefore) e.investedBefore = 'נא לבחור';
       if (!state.readiness) e.readiness = 'נא לבחור';
@@ -526,12 +523,6 @@
     }
   }
 
-  function renderGuestField() {
-    var guest = qs('#guest-field');
-    if (!guest) return;
-    guest.style.display = state.bringGuest === 'plus1' ? 'block' : 'none';
-  }
-
   function renderReview() {
     function set(key, value) {
       var el = document.querySelector('[data-review="' + key + '"]');
@@ -545,7 +536,6 @@
     set('name', (state.firstName + ' ' + state.lastName).trim());
     set('email', state.email);
     set('phone', state.phone);
-    set('guest', state.bringGuest === 'plus1' ? ('+1 · ' + state.guestName) : 'לבד');
     set('investedBefore', state.investedBefore === 'yes' ? 'כן' : state.investedBefore === 'no' ? 'לא · מתעניין' : '');
     set('range', rangeReviewLabel(state.range));
     set('readiness', state.readiness);
@@ -556,7 +546,6 @@
     renderSteps();
     renderFoot();
     renderFieldErrors();
-    renderGuestField();
     if (state.step === 2) renderReview();
   }
 
@@ -598,7 +587,6 @@
     qsa('.seg-btn', parent).forEach(function (b) {
       b.setAttribute('data-active', String(b === btn));
     });
-    if (key === 'bringGuest') renderGuestField();
     renderFieldErrors();
   }
 
@@ -682,7 +670,6 @@
       last_name: state.lastName,
       email: state.email,
       phone: state.phone,
-      guest_name: state.bringGuest === 'plus1' ? state.guestName : null,
       invested_before: state.investedBefore,
       range_k: parseInt(state.range, 10),
       readiness: state.readiness,
@@ -712,7 +699,6 @@
     var params = new URLSearchParams();
     params.set('fn', state.firstName);
     params.set('email', state.email);
-    params.set('guests', state.bringGuest === 'plus1' ? '1' : '0');
     location.href = 'investor-nights-thankyou.html?' + params.toString();
   }
 

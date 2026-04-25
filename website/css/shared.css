@@ -778,8 +778,11 @@ body {
         box-sizing: border-box;
     }
 
-    /* --- Tables: Prevent Overflow --- */
-    main table {
+    /* --- Tables: Prevent Overflow ---
+       Apply only to tables that haven't opted out via table-layout:fixed.
+       Setting display:block on a table breaks fixed layout and percentage
+       column widths (cells collapse to content size). */
+    main table:not([style*="table-layout"]) {
         display: block;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;

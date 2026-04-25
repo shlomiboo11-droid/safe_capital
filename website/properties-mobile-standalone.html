@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safe Capital | עסקאות — Mobile Standalone</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "tertiary-fixed": "#e5e2e1",
+          "surface-container-highest": "#e4e2df",
+          "error": "#ba1a1a",
+          "surface-container-low": "#f5f3f0",
+          "error-container": "#ffdad6",
+          "surface-container": "#efeeeb",
+          "surface-container-lowest": "#ffffff",
+          "background": "#fbf9f6",
+          "surface": "#fbf9f6",
+          "surface-variant": "#e4e2df",
+          "outline": "#74777f",
+          "primary": "#022445",
+          "surface-dim": "#dbdad7",
+          "on-background": "#1b1b1f",
+          "on-surface-variant": "#43474e",
+          "primary-container": "#1e3a5c",
+          "on-primary": "#ffffff",
+          "outline-variant": "#c4c6cf",
+          "on-surface": "#1b1b1f",
+          "surface-container-high": "#eae8e5",
+          "secondary": "#984349",
+          "whatsapp": "#25D366"
+        },
+        fontFamily: {
+          "headline": ["Heebo", "sans-serif"],
+          "body": ["Heebo", "sans-serif"],
+          "label": ["Inter", "sans-serif"]
+        },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
+
+<style>
+/* ========== TOKENS ========== */
+:root {
+  --fs-display:    3rem;
+  --fs-h1:         2.25rem;
+  --fs-h2:         1.875rem;
+  --fs-h3:         1.5rem;
+  --fs-h4:         1.25rem;
+  --fs-body-lg:    1.125rem;
+  --fs-body:       1rem;
+  --fs-body-sm:    0.9375rem;
+  --fs-body-xs:    0.875rem;
+  --fs-caption:    0.8125rem;
+  --fs-metric-xl:  2rem;
+  --fs-metric:     1.5rem;
+  --fs-label:      0.75rem;
+  --fs-hero:         4.5rem;
+  --fs-hero-mobile:  2.125rem;
+  --fs-eyebrow:      0.8125rem;
+}
+
+.t-h3 { font-size: var(--fs-h3); }
+.t-h4 { font-size: var(--fs-h4); }
+.t-body { font-size: var(--fs-body); }
+.t-body-sm { font-size: var(--fs-body-sm); }
+.t-body-xs { font-size: var(--fs-body-xs); }
+.t-caption { font-size: var(--fs-caption); }
+.t-label { font-size: var(--fs-label); }
+
+/* ========== BASE ========== */
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+body { margin: 0; font-family: 'Heebo', sans-serif; scroll-behavior: smooth; }
+html, body { overflow-x: clip; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f5f3f0; }
+::-webkit-scrollbar-thumb { background: #c4c6cf; border-radius: 3px; }
+
+/* ========== TOP NAV ========== */
+.site-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+    background: rgba(251, 249, 246, 0.80);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 1px 3px rgba(2, 36, 69, 0.06);
+}
+.site-nav .nav-inner {
+    display: flex;
+    flex-direction: row;
+    direction: ltr;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    padding: 0.375rem 1rem;
+    box-sizing: border-box;
+}
+.site-nav .nav-logo { text-decoration: none; display: flex; align-items: center; direction: ltr; }
+.site-nav .nav-logo .nav-logo-img { height: 24px; width: auto; display: block; }
+.site-nav .nav-links { display: none; }
+.site-nav .mobile-menu-btn {
+    background: none; border: none; cursor: pointer; color: #022445;
+    min-width: 44px; min-height: 44px; padding: 0.5rem;
+    display: flex; align-items: center; justify-content: center; margin-left: auto;
+    font-size: 1.5rem;
+    -webkit-tap-highlight-color: transparent;
+}
+.site-nav .nav-cta, .site-nav .nav-portal-btn { display: none; }
+
+.site-nav .mobile-nav {
+    max-height: 0;
+    overflow: hidden;
+    background: rgba(251, 249, 246, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: max-height 0.3s ease;
+}
+.site-nav .mobile-nav.open { max-height: 720px; overflow-y: auto; }
+.site-nav .mobile-nav a {
+    display: flex; align-items: center;
+    padding: 0.875rem 1.25rem;
+    min-height: 48px;
+    text-align: right;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #43474e;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(196, 198, 207, 0.2);
+}
+.site-nav .mobile-nav a.active { color: #984349; font-weight: 700; }
+.site-nav .mobile-nav .mobile-cta {
+    justify-content: center;
+    margin: 1rem 2rem;
+    background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
+    color: #fff;
+    padding: 0.625rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    border-bottom: none;
+}
+
+/* ========== HERO ========== */
+.props-hero {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 560px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0b2745 0%, #3a3044 40%, #8a4a39 75%, #c0723a 100%);
+  margin-top: 48px;
+}
+.props-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.props-hero .hero-overlay { position: absolute; inset: 0; pointer-events: none; }
+.props-hero .hero-overlay.hero-gradient {
+  background: linear-gradient(180deg,
+    rgba(2,36,69,0.20) 0%,
+    rgba(2,36,69,0.55) 55%,
+    rgba(2,36,69,0.92) 100%);
+}
+.props-hero .hero-content {
+  padding: 0 1.5rem 1.75rem;
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+}
+.props-hero h1.props-hero-title {
+  font-family: 'Heebo', sans-serif;
+  font-weight: 900;
+  color: #ffffff;
+  font-size: var(--fs-hero-mobile);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.props-hero h1.props-hero-title .accent { color: rgba(255,255,255,0.8); white-space: normal; }
+.props-hero .hero-sub {
+  margin-top: 1rem;
+  color: rgba(255,255,255,0.8);
+  font-size: var(--fs-body-sm);
+  line-height: 1.6;
+  font-weight: 300;
+}
+.props-hero .hero-meta-row {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  color: #ffffff;
+  align-items: start;
+}
+.props-hero .hero-meta-sep { display: none; }
+.props-hero .hero-meta { position: relative; }
+.props-hero .hero-meta .k {
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-label);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.375rem;
+}
+.props-hero .hero-meta .v {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: var(--fs-body);
+  line-height: 1;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.props-hero .hero-meta.accent .v { color: #984349; }
+.props-hero .meta-tip-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #ffffff; font-family: 'Inter', sans-serif;
+  font-size: var(--fs-label); font-weight: 700;
+  border: none; cursor: pointer; line-height: 1; padding: 0;
+}
+.props-hero .hero-tickruler {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; opacity: 0.6;
+  background-image: repeating-linear-gradient(90deg,
+    rgba(255,255,255,0.4) 0, rgba(255,255,255,0.4) 1px,
+    transparent 1px, transparent 12px);
+}
+
+/* Meta tooltip (mobile modal) */
+.meta-tip {
+  position: fixed; display: none;
+  background: #ffffff; color: #1b1b1f;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  font-family: 'Heebo', sans-serif;
+  font-size: var(--fs-caption);
+  line-height: 1.7;
+  width: calc(100vw - 3rem);
+  max-width: 360px;
+  z-index: 100;
+  text-align: right;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.meta-tip.open { display: block; }
+.meta-tip strong { color: #984349; font-weight: 700; }
+.meta-tip-backdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  z-index: 99;
+}
+.meta-tip-backdrop.open { display: block; }
+
+/* ========== DEAL CARDS (inline styles from properties.html) ========== */
+.deal-expanded {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s ease;
+    padding: 0 1.5rem;
+}
+.deal-arrow { transition: transform 0.3s ease; }
+.deal-arrow.open { transform: rotate(180deg); }
+
+.deal-card-v2 { position: relative; }
+
+.deal-badge {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    padding: 0.25rem 0.75rem; border-radius: 9999px;
+    font-family: 'Inter', sans-serif; font-size: var(--fs-label);
+    font-weight: 700; white-space: nowrap; width: fit-content; line-height: 1.2;
+}
+.deal-badge--filled-crimson { background: #984349; color: #ffffff; }
+.deal-badge--light-navy { background: rgba(2, 36, 69, 0.08); color: #022445; }
+.deal-badge--filled-navy { background: #022445; color: #ffffff; }
+
+/* Mobile: unify badges on image → all crimson filled, text only */
+.deal-header .absolute .deal-badge {
+    background: #984349 !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+.deal-header .absolute .deal-badge .material-symbols-outlined,
+.deal-header .absolute .deal-badge .deal-badge__dot {
+    display: none !important;
+}
+.deal-card-v2 .deal-accent-strip { display: none !important; }
+
+/* Mobile: vertical dividers between numbers */
+.deal-numbers-divider { position: relative; }
+.deal-numbers-divider::before {
+    content: ''; position: absolute;
+    top: 15%; bottom: 15%; right: -8px;
+    width: 1px; background: #e4e2df;
+}
+
+.deal-number-ribbon {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem; border-radius: 9999px;
+    font-family: 'Inter', sans-serif; font-size: var(--fs-label);
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.95);
+    color: #022445;
+    box-shadow: 0 2px 8px rgba(2, 36, 69, 0.12);
+    backdrop-filter: blur(8px);
+    white-space: nowrap; line-height: 1.2;
+}
+
+.deal-badge__dot {
+    width: 0.5rem; height: 0.5rem; border-radius: 9999px;
+    background: currentColor;
+    animation: dealPulse 1.5s ease-in-out infinite;
+}
+@keyframes dealPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(1.2); }
+}
+
+.deal-number {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    font-size: var(--fs-body-xs);
+}
+.deal-number-label {
+    font-family: 'Inter', sans-serif;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    color: #43474e;
+    margin-bottom: 0.375rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-align: center;
+}
+.deal-number--navy    { color: #022445; }
+.deal-number--crimson { color: #984349; }
+
+.deal-card-title {
+    font-family: 'Heebo', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #022445;
+}
+
+.deal-numbers-mobile-grid > div {
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.deal-cta {
+    display: inline-flex; align-items: center; gap: 0.375rem;
+    font-family: 'Heebo', sans-serif; font-weight: 700;
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+    text-decoration: none; cursor: pointer;
+    border: 0; white-space: nowrap;
+}
+.deal-cta--filled-navy {
+    background: #022445; color: #ffffff;
+    padding: 0.75rem 1rem;
+    font-size: var(--fs-body);
+    width: 100%;
+    justify-content: center;
+}
+.deal-cta--filled-navy:hover { background: #1e3a5c; }
+
+.deal-progress-track {
+    width: 100%; height: 0.5rem;
+    background: rgba(2, 36, 69, 0.08);
+    border-radius: 9999px; overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+.deal-progress-fill--crimson { background: #984349; height: 100%; border-radius: 9999px; transition: width 0.3s; }
+.deal-progress-text {
+    font-family: 'Heebo', sans-serif;
+    font-size: var(--fs-label);
+    color: #43474e;
+    line-height: 1.5;
+}
+
+.mobile-deal-expanded {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    padding: 0 0.75rem !important;
+    background: #ffffff;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+}
+.mobile-deal-expanded.open {
+    max-height: 9999px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.mobile-cost-arrow { transition: transform 0.3s ease; }
+
+/* Cost category accordion (mobile) */
+.cost-category-header { padding: 1rem 0 !important; cursor: pointer; }
+
+/* ========== FOOTER ========== */
+.site-footer {
+    background: #022445;
+    color: #fff;
+    padding: 2.5rem 1.25rem 0;
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    position: relative;
+    overflow: hidden;
+}
+.site-footer .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    gap: 1.25rem;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+}
+.site-footer .footer-inner > .footer-links:first-child {
+    grid-column: 2; grid-row: 1; text-align: right;
+}
+.site-footer .footer-inner > .footer-links:nth-child(2) {
+    grid-column: 1; grid-row: 1; text-align: right;
+}
+.site-footer .footer-inner > .footer-brand-cta {
+    grid-column: 1 / -1; grid-row: 2 / 4;
+    display: contents;
+}
+.site-footer .footer-brand {
+    grid-column: 1 / -1; grid-row: 2;
+    display: flex; flex-direction: column; align-items: center;
+}
+.site-footer .footer-brand p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem; line-height: 1.75;
+    max-width: 100%;
+}
+.site-footer .footer-buttons {
+    grid-column: 1 / -1; grid-row: 3;
+    display: flex; flex-direction: column; gap: 0.75rem;
+    max-width: 280px; width: 100%; margin: 0 auto;
+}
+.site-footer h4 {
+    font-size: 0.9375rem; font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+.site-footer .footer-links a {
+    display: flex; align-items: center;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.875rem;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    min-height: 44px;
+}
+.site-footer .footer-cta-btn {
+    display: block; width: 100%;
+    background: #984349; color: #fff;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 700; font-size: 0.875rem;
+    text-decoration: none; text-align: center;
+    border: none; box-sizing: border-box;
+}
+.site-footer .footer-ghost-btn {
+    display: block; width: 100%;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600; font-size: 0.875rem;
+    text-decoration: none; text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-sizing: border-box;
+}
+.site-footer .footer-bottom {
+    margin-top: 3rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+.site-footer .footer-bottom-contact {
+    font-family: 'Inter', sans-serif;
+    direction: ltr;
+    letter-spacing: 0.01em;
+}
+
+/* Global mobile text tweaks */
+h1 { font-size: 1.625rem; line-height: 1.3; }
+h2 { font-size: 1.375rem; line-height: 1.3; }
+h3 { font-size: 1.125rem; line-height: 1.4; }
+section p { font-size: 0.9375rem; line-height: 1.625; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body">
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <!-- Inline logo text (no image) -->
+      <span style="font-family:'Inter',sans-serif;font-weight:800;color:#022445;letter-spacing:-0.02em;font-size:1rem">SAFE CAPITAL</span>
+    </a>
+    <button class="mobile-menu-btn" id="menuBtn"><span class="material-symbols-outlined">menu</span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#">עמוד הבית</a>
+    <a href="#" class="active">עסקאות</a>
+    <a href="#">בירמינגהם</a>
+    <a href="#">ערב משקיעים</a>
+    <a href="#">איך מצטרפים</a>
+    <a href="#">צור קשר</a>
+    <a href="#" class="mobile-cta">הצטרפו עכשיו</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<div class="props-hero">
+  <img src="https://picsum.photos/seed/safecapital-hero/900/600" alt="העסקאות שלנו" class="props-hero-img">
+  <div class="hero-overlay hero-gradient"></div>
+  <div class="hero-content">
+    <h1 class="props-hero-title">
+      העסקאות שלנו<br>
+      <span class="accent">השבחה. מכירה. רווח.</span>
+    </h1>
+    <p class="hero-sub">
+      אנחנו יודעים לאתר נכסים ישנים בשכונות יוקרה בבירמינגהם.
+      אנחנו שואפים לעסקאות קצרות טווח עם רווח מקסימלי בכל עסקה.
+    </p>
+    <div class="hero-meta-row">
+      <div class="hero-meta">
+        <div class="k">משך עסקה</div>
+        <div class="v">6&ndash;12 חודשים</div>
+      </div>
+      <div class="hero-meta">
+        <div class="k">יעד תשואה</div>
+        <div class="v">
+          20% על ההון
+          <button type="button" class="meta-tip-btn" aria-expanded="false" aria-controls="meta-tip-yield">?</button>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <div class="k">השקעה מינימלית</div>
+        <div class="v">$50,000</div>
+      </div>
+      <div class="hero-meta accent">
+        <div class="k">שקיפות</div>
+        <div class="v">100%</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-tickruler"></div>
+</div>
+
+<div class="meta-tip-backdrop" aria-hidden="true" id="tipBackdrop"></div>
+<div class="meta-tip" id="meta-tip-yield" role="tooltip">
+  השקעת $50,000 ← בסיום העסקה $60,000<br>
+  <strong>רווח $10,000 = 20% על ההון</strong><br>
+  זה לא אחוז שנתי — זה אחוז על העסקה כולה (6&ndash;12 חודשים)
+</div>
+
+<!-- ═══════════════════════ DEALS LIST ═══════════════════════ -->
+<main class="pt-12 pb-20 max-w-7xl mx-auto px-5">
+  <section>
+    <div id="deals-container" class="space-y-10">
+      <!-- Rendered by inline JS below -->
+    </div>
+  </section>
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links"><h4>ניווט מהיר</h4>
+      <a href="#">עמוד הבית</a><a href="#">עסקאות</a><a href="#">איך מצטרפים</a><a href="#">צור קשר</a>
+    </div>
+    <div class="footer-links"><h4>מידע נוסף</h4>
+      <a href="#">מדיניות פרטיות</a><a href="#">תקנון אתר</a><a href="#">שאלות נפוצות</a>
+    </div>
+    <div class="footer-brand-cta">
+      <div class="footer-brand">
+        <p>חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p>
+      </div>
+      <div class="footer-buttons">
+        <a href="#" class="footer-cta-btn">הצטרפו עכשיו</a>
+        <a href="#" class="footer-ghost-btn">צור קשר</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Safe Capital. כל הזכויות שמורות</span>
+    <span class="footer-bottom-contact">safecapital2024@gmail.com | 054-7828550</span>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════ MOCK DATA ═══════════════════════ */
+const MOCK_DEALS = [
+  {
+    id: 1,
+    name: "Oxmoore Drive",
+    deal_number: 4,
+    city: "Birmingham", state: "Alabama",
+    thumbnail_url: "https://picsum.photos/seed/oxmoore-thumb/800/500",
+    description: "נכס קומתיים בשכונת Mountain Brook היוקרתית, 3 חדרי שינה + משרד, שטח 1,450 sqft. התכנית: הרחבה ל־4 חדרי שינה, שדרוג מלא של המטבח וחדרי הרחצה, והגדלת השטח ל־1,850 sqft.",
+    property_status: "sourcing",
+    fundraising_status: "active",
+    min_investment: 50000,
+    expected_roi_percent: 20,
+    expected_sale_price: 425000,
+    expected_profit: 85000,
+    total_cost: 340000,
+    fundraising_goal: 250000,
+    fundraising_raised: 180000,
+    fundraising_percent: 72,
+    investor_count: 4,
+    project_duration: "8 חודשים",
+    arv: 425000,
+    specs: [
+      { spec_name: "חדרי שינה",  value_before: "3",    value_after: "4" },
+      { spec_name: "מקלחות",     value_before: "1",    value_after: "2.5" },
+      { spec_name: "שטח (sqft)", value_before: 1450,   value_after: 1850 },
+      { spec_name: "שנת בנייה",  value_before: "1978", value_after: "2026 (שיפוץ)" }
+    ],
+    images: [
+      { image_url: "https://picsum.photos/seed/oxmoore-b1/800/500", category: "before", alt_text: "לפני" },
+      { image_url: "https://picsum.photos/seed/oxmoore-a1/800/500", category: "after",  alt_text: "אחרי" },
+      { image_url: "https://picsum.photos/seed/oxmoore-r1/800/500", category: "rendering", alt_text: "הדמיה" },
+      { image_url: "https://picsum.photos/seed/oxmoore-b2/400/400", category: "before", alt_text: "" },
+      { image_url: "https://picsum.photos/seed/oxmoore-a2/400/400", category: "after",  alt_text: "" }
+    ],
+    cost_categories: [
+      { name: "חומרי בנייה", total_planned: 85000, items: [
+        { name: "גבס וצבע", planned_amount: 12000 },
+        { name: "ריצוף",    planned_amount: 28000 },
+        { name: "אינסטלציה", planned_amount: 18000 },
+        { name: "חשמל",     planned_amount: 27000 }
+      ]},
+      { name: "עבודה", total_planned: 95000, items: [
+        { name: "קבלן ראשי",  planned_amount: 60000 },
+        { name: "עבודות גמר", planned_amount: 35000 }
+      ]},
+      { name: "רישוי ואגרות", total_planned: 15000, items: [
+        { name: "היתר בנייה", planned_amount: 10000 },
+        { name: "תכניות",      planned_amount: 5000 }
+      ]}
+    ],
+    comps: [
+      { address: "123 Oak Lane, Mountain Brook, AL", sqft: 1900, bedrooms: 4, sale_price: 440000, days_on_market: 28 },
+      { address: "456 Elm St, Mountain Brook, AL",   sqft: 1780, bedrooms: 4, sale_price: 410000, days_on_market: 45 },
+      { address: "789 Pine Rd, Mountain Brook, AL",  sqft: 1950, bedrooms: 4, sale_price: 455000, days_on_market: 19 }
+    ],
+    is_expandable: true
+  },
+  {
+    id: 2,
+    name: "Maple Avenue",
+    deal_number: 3,
+    city: "Birmingham", state: "Alabama",
+    thumbnail_url: "https://picsum.photos/seed/maple-thumb/800/500",
+    description: "בית 4 חדרי שינה בשכונת Homewood. שיפוץ יסודי כולל הרחבת המטבח וחלל משפחתי פתוח. הפרויקט בשלב שיפוץ מתקדם.",
+    property_status: "renovation",
+    fundraising_status: "completed",
+    min_investment: 50000,
+    expected_roi_percent: 22,
+    expected_sale_price: 510000,
+    total_cost: 395000,
+    fundraising_goal: 300000,
+    fundraising_raised: 300000,
+    fundraising_percent: 100,
+    investor_count: 6,
+    project_duration: "9 חודשים",
+    opens_at_date: "2026-01-15",
+    arv: 510000,
+    renovation_progress_percent: 65,
+    specs: [
+      { spec_name: "חדרי שינה",  value_before: "4",    value_after: "4" },
+      { spec_name: "מקלחות",     value_before: "2",    value_after: "3" },
+      { spec_name: "שטח (sqft)", value_before: 2100,   value_after: 2350 }
+    ],
+    images: [
+      { image_url: "https://picsum.photos/seed/maple-b1/800/500", category: "before", alt_text: "" },
+      { image_url: "https://picsum.photos/seed/maple-d1/800/500", category: "during", alt_text: "" },
+      { image_url: "https://picsum.photos/seed/maple-r1/800/500", category: "rendering", alt_text: "" }
+    ],
+    cost_categories: [
+      { name: "חומרי בנייה", total_planned: 120000, items: [
+        { name: "מטבח חדש",   planned_amount: 45000 },
+        { name: "ריצוף",      planned_amount: 35000 },
+        { name: "צבע וגבס",   planned_amount: 40000 }
+      ]},
+      { name: "עבודה", total_planned: 110000, items: [
+        { name: "קבלן ראשי",  planned_amount: 70000 },
+        { name: "גמר",         planned_amount: 40000 }
+      ]}
+    ],
+    comps: [
+      { address: "234 Cherry Ln, Homewood, AL", sqft: 2300, bedrooms: 4, sale_price: 520000, days_on_market: 22 },
+      { address: "567 Birch Dr, Homewood, AL",  sqft: 2400, bedrooms: 4, sale_price: 505000, days_on_market: 31 }
+    ],
+    is_expandable: true
+  },
+  {
+    id: 3,
+    name: "Cherokee Road",
+    deal_number: 2,
+    city: "Birmingham", state: "Alabama",
+    thumbnail_url: "https://picsum.photos/seed/cherokee-thumb/800/500",
+    description: "עסקה שהושלמה בהצלחה. הנכס נרכש ב־$285,000, שופץ לחלוטין, ונמכר ב־$438,000. התשואה בפועל עלתה על הציפיות.",
+    property_status: "sold",
+    fundraising_status: "closed",
+    expected_roi_percent: 20,
+    expected_sale_price: 425000,
+    actual_sale_price: 438000,
+    actual_duration_months: 9,
+    actual_roi_percent: 21.2,
+    total_cost: 340000,
+    total_actual_cost: 345000,
+    profit_distributed: 87000,
+    fundraising_raised: 250000,
+    investor_count: 5,
+    project_duration: "8 חודשים",
+    arv: 438000,
+    sale_completion_note: "העסקה נסגרה ב־9 חודשים, חודש אחד מעבר לתכנון. המחיר בפועל היה גבוה ב־$13,000 מהציפייה בזכות שוק חם. כל המשקיעים קיבלו את התשואה המלאה + בונוס.",
+    specs: [
+      { spec_name: "חדרי שינה",  value_before: "3",    value_after: "4" },
+      { spec_name: "מקלחות",     value_before: "1.5",  value_after: "3" },
+      { spec_name: "שטח (sqft)", value_before: 1600,   value_after: 2050 }
+    ],
+    images: [
+      { image_url: "https://picsum.photos/seed/cherokee-b1/800/500", category: "before", alt_text: "" },
+      { image_url: "https://picsum.photos/seed/cherokee-a1/800/500", category: "after",  alt_text: "" },
+      { image_url: "https://picsum.photos/seed/cherokee-a2/800/500", category: "after",  alt_text: "" }
+    ],
+    comps: [
+      { address: "111 Magnolia St, Birmingham, AL", sqft: 2000, bedrooms: 4, sale_price: 440000, days_on_market: 15 }
+    ],
+    is_expandable: true
+  }
+];
+
+/* ═══════════════════════ CONFIG ═══════════════════════ */
+function getDisplayStatus(deal) {
+  if (deal.property_status === 'sold') return 'sold';
+  if (deal.fundraising_status === 'completed' || deal.fundraising_status === 'closed' || deal.property_status === 'renovation') return 'renovation';
+  return 'active';
+}
+function formatMoney(n) { return '$' + Math.round(Number(n) || 0).toLocaleString('en-US'); }
+function formatUSD(v) { if (v == null || v === '') return '—'; const n = parseFloat(v); if (isNaN(n)) return '—'; return '$' + Math.round(n).toLocaleString('en-US'); }
+function minInvestmentOf(d) { return d.min_investment || 50000; }
+function roiOrDash(val, decimals) {
+  if (val == null || val === '') return '—';
+  return (decimals ? Number(val).toFixed(decimals) : Math.round(Number(val))) + '%';
+}
+function monthsShort(textOrNumber) {
+  const match = String(textOrNumber == null ? '' : textOrNumber).match(/\d+/);
+  if (!match) return '—';
+  return `${match[0]}<span style="font-size:0.6875em;font-weight:500;opacity:0.7;margin-right:0.2em">חוד׳</span>`;
+}
+function monthsToCompletion(deal) {
+  const match = String(deal.project_duration || '').match(/\d+/);
+  if (!match) return null;
+  const total = parseInt(match[0], 10);
+  if (!deal.opens_at_date) return total;
+  const elapsed = Math.floor((Date.now() - new Date(deal.opens_at_date).getTime()) / (1000 * 60 * 60 * 24 * 30));
+  return Math.max(0, total - elapsed);
+}
+
+const DEAL_DISPLAY_CONFIG = {
+  active: {
+    badge: { style: 'filled-crimson', dotPulse: true, text: () => 'פתוחה להשקעה' },
+    numbers: [
+      { label: 'השקעה מינ׳',    value: d => formatMoney(minInvestmentOf(d)), color: 'navy' },
+      { label: 'תשואה צפויה',   value: d => roiOrDash(d.expected_roi_percent), color: 'crimson' },
+      { label: 'תקופה משוערת',  value: d => monthsShort(d.project_duration), color: 'navy' }
+    ],
+    progress: {
+      type: 'fundraising',
+      percent: d => d.fundraising_percent || 0,
+      remaining: d => formatMoney(Math.max(0, (d.fundraising_goal || 0) - (d.fundraising_raised || 0))) + ' נותר לגייס',
+      bottom: d => `${d.investor_count || 0} משקיעים בעסקה`
+    },
+    cta: { text: 'עוד פרטים על עסקה זו', style: 'filled-navy', expandedText: 'צמצם עסקה' }
+  },
+  renovation: {
+    badge: { style: 'light-navy', check: true, text: () => 'בתהליך שיפוץ' },
+    numbers: [
+      { label: 'סכום שגויס',    value: d => formatMoney(d.fundraising_raised || d.fundraising_goal || 0), color: 'navy' },
+      { label: 'תשואה צפויה',   value: d => roiOrDash(d.expected_roi_percent), color: 'crimson' },
+      { label: 'לסיום',         value: d => { const m = monthsToCompletion(d); return m != null ? monthsShort(m) : '—'; }, color: 'navy' }
+    ],
+    progress: { type: 'timeline', bottom: d => `${d.investor_count || 0} משקיעים בעסקה` },
+    cta: { text: 'עוד פרטים על עסקה זו', style: 'filled-navy', expandedText: 'צמצם עסקה' }
+  },
+  sold: {
+    badge: { style: 'filled-navy', doubleCheck: true, text: () => 'נמכרה בהצלחה' },
+    numbers: [
+      { label: 'רווח שחולק',   value: d => (d.profit_distributed != null ? formatMoney(d.profit_distributed) : '—'), color: 'navy' },
+      { label: 'תשואה למשקיע', value: d => roiOrDash(d.actual_roi_percent, 1), color: 'crimson' },
+      { label: 'תקופת זמן',    value: d => monthsShort(d.actual_duration_months || d.project_duration), color: 'navy' }
+    ],
+    progress: { type: 'investors-enjoyed', bottom: d => `${d.investor_count || 0} משקיעים נהנו מהעסקה הזו` },
+    cta: { text: 'עוד פרטים על עסקה זו', style: 'filled-navy', expandedText: 'צמצם עסקה' }
+  }
+};
+
+const EXPANDED_PANEL_CONFIG = {
+  sourcing:   ['description','gallery','key-metrics','specs','comps','cost-breakdown','whatsapp-cta'],
+  renovation: ['description','gallery','renovation-progress','key-metrics','specs','comps','cost-breakdown','whatsapp-cta'],
+  sold:       ['description','gallery','plan-vs-actual','specs','comps','post-sale-summary','whatsapp-cta']
+};
+
+/* ═══════════════════════ TIMELINE ═══════════════════════ */
+const TIMELINE_STAGES = [
+  { label: 'גיוס',  status: 'fundraising' },
+  { label: 'רכישה', status: 'purchased' },
+  { label: 'שיפוץ', status: 'renovation' },
+  { label: 'מכירה', status: 'selling' },
+  { label: 'נמכר',  status: 'sold' }
+];
+function getActiveStageIndex(propertyStatus) {
+  if (propertyStatus === 'sourcing') return 0;
+  if (propertyStatus === 'planning') return 1;
+  const idx = TIMELINE_STAGES.findIndex(s => s.status === propertyStatus);
+  return idx === -1 ? 0 : idx;
+}
+function buildStageList(propertyStatus) {
+  const activeIdx = getActiveStageIndex(propertyStatus);
+  return TIMELINE_STAGES.map((stage, i) => ({
+    step_name: stage.label,
+    status: i < activeIdx ? 'completed' : i === activeIdx ? 'active' : 'pending'
+  }));
+}
+
+/* ═══════════════════════ RENDERERS ═══════════════════════ */
+const WHATSAPP_SVG = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+
+function renderBadge(bc, deal) {
+  const text = typeof bc.text === 'function' ? bc.text(deal) : (bc.text || '');
+  let iconHtml = '';
+  if (bc.dotPulse) iconHtml = '<span class="deal-badge__dot"></span>';
+  else if (bc.check) iconHtml = '<span class="material-symbols-outlined" style="font-size:14px">check</span>';
+  else if (bc.doubleCheck) iconHtml = '<span class="material-symbols-outlined" style="font-size:14px">done_all</span>';
+  return `<span class="deal-badge deal-badge--${bc.style}">${iconHtml}${text}</span>`;
+}
+
+function renderMobileNumbers(cfg, deal) {
+  const cells = cfg.numbers.map((num, i) => {
+    const value = typeof num.value === 'function' ? num.value(deal) : num.value;
+    const colorCls = num.color === 'crimson' ? 'deal-number--crimson' : 'deal-number--navy';
+    const dividerCls = i > 0 ? 'deal-numbers-divider' : '';
+    return `
+      <div class="flex flex-col items-center text-center ${dividerCls}">
+        <span class="deal-number-label">${num.label}</span>
+        <span class="deal-number ${colorCls}">${value}</span>
+      </div>`;
+  }).join('');
+  return `<div class="grid grid-cols-3 gap-2 py-0.5 px-2 rounded-xl deal-numbers-mobile-grid" style="background:rgba(2,36,69,0.04)">${cells}</div>`;
+}
+
+function renderMobileProgress(cfg, deal) {
+  const pc = cfg.progress;
+  if (!pc) return '';
+  const cfgText = (key) => typeof pc[key] === 'function' ? pc[key](deal) : (pc[key] || '');
+  if (pc.type === 'fundraising') {
+    const pct = typeof pc.percent === 'function' ? pc.percent(deal) : 0;
+    const clamped = Math.min(Math.max(Number(pct) || 0, 0), 100);
+    return `<div class="w-full">
+      <div class="flex items-baseline justify-between mb-2">
+        <span class="deal-number deal-number--crimson" style="font-size:0.875rem">${clamped}%</span>
+        <span class="deal-progress-text">${cfgText('remaining')}</span>
+      </div>
+      <div class="deal-progress-track">
+        <div class="deal-progress-fill--crimson" style="width:${clamped}%"></div>
+      </div>
+      <div class="deal-progress-text text-center mt-2">${cfgText('bottom')}</div>
+    </div>`;
+  }
+  if (pc.type === 'timeline') {
+    const steps = buildStageList(deal.property_status);
+    const activeIdx = steps.findIndex(s => s.status === 'active');
+    const segments = Math.max(steps.length - 1, 1);
+    const doneCount = steps.filter(s => s.status === 'completed').length;
+    const progressPct = Math.min(100, Math.round(((activeIdx >= 0 ? activeIdx : doneCount) / segments) * 100));
+    const dots = steps.map(step => {
+      const color = step.status === 'pending' ? '#c4c6cf' : '#984349';
+      const fill  = step.status === 'pending' ? 'transparent' : color;
+      const labelColor = step.status === 'pending' ? '#43474e' : '#022445';
+      const fw = step.status === 'active' ? 700 : 500;
+      return `<div class="flex flex-col items-center gap-1" style="flex:1;min-width:0">
+        <div style="width:10px;height:10px;border-radius:9999px;border:2px solid ${color};background:${fill}"></div>
+        <span class="deal-progress-text" style="color:${labelColor};font-weight:${fw};white-space:nowrap">${step.step_name}</span>
+      </div>`;
+    }).join('');
+    return `<div class="w-full">
+      <div class="relative" style="padding-top:4px">
+        <div class="absolute" style="top:9px;left:8%;right:8%;height:2px;background:#e4e2df"></div>
+        <div class="absolute" style="top:9px;right:8%;width:${progressPct * 0.84}%;height:2px;background:#984349"></div>
+        <div class="relative flex justify-between" style="gap:4px">${dots}</div>
+      </div>
+      <div class="deal-progress-text text-center mt-3">${cfgText('bottom')}</div>
+    </div>`;
+  }
+  if (pc.type === 'investors-enjoyed') {
+    return `<div class="deal-progress-text text-center">${cfgText('bottom')}</div>`;
+  }
+  return '';
+}
+
+function renderMobileDescription(d) {
+  if (!d.description) return '';
+  return `<div class="px-5 mb-6">
+    <h3 class="font-bold text-[#022445] mb-2" style="font-size:1rem">תכנית העסקה</h3>
+    <p class="text-sm text-[#43474e] leading-relaxed">${d.description}</p>
+  </div>`;
+}
+
+function renderMobileGallery(d) {
+  const images = d.images || [];
+  if (!images.length) return '';
+  const before = images.filter(i => i.category === 'before');
+  const after  = images.filter(i => i.category === 'after');
+  const during = images.filter(i => i.category === 'during');
+  const rendering = images.filter(i => i.category === 'rendering');
+  const all = [...before, ...after, ...during, ...rendering];
+
+  let html = '<div class="px-5 mb-6"><h3 class="font-bold text-[#022445] mb-3" style="font-size:1rem">גלריה</h3>';
+
+  if (before.length > 0 || after.length > 0) {
+    html += `<div class="relative h-48 w-full rounded-lg overflow-hidden mb-2">`;
+    const mainSrc = after[0]?.image_url || before[0]?.image_url;
+    if (mainSrc) html += `<img class="w-full h-full object-cover" src="${mainSrc}" alt="לפני ואחרי"/>`;
+    html += `<div class="absolute inset-0 flex">`;
+    if (before[0]) html += `<div class="flex-1 border-l border-white/50 flex items-center justify-center"><span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm">לפני</span></div>`;
+    if (after[0])  html += `<div class="flex-1 flex items-center justify-center"><span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm">אחרי</span></div>`;
+    html += `</div></div>`;
+  }
+
+  if (all.length > 1) {
+    const thumbs = all.slice(1, 4);
+    const remaining = all.length - 4;
+    html += '<div class="grid grid-cols-4 gap-2">';
+    thumbs.forEach(img => { html += `<img class="h-16 w-full object-cover rounded-md" src="${img.image_url}" alt=""/>`; });
+    if (remaining > 0 && all[4]) {
+      html += `<div class="relative h-16 w-full rounded-md overflow-hidden">
+        <img class="w-full h-full object-cover" src="${all[4].image_url}" alt=""/>
+        <div class="absolute inset-0 bg-[#022445]/60 flex items-center justify-center text-white text-xs font-bold">+${remaining}</div>
+      </div>`;
+    } else if (all[4]) {
+      html += `<img class="h-16 w-full object-cover rounded-md" src="${all[4].image_url}" alt=""/>`;
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderMobileMetrics(d) {
+  let html = '<div class="px-5 mb-6"><div class="grid grid-cols-1 gap-3">';
+  if (d.total_cost) html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+    <p class="text-xs text-[#43474e] font-bold">עלות פרויקט כוללת</p>
+    <p class="text-lg font-bold text-[#022445]" style="font-family:'Inter'">${formatUSD(d.total_cost)}</p>
+  </div>`;
+  if (d.fundraising_goal) html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+    <p class="text-xs text-[#43474e] font-bold">סכום לגיוס</p>
+    <p class="text-lg font-bold text-[#022445]" style="font-family:'Inter'">${formatUSD(d.fundraising_goal)}</p>
+  </div>`;
+  if (d.expected_sale_price) html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
+    <p class="text-xs text-[#43474e] font-bold">מחיר מכירה צפוי</p>
+    <p class="text-lg font-bold text-[#984349]" style="font-family:'Inter'">${formatUSD(d.expected_sale_price)}</p>
+  </div>`;
+  html += '</div></div>';
+  return html;
+}
+
+function renderMobileSpecs(d) {
+  if (!d.specs || !d.specs.length) return '';
+  const rows = d.specs.map(s => `<tr>
+    <td class="py-3 px-3">${s.spec_name}</td>
+    <td class="py-3 px-2 text-center" style="font-family:'Inter'">${s.value_before || '—'}</td>
+    <td class="py-3 px-2 text-center font-bold text-[#984349]" style="font-family:'Inter'">${s.value_after || '—'}</td>
+  </tr>`).join('');
+  return `<div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <h3 class="font-extrabold text-[#022445] mb-2 px-3" style="font-size:1rem">מפרט הנכס</h3>
+    <div class="bg-[#f5f3f0]">
+      <table class="w-full text-sm" style="table-layout:fixed">
+        <thead class="bg-[#eae8e5]"><tr>
+          <th class="py-2 px-3 text-right font-bold" style="width:50%">מפרט</th>
+          <th class="py-2 px-2 text-center font-bold" style="width:25%">לפני</th>
+          <th class="py-2 px-2 text-center font-bold text-[#984349]" style="width:25%">אחרי</th>
+        </tr></thead>
+        <tbody class="divide-y divide-[#eae8e5]">${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderMobileComps(d) {
+  const comps = d.comps || [];
+  const specs = d.specs || [];
+  const find = (pats) => { for (const s of specs) { const n = String(s.spec_name||'').toLowerCase(); if (pats.some(p=>n.includes(p))) return s.value_after || s.value_before || null; } return null; };
+  const ourSqft = find(['sqft','שטח','גודל']);
+  const ourBeds = find(['bedroom','חדר']);
+  const ourPrice = d.arv;
+  const fmtSqft = v => (v==null||v==='') ? '—' : (typeof v==='number' ? v.toLocaleString('en-US') : v);
+  const fmtBeds = v => (v==null||v==='') ? '—' : v;
+  const fmtDOM  = v => (v==null||v==='') ? '—' : v + ' ימים';
+
+  const ourRow = `<tr class="bg-[#eae8e5]">
+    <td class="py-2 px-2 text-xs"><span class="bg-[#022445] text-white px-1.5 py-0.5 rounded text-[10px]">הנכס שלנו</span></td>
+    <td class="py-2 px-1 text-left font-bold text-[#022445] text-xs" style="font-family:'Inter'">${fmtSqft(ourSqft)}</td>
+    <td class="py-2 px-1 text-left font-bold text-[#022445] text-xs" style="font-family:'Inter'">${fmtBeds(ourBeds)}</td>
+    <td class="py-2 px-1 text-left font-bold text-[#984349] text-xs" style="font-family:'Inter'">${formatUSD(ourPrice)}</td>
+    <td class="py-2 px-1 text-left text-[#43474e] text-xs">—</td>
+  </tr>`;
+  const rows = comps.map(c => {
+    const addr = c.address ? String(c.address).split(',')[0] : '—';
+    return `<tr>
+      <td class="py-2 px-2 text-[#43474e] text-xs truncate" style="max-width:90px">${addr}</td>
+      <td class="py-2 px-1 text-left text-xs" style="font-family:'Inter'">${fmtSqft(c.sqft)}</td>
+      <td class="py-2 px-1 text-left text-xs" style="font-family:'Inter'">${fmtBeds(c.bedrooms)}</td>
+      <td class="py-2 px-1 text-left font-bold text-[#022445] text-xs" style="font-family:'Inter'">${formatUSD(c.sale_price)}</td>
+      <td class="py-2 px-1 text-left text-[#43474e] text-xs">${fmtDOM(c.days_on_market)}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <h3 class="font-extrabold text-[#022445] mb-2 px-3" style="font-size:1rem">השוואת נכסים בשכונה</h3>
+    <div class="bg-[#f5f3f0] overflow-x-auto">
+      <table class="w-full text-sm"><thead class="bg-[#eae8e5]"><tr>
+        <th class="py-2 px-2 text-right font-bold text-[10px]">כתובת</th>
+        <th class="py-2 px-1 text-left font-bold text-[10px]">sqft</th>
+        <th class="py-2 px-1 text-left font-bold text-[10px]">חדרים</th>
+        <th class="py-2 px-1 text-left font-bold text-[10px]">מחיר</th>
+        <th class="py-2 px-1 text-left font-bold text-[10px]">זמן</th>
+      </tr></thead>
+      <tbody class="divide-y divide-[#eae8e5]">${ourRow}${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderMobileCostAccordion(d) {
+  const cats = (d.cost_categories || []).map(c => ({...c, items: (c.items||[]).filter(i => parseFloat(i.planned_amount||0)>0)}))
+    .filter(c => c.items.length > 0 && parseFloat(c.total_planned||0)>0);
+  if (!cats.length) return '';
+  const items = cats.map(cat => `<div class="bg-[#f5f3f0] p-3 rounded-lg">
+    <div class="flex justify-between items-center cursor-pointer" onclick="toggleMobileCostCategory(this)">
+      <span class="text-sm font-bold">${cat.name}</span>
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-[#022445] text-sm" style="font-family:'Inter'">${formatUSD(cat.total_planned)}</span>
+        <span class="material-symbols-outlined text-[#022445] mobile-cost-arrow">expand_more</span>
+      </div>
+    </div>
+    <div class="mobile-cost-items" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+      ${cat.items.map(i => `<div class="flex justify-between py-2 border-t border-[#eae8e5] text-sm">
+        <span class="text-[#43474e]">${i.name}</span>
+        <span class="font-medium" style="font-family:'Inter'">${formatUSD(i.planned_amount)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`).join('');
+  return `<div class="px-5 mb-6">
+    <h3 class="font-bold text-[#022445] mb-3" style="font-size:1rem">פירוט עלויות</h3>
+    <div class="space-y-2">${items}</div>
+  </div>`;
+}
+
+function renderMobileRenovationProgress(d) {
+  const pct = Math.min(Math.max(Number(d.renovation_progress_percent || 0), 0), 100);
+  return `<div class="px-5 mb-6">
+    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] rounded-xl p-5 text-white">
+      <div class="flex items-baseline justify-between mb-3">
+        <h3 class="font-extrabold" style="font-size:1rem">התקדמות השיפוץ</h3>
+        <span class="font-extrabold" style="font-family:'Inter';font-size:1.875rem">${pct}%</span>
+      </div>
+      <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden">
+        <div class="h-full bg-[#984349] rounded-full" style="width:${pct}%"></div>
+      </div>
+      ${d.project_duration ? `<p class="mt-3 text-xs text-white/80">משך מתוכנן: ${d.project_duration}</p>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderMobilePlanVsActual(d) {
+  const fmtPct = n => (n==null||n==='') ? '—' : Number(n).toFixed(1) + '%';
+  const rows = [
+    { label: 'עלות כוללת',  p: formatUSD(d.total_cost),          a: formatUSD(d.total_actual_cost) },
+    { label: 'משך',          p: d.project_duration || '—',        a: d.actual_duration_months ? d.actual_duration_months + ' חוד׳' : '—' },
+    { label: 'מחיר מכירה',   p: formatUSD(d.expected_sale_price), a: formatUSD(d.actual_sale_price) },
+    { label: 'תשואה',        p: fmtPct(d.expected_roi_percent),   a: fmtPct(d.actual_roi_percent) }
+  ];
+  const rowsHtml = rows.map(r => `<tr>
+    <td class="py-3 px-3 font-bold">${r.label}</td>
+    <td class="py-3 px-2 text-center text-[#43474e] text-xs">${r.p}</td>
+    <td class="py-3 px-2 text-center font-bold text-[#984349]" style="font-family:'Inter'">${r.a}</td>
+  </tr>`).join('');
+  return `<div class="mb-6" style="margin-left:-0.75rem;margin-right:-0.75rem">
+    <h3 class="font-extrabold text-[#022445] mb-2 px-3" style="font-size:1rem">תוכנית מול מציאות</h3>
+    <div class="bg-[#f5f3f0]"><table class="w-full text-sm" style="table-layout:fixed">
+      <thead class="bg-[#eae8e5]"><tr>
+        <th class="py-2 px-3 text-right font-bold" style="width:40%">פרמטר</th>
+        <th class="py-2 px-2 text-center font-bold text-xs" style="width:30%">מתוכנן</th>
+        <th class="py-2 px-2 text-center font-bold text-[#984349]" style="width:30%">בפועל</th>
+      </tr></thead>
+      <tbody class="divide-y divide-[#eae8e5]">${rowsHtml}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function renderMobilePostSaleSummary(d) {
+  if (!d.sale_completion_note) return '';
+  return `<div class="px-5 mb-6">
+    <div class="bg-[#f5f3f0] p-4 rounded-lg">
+      <h3 class="font-bold text-[#022445] mb-2" style="font-size:1rem">סיכום העסקה</h3>
+      <p class="text-sm text-[#43474e] leading-relaxed">${d.sale_completion_note}</p>
+    </div>
+  </div>`;
+}
+
+function renderMobileWhatsAppCTA() {
+  return `<div class="px-5 pb-8">
+    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] p-6 rounded-xl text-center text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+      <h4 class="text-lg font-bold mb-2">מעוניין בפרטים נוספים?</h4>
+      <p class="text-xs text-white/70 mb-4">הצטרף לקבוצת המשקיעים השקטה שלנו וקבל עדכונים לפני כולם</p>
+      <a href="#" class="w-full bg-[#25D366] hover:bg-[#128C7E] transition-colors py-3 rounded-lg flex items-center justify-center gap-2 font-bold shadow-lg text-white no-underline">
+        ${WHATSAPP_SVG}
+        דבר איתנו בוואטסאפ
+      </a>
+    </div>
+  </div>`;
+}
+
+const SECTION_RENDERERS = {
+  'description':         renderMobileDescription,
+  'gallery':             renderMobileGallery,
+  'key-metrics':         renderMobileMetrics,
+  'specs':               renderMobileSpecs,
+  'comps':               renderMobileComps,
+  'cost-breakdown':      renderMobileCostAccordion,
+  'renovation-progress': renderMobileRenovationProgress,
+  'plan-vs-actual':      renderMobilePlanVsActual,
+  'post-sale-summary':   renderMobilePostSaleSummary,
+  'whatsapp-cta':        () => renderMobileWhatsAppCTA()
+};
+
+function renderExpanded(deal) {
+  const status = getDisplayStatus(deal);
+  const sections = EXPANDED_PANEL_CONFIG[deal.property_status] || EXPANDED_PANEL_CONFIG.sourcing;
+  return sections.map(id => SECTION_RENDERERS[id] ? SECTION_RENDERERS[id](deal) : '').filter(Boolean).join('');
+}
+
+function renderDealCard(deal) {
+  const status = getDisplayStatus(deal);
+  const config = DEAL_DISPLAY_CONFIG[status];
+  const thumbSrc = deal.thumbnail_url || '';
+  const badgeHtml = renderBadge(config.badge, deal);
+  const secondaryBadge = (status !== 'active' && deal.fundraising_status === 'active')
+    ? `<span class="deal-badge deal-badge--filled-crimson"><span class="deal-badge__dot"></span>גיוס משקיעים פתוח</span>` : '';
+  const numbersHtml = renderMobileNumbers(config, deal);
+  const progressHtml = renderMobileProgress(config, deal);
+  const ctaHtml = `<button type="button" class="deal-cta deal-cta--filled-navy deal-toggle-btn" data-text-collapsed="${config.cta.text}" data-text-expanded="${config.cta.expandedText}">${config.cta.text}</button>`;
+  const dealNumRibbon = deal.deal_number ? `<span class="deal-number-ribbon">#${deal.deal_number}</span>` : '';
+  const expandedHtml = `<div class="deal-expanded mobile-deal-expanded bg-white">${renderExpanded(deal)}</div>`;
+  const imageHtml = thumbSrc
+    ? `<img alt="${deal.name}" class="w-full object-cover rounded-2xl" style="height:220px" src="${thumbSrc}"/>`
+    : `<div class="w-full bg-[#f5f3f0] rounded-2xl" style="height:220px"></div>`;
+
+  return `<article class="deal-card-v2 bg-white rounded-2xl overflow-hidden" style="box-shadow:0 8px 24px rgba(2,36,69,0.04)">
+    <div class="deal-header cursor-pointer">
+      <div class="p-3 relative">
+        ${imageHtml}
+        <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">${badgeHtml}${secondaryBadge}</div>
+        <div class="absolute top-6 left-6">${dealNumRibbon}</div>
+      </div>
+      <div class="px-4 pb-4 flex flex-col gap-4">
+        <div class="text-right" dir="rtl">
+          <h3 class="deal-card-title" style="text-align:right">${deal.name || ''}</h3>
+        </div>
+        ${numbersHtml}
+        ${progressHtml ? `<div class="w-full">${progressHtml}</div>` : ''}
+      </div>
+    </div>
+    ${expandedHtml}
+    <div class="px-4 pb-4 pt-0 w-full">${ctaHtml}</div>
+  </article>`;
+}
+
+/* ═══════════════════════ INTERACTIONS ═══════════════════════ */
+function setToggleBtnText(btn, open) {
+  if (!btn) return;
+  const c = btn.getAttribute('data-text-collapsed');
+  const e = btn.getAttribute('data-text-expanded');
+  if (!c || !e) return;
+  btn.textContent = open ? e : c;
+}
+
+document.addEventListener('click', function(e) {
+  const toggleBtn = e.target.closest('.deal-toggle-btn');
+  const header = e.target.closest('.deal-header');
+  const trigger = toggleBtn || header;
+  if (!trigger) return;
+  const article = trigger.closest('article');
+  if (!article) return;
+  const expanded = article.querySelector('.mobile-deal-expanded');
+  if (!expanded || !expanded.children.length) return;
+  const isOpen = expanded.classList.contains('open');
+  document.querySelectorAll('.mobile-deal-expanded.open').forEach(el => {
+    el.classList.remove('open');
+    const other = el.closest('article');
+    if (other) setToggleBtnText(other.querySelector('.deal-toggle-btn'), false);
+  });
+  if (!isOpen) {
+    expanded.classList.add('open');
+    setToggleBtnText(article.querySelector('.deal-toggle-btn'), true);
+  }
+});
+
+function toggleMobileCostCategory(header) {
+  const items = header.nextElementSibling;
+  const arrow = header.querySelector('.mobile-cost-arrow');
+  if (!items) return;
+  if (items.style.maxHeight && items.style.maxHeight !== '0px') {
+    items.style.maxHeight = '0px';
+    if (arrow) arrow.style.transform = '';
+  } else {
+    items.style.maxHeight = items.scrollHeight + 'px';
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  }
+}
+window.toggleMobileCostCategory = toggleMobileCostCategory;
+
+// Hamburger menu
+document.getElementById('menuBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+
+// Meta tooltip (hero)
+function closeAllMetaTips() {
+  document.querySelectorAll('.meta-tip.open').forEach(t => t.classList.remove('open'));
+  document.getElementById('tipBackdrop').classList.remove('open');
+  document.querySelectorAll('.meta-tip-btn').forEach(b => b.setAttribute('aria-expanded','false'));
+}
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.meta-tip-btn');
+  if (btn) {
+    e.stopPropagation();
+    const id = btn.getAttribute('aria-controls');
+    const tip = document.getElementById(id);
+    const willOpen = !tip.classList.contains('open');
+    closeAllMetaTips();
+    if (willOpen) {
+      tip.classList.add('open');
+      document.getElementById('tipBackdrop').classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+    return;
+  }
+  if (e.target.closest('.meta-tip')) { e.stopPropagation(); return; }
+  closeAllMetaTips();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllMetaTips(); });
+
+/* ═══════════════════════ RENDER ═══════════════════════ */
+document.getElementById('deals-container').innerHTML = MOCK_DEALS.map(renderDealCard).join('');
+</script>
+
+</body></html>
