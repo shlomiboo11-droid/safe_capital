@@ -100,7 +100,7 @@ function renderTimeline(propertyStatus) {
   }).join('');
 
   return `
-    <h3 class="text-2xl font-extrabold text-primary mb-8">לוחות זמנים</h3>
+    <h3 class="t-h3 font-extrabold text-primary mb-8">לוחות זמנים</h3>
     <div class="relative flex justify-between items-start">
       <div class="absolute top-4 right-0 left-0 h-0.5 bg-outline-variant/20"></div>
       <div class="absolute top-4 right-0 h-0.5 bg-primary" style="width:${progressPct}%"></div>
@@ -121,17 +121,17 @@ function renderMobileTimeline(propertyStatus) {
         <div class="w-6 h-6 rounded-full bg-[#022445] text-white flex items-center justify-center">
           <span class="material-symbols-outlined" style="font-size:14px">check</span>
         </div>
-        <span class="text-[10px] font-bold">${step.step_name}</span>
+        <span class="text-[12px] font-bold">${step.step_name}</span>
       </div>`;
     } else if (step.status === 'active') {
       return `<div class="relative z-10 flex flex-col items-center gap-2">
         <div class="w-6 h-6 rounded-full bg-[#022445] border-4 border-white shadow-sm flex items-center justify-center"></div>
-        <span class="text-[10px] font-bold text-[#022445]">${step.step_name}</span>
+        <span class="text-[12px] font-bold text-[#022445]">${step.step_name}</span>
       </div>`;
     } else {
       return `<div class="relative z-10 flex flex-col items-center gap-2">
         <div class="w-6 h-6 rounded-full bg-[#e4e2df] flex items-center justify-center"></div>
-        <span class="text-[10px] font-bold text-[#43474e]">${step.step_name}</span>
+        <span class="text-[12px] font-bold text-[#43474e]">${step.step_name}</span>
       </div>`;
     }
   }).join('');
@@ -148,17 +148,22 @@ function renderMobileTimeline(propertyStatus) {
 // ── Mobile fundraising bar ──────────────────────────────────────────────────
 
 function renderMobileFundraisingBar(deal) {
+  if (deal.fundraising_status !== 'active') return '';
   const goal = parseFloat(deal.fundraising_goal || 0);
-  const pct = deal.fundraising_percent || 0;
   if (goal === 0) return '';
+  const raised = parseFloat(deal.fundraising_raised || 0);
+  const pct = deal.fundraising_percent || 0;
 
-  return `<div class="px-5 pb-6">
-    <div class="flex justify-between items-center mb-2">
-      <span class="text-xs font-bold text-[#022445]">התקדמות גיוס</span>
-      <span class="text-xs font-bold font-label text-[#022445]">${pct}%</span>
-    </div>
-    <div class="h-2 w-full bg-[#e4e2df] rounded-full overflow-hidden">
-      <div class="h-full bg-gradient-to-l from-[#022445] to-[#1e3a5c] rounded-full" style="width:${Math.min(pct, 100)}%"></div>
+  return `<div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+    <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">התקדמות גיוס</h3>
+    <div class="bg-[#f5f3f0] rounded-lg py-3 px-3">
+      <div class="flex justify-between items-center" style="margin-bottom:10px">
+        <div class="font-bold text-[#984349]" style="font-size:var(--fs-body-xs);font-family:'Inter',sans-serif;line-height:1.2">${pct}%</div>
+        <div class="text-[#43474e]" dir="ltr" style="font-size:11px;font-family:'Inter',sans-serif;line-height:1.2">${formatUSD(raised)} / ${formatUSD(goal)}</div>
+      </div>
+      <div class="bg-[#eae8e5] rounded-full overflow-hidden" style="height:8px">
+        <div class="h-full bg-[#984349] rounded-full" style="width:${Math.min(pct, 100)}%"></div>
+      </div>
     </div>
   </div>`;
 }
@@ -188,12 +193,12 @@ function renderMobileGallery(images) {
     html += `<div class="absolute inset-0 flex">`;
     if (beforeSrc) {
       html += `<div class="flex-1 border-l border-white/50 flex items-center justify-center">
-        <span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm backdrop-blur-md">לפני</span>
+        <span class="bg-black/40 text-white text-[12px] px-2 py-1 rounded-sm backdrop-blur-md">לפני</span>
       </div>`;
     }
     if (afterSrc) {
       html += `<div class="flex-1 flex items-center justify-center">
-        <span class="bg-black/40 text-white text-[10px] px-2 py-1 rounded-sm backdrop-blur-md">אחרי</span>
+        <span class="bg-black/40 text-white text-[12px] px-2 py-1 rounded-sm backdrop-blur-md">אחרי</span>
       </div>`;
     }
     html += `</div></div>`;
@@ -225,33 +230,33 @@ function renderMobileGallery(images) {
 // ── Mobile metrics grid ─────────────────────────────────────────────────────
 
 function renderMobileMetrics(deal) {
-  const totalCost         = deal.total_cost;
-  const fundraisingGoal   = deal.fundraising_goal;
-  const expectedSalePrice = deal.expected_sale_price;
+  const sale = deal.expected_sale_price;
+  const cost = deal.total_cost;
+  const goal = deal.fundraising_goal;
+  if (!sale && !cost && !goal) return '';
 
-  let html = '<div class="px-5 mb-6"><div class="grid grid-cols-1 gap-3">';
+  const heroHtml = sale ? `
+    <div class="py-2.5 px-3 text-center${(cost || goal) ? ' border-b border-[#eae8e5]' : ''}">
+      <div class="text-[#43474e] font-medium" style="font-size:var(--fs-label);line-height:1.2;margin-bottom:3px">מחיר מכירה צפוי</div>
+      <div class="font-bold text-[#984349]" style="font-size:var(--fs-body-lg);font-family:'Inter',sans-serif;line-height:1.2">${formatUSD(sale)}</div>
+    </div>` : '';
 
-  if (totalCost) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
-      <p class="text-xs text-[#43474e] font-bold">עלות פרויקט כוללת</p>
-      <p class="text-lg font-bold font-label text-[#022445]">${formatUSD(totalCost)}</p>
-    </div>`;
-  }
-  if (fundraisingGoal) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
-      <p class="text-xs text-[#43474e] font-bold">סכום לגיוס</p>
-      <p class="text-lg font-bold font-label text-[#022445]">${formatUSD(fundraisingGoal)}</p>
-    </div>`;
-  }
-  if (expectedSalePrice) {
-    html += `<div class="bg-[#f5f3f0] p-4 rounded-lg flex justify-between items-center">
-      <p class="text-xs text-[#43474e] font-bold">מחיר מכירה צפוי</p>
-      <p class="text-lg font-bold font-label text-[#984349]">${formatUSD(expectedSalePrice)}</p>
-    </div>`;
-  }
+  const bottomCells = [];
+  if (cost) bottomCells.push({ label: 'עלות פרויקט כוללת', value: formatUSD(cost) });
+  if (goal) bottomCells.push({ label: 'סכום לגיוס',         value: formatUSD(goal) });
 
-  html += '</div></div>';
-  return html;
+  const bottomHtml = bottomCells.length === 0 ? '' : `
+    <div class="grid grid-cols-${bottomCells.length}">
+      ${bottomCells.map((c, i) => `
+        <div class="py-2 px-2 text-center${i > 0 ? ' border-r border-[#eae8e5]' : ''}">
+          <div class="text-[#43474e] font-medium" style="font-size:var(--fs-label);line-height:1.2;margin-bottom:3px">${c.label}</div>
+          <div class="font-bold text-[#022445]" style="font-size:var(--fs-body-xs);font-family:'Inter',sans-serif;line-height:1.2">${c.value}</div>
+        </div>`).join('')}
+    </div>`;
+
+  return `<div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+    <div class="bg-[#f5f3f0] rounded-lg overflow-hidden">${heroHtml}${bottomHtml}</div>
+  </div>`;
 }
 
 // ── Mobile specs table ──────────────────────────────────────────────────────
@@ -261,12 +266,13 @@ function renderMobileSpecs(specs) {
 
   const rowsHtml = specs.map(spec => `
     <tr>
-      <td class="py-3 px-3">${spec.spec_name}</td>
-      <td class="py-3 px-2 text-center font-label">${spec.value_before || '—'}</td>
-      <td class="py-3 px-2 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
+      <td class="py-2 px-3 text-right">${spec.spec_name}</td>
+      <td class="py-2 px-2 text-center font-label">${spec.value_before || '—'}</td>
+      <td class="py-2 px-2 text-center font-label font-bold text-[#984349]">${spec.value_after || '—'}</td>
     </tr>`).join('');
 
   return `<div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+    <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">תכנית ההשבחה</h3>
     <div class="bg-[#f5f3f0] overflow-hidden rounded-lg">
       <table class="w-full text-sm" style="table-layout:fixed">
         <thead class="bg-[#eae8e5]">
@@ -299,46 +305,38 @@ function renderMobileCostAccordion(categories) {
 
   if (filteredCats.length === 0) return '';
 
-  const items = filteredCats.map(cat => `
-    <div class="bg-[#f5f3f0] p-3 rounded-lg">
-      <div class="flex justify-between items-center cursor-pointer cost-category-header-mobile" onclick="toggleMobileCostCategory(this)">
-        <span class="text-sm font-bold">${cat.name}</span>
-        <div class="flex items-center gap-2">
-          <span class="font-label font-bold text-[#022445] text-sm">${formatUSD(cat.total_planned)}</span>
-          <span class="material-symbols-outlined text-[#022445] mobile-cost-arrow">expand_more</span>
+  const rows = filteredCats.map(cat => `
+    <div>
+      <div class="bg-[#eae8e5] flex justify-between items-center cursor-pointer cost-category-header-mobile py-2 px-3" onclick="toggleMobileCostCategory(this)">
+        <div class="font-bold text-[#022445]" style="font-size:var(--fs-body-xs)">${cat.name}</div>
+        <div class="flex items-center" style="gap:8px">
+          <div class="font-bold text-[#022445]" style="font-size:var(--fs-body-xs);font-family:'Inter',sans-serif">${formatUSD(cat.total_planned)}</div>
+          <span class="material-symbols-outlined mobile-cost-arrow" style="font-size:18px;color:#43474e;font-variation-settings:'wght' 400">expand_more</span>
         </div>
       </div>
-      <div class="mobile-cost-items" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
+      <div class="mobile-cost-items bg-[#f5f3f0]" style="max-height:0;overflow:hidden;transition:max-height 0.3s ease">
         ${cat.items.map(item => `
-          <div class="flex justify-between py-2 border-t border-[#eae8e5] text-sm">
-            <span class="text-[#43474e]">${item.name}</span>
-            <span class="font-label font-medium">${formatUSD(item.planned_amount)}</span>
+          <div class="flex justify-between items-center py-2 px-3 border-t border-[#eae8e5]">
+            <div class="text-[#43474e]" style="font-size:var(--fs-body-xs)">${item.name}</div>
+            <div class="flex items-center" style="gap:8px">
+              <div class="text-[#43474e]" style="font-size:var(--fs-body-xs);font-family:'Inter',sans-serif">${formatUSD(item.planned_amount)}</div>
+              <span aria-hidden="true" style="display:inline-block;width:18px;height:18px;flex-shrink:0"></span>
+            </div>
           </div>`).join('')}
       </div>
     </div>`).join('');
 
   return `
-    <div class="px-5 mb-6">
-      <h3 class="text-md font-bold text-[#022445] mb-3">פירוט עלויות</h3>
-      <div class="space-y-2">${items}</div>
+    <div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+      <h3 class="text-base font-bold text-[#022445] mb-3 px-3">פירוט עלויות</h3>
+      <div class="rounded-lg overflow-hidden divide-y divide-[#eae8e5]">${rows}</div>
     </div>`;
 }
 
 // ── Mobile WhatsApp CTA ─────────────────────────────────────────────────────
 
 function renderMobileWhatsAppCTA() {
-  return `<div class="px-5 pb-8">
-    <div class="bg-gradient-to-br from-[#022445] to-[#1e3a5c] p-6 rounded-xl text-center text-white relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-      <h4 class="text-lg font-bold mb-2">מעוניין בפרטים נוספים?</h4>
-      <p class="text-xs text-white/70 mb-4">הצטרף לקבוצת המשקיעים השקטה שלנו וקבל עדכונים לפני כולם</p>
-      <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
-         class="w-full bg-[#25D366] hover:bg-[#128C7E] transition-colors py-3 rounded-lg flex items-center justify-center gap-2 font-bold shadow-lg text-white no-underline">
-        ${WHATSAPP_SVG}
-        דבר איתנו בוואטסאפ
-      </a>
-    </div>
-  </div>`;
+  return '';
 }
 
 // ── Mobile expanded content ─────────────────────────────────────────────────
@@ -518,7 +516,7 @@ function renderNumbersRow(numbers, deal, opts) {
 
   if (isMobileView) {
     return `
-      <div class="grid grid-cols-3 gap-2 py-0.5 px-2 rounded-xl deal-numbers-mobile-grid" style="background:rgba(2,36,69,0.04)">
+      <div class="grid grid-cols-3 gap-2 py-0.5 px-2 rounded-lg deal-numbers-mobile-grid bg-[#f5f3f0]">
         ${cells}
       </div>`;
   }
@@ -595,23 +593,23 @@ function renderMobileDealCard(deal, index) {
 // ── Fundraising progress bar ─────────────────────────────────────────────────
 
 function renderFundraisingBar(deal) {
+  if (deal.fundraising_status !== 'active') return '';
   const goal = parseFloat(deal.fundraising_goal || 0);
+  if (goal === 0) return '';
   const raised = parseFloat(deal.fundraising_raised || 0);
   const pct = deal.fundraising_percent || 0;
 
-  if (goal === 0) return '';
-
   return `
-    <div class="bg-surface-container rounded-xl p-8">
-      <div class="flex justify-between items-end mb-4">
-        <div>
-          <p class="text-primary font-bold mb-1">התקדמות גיוס הון</p>
-          <p class="text-sm text-on-surface-variant">גויסו ${formatUSD(raised)} מתוך ${formatUSD(goal)}</p>
-        </div>
-        <p class="text-2xl font-bold font-label text-primary">${pct}%</p>
+    <div class="bg-[#f5f3f0] rounded-2xl p-8">
+      <div class="flex justify-between items-center mb-6">
+        <div class="t-h4 font-bold text-[#022445]">התקדמות גיוס הון</div>
+        <div class="t-body-sm text-[#43474e]" dir="ltr" style="font-family:'Inter',sans-serif">${formatUSD(raised)} / ${formatUSD(goal)}</div>
       </div>
-      <div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
-        <div class="h-full bg-gradient-to-l from-primary to-primary-container" style="width: ${Math.min(pct, 100)}%"></div>
+      <div class="flex items-center" style="gap:20px">
+        <div class="font-bold text-[#984349]" style="font-size:var(--fs-metric-xl);font-family:'Inter',sans-serif;line-height:1;min-width:90px">${pct}%</div>
+        <div class="flex-1 bg-[#e4e2df] rounded-full overflow-hidden" style="height:12px">
+          <div class="h-full bg-[#984349] rounded-full" style="width:${Math.min(pct, 100)}%"></div>
+        </div>
       </div>
     </div>`;
 }
@@ -1011,8 +1009,8 @@ function renderPostSaleSummary(deal) {
 
 function renderComps(deal) {
   const comps = Array.isArray(deal.comps) ? deal.comps : [];
+  if (comps.length === 0) return '';
 
-  // Extract our property's sqft & bedrooms from specs (fuzzy match)
   const specs = Array.isArray(deal.specs) ? deal.specs : [];
   const findSpec = (patterns) => {
     for (const s of specs) {
@@ -1031,46 +1029,58 @@ function renderComps(deal) {
   const fmtBeds = (v) => (v == null || v === '') ? '—' : v;
   const fmtDOM  = (v) => (v == null || v === '') ? '—' : v + ' ימים';
 
-  // Row 1: our property
+  const shortAddr = (full) => {
+    if (!full) return '—';
+    const first = String(full).split(',')[0].trim();
+    const numMatch = first.match(/^\d+/);
+    if (numMatch) return numMatch[0];
+    return first.split(' ')[0] || '—';
+  };
+
   const ourRow = `
-    <tr class="bg-surface-container-low border-b border-outline-variant/10">
-      <td class="py-4 px-4 font-bold text-primary">
-        <div class="flex items-center gap-2">
-          <span class="t-label bg-primary text-white px-2 py-0.5 rounded font-bold">הנכס שלנו</span>
-        </div>
-      </td>
-      <td class="py-4 px-4 text-left font-label font-bold text-primary">${fmtSqft(ourSqft)}</td>
-      <td class="py-4 px-4 text-left font-label font-bold text-primary">${fmtBeds(ourBedrooms)}</td>
-      <td class="py-4 px-4 text-left font-label font-bold text-secondary">${formatUSD(ourPrice)}</td>
-      <td class="py-4 px-4 text-left font-label text-on-surface-variant">—</td>
+    <tr class="border-b border-outline-variant/10">
+      <td class="py-4 px-4 font-bold text-primary text-right">הנכס שלנו</td>
+      <td class="py-4 px-4 text-center font-label font-bold text-primary">${fmtSqft(ourSqft)}</td>
+      <td class="py-4 px-4 text-center font-label font-bold text-primary">${fmtBeds(ourBedrooms)}</td>
+      <td class="py-4 px-4 text-center font-label font-bold text-secondary">${formatUSD(ourPrice)}</td>
+      <td class="py-4 px-4 text-center font-label text-on-surface-variant">—</td>
     </tr>`;
 
-  const compsRows = comps.map(c => `
+  const compsRows = comps.map(c => {
+    const label = shortAddr(c.address);
+    const cell = c.zillow_url
+      ? `<a href="${c.zillow_url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${label}</a>`
+      : label;
+    return `
     <tr class="border-b border-outline-variant/10">
-      <td class="py-4 px-4 t-body-xs text-on-surface-variant">${c.address || '—'}</td>
-      <td class="py-4 px-4 text-left font-label">${fmtSqft(c.sqft)}</td>
-      <td class="py-4 px-4 text-left font-label">${fmtBeds(c.bedrooms)}</td>
-      <td class="py-4 px-4 text-left font-label font-bold text-primary">${formatUSD(c.sale_price)}</td>
-      <td class="py-4 px-4 text-left font-label text-on-surface-variant">${fmtDOM(c.days_on_market)}</td>
-    </tr>`).join('');
-
-  const emptyNote = comps.length === 0
-    ? `<p class="t-body-sm text-on-surface-variant mt-4">עדיין לא נאספו נכסים דומים.</p>`
-    : '';
+      <td class="py-4 px-4 t-body-xs text-on-surface-variant text-right">${cell}</td>
+      <td class="py-4 px-4 text-center font-label">${fmtSqft(c.sqft)}</td>
+      <td class="py-4 px-4 text-center font-label">${fmtBeds(c.bedrooms)}</td>
+      <td class="py-4 px-4 text-center font-label font-bold text-primary">${formatUSD(c.sale_price)}</td>
+      <td class="py-4 px-4 text-center font-label text-on-surface-variant">${fmtDOM(c.days_on_market)}</td>
+    </tr>`;
+  }).join('');
 
   return `
     <div class="deal-section deal-section--comps">
       <h3 class="t-h3 font-extrabold text-primary mb-2">השוואת נכסים בשכונה</h3>
       <p class="t-body-sm text-on-surface-variant mb-6">נכסים דומים שנמכרו לאחרונה — האישוש לשווי המתוכנן</p>
       <div class="overflow-x-auto">
-        <table class="w-full text-right">
+        <table class="w-full" style="table-layout:fixed">
+          <colgroup>
+            <col style="width:22%">
+            <col style="width:18%">
+            <col style="width:14%">
+            <col style="width:26%">
+            <col style="width:20%">
+          </colgroup>
           <thead>
             <tr class="t-label text-on-surface-variant border-b border-outline-variant/30">
               <th class="pb-4 px-4 font-bold text-right">כתובת</th>
-              <th class="pb-4 px-4 font-bold text-left">גודל (sqft)</th>
-              <th class="pb-4 px-4 font-bold text-left">חדרים</th>
-              <th class="pb-4 px-4 font-bold text-left">מחיר שנמכר</th>
-              <th class="pb-4 px-4 font-bold text-left">זמן בשוק</th>
+              <th class="pb-4 px-4 font-bold text-center">גודל (sqft)</th>
+              <th class="pb-4 px-4 font-bold text-center">חדרים</th>
+              <th class="pb-4 px-4 font-bold text-center">מחיר שנמכר</th>
+              <th class="pb-4 px-4 font-bold text-center">זמן בשוק</th>
             </tr>
           </thead>
           <tbody class="t-body-xs">
@@ -1079,7 +1089,6 @@ function renderComps(deal) {
           </tbody>
         </table>
       </div>
-      ${emptyNote}
     </div>`;
 }
 
@@ -1093,7 +1102,7 @@ function renderMobileDescription(deal) {
   if (!deal.description) return '';
   return `
     <div class="px-5 mb-6">
-      <h3 class="text-md font-bold text-[#022445] mb-2">תכנית העסקה</h3>
+      <h3 class="text-base font-bold text-[#022445] mb-2">תכנית העסקה</h3>
       <p class="text-sm text-[#43474e] leading-relaxed">${deal.description}</p>
     </div>`;
 }
@@ -1129,7 +1138,7 @@ function renderMobileGallerySection(deal, mode) {
     <img class="aspect-square w-full object-cover rounded-md" src="${ADMIN_HOST + img.image_url}" alt="${img.alt_text || ''}" loading="lazy"/>`).join('');
   return `
     <div class="px-5 mb-6">
-      <h3 class="text-md font-bold text-[#022445] mb-3">${heading}</h3>
+      <h3 class="text-base font-bold text-[#022445] mb-3">${heading}</h3>
       <div class="grid grid-cols-3 gap-2">${thumbs}</div>
     </div>`;
 }
@@ -1198,7 +1207,7 @@ function renderMobilePostSaleSummary(deal) {
   return `
     <div class="px-5 mb-6">
       <div class="bg-[#f5f3f0] p-4 rounded-lg">
-        <h3 class="text-md font-bold text-[#022445] mb-2">סיכום העסקה</h3>
+        <h3 class="text-base font-bold text-[#022445] mb-2">סיכום העסקה</h3>
         <p class="text-sm text-[#43474e] leading-relaxed">${deal.sale_completion_note}</p>
       </div>
     </div>`;
@@ -1206,6 +1215,7 @@ function renderMobilePostSaleSummary(deal) {
 
 function renderMobileComps(deal) {
   const comps = Array.isArray(deal.comps) ? deal.comps : [];
+  if (comps.length === 0) return '';
 
   const specs = Array.isArray(deal.specs) ? deal.specs : [];
   const findSpec = (patterns) => {
@@ -1223,47 +1233,54 @@ function renderMobileComps(deal) {
 
   const fmtSqft = (v) => (v == null || v === '') ? '—' : (typeof v === 'number' ? v.toLocaleString('en-US') : v);
   const fmtBeds = (v) => (v == null || v === '') ? '—' : v;
-  const fmtDOM  = (v) => (v == null || v === '') ? '—' : v + ' ימים';
+
+  const shortAddr = (full) => {
+    if (!full) return '—';
+    const first = String(full).split(',')[0].trim();
+    const numMatch = first.match(/^\d+/);
+    if (numMatch) return numMatch[0];
+    return first.split(' ')[0] || '—';
+  };
 
   const ourRow = `
-    <tr class="bg-[#eae8e5]">
-      <td class="py-2 px-2 font-bold text-[#022445] text-xs">
-        <span class="bg-[#022445] text-white px-1.5 py-0.5 rounded text-[10px]">הנכס שלנו</span>
-      </td>
-      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${fmtSqft(ourSqft)}</td>
-      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${fmtBeds(ourBedrooms)}</td>
-      <td class="py-2 px-1 text-left font-label font-bold text-[#984349] text-xs">${formatUSD(ourPrice)}</td>
-      <td class="py-2 px-1 text-left font-label text-[#43474e] text-xs">—</td>
+    <tr>
+      <td class="py-2 px-2 font-bold text-[#022445] text-right" style="white-space:nowrap">הנכס שלנו</td>
+      <td class="py-2 px-1 text-center font-label font-bold text-[#022445]">${fmtSqft(ourSqft)}</td>
+      <td class="py-2 px-1 text-center font-label font-bold text-[#022445]">${fmtBeds(ourBedrooms)}</td>
+      <td class="py-2 px-1 text-center font-label font-bold text-[#984349]">${formatUSD(ourPrice)}</td>
     </tr>`;
 
   const compsRows = comps.map(c => {
-    const addr = c.address ? String(c.address).split(',')[0] : '—';
+    const label = shortAddr(c.address);
+    const cell = c.zillow_url
+      ? `<a href="${c.zillow_url}" target="_blank" rel="noopener noreferrer" class="text-[#022445] underline">${label}</a>`
+      : label;
     return `
     <tr>
-      <td class="py-2 px-2 text-[#43474e] text-xs truncate" style="max-width:90px">${addr}</td>
-      <td class="py-2 px-1 text-left font-label text-xs">${fmtSqft(c.sqft)}</td>
-      <td class="py-2 px-1 text-left font-label text-xs">${fmtBeds(c.bedrooms)}</td>
-      <td class="py-2 px-1 text-left font-label font-bold text-[#022445] text-xs">${formatUSD(c.sale_price)}</td>
-      <td class="py-2 px-1 text-left font-label text-[#43474e] text-xs">${fmtDOM(c.days_on_market)}</td>
+      <td class="py-2 px-2 text-[#43474e] text-right">${cell}</td>
+      <td class="py-2 px-1 text-center font-label">${fmtSqft(c.sqft)}</td>
+      <td class="py-2 px-1 text-center font-label">${fmtBeds(c.bedrooms)}</td>
+      <td class="py-2 px-1 text-center font-label font-bold text-[#022445]">${formatUSD(c.sale_price)}</td>
     </tr>`;
   }).join('');
-
-  const emptyNote = comps.length === 0
-    ? `<p class="text-xs text-[#43474e] mt-2 px-3">עדיין לא נאספו נכסים דומים.</p>`
-    : '';
 
   return `
     <div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
       <h3 class="text-base font-extrabold text-[#022445] mb-2 px-3">השוואת נכסים בשכונה</h3>
-      <div class="bg-[#f5f3f0] overflow-x-auto rounded-lg">
-        <table class="w-full text-sm" style="table-layout:auto">
+      <div class="bg-[#f5f3f0] overflow-hidden rounded-lg">
+        <table class="w-full text-sm" style="table-layout:fixed">
+          <colgroup>
+            <col style="width:26%">
+            <col style="width:22%">
+            <col style="width:14%">
+            <col style="width:38%">
+          </colgroup>
           <thead class="bg-[#eae8e5]">
             <tr>
-              <th class="py-2 px-2 text-right font-bold text-[10px]">כתובת</th>
-              <th class="py-2 px-1 text-left font-bold text-[10px]">sqft</th>
-              <th class="py-2 px-1 text-left font-bold text-[10px]">חדרים</th>
-              <th class="py-2 px-1 text-left font-bold text-[10px]">מחיר</th>
-              <th class="py-2 px-1 text-left font-bold text-[10px]">זמן</th>
+              <th class="py-2 px-2 text-right font-bold">כתובת</th>
+              <th class="py-2 px-1 text-center font-bold">sqft</th>
+              <th class="py-2 px-1 text-center font-bold">חדרים</th>
+              <th class="py-2 px-1 text-center font-bold">מחיר</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-[#eae8e5]">
@@ -1272,7 +1289,6 @@ function renderMobileComps(deal) {
           </tbody>
         </table>
       </div>
-      ${emptyNote}
     </div>`;
 }
 
@@ -1377,7 +1393,7 @@ function renderMobileUnifiedGallery(deal) {
   const showNav = initialList.length > 1;
 
   const tabsHtml = showTabs ? `
-    <div class="flex gap-2 mt-3 overflow-x-auto" style="scrollbar-width:none">
+    <div class="flex gap-2 mt-3 overflow-x-auto px-3" style="scrollbar-width:none">
       ${activeCategories.map(cat => {
         const isActive = cat === initialCategory;
         const activeClasses = 'bg-primary text-white';
@@ -1394,32 +1410,32 @@ function renderMobileUnifiedGallery(deal) {
     </div>` : '';
 
   return `
-    <div class="px-5 mb-6">
-      <h3 class="text-md font-bold text-[#022445] mb-3">גלריה</h3>
+    <div class="mb-6" style="margin-left:-0.25rem;margin-right:-0.25rem">
+      <h3 class="text-md font-bold text-[#022445] mb-3 px-3">גלריה</h3>
       <div class="unified-gallery-wrapper"
            data-gallery-deal-id="${deal.id}"
            data-active-category="${initialCategory}"
            data-active-index="0"
            data-gallery-images='${jsonAttr}'>
-        <div class="relative aspect-video rounded-xl overflow-hidden bg-surface-container-low">
-          <img data-gallery-main class="w-full h-full object-cover" src="${firstImg.image_url}" alt="${firstImg.alt_text}" loading="lazy"/>
+        <div class="relative aspect-video overflow-hidden bg-surface-container-low rounded-lg" style="touch-action:pan-y">
+          <img data-gallery-main class="w-full h-full object-cover" src="${firstImg.image_url}" alt="${firstImg.alt_text}" loading="lazy" draggable="false" style="user-select:none;-webkit-user-drag:none"/>
           <button type="button" data-gallery-nav="prev"
                   onclick="galleryNavigate(event, '${deal.id}', 'prev')"
                   aria-label="קודם"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center"
-                  style="${showNav ? '' : 'display:none'}">
-            <span class="material-symbols-outlined text-primary" style="font-size:1.1rem">chevron_right</span>
+                  class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center"
+                  style="${showNav ? '' : 'display:none'};right:10px;width:36px;height:36px;border-radius:9999px;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)">
+            <span class="material-symbols-outlined" style="font-size:18px;color:#fff;font-variation-settings:'wght' 300">chevron_right</span>
           </button>
           <button type="button" data-gallery-nav="next"
                   onclick="galleryNavigate(event, '${deal.id}', 'next')"
                   aria-label="הבא"
-                  class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center"
-                  style="${showNav ? '' : 'display:none'}">
-            <span class="material-symbols-outlined text-primary" style="font-size:1.1rem">chevron_left</span>
+                  class="absolute top-1/2 -translate-y-1/2 flex items-center justify-center"
+                  style="${showNav ? '' : 'display:none'};left:10px;width:36px;height:36px;border-radius:9999px;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)">
+            <span class="material-symbols-outlined" style="font-size:18px;color:#fff;font-variation-settings:'wght' 300">chevron_left</span>
           </button>
           <div data-gallery-indicator dir="ltr"
-               class="absolute bottom-2 left-2 bg-black/50 text-white rounded-full px-2 py-0.5 text-xs font-label"
-               style="${showNav ? '' : 'display:none'}">
+               class="absolute bottom-2 left-2 text-white text-xs font-label"
+               style="${showNav ? '' : 'display:none'};background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:2px 8px;border-radius:9999px">
             1 / ${initialList.length}
           </div>
         </div>
@@ -1437,6 +1453,45 @@ window.switchGalleryCategory = function(event, dealId, category) {
     updateGalleryView(wrapper);
   });
 };
+
+// Swipe-to-navigate on gallery — global delegation, calls existing galleryNavigate
+(function attachGallerySwipe() {
+  if (window.__gallerySwipeAttached) return;
+  window.__gallerySwipeAttached = true;
+  let startX = 0, startY = 0, startWrapper = null, decided = false, isHorizontal = false;
+  document.addEventListener('touchstart', e => {
+    const wrapper = e.target.closest('.unified-gallery-wrapper');
+    if (!wrapper) { startWrapper = null; return; }
+    startWrapper = wrapper;
+    decided = false;
+    isHorizontal = false;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if (!startWrapper) return;
+    if (decided) {
+      if (isHorizontal) e.preventDefault(); // lock browser scroll once horizontal intent confirmed
+      return;
+    }
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; // not enough movement to decide
+    decided = true;
+    isHorizontal = Math.abs(dx) > Math.abs(dy);
+    if (isHorizontal) e.preventDefault();
+  }, { passive: false });
+  document.addEventListener('touchend', e => {
+    const wrapper = startWrapper;
+    startWrapper = null;
+    if (!wrapper || !isHorizontal) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) < 40) return; // ignore short swipes
+    const dealId = wrapper.dataset.galleryDealId;
+    // RTL: swipe LEFT (dx < 0) = next; swipe RIGHT (dx > 0) = prev
+    window.galleryNavigate(null, dealId, dx < 0 ? 'next' : 'prev');
+  }, { passive: true });
+})();
 
 window.galleryNavigate = function(event, dealId, direction) {
   if (event) event.stopPropagation();

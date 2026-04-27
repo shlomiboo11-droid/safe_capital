@@ -16,8 +16,19 @@
               "icon": "lucide-git-fork",
               "title": "תצוגת גרף"
             }
+          },
+          {
+            "id": "6ef57227cb2ca2d2",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "כרטיסייה חדשה"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -177,7 +188,7 @@
       "bases:צור בסיס חדש": false
     }
   },
-  "active": "3398872a689bf2ed",
+  "active": "6ef57227cb2ca2d2",
   "lastOpenFiles": [
     "ללא כותרת.canvas",
     "utils.js.md",

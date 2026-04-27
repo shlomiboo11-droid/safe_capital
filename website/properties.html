@@ -493,8 +493,8 @@
         @media (min-width: 768px) {
             .deal-number { white-space: nowrap; }
         }
-        .deal-number--regular { font-size: var(--fs-body-xs); }  /* 14px mobile — Stitch spec */
-        .deal-number--hero    { font-size: var(--fs-body-xs); }  /* 14px mobile — Stitch spec (uniform) */
+        .deal-number--regular { font-size: 1.0625rem; }  /* 17px mobile */
+        .deal-number--hero    { font-size: 1.0625rem; }  /* 17px mobile */
         @media (min-width: 768px) {
             .deal-number--regular { font-size: var(--fs-metric); }    /* 24px desktop */
             .deal-number--hero    { font-size: var(--fs-metric-xl); } /* 32px desktop */
@@ -631,7 +631,7 @@
                 justify-content: center;
                 padding: 0.75rem 1rem;
             }
-            .deal-card-title { font-size: 1rem; }       /* 16px mobile */
+            .deal-card-title { font-size: var(--fs-body-xs) !important; }  /* 14px mobile — numbers dominate */
             .deal-numbers-row { gap: 0.5rem; }
         }
 
@@ -685,6 +685,45 @@
             .mobile-cost-arrow {
                 transition: transform 0.3s ease;
             }
+        }
+
+        /* Mobile floating CTA — sticky pill that docks above footer at end of content */
+        .properties-floating-cta { display: none; }
+        @media (max-width: 767px) {
+            .properties-floating-cta {
+                position: sticky;
+                bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+                z-index: 60;
+                margin: 16px 16px 8px;
+                padding: 14px 22px;
+                border-radius: 9999px;
+                background: rgba(2, 36, 69, 0.92);
+                -webkit-backdrop-filter: blur(12px) saturate(180%);
+                backdrop-filter: blur(12px) saturate(180%);
+                color: #fff;
+                font-family: 'Heebo', sans-serif;
+                font-weight: 700;
+                font-size: 14px;
+                text-decoration: none;
+                box-shadow: 0 6px 24px rgba(2, 36, 69, 0.18);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                transition: background 0.25s ease, box-shadow 0.25s ease, -webkit-backdrop-filter 0.25s ease, backdrop-filter 0.25s ease;
+            }
+            .properties-floating-cta:active { transform: scale(0.98); }
+            .properties-floating-cta .material-symbols-outlined {
+                font-size: 18px;
+                font-variation-settings: 'wght' 500;
+            }
+            .properties-floating-cta.is-docked {
+                background: #022445 !important;
+                -webkit-backdrop-filter: none !important;
+                backdrop-filter: none !important;
+                box-shadow: 0 4px 16px rgba(2, 36, 69, 0.12) !important;
+            }
+            #properties-floating-cta-sentinel { height: 1px; }
         }
 
     </style>
@@ -771,6 +810,12 @@
 <!-- Deal cards are rendered here once data loads from http://localhost:3000/api/public/deals -->
 </div>
 </section>
+<!-- Mobile floating CTA — sticks to viewport bottom while scrolling, docks above footer at end -->
+<a href="investor-nights.html" id="properties-floating-cta" class="properties-floating-cta">
+<span>הירשם למפגש הגיוס הקרוב</span>
+<span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+</a>
+<div id="properties-floating-cta-sentinel" aria-hidden="true"></div>
 </main>
 <!-- Footer -->
 <footer class="site-footer">
@@ -790,8 +835,43 @@
 </footer>
 <script src="js/shared.js?v=2"></script>
 <script src="js/settings.js"></script>
-<script src="js/deal-display-config.js?v=12"></script>
-<script src="js/deals.js?v=24"></script>
+<script src="js/deal-display-config.js?v=13"></script>
+<script src="js/deals.js?v=35"></script>
+<script>
+(function () {
+  var cta = document.getElementById('properties-floating-cta');
+  if (!cta) return;
+  var ticking = false;
+  function check() {
+    ticking = false;
+    var footer = document.querySelector('.site-footer');
+    if (!footer) return;
+    var footerTop = footer.getBoundingClientRect().top;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var docked = footerTop < vh - 80;
+    cta.classList.toggle('is-docked', docked);
+    if (docked) {
+      cta.style.background = '#022445';
+      cta.style.backdropFilter = 'none';
+      cta.style.webkitBackdropFilter = 'none';
+      cta.style.boxShadow = '0 4px 16px rgba(2, 36, 69, 0.12)';
+    } else {
+      cta.style.background = '';
+      cta.style.backdropFilter = '';
+      cta.style.webkitBackdropFilter = '';
+      cta.style.boxShadow = '';
+    }
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(check);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  check();
+})();
+</script>
 <script>
 // Cost category accordion toggle — called from dynamically rendered HTML
 function toggleCostCategory(header) {

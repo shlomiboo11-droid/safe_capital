@@ -110,7 +110,7 @@ router.get('/deals', async (req, res) => {
         [dealIds]
       ),
       pool.query(
-        `SELECT deal_id, address, sale_price, days_on_market, bedrooms, bathrooms, sqft
+        `SELECT deal_id, address, sale_price, days_on_market, bedrooms, bathrooms, sqft, zillow_url
          FROM deal_comps
          WHERE deal_id = ANY($1)
          ORDER BY deal_id, sale_price DESC`,
