@@ -680,6 +680,9 @@ async function uploadCompImages(compId, files) {
     closeCompGallery();
   } catch (err) {
     showToast(err.message, 'error');
+  } finally {
+    const input = document.getElementById('compGalleryUploadInput');
+    if (input) input.value = '';
   }
 }
 

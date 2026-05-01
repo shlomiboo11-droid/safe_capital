@@ -572,7 +572,7 @@ function renderMobileDealCard(deal, index) {
       <div class="deal-header cursor-pointer">
         <div class="p-3 relative">
           ${imageHtml}
-          <div class="absolute top-6 right-6 flex flex-col gap-2 items-end">${badgeHtml}${secondaryBadgeHtml}</div>
+          <div class="absolute top-6 right-6 flex flex-col gap-2 items-start">${badgeHtml}${secondaryBadgeHtml}</div>
           <div class="absolute top-6 left-6">${dealNumRibbon}</div>
         </div>
         <div class="px-4 pb-4 flex flex-col gap-4">

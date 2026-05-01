@@ -1033,7 +1033,10 @@ const compImageUpload = multer({
     }
   }),
   limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => cb(null, /^image\//.test(file.mimetype))
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    cb(null, allowed.includes(path.extname(file.originalname).toLowerCase()));
+  }
 });
 
 router.post('/:dealId/comps/:compId/images/upload', compImageUpload.array('images', 20), async (req, res) => {

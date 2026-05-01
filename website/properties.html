@@ -690,14 +690,16 @@
         /* Mobile floating CTA — sticky pill that docks above footer at end of content */
         .properties-floating-cta { display: none; }
         @media (max-width: 767px) {
+            /* Trim main's bottom padding so the docked CTA has symmetric spacing */
+            main.pb-20 { padding-bottom: 16px !important; }
             .properties-floating-cta {
                 position: sticky;
                 bottom: calc(16px + env(safe-area-inset-bottom, 0px));
                 z-index: 60;
-                margin: 16px 16px 8px;
+                margin: 16px 16px 0;
                 padding: 14px 22px;
                 border-radius: 9999px;
-                background: rgba(2, 36, 69, 0.92);
+                background: rgba(152, 67, 73, 0.92);
                 -webkit-backdrop-filter: blur(12px) saturate(180%);
                 backdrop-filter: blur(12px) saturate(180%);
                 color: #fff;
@@ -705,7 +707,7 @@
                 font-weight: 700;
                 font-size: 14px;
                 text-decoration: none;
-                box-shadow: 0 6px 24px rgba(2, 36, 69, 0.18);
+                box-shadow: 0 6px 24px rgba(152, 67, 73, 0.22);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -718,10 +720,10 @@
                 font-variation-settings: 'wght' 500;
             }
             .properties-floating-cta.is-docked {
-                background: #022445 !important;
+                background: #984349 !important;
                 -webkit-backdrop-filter: none !important;
                 backdrop-filter: none !important;
-                box-shadow: 0 4px 16px rgba(2, 36, 69, 0.12) !important;
+                box-shadow: 0 4px 16px rgba(152, 67, 73, 0.18) !important;
             }
             #properties-floating-cta-sentinel { height: 1px; }
         }
@@ -738,20 +740,18 @@
 <a href="properties.html" class="active">עסקאות</a>
 <a href="birmingham.html">בירמינגהם</a>
 <a href="investor-nights.html">ערב משקיעים</a>
-<a href="join.html">איך מצטרפים</a>
 <a href="contact.html">צור קשר</a>
 </div>
 <button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
-<a href="join.html" class="nav-cta">הצטרפו עכשיו</a>
+<a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="nav-cta">הצטרפו עכשיו</a>
 </div>
 <div class="mobile-nav">
 <a href="index.html">עמוד הבית</a>
 <a href="properties.html" class="active">עסקאות</a>
 <a href="birmingham.html">בירמינגהם</a>
 <a href="investor-nights.html">ערב משקיעים</a>
-<a href="join.html">איך מצטרפים</a>
 <a href="contact.html">צור קשר</a>
-<a href="join.html" class="mobile-cta">הצטרפו עכשיו</a>
+<a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="mobile-cta">הצטרפו עכשיו</a>
 </div>
 </nav>
 <!-- Cinematic Hero -->
@@ -821,7 +821,7 @@
 <footer class="site-footer">
 <div class="footer-inner">
 <div class="footer-links"><h4>ניווט מהיר</h4>
-<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="join.html">איך מצטרפים</a><a href="contact.html">צור קשר</a>
+<a href="index.html">עמוד הבית</a><a href="properties.html">עסקאות</a><a href="contact.html">צור קשר</a>
 </div>
 <div class="footer-links"><h4>מידע נוסף</h4>
 <a href="privacy.html">מדיניות פרטיות</a><a href="terms.html">תקנון אתר</a><a href="#">שאלות נפוצות</a>
@@ -829,14 +829,14 @@
 <div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
 <div class="footer-brand">
 <p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
-<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="join.html" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
+<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact.html" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
 </div></div>
 <div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות</span><span class="footer-bottom-contact"><span data-setting="email_info">safecapital2024@gmail.com</span> | <span data-setting="phone_footer">054-7828550</span></span></div>
 </footer>
 <script src="js/shared.js?v=2"></script>
 <script src="js/settings.js"></script>
 <script src="js/deal-display-config.js?v=13"></script>
-<script src="js/deals.js?v=35"></script>
+<script src="js/deals.js?v=37"></script>
 <script>
 (function () {
   var cta = document.getElementById('properties-floating-cta');
