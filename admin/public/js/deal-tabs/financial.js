@@ -46,10 +46,10 @@ function renderFinancialTab(data) {
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <div class="fin-card">
         <div class="fin-card-value font-inter" id="fc-total-planned">${formatCurrency(totalPlanned)}</div>
-        <div class="fin-card-label">סך השקעה מתוכנן</div>
+        <div class="fin-card-label">סך עלויות הפרוייקט (תכנון)</div>
       </div>
       <div class="fin-card">
-        <div class="fin-card-value font-inter" id="fc-total-actual">${formatCurrency(totalActual)}</div>
+        <div class="fin-card-value font-inter" id="fc-total-actual">${formatCurrency(deal.fundraising_goal || 0)}</div>
         <div class="fin-card-label">סך השקעה בפועל</div>
       </div>
       <div class="fin-card">
@@ -197,44 +197,18 @@ function renderCategoryRows(cat, editMode) {
 
   let html = '';
 
-  // Category header row
-  html += `
-    <tr class="bg-gray-50 border-t border-gray-200" data-cat-id="${cat.id}">
-      <td class="font-bold text-sm text-primary">
-        ${editMode
-          ? `<input type="text" class="form-input text-sm font-bold text-primary" value="${cat.name}"
-              onchange="updateCategoryName(${cat.id}, this.value)">`
-          : cat.name}
-      </td>
-      <td class="font-inter font-bold text-sm" id="cat-planned-${cat.id}">${formatCurrency(catPlanned)}</td>
-      <td class="font-inter font-bold text-sm" id="cat-actual-${cat.id}">${formatCurrency(catActual)}</td>
-      <td class="font-inter font-bold text-sm ${catStatus.color}" id="cat-dev-${cat.id}">${formatCurrency(catDev)}</td>
-      <td class="font-inter text-sm">
-        <span class="badge ${catStatus.class}" id="cat-badge-${cat.id}">${catPlanned > 0 ? catStatus.label + ' ' + formatPercent(catDevPct) : '--'}</span>
-      </td>
-      <td>
-        <div class="flex gap-1">
-          <button class="btn btn-secondary btn-sm" onclick="addCostItem(${cat.id})" title="הוסף פריט">
-            <span class="material-symbols-outlined text-sm">add</span>
-          </button>
-          ${!cat.is_default ? `
-            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה">
-              <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
-          ` : ''}
-        </div>
-      </td>
-    </tr>
-  `;
-
-  // Item rows
+  // Item rows (rendered first; category summary appears below them)
   if (cat.items && cat.items.length > 0) {
     for (const item of cat.items) {
-      const itemPlanned = parseFloat(item.planned_amount) || 0;
+      // Renovation-cost item: bind value to renovation_plan.total_cost (read-only here, edited in renovation tab)
+      const isRenovationItem = (item.name || '').trim().startsWith('עלות שיפוץ');
+      const renoTotal = parseFloat(currentDeal && currentDeal.renovation_plan && currentDeal.renovation_plan.total_cost) || 0;
+      const itemPlanned = isRenovationItem ? renoTotal : (parseFloat(item.planned_amount) || 0);
       const itemActual = parseFloat(item.actual_amount) || 0;
       const itemDev = itemActual - itemPlanned;
       const itemDevPct = itemPlanned > 0 ? (itemDev / itemPlanned * 100) : 0;
       const itemStatus = getDeviationStatus(itemPlanned, itemActual);
+      const planLocked = isRenovationItem || !editMode;
 
       html += `
         <tr data-item-id="${item.id}" data-cat-id="${cat.id}">
@@ -242,14 +216,15 @@ function renderCategoryRows(cat, editMode) {
             <input type="text" class="form-input text-sm ${!editMode ? 'bg-gray-50 pointer-events-none' : ''}" value="${item.name}"
               ${!editMode ? 'readonly tabindex="-1"' : ''}
               onchange="updateCostItem(${item.id}, 'name', this.value)">
+            ${isRenovationItem ? '<div class="text-xs text-gray-400 mt-1">מחושב אוטומטית מתכנית השיפוץ</div>' : ''}
           </td>
           <td>
             <input type="text" inputmode="numeric" data-currency="true"
-              class="form-input ltr text-sm w-36 ${!editMode ? 'bg-gray-50 pointer-events-none' : ''}"
+              class="form-input ltr text-sm w-36 ${planLocked ? 'bg-gray-50 pointer-events-none' : ''}"
               value="${itemPlanned ? formatCurrency(itemPlanned) : ''}"
-              ${!editMode ? 'readonly tabindex="-1"' : ''}
+              ${planLocked ? 'readonly tabindex="-1"' : ''}
               onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-              onchange="updateCostItem(${item.id}, 'planned_amount', parseAmount(this.value)); recalcFinancials()">
+              ${isRenovationItem ? '' : `onchange="updateCostItem(${item.id}, 'planned_amount', parseAmount(this.value)); recalcFinancials()"`}>
           </td>
           <td>
             <input type="text" inputmode="numeric" data-currency="true"
@@ -258,8 +233,8 @@ function renderCategoryRows(cat, editMode) {
               onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
               onchange="updateCostItem(${item.id}, 'actual_amount', parseAmount(this.value)); recalcFinancials()">
           </td>
-          <td class="font-inter text-sm ${itemStatus.color}">${itemActual ? formatCurrency(itemDev) : '--'}</td>
-          <td class="font-inter text-sm ${itemStatus.color}">${itemActual ? formatPercent(itemDevPct) : '--'}</td>
+          <td class="font-inter text-sm text-right ltr ${itemStatus.color}">${itemActual ? formatCurrency(itemDev) : '--'}</td>
+          <td class="font-inter text-sm text-right ${itemStatus.color}">${itemActual ? formatPercent(itemDevPct) : '--'}</td>
           <td>
             <button class="btn btn-danger btn-sm" onclick="deleteCostItem(${item.id})">
               <span class="material-symbols-outlined text-sm">delete</span>
@@ -277,6 +252,36 @@ function renderCategoryRows(cat, editMode) {
       </tr>
     `;
   }
+
+  // Category summary row (placed BELOW the items it sums up)
+  html += `
+    <tr class="bg-gray-50 border-t border-gray-200" data-cat-id="${cat.id}">
+      <td class="font-bold text-sm text-primary">
+        ${editMode
+          ? `<input type="text" class="form-input text-sm font-bold text-primary" value="${cat.name}"
+              onchange="updateCategoryName(${cat.id}, this.value)">`
+          : cat.name}
+      </td>
+      <td class="font-inter font-bold text-sm text-left ltr" id="cat-planned-${cat.id}">${formatCurrency(catPlanned)}</td>
+      <td class="font-inter font-bold text-sm text-left ltr" id="cat-actual-${cat.id}">${formatCurrency(catActual)}</td>
+      <td class="font-inter font-bold text-sm text-right ltr ${catStatus.color}" id="cat-dev-${cat.id}">${formatCurrency(catDev)}</td>
+      <td class="font-inter text-sm text-right">
+        <span class="badge ${catStatus.class}" id="cat-badge-${cat.id}">${catPlanned > 0 ? catStatus.label + ' ' + formatPercent(catDevPct) : '--'}</span>
+      </td>
+      <td>
+        <div class="flex gap-1">
+          <button class="btn btn-secondary btn-sm" onclick="addCostItem(${cat.id})" title="הוסף פריט">
+            <span class="material-symbols-outlined text-sm">add</span>
+          </button>
+          ${!cat.is_default ? `
+            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          ` : ''}
+        </div>
+      </td>
+    </tr>
+  `;
 
   return html;
 }

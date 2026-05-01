@@ -48,27 +48,30 @@ function renderFundraisingTab(data) {
 
     <!-- Fundraising Settings -->
     <div class="card p-6 mb-6">
-      <h3 class="text-lg font-bold mb-4">הגדרות גיוס</h3>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold">הגדרות גיוס</h3>
+        <button class="btn btn-primary btn-sm" onclick="saveFundraisingSettings()">
+          <span class="material-symbols-outlined text-sm">save</span>
+          שמור שינויים
+        </button>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="form-label">יעד גיוס</label>
-          <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
+          <input id="fr-goal" type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
             value="${deal.fundraising_goal ? formatCurrency(deal.fundraising_goal) : ''}"
-            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-            onchange="saveDealField('fundraising_goal', parseAmount(this.value))">
+            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)">
         </div>
         <div>
           <label class="form-label">סכום מינימום להשקעה</label>
-          <input type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
+          <input id="fr-min" type="text" inputmode="numeric" data-currency="true" class="form-input ltr"
             value="${formatCurrency(minInvestment)}"
-            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
-            onchange="saveDealField('min_investment', parseAmount(this.value))">
+            onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)">
         </div>
         <div>
           <label class="form-label">תקרת תשואה למשקיע (%)</label>
-          <input type="number" step="0.1" min="0" max="100" class="form-input ltr" dir="ltr"
-            value="${deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20}"
-            onchange="saveDealField('investor_roi_cap_percent', parseFloat(this.value) || 0)">
+          <input id="fr-cap" type="number" step="0.1" min="0" max="100" class="form-input ltr" dir="ltr"
+            value="${deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20}">
           <div class="text-xs text-gray-400 mt-1">ברירת מחדל: 20%</div>
         </div>
       </div>
@@ -143,6 +146,28 @@ function renderFundraisingTab(data) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+async function saveFundraisingSettings() {
+  const goalInput = document.getElementById('fr-goal');
+  const minInput = document.getElementById('fr-min');
+  const capInput = document.getElementById('fr-cap');
+  if (!goalInput || !minInput || !capInput) return;
+
+  const payload = {
+    fundraising_goal: parseAmount(goalInput.value) || null,
+    min_investment: parseAmount(minInput.value) || null,
+    investor_roi_cap_percent: parseFloat(capInput.value) || 0
+  };
+
+  try {
+    await API.put(`/deals/${currentDeal.id}`, payload);
+    Object.assign(currentDeal, payload);
+    showToast('הגדרות הגיוס נשמרו');
+    reloadDeal(renderFundraisingTab);
+  } catch (err) {
+    showToast(`שגיאה בשמירה: ${err.message}`, 'error');
+  }
 }
 
 // ── Investor search autocomplete ──

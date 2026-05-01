@@ -208,7 +208,9 @@ router.get('/:id', async (req, res) => {
       renovationPlan,
       computed: (() => {
         const plannedProfit = expectedSalePrice - totalPlanned;
-        const actualProfit = totalActual > 0 ? (effectiveSalePrice - totalActual) : null;
+        // Actual figures are only meaningful once the deal closed — gate them on actualSalePrice > 0.
+        const dealClosed = actualSalePrice > 0;
+        const actualProfit = dealClosed ? (actualSalePrice - totalActual) : null;
         const investorCap = parseFloat(deal.investor_roi_cap_percent != null ? deal.investor_roi_cap_percent : 20);
         // Project ROI: profit / fundraising_goal × 100 (uncapped)
         const projectPlannedROI = fundraisingGoal > 0 ? (plannedProfit / fundraisingGoal * 100) : null;
@@ -216,16 +218,24 @@ router.get('/:id', async (req, res) => {
         // Investor ROI: same but capped
         const investorPlannedROI = projectPlannedROI != null ? Math.max(0, Math.min(investorCap, projectPlannedROI)) : null;
         const investorActualROI = projectActualROI != null ? Math.max(0, Math.min(investorCap, projectActualROI)) : null;
+        // Overrun = sum of per-item POSITIVE deviations only (actual exceeds planned).
+        // Negative deviations (under-spend) and items with no actual are ignored.
+        const totalOverrun = allItems.reduce((sum, it) => {
+          const a = parseFloat(it.actual_amount || 0);
+          if (!a) return sum;
+          const p = parseFloat(it.planned_amount || 0);
+          return sum + Math.max(0, a - p);
+        }, 0);
         return {
           totalPlanned,
           totalActual,
-          deviation: totalActual - totalPlanned,
-          deviationPercent: totalPlanned > 0 ? ((totalActual - totalPlanned) / totalPlanned * 100) : 0,
+          deviation: totalOverrun,
+          deviationPercent: totalPlanned > 0 ? (totalOverrun / totalPlanned * 100) : 0,
           plannedProfit,
           actualProfit,
           // Legacy cost-based ROI (kept for backwards compatibility with any other reader)
           plannedROI: totalPlanned > 0 ? ((expectedSalePrice - totalPlanned) / totalPlanned * 100) : 0,
-          actualROI: totalActual > 0 ? ((effectiveSalePrice - totalActual) / totalActual * 100) : null,
+          actualROI: dealClosed && totalActual > 0 ? ((actualSalePrice - totalActual) / totalActual * 100) : null,
           // New: project ROI (uncapped) + investor ROI (capped)
           projectPlannedROI,
           projectActualROI,

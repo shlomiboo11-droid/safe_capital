@@ -69,9 +69,9 @@ function renderEventCard(ev) {
           <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
           שכפל
         </button>
-        <button type="button" onclick="event.preventDefault();event.stopPropagation();publishEvent(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#374151;">
-          <span class="material-symbols-outlined" style="font-size:18px;">publish</span>
-          ${ev.is_active ? 'פורסם' : 'פרסם'}
+        <button type="button" onclick="event.preventDefault();event.stopPropagation();${ev.is_active ? 'unpublishEvent' : 'publishEvent'}(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#374151;">
+          <span class="material-symbols-outlined" style="font-size:18px;">${ev.is_active ? 'visibility_off' : 'publish'}</span>
+          ${ev.is_active ? 'הסתר מהאתר' : 'פרסם'}
         </button>
         <button type="button" onclick="event.preventDefault();event.stopPropagation();deleteEvent(${ev.id}, '${(title || '').replace(/'/g, "\\'")}');" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#b91c1c;">
           <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
@@ -160,6 +160,16 @@ async function publishEvent(id) {
     await loadEvents();
   } catch (err) {
     showToast('פרסום נכשל: ' + err.message, 'error');
+  }
+}
+
+async function unpublishEvent(id) {
+  try {
+    await API.post(`/events/${id}/deactivate`, {});
+    showToast('האירוע הוסר מהאתר. הנתונים נשמרו.', 'success');
+    await loadEvents();
+  } catch (err) {
+    showToast('הסרה נכשלה: ' + err.message, 'error');
   }
 }
 

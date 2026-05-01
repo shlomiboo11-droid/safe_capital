@@ -598,14 +598,18 @@ router.post('/:dealId/comps/fetch-zillow', async (req, res) => {
           const histData = await histResp.json();
           const history = histData.priceHistory || [];
 
-          // Find last "Sold" event and the "Listed for sale" before it
-          const soldEvent = history.find(h => h.event === 'Sold');
-          if (soldEvent) {
-            saleDate = soldEvent.date; // e.g. "2026-01-22"
+          // Sort newest first to ensure correct "most recent" lookups
+          const sortedHist = [...history].sort((a, b) => (b.time || 0) - (a.time || 0));
 
-            // Find the listing event before the sold event
+          // Most recent "Sold" event (the latest sale of the property)
+          const soldEvent = sortedHist.find(h => h.event === 'Sold');
+          if (soldEvent) {
+            saleDate = soldEvent.date;
             const soldTime = soldEvent.time;
-            const listingEvent = history.find(h =>
+
+            // Find the listing event closest in time BEFORE that specific sale
+            // (most recent listing prior to sold = the one that led to the sale)
+            const listingEvent = sortedHist.find(h =>
               (h.event === 'Listed for sale' || h.event === 'Listed (Active)') &&
               h.time < soldTime
             );

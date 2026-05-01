@@ -138,7 +138,6 @@ function renderCashflowTab(data) {
             <select name="funding_source" class="form-select text-sm" required>
               <option value="">-- בחר --</option>
               <option value="equity">הון עצמי</option>
-              <option value="loan">הלוואה</option>
               <option value="sale">הכנסת מכירה</option>
               <option value="other">אחר</option>
             </select>
