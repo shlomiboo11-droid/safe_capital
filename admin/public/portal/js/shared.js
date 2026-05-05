@@ -117,9 +117,9 @@ function buildFooter() {
       <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm" style="color: #43474e;">
         <span>&copy; Safe Capital 2026. כל הזכויות שמורות.</span>
         <div class="flex items-center gap-4">
-          <a href="https://wa.me/972544594947" target="_blank" class="hover:underline" style="color: #25D366;">WhatsApp</a>
+          <a href="https://wa.me/972547828550" target="_blank" class="hover:underline" style="color: #25D366;">WhatsApp</a>
           <a href="mailto:info@safecapital.co.il" class="hover:underline">info@safecapital.co.il</a>
-          <a href="tel:+972544594947" class="hover:underline">054-459-4947</a>
+          <a href="tel:+972547828550" class="hover:underline">054-782-8550</a>
         </div>
       </div>
       <div class="text-center text-xs px-4 pb-4" style="color: #74777f;">

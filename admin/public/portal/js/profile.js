@@ -68,7 +68,7 @@ function renderProfile(data) {
         <div>
           <p class="text-sm font-medium mb-2" style="color: #0c4a6e;">\u05DC\u05E2\u05D3\u05DB\u05D5\u05DF \u05E4\u05E8\u05D8\u05D9\u05DD \u05D0\u05D9\u05E9\u05D9\u05D9\u05DD, \u05E6\u05E8\u05D5 \u05E7\u05E9\u05E8 \u05E2\u05DD \u05D4\u05E6\u05D5\u05D5\u05EA</p>
           <div class="flex flex-wrap gap-3">
-            <a href="https://wa.me/972544594947" target="_blank" class="inline-flex items-center gap-1 text-sm font-semibold" style="color: #25D366;">
+            <a href="https://wa.me/972547828550" target="_blank" class="inline-flex items-center gap-1 text-sm font-semibold" style="color: #25D366;">
               <span class="material-symbols-outlined text-base">chat</span>
               WhatsApp
             </a>
