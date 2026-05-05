@@ -483,6 +483,9 @@ function renderCollapsedTimeline(propertyStatus, bottomText, isMobileView) {
 
 function renderCTA(ctaConfig, isExpandable) {
   if (!ctaConfig) return '';
+  // No CTA on cards that can't be expanded (e.g. home-page card —
+  // a single page-level "צפו בכל העסקאות" button serves as the CTA).
+  if (!isExpandable) return '';
   const arrowIcon = ctaConfig.style === 'text-only'
     ? '<span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">arrow_back</span>'
     : '';
@@ -566,10 +569,16 @@ function renderMobileDealCard(deal, index) {
     ? `<img alt="${deal.name}" class="w-full h-full object-cover rounded-2xl" style="height:220px" src="${thumbSrc}" loading="lazy"/>`
     : `<div class="w-full bg-[#f5f3f0] rounded-2xl" style="height:220px"></div>`;
 
+  const headerClickClass = isExpandable ? ' cursor-pointer' : '';
+  // No bottom CTA wrapper if there's no CTA (avoids stray padding)
+  const ctaWrapperHtml = ctaHtml
+    ? `<div class="px-4 pb-4 pt-0 w-full">${ctaHtml}</div>`
+    : '';
+
   return `
     <article class="deal-card-v2 bg-white rounded-2xl overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)]">
       ${accentStripHtml}
-      <div class="deal-header cursor-pointer">
+      <div class="deal-header${headerClickClass}">
         <div class="p-3 relative">
           ${imageHtml}
           <div class="absolute top-6 right-6 flex flex-col gap-2 items-start">${badgeHtml}${secondaryBadgeHtml}</div>
@@ -584,9 +593,7 @@ function renderMobileDealCard(deal, index) {
         </div>
       </div>
       ${expandedHtml}
-      <div class="px-4 pb-4 pt-0 w-full">
-        ${ctaHtml}
-      </div>
+      ${ctaWrapperHtml}
     </article>`;
 }
 
@@ -883,7 +890,7 @@ function renderWhatsAppCTASection() {
         <p class="t-body-lg text-white/90 leading-relaxed mb-6">
           מעוניינים להשקיע בעסקה הזו? רוצים לדעת מתי כנס המשקיעים הבא?
         </p>
-        <a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
+        <a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
            class="inline-block bg-whatsapp text-white px-8 py-4 rounded-2xl font-bold t-body-lg hover:opacity-90 active:scale-95 transition-all">
           <span class="flex items-center gap-3 justify-center">
             <span>לחצו כאן כדי להצטרף לקבוצת הווצאפ שלנו</span>
@@ -1619,7 +1626,7 @@ function renderDealCard(deal, index) {
   const subtitle = locationSubtitle(deal);
 
   const stickyCtaHtml = isExpandable
-    ? `<a href="https://chat.whatsapp.com/" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
+    ? `<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer"
          class="deal-sticky-cta" aria-label="הצטרפות לקבוצת הווצאפ">
          <span class="material-symbols-outlined" data-weight="fill">chat</span>
          <span>מעוניינים? הצטרפו לקבוצה</span>
@@ -1638,10 +1645,12 @@ function renderDealCard(deal, index) {
     ? `<span class="deal-arrow material-symbols-outlined" style="color:#022445;font-size:1.5rem">expand_more</span>`
     : '';
 
+  const headerClickClass = isExpandable ? ' cursor-pointer' : '';
+
   return `
     <div class="deal-card-v2 bg-surface-container-lowest rounded-[1rem] overflow-hidden shadow-[0px_8px_24px_rgba(2,36,69,0.04)] transition-all">
       ${accentStripHtml}
-      <div class="deal-header p-4 md:p-6 cursor-pointer">
+      <div class="deal-header p-4 md:p-6${headerClickClass}">
         <div class="flex flex-row items-center gap-6 w-full">
           <!-- Zone A: thumbnail + badge + title (30%) -->
           <div class="flex items-center gap-4 min-w-0" style="width:30%">

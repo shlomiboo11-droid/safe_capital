@@ -1437,10 +1437,13 @@ body.in-body { background: #fbf9f6; }
 @media (max-width: 1023px) {
 
   /* Reserve space for floating sticky CTA — only on pages that have one
-     (the registration form). The thank-you page has no sticky CTA, so the
-     padding would just be empty white space below the footer. */
+     (the registration form). The thank-you page, loading state, and
+     no-event fallback have no sticky CTA, so the padding would just be
+     empty white space below the footer. */
   body.in-body { padding-bottom: 80px; }
-  body.in-body:has(.in-ty-wrap) { padding-bottom: 0; }
+  body.in-body:has(.in-ty-wrap),
+  body.in-body:has(#in-loading:not([style*="display: none"])),
+  body.in-body:has(#in-no-event:not([style*="display: none"])) { padding-bottom: 0; }
 
   /* Show mobile-only elements */
   .in-cta-inline { display: flex; }
