@@ -89,6 +89,12 @@ app.use('/api/settings', require('./routes/settings'));
 app.use('/api/investors', require('./routes/investors'));
 app.use('/api/content', require('./routes/content'));
 app.use('/api/events', require('./routes/events'));
+const whatsappRoutes = require('./routes/whatsapp');
+// SSE channel is registered first so it doesn't pick up the body-parser auth middleware.
+if (whatsappRoutes.sseRouter) {
+  app.use('/api/whatsapp', whatsappRoutes.sseRouter);
+}
+app.use('/api/whatsapp', whatsappRoutes);
 
 // Portal routes (investor-facing, separate auth)
 const portalRouter = require('./routes/portal');
@@ -139,6 +145,7 @@ app.get('*', (req, res) => {
     '/content-agents': 'content-agents.html',
     '/events': 'events.html',
     '/event': 'event.html',
+    '/whatsapp-updates': 'whatsapp-updates.html',
   };
 
   for (const [prefix, file] of Object.entries(htmlFiles)) {

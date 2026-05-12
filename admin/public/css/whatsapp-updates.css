@@ -1,0 +1,1714 @@
+/* Safe Capital Admin — WhatsApp Updates page
+   All styles scoped with .wa-* prefix. Uses brand tokens:
+   Navy #022445, Maroon #984349, Background #fbf9f6, Surface #ffffff, Body #43474e
+   No 1px borders, no heavy shadows (per project rules). */
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+.wa-main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.wa-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.wa-topbar-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.wa-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #022445;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50vw;
+}
+
+.wa-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #f5f3f0;
+  color: #43474e;
+}
+
+.wa-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #b8b4ae;
+}
+
+.wa-status-chip[data-status="researching"] .wa-status-dot { background: #c69b3a; animation: wa-pulse 1.5s ease-in-out infinite; }
+.wa-status-chip[data-status="research_review"] .wa-status-dot { background: #c69b3a; }
+.wa-status-chip[data-status="writing"] .wa-status-dot { background: #5a8fbf; animation: wa-pulse 1.5s ease-in-out infinite; }
+.wa-status-chip[data-status="done"] .wa-status-dot { background: #6b9f6e; }
+
+@keyframes wa-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.wa-topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.wa-btn-sm {
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.875rem;
+}
+
+/* ── Workspace (chat column + research panel) ──────────────────── */
+.wa-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+}
+
+.wa-chat-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ── Chat area ──────────────────────────────────────────────────── */
+.wa-chat-area {
+  flex: 1;
+  overflow-y: auto;
+  background: #fbf9f6;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.wa-empty-state {
+  margin: auto;
+  text-align: center;
+  max-width: 420px;
+  padding: 2rem;
+}
+
+.wa-empty-icon {
+  font-size: 72px;
+  color: #c9c5be;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.wa-empty-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #022445;
+  margin: 0 0 0.5rem;
+}
+
+.wa-empty-text {
+  color: #74777f;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+/* ── Messages ───────────────────────────────────────────────────── */
+.wa-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wa-msg {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  animation: wa-fade-in 0.25s ease-out;
+}
+
+@keyframes wa-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wa-msg-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #1b1b1f;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.wa-msg-meta {
+  font-size: 0.6875rem;
+  color: #9d9994;
+  margin-top: 0.25rem;
+  padding: 0 0.5rem;
+}
+
+/* Assistant: flush right (RTL) */
+.wa-msg-assistant {
+  align-self: flex-end;
+}
+.wa-msg-assistant .wa-msg-bubble {
+  background: #ffffff;
+  border-bottom-right-radius: 0.25rem;
+}
+.wa-msg-assistant .wa-msg-meta {
+  text-align: right;
+}
+
+/* User: flush left (RTL) */
+.wa-msg-user {
+  align-self: flex-start;
+}
+.wa-msg-user .wa-msg-bubble {
+  background: #022445;
+  color: #ffffff;
+  border-bottom-left-radius: 0.25rem;
+}
+.wa-msg-user .wa-msg-meta {
+  text-align: left;
+}
+
+/* System (rare, faded) */
+.wa-msg-system {
+  align-self: center;
+  max-width: 100%;
+}
+.wa-msg-system .wa-msg-bubble {
+  background: transparent;
+  color: #74777f;
+  font-size: 0.8125rem;
+  text-align: center;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Typing indicator */
+.wa-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.125rem;
+}
+.wa-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #74777f;
+  animation: wa-typing-bounce 1.2s ease-in-out infinite;
+}
+.wa-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.wa-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes wa-typing-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── Composer ───────────────────────────────────────────────────── */
+.wa-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.wa-composer-input {
+  flex: 1;
+  resize: none;
+  border: none;
+  background: #f5f3f0;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  max-height: 180px;
+  min-height: 44px;
+  color: #1b1b1f;
+  outline: none;
+  transition: background 0.15s;
+}
+.wa-composer-input:focus {
+  background: #eeeae5;
+}
+
+.wa-composer-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #022445;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+/* Material 'send' points right by default (LTR forward). Flip for RTL. */
+.wa-composer-send .material-symbols-outlined,
+.wa-popover-send .material-symbols-outlined {
+  transform: scaleX(-1);
+}
+.wa-composer-send:hover:not(:disabled) {
+  background: #033560;
+}
+.wa-composer-send:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.wa-composer-send:disabled {
+  background: #c9c5be;
+  cursor: not-allowed;
+}
+
+/* ── Modal / Bottom sheet ──────────────────────────────────────── */
+.wa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 36, 69, 0.45);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: wa-overlay-in 0.2s ease-out;
+}
+.wa-modal-overlay.hidden { display: none; }
+
+@keyframes wa-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.wa-modal {
+  background: #ffffff;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: wa-modal-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wa-modal-wide {
+  max-width: 640px;
+}
+
+@keyframes wa-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wa-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 0.75rem;
+}
+
+.wa-modal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #022445;
+  margin: 0;
+}
+
+.wa-modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #74777f;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  transition: background 0.15s, color 0.15s;
+}
+.wa-modal-close:hover {
+  background: #f5f3f0;
+  color: #022445;
+}
+
+.wa-modal-subtitle {
+  color: #74777f;
+  font-size: 0.875rem;
+  margin: 0 0 1.25rem;
+}
+
+.wa-modal-body {
+  padding: 0.5rem 1.5rem 1.25rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px); /* leaves room for header (~60) + footer (~80) */
+}
+
+.wa-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #fbf9f6;
+}
+
+/* ── Form fields ────────────────────────────────────────────────── */
+.wa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.wa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Chip groups (segmented controls) ──────────────────────────── */
+.wa-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wa-chip {
+  flex: 1;
+  min-width: 0;
+  padding: 0.625rem 0.875rem;
+  background: #f5f3f0;
+  color: #43474e;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  text-align: center;
+  font-family: inherit;
+}
+.wa-chip:hover {
+  background: #eeeae5;
+}
+.wa-chip:active {
+  transform: scale(0.97);
+}
+.wa-chip.active {
+  background: #022445;
+  color: #ffffff;
+}
+
+.wa-chip-group-depth .wa-chip {
+  text-align: right;
+  padding: 0.875rem 1rem;
+}
+.wa-chip-title {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  margin-bottom: 0.125rem;
+}
+.wa-chip-meta {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+/* Editorial direction textareas (Phase 4 — writing config) */
+.wa-editorial-textarea {
+  resize: vertical;
+  min-height: 64px;
+  line-height: 1.6;
+  font-family: inherit;
+  white-space: pre-wrap;
+}
+.wa-field-hint {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+  color: #74777f;
+  line-height: 1.45;
+}
+
+/* Topic textarea + auto-topic checkbox */
+.wa-topic-textarea {
+  resize: vertical;
+  min-height: 92px;
+  line-height: 1.55;
+  font-family: inherit;
+}
+.wa-topic-textarea:disabled {
+  background: #eeeae5;
+  color: #9d9994;
+  cursor: not-allowed;
+}
+
+.wa-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #f5f3f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wa-checkbox-row:hover {
+  background: #eeeae5;
+}
+.wa-checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #022445;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.wa-checkbox-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.wa-checkbox-title {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: #1b1b1f;
+}
+.wa-checkbox-help {
+  font-size: 0.8125rem;
+  color: #74777f;
+  line-height: 1.4;
+}
+
+/* ── Sessions list ──────────────────────────────────────────────── */
+.wa-sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wa-sessions-empty {
+  text-align: center;
+  color: #74777f;
+  padding: 2rem 1rem;
+  font-size: 0.875rem;
+}
+
+.wa-session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  background: #f5f3f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wa-session-item:hover {
+  background: #eeeae5;
+}
+.wa-session-item-main {
+  flex: 1;
+  min-width: 0;
+}
+.wa-session-item-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #022445;
+  margin-bottom: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wa-session-item-meta {
+  font-size: 0.75rem;
+  color: #74777f;
+}
+.wa-session-item-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+.wa-session-action {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: #43474e;
+  transition: background 0.15s, color 0.15s;
+}
+.wa-session-action:hover {
+  background: #ffffff;
+  color: #022445;
+}
+.wa-session-action .material-symbols-outlined { font-size: 18px; }
+.wa-session-action-danger:hover { color: #984349; }
+
+/* Search field inside sessions modal */
+.wa-sessions-search-row {
+  position: relative;
+  margin-bottom: 0.875rem;
+}
+.wa-search-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #9d9994;
+  pointer-events: none;
+}
+.wa-sessions-search-input {
+  width: 100%;
+  padding: 0.625rem 2.25rem 0.625rem 0.875rem;
+  background: #f5f3f0;
+  border: none;
+  border-radius: 0.625rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: #1b1b1f;
+  outline: none;
+  transition: background 0.15s;
+}
+.wa-sessions-search-input:focus {
+  background: #eeeae5;
+}
+
+/* Hide topbar action buttons when not relevant (e.g. Drive sync w/o session).
+   NOTE: do NOT make this a global rule — .wa-research-panel.wa-hidden and
+   .wa-selection-popover.wa-hidden override behaviour per-element above. */
+.wa-topbar-actions .wa-hidden {
+  display: none !important;
+}
+
+/* ── Topic discovery bubble (auto-topic flow) ──────────────────── */
+.wa-discovery-bubble {
+  max-width: 100%;
+  width: 100%;
+}
+.wa-msg-discovery {
+  background: #ffffff;
+  padding: 1rem 1.125rem;
+  border-bottom-right-radius: 0.25rem;
+  max-width: 720px;
+}
+.wa-discovery-title {
+  font-size: 0.9375rem;
+  color: #43474e;
+  margin-bottom: 0.875rem;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.wa-discovery-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem;
+  background: #f5f3f0;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  color: #74777f;
+}
+
+.wa-topic-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.875rem;
+}
+.wa-topic-card {
+  text-align: right;
+  padding: 0.875rem 1rem;
+  background: #f5f3f0;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.wa-topic-card:hover {
+  background: #eeeae5;
+}
+.wa-topic-card.active {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px #022445;
+}
+.wa-topic-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.wa-topic-category {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #43474e;
+  padding: 0.125rem 0.5rem;
+  background: #ffffff;
+  border-radius: 999px;
+}
+.wa-topic-card.active .wa-topic-category {
+  background: #f5f3f0;
+}
+.wa-topic-card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #022445;
+  line-height: 1.4;
+}
+.wa-topic-card-desc {
+  font-size: 0.8125rem;
+  color: #43474e;
+  line-height: 1.5;
+}
+
+/* Topic-expansion — appears inline INSIDE the selected card. Separation
+   from the card content is via spacing only, no 1px border line. */
+.wa-topic-expansion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.625rem;
+  background: #fbf9f6;
+  border-radius: 0.5rem;
+  cursor: default;
+  animation: wa-expansion-in 0.18s ease-out;
+}
+@keyframes wa-expansion-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Focus notes section (revealed once a topic is picked) */
+.wa-focus-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  background: #fbf9f6;
+  border-radius: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+.wa-focus-box.wa-hidden {
+  display: none;
+}
+.wa-focus-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #43474e;
+  margin-bottom: 0.125rem;
+}
+.wa-focus-label-secondary {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #74777f;
+  font-weight: 400;
+}
+.wa-focus-textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 64px;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #1b1b1f;
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+.wa-focus-textarea:focus {
+  box-shadow: inset 0 0 0 2px #022445;
+}
+.wa-focus-custom-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: #1b1b1f;
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+.wa-focus-custom-input:focus {
+  box-shadow: inset 0 0 0 2px #022445;
+}
+
+.wa-focus-confirm {
+  width: 100%;
+  padding: 0.5rem 1.125rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  white-space: nowrap;       /* prevent 2-line wrap that inflates height */
+  min-height: 38px;          /* compact-but-stable on desktop */
+}
+.wa-focus-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.wa-focus-confirm .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* ── Queries bubble (Phase 2) ───────────────────────────────────── */
+.wa-queries-bubble {
+  max-width: 100%;
+  width: 100%;
+}
+.wa-msg-queries {
+  background: #ffffff;
+  padding: 1rem 1.125rem;
+  border-bottom-right-radius: 0.25rem;
+  max-width: 720px;
+}
+.wa-queries-title {
+  font-size: 0.9375rem;
+  color: #43474e;
+  margin-bottom: 0.875rem;
+  line-height: 1.55;
+}
+.wa-queries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.wa-query-row {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+  padding: 0.625rem 0.75rem;
+  background: #f5f3f0;
+  border-radius: 0.75rem;
+  transition: background 0.15s;
+}
+.wa-query-row:hover {
+  background: #eeeae5;
+}
+.wa-query-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  accent-color: #022445;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.wa-query-body {
+  flex: 1;
+  min-width: 0;
+}
+.wa-query-text {
+  font-size: 0.9375rem;
+  color: #1b1b1f;
+  line-height: 1.5;
+  outline: none;
+  word-break: break-word;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.375rem;
+  cursor: text;
+  min-height: 1.5em;
+}
+.wa-query-text:focus {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px #022445;
+}
+.wa-query-text:empty:before {
+  content: 'כתוב כאן את שאלת המחקר…';
+  color: #b8b4ae;
+}
+.wa-query-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+.wa-query-lang {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  background: #ffffff;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  color: #43474e;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.wa-query-lang:hover { background: #f5f3f0; }
+.wa-query-rationale {
+  font-size: 0.75rem;
+  color: #74777f;
+  line-height: 1.4;
+}
+.wa-query-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9d9994;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.wa-query-remove:hover {
+  background: #ffffff;
+  color: #984349;
+}
+.wa-query-remove .material-symbols-outlined {
+  font-size: 18px;
+}
+.wa-queries-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.875rem;
+  padding-top: 0.875rem;
+  flex-wrap: wrap;
+}
+.wa-queries-add {
+  background: transparent;
+  border: none;
+  color: #022445;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  transition: background 0.15s;
+}
+.wa-queries-add:hover { background: #f5f3f0; }
+.wa-queries-add .material-symbols-outlined { font-size: 18px; }
+
+.wa-queries-run {
+  font-size: 0.875rem;
+}
+.wa-queries-run .material-symbols-outlined { font-size: 18px; }
+.wa-queries-run:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Summary bubble (Phase 2 final) ─────────────────────────────── */
+.wa-summary-bubble {
+  max-width: 100%;
+  width: 100%;
+}
+.wa-msg-summary {
+  background: #ffffff;
+  padding: 1rem 1.125rem;
+  border-bottom-right-radius: 0.25rem;
+  max-width: 720px;
+}
+.wa-summary-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #022445;
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.5rem;
+}
+.wa-summary-body {
+  font-size: 0.9375rem;
+  color: #1b1b1f;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+}
+.wa-summary-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.wa-summary-actions .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  min-height: 38px;
+  white-space: nowrap;
+}
+.wa-summary-actions .material-symbols-outlined { font-size: 16px; }
+
+/* Typing label */
+.wa-typing-label {
+  font-size: 0.8125rem;
+  color: #74777f;
+  margin-right: 0.375rem;
+}
+
+/* ── Research side panel (desktop) ─────────────────────────────── */
+.wa-research-panel {
+  width: 320px;
+  flex-shrink: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s;
+}
+.wa-research-panel.wa-hidden {
+  width: 0;
+  overflow: hidden;
+}
+.wa-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.125rem;
+  flex-shrink: 0;
+}
+.wa-panel-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #43474e;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.wa-panel-title[data-state="running"]::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c69b3a;
+  animation: wa-pulse 1.5s ease-in-out infinite;
+}
+.wa-panel-title[data-state="done"]::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #6b9f6e;
+}
+.wa-panel-stats {
+  display: flex;
+  gap: 0.625rem;
+}
+.wa-panel-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #43474e;
+}
+.wa-panel-stat .material-symbols-outlined {
+  font-size: 14px;
+  color: #9d9994;
+}
+.wa-panel-findings {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1.125rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.wa-panel-empty {
+  font-size: 0.8125rem;
+  color: #9d9994;
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+.wa-finding-item {
+  padding: 0.625rem 0.75rem;
+  background: #f5f3f0;
+  border-radius: 0.625rem;
+}
+.wa-finding-head {
+  margin-bottom: 0.375rem;
+}
+.wa-finding-source {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #022445;
+  text-decoration: none;
+}
+.wa-finding-source:hover { text-decoration: underline; }
+.wa-finding-source-none {
+  color: #74777f;
+  font-style: italic;
+}
+.wa-finding-note {
+  font-size: 0.8125rem;
+  color: #43474e;
+  line-height: 1.5;
+}
+
+/* ── Selection popover (Phase 3) ───────────────────────────────── */
+.wa-selection-popover {
+  position: absolute;
+  z-index: 200;
+  background: #ffffff;
+  border-radius: 0.875rem;
+  padding: 0.5rem;
+  width: 320px;
+  max-width: calc(100vw - 16px);
+  box-shadow: 0 8px 24px rgba(2, 36, 69, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.wa-selection-popover.wa-hidden {
+  display: none;
+}
+
+.wa-popover-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+}
+.wa-popover-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.5rem 0.25rem;
+  background: #f5f3f0;
+  border: none;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  font-family: inherit;
+  color: #022445;
+  transition: background 0.15s;
+  text-align: center;
+}
+.wa-popover-action:hover {
+  background: #eeeae5;
+}
+.wa-popover-action .material-symbols-outlined {
+  font-size: 18px;
+  color: #022445;
+}
+.wa-popover-action-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.wa-popover-input-row {
+  display: flex;
+  gap: 0.375rem;
+}
+.wa-popover-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: #f5f3f0;
+  border: none;
+  border-radius: 0.625rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: #1b1b1f;
+  outline: none;
+  min-width: 0;
+  transition: background 0.15s;
+}
+.wa-popover-input:focus {
+  background: #eeeae5;
+}
+.wa-popover-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: #022445;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.wa-popover-send:hover { background: #033560; }
+.wa-popover-send .material-symbols-outlined { font-size: 18px; }
+
+.wa-popover-busy {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  background: #f5f3f0;
+  border-radius: 0.625rem;
+  font-size: 0.8125rem;
+  color: #74777f;
+}
+.wa-popover-busy.wa-hidden { display: none; }
+
+/* Inline diff block in the summary body */
+.wa-diff-block {
+  display: inline;
+  margin: 0 0.125rem;
+  padding: 0.125rem 0.25rem;
+  background: #fdf4e7;
+  border-radius: 0.375rem;
+}
+.wa-diff-old {
+  color: #984349;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  margin-left: 0.25rem;
+}
+.wa-diff-new {
+  color: #166534;
+  font-weight: 500;
+}
+.wa-diff-deleted-mark {
+  color: #984349;
+  font-style: italic;
+  font-size: 0.875em;
+}
+.wa-diff-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+.wa-diff-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.wa-diff-btn .material-symbols-outlined { font-size: 14px; }
+.wa-diff-accept { background: #166534; color: #ffffff; }
+.wa-diff-accept:hover { background: #14532d; }
+.wa-diff-reject { background: #984349; color: #ffffff; }
+.wa-diff-reject:hover { background: #7b2d33; }
+
+/* Markdown rendering (used by summary + findings) */
+.wa-md-heading {
+  margin: 0.75rem 0 0.375rem;
+  color: #022445;
+  line-height: 1.4;
+}
+.wa-md-h1 { font-size: 1.0625rem; }
+.wa-md-h2 { font-size: 1rem; }
+.wa-md-h3 { font-size: 0.9375rem; }
+.wa-md-heading:first-child { margin-top: 0; }
+.wa-md-li {
+  margin: 0.25rem 0;
+  padding-right: 0.25rem;
+  line-height: 1.55;
+}
+
+/* Summary hint + editing mode */
+.wa-summary-hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #9d9994;
+}
+.wa-summary-editing {
+  background: #ffffff;
+  outline: none;
+  box-shadow: inset 0 0 0 2px #022445;
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  cursor: text;
+}
+
+/* Stop research button (inline in typing bubble) */
+.wa-stop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.75rem;
+  padding: 0.25rem 0.625rem;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #984349;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wa-stop-btn:hover { background: #fbeaea; }
+.wa-stop-btn .material-symbols-outlined { font-size: 14px; }
+.wa-stop-btn:disabled { opacity: 0.6; cursor: wait; }
+
+/* ── Post bubble (Phase 4) ──────────────────────────────────────── */
+.wa-post-bubble {
+  max-width: 100%;
+  width: 100%;
+}
+.wa-msg-post {
+  background: #ffffff;
+  padding: 1rem 1.125rem;
+  border-bottom-right-radius: 0.25rem;
+  max-width: 720px;
+}
+
+/* Length tabs */
+.wa-length-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.875rem;
+  background: #f5f3f0;
+  padding: 0.25rem;
+  border-radius: 0.625rem;
+}
+.wa-length-tab {
+  flex: 1;
+  padding: 0.5rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #43474e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.wa-length-tab:hover {
+  background: #eeeae5;
+}
+.wa-length-tab.active {
+  background: #ffffff;
+  color: #022445;
+  font-weight: 600;
+}
+
+/* Word count meter */
+.wa-word-meter {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.wa-meter-count {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.wa-meter-target {
+  font-size: 0.75rem;
+  color: #74777f;
+}
+.wa-meter-good { background: #ecf6ee; }
+.wa-meter-good .wa-meter-count { color: #166534; }
+.wa-meter-warn { background: #fdf4e7; }
+.wa-meter-warn .wa-meter-count { color: #c69b3a; }
+.wa-meter-bad  { background: #fbeaea; }
+.wa-meter-bad  .wa-meter-count { color: #984349; }
+.wa-meter-neutral { background: #f5f3f0; }
+.wa-meter-neutral .wa-meter-count { color: #43474e; }
+
+/* Post body */
+.wa-post-body {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #1b1b1f;
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+  padding: 0.625rem;
+  background: #fbf9f6;
+  border-radius: 0.625rem;
+  font-family: 'Heebo', sans-serif;
+}
+.wa-post-body strong {
+  font-weight: 700;
+  color: #022445;
+}
+.wa-post-editing {
+  background: #ffffff;
+  outline: none;
+  box-shadow: inset 0 0 0 2px #022445;
+  cursor: text;
+}
+
+/* Quick actions row */
+.wa-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.375rem;
+  margin-bottom: 0.875rem;
+}
+.wa-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.4375rem 0.625rem;
+  min-height: 34px;
+  background: #f5f3f0;
+  color: #022445;
+  border: none;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wa-quick-btn:hover { background: #eeeae5; }
+.wa-quick-btn:disabled { opacity: 0.6; cursor: wait; }
+.wa-quick-btn .material-symbols-outlined { font-size: 16px; }
+.wa-quick-label { white-space: nowrap; }
+
+/* Bottom actions — 5 buttons, must stay compact on desktop */
+.wa-post-actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+.wa-post-actions .btn {
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  min-height: 36px;
+  white-space: nowrap;
+}
+.wa-post-actions .material-symbols-outlined { font-size: 16px; }
+
+/* ── Responsive (mobile) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .wa-main {
+    margin-right: 0;
+    height: 100vh;
+    height: 100dvh;
+  }
+  .wa-topbar {
+    /* Hamburger removed on mobile (swipe-to-open replaces it). Normal padding. */
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  /* Hide hamburger on this page — sidebar is opened by edge-swipe (see index.js). */
+  #sidebarToggle {
+    display: none;
+  }
+
+  /* Edge affordance — a subtle 3px vertical handle at the right edge of the
+     screen that signals "there's something to drag here". Disappears once
+     the sidebar is open. Pure CSS, no JS. */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: 3px;
+    height: 48px;
+    transform: translateY(-50%);
+    background: #022445;
+    opacity: 0.18;
+    border-radius: 3px 0 0 3px;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 30;
+  }
+  body.wa-sidebar-open::before {
+    opacity: 0;
+    transform: translateY(-50%) translateX(8px);
+  }
+
+  /* Backdrop for the open sidebar — tap-to-close + visual signal. */
+  .wa-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 36, 69, 0.4);
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  body.wa-sidebar-open .wa-sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .wa-topbar-info {
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .wa-topbar-actions {
+    gap: 0.25rem;
+  }
+  .wa-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    max-width: 50vw;
+  }
+  .wa-status-chip {
+    font-size: 0.6875rem;
+    padding: 0.1875rem 0.5rem;
+    gap: 0.375rem;
+  }
+  .wa-status-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .wa-hide-mobile { display: none; }
+
+  /* Topbar buttons — keep 44×44 touch target (Apple HIG), but make the
+     non-primary actions visually light: transparent ghost, no block weight,
+     20px icon instead of 24. The "+" (new-session) primary stays filled. */
+  .wa-topbar-actions .wa-btn-sm {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 0.75rem;
+  }
+  .wa-topbar-actions .wa-btn-sm.btn-secondary {
+    background: transparent;
+    color: #43474e;
+    box-shadow: none;
+  }
+  .wa-topbar-actions .wa-btn-sm.btn-secondary:hover,
+  .wa-topbar-actions .wa-btn-sm.btn-secondary:active {
+    background: #f5f3f0;
+    color: #022445;
+  }
+  .wa-topbar-actions .wa-btn-sm .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  /* Sidebar hamburger toggle — page-scoped tightening of the dashboard default.
+     Keeps the 44pt touch target (44×44 effective) but trims visual padding
+     so it doesn't feel chunkier than the topbar action buttons.
+     Position is set in dashboard.css's mobile @media block (top-LEFT). */
+  #sidebarToggle {
+    top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+  }
+  #sidebarToggle .material-symbols-outlined {
+    font-size: 22px;
+  }
+  .wa-chat-area {
+    padding: 1rem;
+  }
+  .wa-msg {
+    max-width: 90%;
+  }
+  .wa-composer {
+    padding: 0.75rem 1rem;
+    position: sticky;
+    bottom: 0;
+  }
+
+  /* Modal becomes bottom sheet */
+  .wa-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .wa-modal {
+    border-radius: 1.25rem 1.25rem 0 0;
+    max-width: 100%;
+    max-height: 92vh;
+    animation: wa-sheet-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes wa-sheet-in {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .wa-modal-footer {
+    padding: 0.875rem 1rem 1.25rem; /* extra bottom padding for home indicator */
+  }
+  .wa-chip-group {
+    flex-direction: column;
+  }
+  .wa-chip {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    min-height: 44px;
+  }
+
+  /* Research panel collapses below the chat on mobile.
+     Toggle UI for showing it will come in Phase 5. For now it's hidden. */
+  .wa-workspace {
+    flex-direction: column;
+  }
+  .wa-research-panel {
+    width: 100%;
+    max-height: 40vh;
+  }
+  .wa-research-panel.wa-hidden {
+    max-height: 0;
+    width: 100%;
+  }
+  .wa-queries-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Selection popover → bottom sheet on mobile */
+  .wa-selection-popover {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 1.25rem 1.25rem 0 0;
+    padding: 1rem 1rem 1.25rem;
+    box-shadow: 0 -6px 24px rgba(2, 36, 69, 0.18);
+    animation: wa-sheet-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .wa-popover-actions {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.375rem;
+  }
+  .wa-popover-action {
+    padding: 0.75rem 0.25rem;
+    min-height: 60px;
+  }
+  .wa-popover-action .material-symbols-outlined { font-size: 22px; }
+  .wa-popover-action-label { font-size: 0.75rem; }
+  .wa-popover-input { min-height: 44px; }
+  .wa-popover-send { width: 44px; height: 44px; }
+
+  /* Phase 4 — mobile post bubble */
+  .wa-quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .wa-quick-btn {
+    min-height: 44px;
+    font-size: 0.875rem;        /* 14px — comfortable on small screen */
+  }
+  .wa-post-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wa-post-actions .btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 0.875rem;
+    white-space: normal;        /* allow wrap on mobile if a label is long */
+  }
+
+  /* Primary CTAs on mobile — bigger and more reachable */
+  .wa-focus-confirm,
+  .wa-summary-actions .btn {
+    min-height: 48px;
+    font-size: 0.9375rem;       /* 15px — Apple HIG primary action sweet spot */
+    padding: 0.625rem 1rem;
+  }
+  .wa-summary-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wa-summary-actions .btn {
+    width: 100%;
+  }
+
+  /* Phase 5 — enforce 44px touch targets on tappable elements on mobile.
+     Topbar buttons are handled separately above with a ghost-icon treatment
+     at 40px (still above the Apple HIG 44pt floor when combined with their
+     surrounding tap padding). */
+  .wa-modal-close,
+  .wa-query-remove,
+  .wa-diff-btn,
+  .wa-stop-btn,
+  .wa-quick-btn,
+  .wa-length-tab,
+  .wa-query-checkbox,
+  .wa-checkbox-row input[type="checkbox"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .wa-query-checkbox,
+  .wa-checkbox-row input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+  .wa-diff-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+
+  /* Composer — sticky bottom; iOS safe-area inset to clear the home indicator.
+     Extra 0.5rem so the text-input doesn't kiss the screen edge. */
+  .wa-composer {
+    position: sticky;
+    bottom: 0;
+    padding-top: 0.75rem;
+    padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+    transition: transform 0.15s ease-out;
+    z-index: 5;
+  }
+
+  /* Primary CTA — was too heavy on mobile. Back to 44px / 14px, more honest. */
+  .wa-focus-confirm,
+  .wa-summary-actions .btn {
+    min-height: 44px;
+    font-size: 0.875rem;       /* 14px */
+    padding: 0.5rem 0.875rem;
+  }
+  .wa-focus-confirm .material-symbols-outlined,
+  .wa-summary-actions .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  /* Textarea / placeholder text — was equal-weight to body, looked oversized
+     against the button. Drop to 13px so it reads as a hint, not as content. */
+  .wa-focus-textarea,
+  .wa-topic-textarea,
+  .wa-editorial-textarea {
+    font-size: 0.8125rem;      /* 13px */
+    line-height: 1.55;
+  }
+}

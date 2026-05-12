@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עדכוני וואטסאפ | Safe Capital Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+  <link href="/css/whatsapp-updates.css" rel="stylesheet">
+
+  <!-- Preload all JS modules in parallel so the import waterfall doesn't
+       block first interactive. Brings cold load from ~5s to ~1s. -->
+  <link rel="modulepreload" href="/js/whatsapp-updates/index.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/state.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/api-client.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/chat-view.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/composer.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/onboarding-modal.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/sessions-list.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/research-panel.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/writing-config-modal.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/sse-client.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/query-list.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/selection-popover.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/selection-popover-post.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/writing-view.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/sheet-utils.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/topic-discovery.js">
+  <link rel="modulepreload" href="/js/whatsapp-updates/markup.js">
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar (shared pattern) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-half.png" alt="Safe Capital" class="h-8" style="filter: brightness(0) invert(1);" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/events" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">event</span>
+        <span>ערב משקיעים</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/article-bot" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>בוט כתבות</span>
+      </a>
+      <a href="/whatsapp-updates" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">forum</span>
+        <span>עדכוני וואטסאפ</span>
+      </a>
+    </nav>
+
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main: chat workspace -->
+  <main class="main-content wa-main">
+
+    <!-- Top bar -->
+    <div class="wa-topbar">
+      <div class="wa-topbar-info">
+        <h1 class="wa-title" id="waSessionTitle">סשן חדש</h1>
+        <div class="wa-status-chip" id="waStatusChip" data-status="onboarding">
+          <span class="wa-status-dot"></span>
+          <span id="waStatusText">המתנה להתחלה</span>
+        </div>
+      </div>
+      <div class="wa-topbar-actions">
+        <button class="btn btn-secondary wa-btn-sm" id="waBtnSessions" title="סשנים קודמים">
+          <span class="material-symbols-outlined text-lg">history</span>
+          <span class="wa-hide-mobile">סשנים קודמים</span>
+        </button>
+        <button class="btn btn-primary wa-btn-sm" id="waBtnNewSession" title="סשן חדש">
+          <span class="material-symbols-outlined text-lg">add</span>
+          <span class="wa-hide-mobile">סשן חדש</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Workspace: chat column + research side panel -->
+    <div class="wa-workspace">
+    <div class="wa-chat-column">
+
+    <!-- Chat area -->
+    <div class="wa-chat-area" id="waChatArea">
+      <!-- Empty state shown when no session loaded -->
+      <div class="wa-empty-state" id="waEmptyState">
+        <span class="material-symbols-outlined wa-empty-icon">forum</span>
+        <h2 class="wa-empty-title">עוד לא התחלת סשן</h2>
+        <p class="wa-empty-text">לחץ על "סשן חדש" כדי להתחיל ליצור עדכון וואטסאפ למשקיעים.</p>
+        <button class="btn btn-primary mt-4" id="waEmptyStart">
+          <span class="material-symbols-outlined text-lg">add</span>
+          סשן חדש
+        </button>
+      </div>
+
+      <!-- Messages container — populated by chat-view.js -->
+      <div class="wa-messages" id="waMessages" style="display:none;"></div>
+    </div>
+
+    <!-- Composer -->
+    <div class="wa-composer" id="waComposer" style="display:none;">
+      <textarea
+        id="waComposerInput"
+        class="wa-composer-input"
+        placeholder="כתוב הודעה..."
+        rows="1"></textarea>
+      <button class="wa-composer-send" id="waComposerSend" title="שלח (Enter). Shift+Enter לירידת שורה.">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
+
+    </div><!-- /.wa-chat-column -->
+
+    <!-- Research side panel (desktop) — auto-hides if no research in flight. -->
+    <aside class="wa-research-panel wa-hidden" id="waResearchPanel">
+      <div class="wa-panel-header">
+        <span class="wa-panel-title" id="waPanelStatus" data-state="idle">מצב מחקר</span>
+        <div class="wa-panel-stats">
+          <div class="wa-panel-stat" title="טוקנים שנוצלו">
+            <span class="material-symbols-outlined">memory</span>
+            <span id="waPanelTokens">0</span>
+          </div>
+          <div class="wa-panel-stat" title="עלות מוערכת">
+            <span class="material-symbols-outlined">payments</span>
+            <span id="waPanelCost">$0.00</span>
+          </div>
+        </div>
+      </div>
+      <div class="wa-panel-findings" id="waPanelFindings"></div>
+    </aside>
+
+    </div><!-- /.wa-workspace -->
+  </main>
+
+  <!-- ── Onboarding modal (desktop) / bottom sheet (mobile) ─────────── -->
+  <div class="wa-modal-overlay hidden" id="waOnboardingOverlay">
+    <div class="wa-modal" id="waOnboardingModal">
+      <div class="wa-modal-header">
+        <h2 class="wa-modal-title">בוא נתחיל עדכון חדש</h2>
+        <button class="wa-modal-close" id="waOnboardingClose" aria-label="סגור">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="wa-modal-body">
+        <p class="wa-modal-subtitle">נתחיל ממה שנחקור. את שאר ההגדרות (טון, אורך) נגדיר בסוף, אחרי שיהיה לנו מחקר על השולחן.</p>
+
+        <form id="waOnboardingForm" class="wa-form">
+
+          <div class="wa-field">
+            <label class="form-label">על מה לחקור?</label>
+            <textarea id="waTopicBrief" class="form-input wa-topic-textarea" rows="4"
+                      placeholder="לדוגמה: מה קרה בשוק הנדל&quot;ן בבירמינגהאם ברבעון האחרון, או מצב הריבית של ה-Fed והשפעתה על משכנתאות, או מה היתרונות של מודל Fix-and-Flip מול Buy-and-Hold..."></textarea>
+
+            <label class="wa-checkbox-row">
+              <input type="checkbox" id="waAutoTopic">
+              <span class="wa-checkbox-label">
+                <span class="wa-checkbox-title">תן לבוט לבחור נושא בעצמו</span>
+                <span class="wa-checkbox-help">הבוט יציע נושא מעניין מהשבוע האחרון לפי מה שמעניין משקיעי Safe Capital.</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="wa-field">
+            <label class="form-label">עומק מחקר</label>
+            <div class="wa-chip-group wa-chip-group-depth" data-name="research_depth">
+              <button type="button" class="wa-chip active" data-value="normal">
+                <div class="wa-chip-title">מחקר רגיל</div>
+                <div class="wa-chip-meta">~5 דק׳ · ~5K טוקנים</div>
+              </button>
+              <button type="button" class="wa-chip" data-value="deep">
+                <div class="wa-chip-title">מחקר מעמיק</div>
+                <div class="wa-chip-meta">~15 דק׳ · ~25K טוקנים</div>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="wa-modal-footer">
+        <button class="btn btn-secondary" id="waOnboardingCancel">ביטול</button>
+        <button class="btn btn-primary" id="waOnboardingSubmit">
+          התחל
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sessions list modal (placeholder for Phase 6, basic in Phase 1) ── -->
+  <div class="wa-modal-overlay hidden" id="waSessionsOverlay">
+    <div class="wa-modal" id="waSessionsModal">
+      <div class="wa-modal-header">
+        <h2 class="wa-modal-title">סשנים קודמים</h2>
+        <button class="wa-modal-close" id="waSessionsClose" aria-label="סגור">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="wa-modal-body">
+        <div id="waSessionsList" class="wa-sessions-list">
+          <div class="wa-sessions-empty">טוען…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script type="module" src="/js/whatsapp-updates/index.js"></script>
+</body>
+</html>
