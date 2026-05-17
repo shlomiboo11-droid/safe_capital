@@ -627,6 +627,107 @@ DO $$ BEGIN
   END IF;
 END $$;
 
+-- ── WhatsApp Updates feature (Phase 1 skeleton) ─────────────────────
+CREATE TABLE IF NOT EXISTS whatsapp_sessions (
+  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id             INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  title               TEXT,
+  status              TEXT NOT NULL DEFAULT 'onboarding'
+                      CHECK(status IN ('onboarding','researching','research_review','writing','done','archived')),
+  update_type         TEXT,
+  deal_id             INTEGER REFERENCES deals(id) ON DELETE SET NULL,
+  communication_goal  TEXT,
+  length_pref         TEXT DEFAULT 'medium' CHECK(length_pref IN ('short','medium','long')),
+  formality           TEXT DEFAULT 'professional_warm' CHECK(formality IN ('casual_warm','professional_warm','professional_dry')),
+  research_depth      TEXT DEFAULT 'normal' CHECK(research_depth IN ('normal','deep')),
+  topic_brief         TEXT,
+  messages            JSONB DEFAULT '[]'::jsonb,
+  research_summary    TEXT,
+  final_post          TEXT,
+  alternative_posts   JSONB DEFAULT '[]'::jsonb,
+  tokens_used         INTEGER DEFAULT 0,
+  estimated_cost_usd  NUMERIC(10,4) DEFAULT 0,
+  drive_folder_id     TEXT,
+  drive_synced_at     TIMESTAMPTZ,
+  is_template         BOOLEAN DEFAULT FALSE,
+  created_at          TIMESTAMPTZ DEFAULT NOW(),
+  updated_at          TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wa_sessions_user ON whatsapp_sessions(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_wa_sessions_status ON whatsapp_sessions(status);
+CREATE INDEX IF NOT EXISTS idx_wa_sessions_deal ON whatsapp_sessions(deal_id);
+
+CREATE TABLE IF NOT EXISTS whatsapp_research_findings (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id  UUID NOT NULL REFERENCES whatsapp_sessions(id) ON DELETE CASCADE,
+  query       TEXT NOT NULL,
+  query_lang  TEXT DEFAULT 'he' CHECK(query_lang IN ('he','en')),
+  source_url  TEXT,
+  source_name TEXT,
+  raw_excerpt TEXT,
+  hebrew_note TEXT,
+  provider    TEXT,
+  relevance   NUMERIC(3,2),
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wa_findings_session ON whatsapp_research_findings(session_id);
+
+CREATE TABLE IF NOT EXISTS whatsapp_drafts (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id  UUID NOT NULL REFERENCES whatsapp_sessions(id) ON DELETE CASCADE,
+  kind        TEXT NOT NULL CHECK(kind IN ('research_summary','post','alternative')),
+  length_pref TEXT,
+  content     TEXT NOT NULL,
+  parent_id   UUID REFERENCES whatsapp_drafts(id) ON DELETE SET NULL,
+  edit_reason TEXT,
+  tokens_used INTEGER DEFAULT 0,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_wa_drafts_session ON whatsapp_drafts(session_id, kind, created_at DESC);
+
+-- Phase 2: store the bot's proposed research queries (selection-able by user).
+-- Each entry: { id, text, lang: 'he'|'en', rationale, enabled: bool }
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'whatsapp_sessions' AND column_name = 'proposed_queries'
+  ) THEN
+    ALTER TABLE whatsapp_sessions ADD COLUMN proposed_queries JSONB DEFAULT '[]'::jsonb;
+  END IF;
+END $$;
+
+-- Phase 4 (revision): editorial direction fields that let the user inject their
+-- own framing / talking points / takeaway into the post. Replace the rigid
+-- update_type categorization with free-form editorial intent.
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'whatsapp_sessions' AND column_name = 'editorial_angle'
+  ) THEN
+    ALTER TABLE whatsapp_sessions ADD COLUMN editorial_angle TEXT;
+    ALTER TABLE whatsapp_sessions ADD COLUMN editorial_points TEXT;
+    ALTER TABLE whatsapp_sessions ADD COLUMN editorial_takeaway TEXT;
+  END IF;
+END $$;
+
+-- Phase 2 (auto-topic flow): when the user lets the bot pick a topic, we first
+-- discover trending topics, then they select one, then add research focus notes
+-- before queries are proposed.
+--   discovered_topics: JSONB array of { id, title, description, category }
+--   focus_notes: free-text guidance the user adds before research starts
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'whatsapp_sessions' AND column_name = 'discovered_topics'
+  ) THEN
+    ALTER TABLE whatsapp_sessions ADD COLUMN discovered_topics JSONB DEFAULT '[]'::jsonb;
+    ALTER TABLE whatsapp_sessions ADD COLUMN focus_notes TEXT;
+  END IF;
+END $$;
+
     `);
     console.log('Database schema initialized.');
   } finally {

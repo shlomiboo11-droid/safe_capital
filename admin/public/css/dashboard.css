@@ -406,12 +406,51 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
 @media (max-width: 1023px) {
   .sidebar {
     transform: translateX(100%);
+    width: 240px;                    /* slightly narrower — less overhead on small screens */
   }
   .sidebar.open {
     transform: translateX(0);
   }
   .main-content {
     margin-right: 0;
+  }
+
+  /* Sidebar header (logo + role label) — tighter padding so the menu starts higher */
+  .sidebar > div:first-child {
+    padding: 1rem 1.25rem !important;
+  }
+
+  /* Sidebar nav spacing — half the desktop scale */
+  .sidebar > nav {
+    padding: 0.5rem !important;
+  }
+
+  /* Menu links — explicit type scale + tighter rhythm */
+  .sidebar-link {
+    padding: 0.5rem 0.875rem;
+    gap: 0.625rem;
+    font-size: 0.875rem;             /* 14px — clean against navy bg */
+    margin: 0.0625rem 0.25rem;
+  }
+  .sidebar-link .material-symbols-outlined {
+    font-size: 18px !important;
+  }
+  .sidebar-section-label {
+    padding: 0.625rem 0.875rem 0.125rem;
+    font-size: 0.625rem;             /* 10px — quiet divider */
+    margin-top: 0.25rem;
+  }
+
+  /* User footer at bottom of sidebar */
+  .sidebar > div:last-child {
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Sidebar toggle (hamburger) — move to LEFT on mobile so the icon doesn't
+     overlap the logo inside the (right-anchored) sidebar when it's open. */
+  #sidebarToggle {
+    left: 1rem;
+    right: auto;
   }
 }
 
