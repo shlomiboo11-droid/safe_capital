@@ -13,7 +13,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const BUSINESS_CONTEXT_PATH = path.join(__dirname, '..', '..', '..', '..', 'docs', 'business-context.md');
+// Resolves to admin/docs/business-context.md. Lives inside admin/ so it ships
+// with the Vercel admin deployment — previously was at <project-root>/docs/
+// which sits OUTSIDE the admin deploy bundle and broke prod reads (ENOENT).
+const BUSINESS_CONTEXT_PATH = path.join(__dirname, '..', '..', '..', 'docs', 'business-context.md');
 
 let cached = null;
 let cachedAt = 0;

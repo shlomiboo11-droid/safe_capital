@@ -8,7 +8,10 @@
 const fs = require('fs');
 const path = require('path');
 
-const VOICE_GUIDE_PATH = path.join(__dirname, '..', '..', '..', '..', 'docs', 'voice-guide.md');
+// Resolves to admin/docs/voice-guide.md. Lives inside admin/ so it ships with
+// the Vercel admin deployment — previously was at <project-root>/docs/ which
+// sits OUTSIDE the admin deploy bundle and broke prod reads (ENOENT).
+const VOICE_GUIDE_PATH = path.join(__dirname, '..', '..', '..', 'docs', 'voice-guide.md');
 
 let cached = null;
 let cachedAt = 0;
