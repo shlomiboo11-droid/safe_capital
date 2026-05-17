@@ -1,5 +1,5 @@
-# Dependencies
-node_modules/
+# Dependencies (matches directories AND symlinks)
+node_modules
 
 # Environment
 .env
