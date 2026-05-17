@@ -347,7 +347,9 @@ router.post('/sessions/:id/discover-topics', async (req, res) => {
 // POST /api/whatsapp/sessions/:id/select-topic
 // Body: { topic_id, focus_notes? } OR { custom_topic, focus_notes? }
 // Sets topic_brief from discovered_topics or from a custom user-provided title,
-// stores focus_notes. The next step (propose queries) is driven by the client.
+// stores focus_notes, AND appends a user message to the chat showing what
+// the user picked (mimics how it appeared in the topic-discovery card).
+// The next step (propose queries) is driven by the client.
 router.post('/sessions/:id/select-topic', async (req, res) => {
   try {
     const { topic_id, custom_topic, focus_notes } = req.body || {};
@@ -356,25 +358,51 @@ router.post('/sessions/:id/select-topic', async (req, res) => {
     const session = r.rows[0];
 
     let topicTitle = String(custom_topic || '').trim();
+    let chosenCard = null;     // for building the chat message
     if (!topicTitle && topic_id) {
       const list = Array.isArray(session.discovered_topics) ? session.discovered_topics : [];
       const found = list.find(t => t.id === topic_id);
       if (!found) return res.status(400).json({ error: 'Unknown topic_id' });
+      chosenCard = found;
       // Use title + description as the topic brief so the bot has full context
       // when it later proposes queries.
       topicTitle = found.title + (found.description ? '\n\n' + found.description : '');
     }
     if (!topicTitle) return res.status(400).json({ error: 'topic_id or custom_topic is required' });
 
+    // Build a user message that mirrors the topic card the user picked, plus
+    // their focus notes if they typed any. This makes the chat feel like a
+    // real conversation: "I want to research X" then bot responds with queries.
+    const trimmedFocus = String(focus_notes || '').trim();
+    const msgLines = [];
+    if (chosenCard) {
+      msgLines.push(chosenCard.title);
+      if (chosenCard.description) msgLines.push(chosenCard.description);
+    } else {
+      msgLines.push(topicTitle);
+    }
+    if (trimmedFocus) {
+      msgLines.push('');
+      msgLines.push('🎯 התמקדויות שביקשתי:');
+      msgLines.push(trimmedFocus);
+    }
+    const newMessage = {
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      role: 'user',
+      content: msgLines.join('\n'),
+      created_at: new Date().toISOString()
+    };
+
     const upd = await pool.query(
       `UPDATE whatsapp_sessions
          SET topic_brief = $1,
              focus_notes = $2,
              proposed_queries = '[]'::jsonb,
+             messages = COALESCE(messages, '[]'::jsonb) || $3::jsonb,
              updated_at = NOW()
-       WHERE id = $3
+       WHERE id = $4
        RETURNING *`,
-      [topicTitle, String(focus_notes || '').trim() || null, req.params.id]
+      [topicTitle, trimmedFocus || null, JSON.stringify([newMessage]), req.params.id]
     );
 
     res.json({ session: upd.rows[0] });

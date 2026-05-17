@@ -51,9 +51,24 @@ export function formatMarkdown(text) {
   const frag = document.createDocumentFragment();
   if (!text) return frag;
 
-  const lines = String(text).split('\n');
+  // Normalise: collapse 3+ blank lines to 2, strip stand-alone horizontal-rule
+  // markers (--- / ***) which add visual noise without value.
+  const lines = String(text)
+    .replace(/(\n[ \t]*\n)[ \t]*\n+/g, '$1')
+    .split('\n')
+    .filter((line, i, arr) => {
+      const t = line.trim();
+      if (/^(-{3,}|\*{3,}|_{3,})$/.test(t)) return false;   // skip --- lines
+      return true;
+    });
+
+  // Track previous-line type so we don't emit a <br> right before a heading
+  // (which already has its own margin-top).
+  let prevWasBlank = false;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const trimmed = line.trim();
 
     // Headings — render as a bold paragraph with larger font.
     const headingMatch = line.match(/^(#{1,3})\s+(.+?)\s*#*\s*$/);
@@ -65,6 +80,7 @@ export function formatMarkdown(text) {
       strong.textContent = headingMatch[2];
       headEl.appendChild(strong);
       frag.appendChild(headEl);
+      prevWasBlank = false;
       continue;
     }
 
@@ -76,6 +92,16 @@ export function formatMarkdown(text) {
       li.appendChild(document.createTextNode('• '));
       appendInlineFormatted(listMatch[1], li);
       frag.appendChild(li);
+      prevWasBlank = false;
+      continue;
+    }
+
+    // Blank line — emit a single <br> (collapsed). Skip if previous was also blank.
+    if (trimmed === '') {
+      if (!prevWasBlank && i < lines.length - 1) {
+        frag.appendChild(document.createElement('br'));
+      }
+      prevWasBlank = true;
       continue;
     }
 
@@ -84,6 +110,7 @@ export function formatMarkdown(text) {
     if (i < lines.length - 1) {
       frag.appendChild(document.createElement('br'));
     }
+    prevWasBlank = false;
   }
   return frag;
 }

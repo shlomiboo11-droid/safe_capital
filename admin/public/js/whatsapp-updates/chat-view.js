@@ -195,6 +195,29 @@ export function initChatView() {
   const chip     = document.getElementById('waStatusChip');
   const chipText = document.getElementById('waStatusText');
 
+  // Snapshot of what's actually rendered in the chat. We only rebuild the
+  // message list when one of these values changes — NOT on every Store emit.
+  // This stops the "page refresh" flicker that happened every time tokens_used
+  // or estimated_cost_usd ticked during research (polling, SSE, auto-save).
+  let prev = { sid: null };
+  function snapshot(state) {
+    const s = state.session;
+    return {
+      sid: s ? s.id : null,
+      title: s ? s.title : '',
+      status: s ? s.status : '',
+      hasTopicBrief: !!(s && s.topic_brief),
+      msgCount: state.messages.length,
+      lastMsgId: state.messages.length ? state.messages[state.messages.length - 1].id : '',
+      topicCount: state.topics.length,
+      queryCount: state.queries.length,
+      summaryLen: state.research.summary ? state.research.summary.length : 0,
+      postContent: state.post.content || '',
+      postGenerating: !!state.post.generating,
+      discovering: !!state.discoveringTopics
+    };
+  }
+
   Store.subscribe((state) => {
     const hasSession = !!state.session;
     emptyEl.style.display  = hasSession ? 'none' : '';
@@ -205,13 +228,32 @@ export function initChatView() {
       title.textContent = 'סשן חדש';
       chip.dataset.status = 'onboarding';
       chipText.textContent = STATUS_LABELS.onboarding;
+      prev = { sid: null };
       return;
     }
 
+    // Topbar text always updates (cheap — single textContent assignments).
     title.textContent = state.session.title || 'סשן ללא שם';
     const status = state.session.status || 'onboarding';
     chip.dataset.status = status;
     chipText.textContent = STATUS_LABELS[status] || status;
+
+    // Diff check — bail before the expensive listEl.innerHTML wipe + loop.
+    const snap = snapshot(state);
+    const unchanged = prev.sid === snap.sid
+      && prev.title === snap.title
+      && prev.status === snap.status
+      && prev.hasTopicBrief === snap.hasTopicBrief
+      && prev.msgCount === snap.msgCount
+      && prev.lastMsgId === snap.lastMsgId
+      && prev.topicCount === snap.topicCount
+      && prev.queryCount === snap.queryCount
+      && prev.summaryLen === snap.summaryLen
+      && prev.postContent === snap.postContent
+      && prev.postGenerating === snap.postGenerating
+      && prev.discovering === snap.discovering;
+    if (unchanged) return;   // no visible chat change — skip render
+    prev = snap;
 
     listEl.innerHTML = '';
 
@@ -269,10 +311,17 @@ export function initChatView() {
       listEl.appendChild(typing);
     }
 
-    // Auto-scroll to bottom
+    // Smart auto-scroll — only snap to the bottom if the user is ALREADY
+    // near the bottom. If they've scrolled up to re-read something, leave
+    // their scroll position alone. Background ticks (poll, SSE, auto-save)
+    // shouldn't yank them out of context.
     requestAnimationFrame(() => {
       const area = document.getElementById('waChatArea');
-      if (area) area.scrollTop = area.scrollHeight;
+      if (!area) return;
+      const distanceFromBottom = area.scrollHeight - (area.scrollTop + area.clientHeight);
+      if (distanceFromBottom < 120) {
+        area.scrollTop = area.scrollHeight;
+      }
     });
   });
 }

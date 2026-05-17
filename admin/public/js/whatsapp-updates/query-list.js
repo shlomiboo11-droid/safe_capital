@@ -56,16 +56,13 @@ function renderQuery(q, onChange, onRemove) {
   body.appendChild(text);
   body.appendChild(meta);
 
-  const rm = document.createElement('button');
-  rm.type = 'button';
-  rm.className = 'wa-query-remove';
-  rm.title = 'הסר שאילתה';
-  rm.innerHTML = '<span class="material-symbols-outlined">close</span>';
-  rm.addEventListener('click', onRemove);
+  // (Remove-button (X) intentionally omitted — the checkbox already lets the
+  // user opt out of a query. Keeping the row clean leaves more room for the
+  // query text on narrow screens.)
+  void onRemove;
 
   row.appendChild(cb);
   row.appendChild(body);
-  row.appendChild(rm);
   return row;
 }
 

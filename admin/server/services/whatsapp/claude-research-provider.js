@@ -113,10 +113,40 @@ function buildResearchSystemPrompt() {
 2. הצלב לפחות 2 מקורות.
 3. אם יש דעה חולקת או נתון סותר — הזכר אותה.
 4. ציין מספרים מדויקים עם תאריך/תקופה.
-5. ציין URL מלא של כל מקור.
+5. ציין URL מלא של כל מקור בתוך הטקסט (לא ברשימה נפרדת).
 
-# פלט
-לכל שאילתה, החזר ממצא בעברית — סיכום קצר (3-6 משפטים), עם רשימת מקורות. **בלי קלישאות, בלי "במציאות הדינמית", בלי שפה תאגידית.** ישיר, מקצועי, מבוסס.`;
+# פלט (חובה)
+החזר ממצא בעברית, ישר וקצר (3-6 משפטים). **התחל מיד מהממצא — בלי הקדמות, בלי "להלן…", "הנה…", "כפי שביקשת", "תקציר ממצאים…".**
+
+⚠️ אסור:
+- שורות מפרידות (---, ***)
+- כותרות markdown מרובות
+- קלישאות AI ("במציאות הדינמית", "כידוע")
+- שפה תאגידית
+- רשימת מקורות בסוף (המקורות מצוטטים בטקסט)`;
+}
+
+/**
+ * Strip preamble / framing chatter that Claude sometimes adds despite the
+ * prompt forbidding it. Defensive belt-and-suspenders.
+ */
+function cleanFindingText(text) {
+  if (!text) return '';
+  let s = String(text);
+  // Drop preamble lines (Hebrew) that match common framing patterns.
+  const preamblePatterns = [
+    /^[ \t]*להלן[^.\n]*[:.]\s*\n+/m,
+    /^[ \t]*הנה[^.\n]*[:.]\s*\n+/m,
+    /^[ \t]*כפי שביקשת[^.\n]*[:.]\s*\n+/m,
+    /^[ \t]*תקציר ממצאים[^.\n]*[:.]\s*\n+/m,
+    /^[ \t]*להלן הממצא[^.\n]*[:.]\s*\n+/m
+  ];
+  for (const re of preamblePatterns) s = s.replace(re, '');
+  // Strip stand-alone horizontal-rule lines (--- *** ___).
+  s = s.replace(/^[ \t]*[-*_]{3,}[ \t]*$/gm, '');
+  // Collapse 3+ blank lines to 2.
+  s = s.replace(/\n[ \t]*\n[ \t]*\n+/g, '\n\n');
+  return s.trim();
 }
 
 function buildSummarizeSystemPrompt() {
@@ -357,42 +387,62 @@ ${langInstruction}${focusBlock}
       // Extract source URLs from the response text (best-effort regex pass)
       // and from any web_search_tool_result blocks in the content.
       const sourceUrls = extractSources(resp);
-      const hebrewNote = resp.text;
+      const hebrewNote = cleanFindingText(resp.text);
 
-      // Persist findings (one row per cited source; fallback to one row with no URL).
-      const urls = sourceUrls.length ? sourceUrls : [null];
-      for (const url of urls) {
-        const ins = await pool.query(
-          `INSERT INTO whatsapp_research_findings
-             (session_id, query, query_lang, source_url, source_name, raw_excerpt, hebrew_note, provider, relevance)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-           RETURNING id, source_url, source_name`,
-          [
-            session.id,
-            q.text,
-            q.lang,
-            url,
-            url ? hostnameOf(url) : null,
-            null,
-            hebrewNote.slice(0, 8000),
-            'anthropic_web',
-            null
-          ]
-        );
-        totalFindings++;
-        sseBus.publish(session.id, 'finding', {
-          finding_id: ins.rows[0].id,
-          query_id: q.id,
-          source_url: ins.rows[0].source_url,
-          source_name: ins.rows[0].source_name,
-          hebrew_note: hebrewNote.slice(0, 2000)
-        });
-      }
+      // ONE finding per query (was: one per URL, which produced N identical
+      // copy-paste rows — the same hebrew_note repeated for each cited URL).
+      // The primary source URL is stored on the row; other URLs remain
+      // cited inline within hebrew_note for the model + the user to see.
+      const primaryUrl = sourceUrls[0] || null;
+      const extraSources = sourceUrls.slice(1, 6);   // keep up to 5 extras
+      const ins = await pool.query(
+        `INSERT INTO whatsapp_research_findings
+           (session_id, query, query_lang, source_url, source_name, raw_excerpt, hebrew_note, provider, relevance)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING id, source_url, source_name`,
+        [
+          session.id,
+          q.text,
+          q.lang,
+          primaryUrl,
+          primaryUrl ? hostnameOf(primaryUrl) : null,
+          // raw_excerpt now holds the list of extra source URLs (JSON-encoded)
+          // so the UI / future code can render them as a "more sources" chip.
+          extraSources.length ? JSON.stringify(extraSources) : null,
+          hebrewNote.slice(0, 8000),
+          'anthropic_web',
+          null
+        ]
+      );
+      totalFindings++;
+      sseBus.publish(session.id, 'finding', {
+        finding_id: ins.rows[0].id,
+        query_id: q.id,
+        source_url: ins.rows[0].source_url,
+        source_name: ins.rows[0].source_name,
+        extra_sources: extraSources,
+        hebrew_note: hebrewNote.slice(0, 2000)
+      });
 
       const inTok  = (resp.usage.input_tokens || 0) + (resp.usage.cache_read_input_tokens || 0);
       const outTok = resp.usage.output_tokens || 0;
-      totalTokens += inTok + outTok;
-      totalCost   += estimateCost(model, resp.usage);
+      const queryTokens = inTok + outTok;
+      const queryCost   = estimateCost(model, resp.usage);
+      totalTokens += queryTokens;
+      totalCost   += queryCost;
+
+      // Incremental DB update — so the polling fallback (which reads
+      // tokens_used / estimated_cost_usd straight from the DB) sees the same
+      // numbers SSE is broadcasting. Without this, setSession from polling
+      // would overwrite the live SSE values with stale 0 every 15s.
+      await pool.query(
+        `UPDATE whatsapp_sessions
+           SET tokens_used = COALESCE(tokens_used, 0) + $1,
+               estimated_cost_usd = COALESCE(estimated_cost_usd, 0) + $2,
+               updated_at = NOW()
+         WHERE id = $3`,
+        [queryTokens, queryCost, session.id]
+      );
 
       sseBus.publish(session.id, 'tokens', {
         used: totalTokens,

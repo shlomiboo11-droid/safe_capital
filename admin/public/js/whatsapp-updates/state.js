@@ -136,6 +136,10 @@ export const Store = {
     emit();
   },
 
-  setSaving(v) { data.saving = v; emit(); },
+  // setSaving is internal-only — no UI consumer reads `data.saving`.
+  // We intentionally DON'T emit here, so the auto-save timer (which toggles
+  // it true/false) doesn't trigger a full chat re-render twice every cycle.
+  setSaving(v) { data.saving = v; },
+
   setError(err) { data.error = err; emit(); }
 };

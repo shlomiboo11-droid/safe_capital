@@ -85,8 +85,16 @@ function renderTopicCard(topic, onSelect, selectedId) {
   card.appendChild(title);
   card.appendChild(desc);
 
-  card.addEventListener('click', () => onSelect(topic.id));
+  card.addEventListener('click', (e) => {
+    // Ignore clicks that originated inside the expansion (textarea, button…).
+    if (e.target.closest('.wa-topic-expansion')) return;
+    onSelect(topic.id);
+  });
   card.addEventListener('keydown', (e) => {
+    // Only handle keys that target the card itself — never the textarea/inputs
+    // nested inside the expansion. Otherwise space in the textarea would
+    // re-trigger selection and look like a refresh bug.
+    if (e.target !== card) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onSelect(topic.id);
