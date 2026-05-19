@@ -197,6 +197,85 @@ async function renderImagesTab(data) {
         </div>
       </div>
     </div>
+
+    <!-- Drive Picker Modal -->
+    <div id="drivePickerModal" class="branded-modal-overlay"
+      onclick="if(event.target===this) closePickerModal()" style="z-index:70; display:none;">
+      <div class="branded-modal" style="max-width: 56rem; padding: 1.5rem; width: 92%;">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">cloud_sync</span>
+            <h2 class="branded-modal-title" style="margin:0;" id="pickerTitle">סנכרון תיקיית Google Drive</h2>
+          </div>
+          <button id="pickerCloseBtn" onclick="closePickerModal()" class="text-gray-400 hover:text-gray-600">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div id="pickerStateLoading" class="py-12 text-center text-gray-500">
+          <span class="material-symbols-outlined text-4xl animate-spin">refresh</span>
+          <p class="mt-3 text-sm">טוען קבצים מ-Drive...</p>
+        </div>
+
+        <div id="pickerStateError" class="hidden py-8 text-center">
+          <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+          <p id="pickerErrorMsg" class="mt-3 text-sm text-gray-700"></p>
+          <button class="btn btn-secondary mt-4" onclick="loadPickerFiles()">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            נסה שוב
+          </button>
+        </div>
+
+        <div id="pickerStateList" class="hidden">
+          <div class="flex items-center justify-between mb-3 text-sm">
+            <div class="flex items-center gap-3">
+              <button class="text-primary hover:underline" onclick="pickerSelectAll(true)">בחר הכל</button>
+              <span class="text-gray-300">|</span>
+              <button class="text-primary hover:underline" onclick="pickerSelectAll(false)">בטל הכל</button>
+            </div>
+            <div class="text-gray-500" id="pickerCountLabel">0 מסומנים</div>
+          </div>
+
+          <div class="thumbnail-picker-grid" id="pickerGrid" style="max-height: 56vh;"></div>
+
+          <div id="pickerOrphansSection" class="hidden mt-5 pt-4 border-t border-gray-200">
+            <p class="text-xs text-gray-500 mb-2">
+              <span class="material-symbols-outlined text-sm align-middle">warning</span>
+              קבצים אלה כבר לא קיימים ב-Drive. סמן אילו למחוק מהפרויקט.
+            </p>
+            <div class="thumbnail-picker-grid" id="pickerOrphansGrid" style="max-height: 30vh;"></div>
+          </div>
+
+          <div class="flex items-center justify-between mt-5 pt-4 border-t border-gray-100">
+            <div class="text-sm text-gray-500" id="pickerDiffLabel">אין שינויים</div>
+            <div class="flex gap-2">
+              <button class="branded-modal-btn branded-modal-btn-secondary" onclick="closePickerModal()">ביטול</button>
+              <button class="branded-modal-btn branded-modal-btn-primary" id="pickerSyncBtn"
+                onclick="commitPickerSync()" disabled>סנכרן</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="pickerStateSyncing" class="hidden py-6">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="material-symbols-outlined animate-spin text-primary">sync</span>
+            <p class="text-sm" id="pickerSyncStatus">מסנכרן... אל תסגור את החלון</p>
+          </div>
+          <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div id="pickerProgressBar" class="bg-primary h-full transition-all" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div id="pickerStateDone" class="hidden py-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <h3 class="font-bold text-gray-900">הסנכרון הושלם</h3>
+          </div>
+          <div id="pickerSummary" class="text-sm text-gray-700 space-y-1 mb-4"></div>
+          <button class="branded-modal-btn branded-modal-btn-primary" onclick="closePickerModal()">סגור ורענן</button>
+        </div>
+      </div>
+    </div>
   `;
 
   // Handle driveConnected/driveError from URL params
@@ -362,9 +441,17 @@ async function submitDriveLink() {
       category: _pendingLinkCategory,
       folderId
     });
+    const linkedCategory = _pendingLinkCategory;
     closeDriveLinkModal();
-    showToast(`תיקייה "${result.folderName}" קושרה בהצלחה`);
-    reloadDeal(renderImagesTab);
+    showToast(`תיקייה "${result.folderName}" קושרה — בוחר תמונות לייבוא`);
+    // Refresh _driveFolders so subsequent picker open knows about it
+    _driveFolders[linkedCategory] = {
+      folderId,
+      folderName: result.folderName,
+      lastSynced: null
+    };
+    // Auto-open picker for seamless UX
+    await openDrivePickerModal(linkedCategory, folderId);
   } catch (err) {
     showToast('שגיאה: ' + err.message, 'error');
     btn.disabled = false;
@@ -372,25 +459,15 @@ async function submitDriveLink() {
   }
 }
 
-// ── Google Drive — sync ──────────────────────────────────────
+// ── Google Drive — sync (opens picker modal) ─────────────────
 
 async function syncDriveFolder(category) {
-  const btn = event.target.closest('button');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מסנכרן...';
+  const linked = _driveFolders[category];
+  if (!linked) {
+    showToast('אין תיקייה מקושרת לקטגוריה הזו', 'error');
+    return;
   }
-  try {
-    const result = await API.post(`/google-drive/sync/${currentDeal.id}/${category}`, {});
-    showToast(`סנכרון הושלם — ${result.added} תמונות חדשות נוספו`);
-    reloadDeal(renderImagesTab);
-  } catch (err) {
-    showToast('שגיאה בסנכרון: ' + err.message, 'error');
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = '<span class="material-symbols-outlined text-sm">sync</span> סנכרן';
-    }
-  }
+  await openDrivePickerModal(category, linked.folderId);
 }
 
 async function unlinkDriveFolder(category) {
@@ -402,4 +479,240 @@ async function unlinkDriveFolder(category) {
   } catch (err) {
     showToast('שגיאה: ' + err.message, 'error');
   }
+}
+
+// ── Drive Picker Modal (state machine) ───────────────────────
+
+let _pickerState = null;
+// shape: { dealId, category, folderId, files, orphans, selected:Set, originalSelected:Set,
+//          orphansSelected:Set, syncing:false }
+
+function _pickerSwitchState(name) {
+  for (const s of ['Loading', 'Error', 'List', 'Syncing', 'Done']) {
+    const el = document.getElementById('pickerState' + s);
+    if (el) el.classList.toggle('hidden', s.toLowerCase() !== name);
+  }
+}
+
+async function openDrivePickerModal(category, folderId) {
+  if (!_driveStatus.connected) {
+    showToast('יש לחבר חשבון Google Drive קודם', 'error');
+    return;
+  }
+  const catLabel = IMG_CATEGORIES.find(c => c.key === category)?.label || category;
+  document.getElementById('pickerTitle').textContent = `סנכרון תיקיית Google Drive — ${catLabel}`;
+
+  _pickerState = {
+    dealId: currentDeal.id,
+    category,
+    folderId,
+    files: [],
+    orphans: [],
+    selected: new Set(),
+    originalSelected: new Set(),
+    orphansSelected: new Set(),
+    syncing: false
+  };
+
+  document.getElementById('drivePickerModal').style.display = 'flex';
+  await loadPickerFiles();
+}
+
+async function loadPickerFiles() {
+  if (!_pickerState) return;
+  _pickerSwitchState('loading');
+  try {
+    const { dealId, category, folderId } = _pickerState;
+    const res = await API.get(
+      `/google-drive/folder/${folderId}/files?dealId=${dealId}&category=${encodeURIComponent(category)}`
+    );
+    _pickerState.files = res.files || [];
+    _pickerState.orphans = res.orphans || [];
+    _pickerState.selected = new Set(_pickerState.files.filter(f => f.synced).map(f => f.id));
+    _pickerState.originalSelected = new Set(_pickerState.selected);
+    _pickerState.orphansSelected = new Set();  // default: keep orphans (don't delete)
+    renderPickerGrid();
+    _pickerSwitchState('list');
+  } catch (err) {
+    let msg = err.message || 'שגיאה לא ידועה';
+    if (msg.includes('invalid_grant') || msg.includes('401')) {
+      msg = 'חיבור Google Drive פג תוקף — יש להתחבר מחדש';
+    } else if (msg.includes('folder_not_found') || msg.includes('404')) {
+      msg = 'התיקייה לא נמצאה ב-Drive. ייתכן שנמחקה — נתק וקשר מחדש.';
+    }
+    document.getElementById('pickerErrorMsg').textContent = msg;
+    _pickerSwitchState('error');
+  }
+}
+
+function renderPickerGrid() {
+  if (!_pickerState) return;
+  const token = API.getToken();
+  const grid = document.getElementById('pickerGrid');
+  const files = _pickerState.files;
+
+  if (files.length === 0) {
+    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:#9ca3af; font-size:0.875rem;">
+      התיקייה ריקה — אין קבצי תמונה ב-Drive
+    </div>`;
+  } else {
+    grid.innerHTML = files.map(f => {
+      const isSelected = _pickerState.selected.has(f.id);
+      const isSynced = f.synced;
+      return `
+        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${isSelected ? '3px solid #022445' : '2px solid transparent'}; transition: outline 0.15s;">
+          <img src="/api/google-drive/thumb/${f.id}?token=${encodeURIComponent(token)}"
+            alt="${(f.name || '').replace(/"/g,'&quot;')}" loading="lazy"
+            onerror="this.style.display='none'; this.parentElement.style.background='#f3f4f6';">
+          <input type="checkbox" ${isSelected ? 'checked' : ''}
+            onchange="togglePickerFile('${f.id}', this.checked)"
+            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#022445; z-index:2;">
+          ${isSynced ? `
+            <span style="position:absolute; bottom:0.4rem; right:0.4rem; background:rgba(2,36,69,0.85); color:#fff; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:0.25rem;">
+              כבר מסונכרן
+            </span>
+          ` : ''}
+          <span style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.7), transparent); color:#fff; font-size:0.7rem; padding:0.5rem 0.4rem 0.3rem; text-align:right; direction:ltr; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            ${(f.name || '').slice(0, 40)}
+          </span>
+        </label>`;
+    }).join('');
+  }
+
+  // Orphans section
+  const orphansSection = document.getElementById('pickerOrphansSection');
+  const orphansGrid = document.getElementById('pickerOrphansGrid');
+  if (_pickerState.orphans.length === 0) {
+    orphansSection.classList.add('hidden');
+  } else {
+    orphansSection.classList.remove('hidden');
+    orphansGrid.innerHTML = _pickerState.orphans.map(o => {
+      const willDelete = _pickerState.orphansSelected.has(o.drive_file_id);
+      return `
+        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${willDelete ? '3px solid #991b1b' : '2px solid transparent'}; transition: outline 0.15s;">
+          <img src="${o.image_url}" alt="${(o.alt_text || '').replace(/"/g,'&quot;')}" loading="lazy"
+            onerror="this.style.display='none'; this.parentElement.style.background='#f3f4f6';">
+          <input type="checkbox" ${willDelete ? 'checked' : ''}
+            onchange="togglePickerOrphan('${o.drive_file_id}', this.checked)"
+            title="סמן למחיקה מקומית"
+            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#991b1b; z-index:2;">
+          <span style="position:absolute; bottom:0.4rem; right:0.4rem; background:rgba(153,27,27,0.85); color:#fff; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:0.25rem;">
+            ${willDelete ? 'יימחק' : 'יישמר'}
+          </span>
+        </label>`;
+    }).join('');
+  }
+
+  _updatePickerLabels();
+}
+
+function _updatePickerLabels() {
+  if (!_pickerState) return;
+  const selectedCount = _pickerState.selected.size;
+  const total = _pickerState.files.length;
+  document.getElementById('pickerCountLabel').textContent = `${selectedCount} מסומנים מתוך ${total}`;
+
+  // Calculate diff vs original
+  const orig = _pickerState.originalSelected;
+  const cur = _pickerState.selected;
+  let toAdd = 0, toRemove = 0;
+  for (const id of cur) if (!orig.has(id)) toAdd++;
+  for (const id of orig) if (!cur.has(id)) toRemove++;
+  const orphansToDelete = _pickerState.orphansSelected.size;
+
+  const totalChanges = toAdd + toRemove + orphansToDelete;
+  const parts = [];
+  if (toAdd) parts.push(`+${toAdd} להוסיף`);
+  if (toRemove) parts.push(`-${toRemove} להסיר`);
+  if (orphansToDelete) parts.push(`${orphansToDelete} יתומים למחיקה`);
+
+  const diffLabel = document.getElementById('pickerDiffLabel');
+  diffLabel.textContent = parts.length ? parts.join(' · ') : 'אין שינויים';
+
+  const btn = document.getElementById('pickerSyncBtn');
+  btn.disabled = totalChanges === 0;
+  btn.textContent = totalChanges === 0 ? 'אין שינויים' : `סנכרן ${totalChanges} שינויים`;
+}
+
+function togglePickerFile(fileId, checked) {
+  if (!_pickerState) return;
+  if (checked) _pickerState.selected.add(fileId);
+  else _pickerState.selected.delete(fileId);
+  renderPickerGrid();  // re-render to update outline
+}
+
+function togglePickerOrphan(driveFileId, checked) {
+  if (!_pickerState) return;
+  if (checked) _pickerState.orphansSelected.add(driveFileId);
+  else _pickerState.orphansSelected.delete(driveFileId);
+  renderPickerGrid();
+}
+
+function pickerSelectAll(selectAll) {
+  if (!_pickerState) return;
+  if (selectAll) {
+    _pickerState.selected = new Set(_pickerState.files.map(f => f.id));
+  } else {
+    _pickerState.selected = new Set();
+  }
+  renderPickerGrid();
+}
+
+async function commitPickerSync() {
+  if (!_pickerState) return;
+  _pickerState.syncing = true;
+  _pickerSwitchState('syncing');
+
+  try {
+    const { dealId, category, selected, orphansSelected } = _pickerState;
+
+    // Build desired set:
+    //   • All currently-selected Drive files
+    //   • Orphans the user did NOT check for deletion (we want to keep them locally)
+    // Backend diff logic: anything in DB with drive_file_id but NOT in fileIds → remove.
+    const orphansToKeep = _pickerState.orphans
+      .filter(o => !orphansSelected.has(o.drive_file_id))
+      .map(o => o.drive_file_id);
+    const fileIds = [...selected, ...orphansToKeep];
+
+    document.getElementById('pickerSyncStatus').textContent = 'מסנכרן בחירה...';
+    document.getElementById('pickerProgressBar').style.width = '30%';
+
+    const result = await API.post(
+      `/google-drive/sync-selection/${dealId}/${encodeURIComponent(category)}`,
+      { fileIds }
+    );
+
+    document.getElementById('pickerProgressBar').style.width = '100%';
+
+    // Show summary
+    const summary = result.summary || {};
+    const summaryHtml = `
+      <p>✓ נוספו: <strong>${summary.added || 0}</strong> תמונות</p>
+      <p>✗ הוסרו: <strong>${summary.removed || 0}</strong> תמונות (Drive לא נגוע)</p>
+      <p>• נשמרו: <strong>${summary.kept || 0}</strong> תמונות</p>
+      ${summary.failed ? `<p class="text-red-600">⚠ נכשלו: <strong>${summary.failed}</strong></p>` : ''}
+    `;
+    document.getElementById('pickerSummary').innerHTML = summaryHtml;
+    _pickerSwitchState('done');
+  } catch (err) {
+    let msg = err.message || 'שגיאה לא ידועה';
+    if (msg.includes('invalid_grant')) msg = 'חיבור Google Drive פג תוקף';
+    document.getElementById('pickerErrorMsg').textContent = msg;
+    _pickerSwitchState('error');
+  } finally {
+    _pickerState.syncing = false;
+  }
+}
+
+function closePickerModal() {
+  if (_pickerState && _pickerState.syncing) {
+    showToast('סנכרון בעיצומו — אל תסגור', 'error');
+    return;
+  }
+  document.getElementById('drivePickerModal').style.display = 'none';
+  const wasOpen = _pickerState !== null;
+  _pickerState = null;
+  // Refresh the deal so newly added/removed images appear in the gallery
+  if (wasOpen) reloadDeal(renderImagesTab);
 }
