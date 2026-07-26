@@ -11,6 +11,7 @@ import { initSessionsList } from './sessions-list.js';
 import { initResearchPanel } from './research-panel.js';
 import { initWritingConfigModal } from './writing-config-modal.js';
 import { connectStream } from './sse-client.js';
+import { friendlyClaudeError } from './error-text.js';
 
 function gateAuth() {
   if (!API.isLoggedIn()) {
@@ -133,7 +134,12 @@ let activeStream = null;
 // Guards so the subscribe callback doesn't fire duplicate API calls while a
 // request is in flight (state changes can happen many times before the
 // response comes back).
-const inflight = { proposeQueries: false, discoverTopics: false };
+// `loadDraft` holds the PROMISE (not a boolean) — openWritingConfigIfNoDraft
+// awaits it. A boolean guard would return instantly while the draft is still
+// loading, and the modal would open over an existing draft — the original bug.
+// `loadDraftSessionId` keys that promise: sharing it across DIFFERENT sessions
+// would hand session B the draft of session A and never fetch B's own.
+const inflight = { proposeQueries: false, discoverTopics: false, loadDraft: null, loadDraftSessionId: null };
 
 // Polling fallback for when SSE connection silently dies (background tab,
 // network blip, server restart). Every 15s while researching we refetch the
@@ -179,6 +185,10 @@ async function proposeQueriesForCurrentSession() {
   if (!s.topic_brief) return;  // auto-topic without selection yet
 
   inflight.proposeQueries = true;
+  // A2#1 — show a live indicator for the whole call, and drop any previous
+  // failure notice so a stale one can't sit next to a fresh attempt.
+  Store.setError(null);
+  Store.setProposingQueries(true);
   try {
     const { queries, title } = await ApiClient.proposeQueries(s.id);
     Store.setQueries(queries || []);
@@ -188,11 +198,16 @@ async function proposeQueriesForCurrentSession() {
     }
   } catch (err) {
     console.error('Failed to propose queries', err);
-    Store.setError(err.message);
+    Store.setError(friendlyClaudeError(err.message));
   } finally {
+    Store.setProposingQueries(false);
     inflight.proposeQueries = false;
   }
 }
+
+// A1#12 — the local copy of the Anthropic billing/quota translation used to
+// live here, and a SECOND copy lived in the SSE `error` handler below. Both now
+// call the shared table in error-text.js.
 
 async function discoverTopicsIfNeeded() {
   if (inflight.discoverTopics) return;
@@ -207,34 +222,55 @@ async function discoverTopicsIfNeeded() {
   }
 
   inflight.discoverTopics = true;
+  Store.setError(null);
   Store.setDiscoveringTopics(true);
   try {
     const { topics } = await ApiClient.discoverTopics(s.id);
     Store.setTopics(topics || []);
   } catch (err) {
     console.error('Discover topics failed', err);
-    Store.setError(err.message);
-    let friendly = err.message || 'שגיאה';
-    if (/credit balance is too low/i.test(friendly)) {
-      friendly = 'אזל הקרדיט בחשבון Anthropic — טען קרדיט ונסה שוב.';
-    } else if (/rate.?limit/i.test(friendly)) {
-      friendly = 'הגעת ל-rate limit של Anthropic. המתן כדקה ורענן את הדף.';
-    }
-    alert('גילוי הנושאים נכשל: ' + friendly);
+    // The chat bubble carries this now (chat-view section 6). The alert that
+    // used to be here would be a second copy of the same sentence.
+    Store.setError(friendlyClaudeError(err.message));
   } finally {
     Store.setDiscoveringTopics(false);
     inflight.discoverTopics = false;
   }
 }
 
+// A3#5 — per-query failures are counted, not announced one by one. A run where
+// 4 of 6 queries time out would otherwise fill the chat with four notices in a
+// row, on a research run that is still going.
+let failedQueries = { count: 0, lastMessage: '' };
+
 function attachStreamFor(sessionId) {
   if (activeStream) {
     activeStream.close();
     activeStream = null;
   }
+  failedQueries = { count: 0, lastMessage: '' };
   activeStream = connectStream(ApiClient.streamUrl(sessionId), {
     query_started: (data) => {
-      // Could show per-query progress; for now the panel is enough.
+      // The query is running now — the "waiting before query N" note from the
+      // pacing event no longer describes what's happening.
+      Store.setPacing(null);
+    },
+    // A3#15 — the server has been publishing these two since the pacing/stop
+    // work landed and NOTHING listened, so they were dropped on the floor.
+    // `pacing` is the 25-35s gap the runner waits between queries to stay under
+    // the Anthropic tokens-per-minute limit — without it the screen looks stuck.
+    pacing: (data) => {
+      const idx = Number(data && data.next_query_index) || 0;
+      const of  = Number(data && data.of) || 0;
+      Store.setPacing(idx && of ? { index: idx, of } : null);
+    },
+    // `stopped` fires when the query loop ends early — the user pressed Stop
+    // (possibly in ANOTHER tab), or the status changed underneath the runner.
+    // The runner still summarizes what it collected, so this is exactly the
+    // state the Stop button sets locally: summarizing, no more querying.
+    stopped: () => {
+      Store.setPacing(null);
+      Store.setSummarizing(true);
     },
     finding: (data) => {
       Store.addFinding(data);
@@ -245,6 +281,9 @@ function attachStreamFor(sessionId) {
     query_done: () => {},
     summarizing: () => {
       // Keep typing indicator; status already 'researching'.
+      // Flag the summarize step so the "restart research" button stays hidden
+      // if the status flips to research_review (early stop) before it lands.
+      Store.setSummarizing(true);
     },
     summary_ready: (data) => {
       Store.setSummary(data.content, data.draft_id);
@@ -252,23 +291,38 @@ function attachStreamFor(sessionId) {
     },
     error: (data) => {
       console.warn('Research error event:', data);
-      // Surface fatal errors to the user (rate limit, credit, auth issues).
-      // Recoverable per-query errors (data.recoverable) stay in the console.
+      // Fatal errors (credit, auth) stop the whole run — unchanged behaviour,
+      // they just travel through the chat bubble now instead of an alert.
       if (data && data.recoverable === false) {
-        const msg = (data.message || 'שגיאה לא ידועה');
-        // Friendlier messages for common Anthropic billing/quota cases.
-        let friendly = msg;
-        if (/credit balance is too low/i.test(msg)) {
-          friendly = 'אזל הקרדיט בחשבון Anthropic. כנס ל-https://console.anthropic.com/settings/billing וטען קרדיט, ואז התחל סשן חדש.';
-        } else if (/rate.?limit/i.test(msg) && /minute/i.test(msg)) {
-          friendly = 'הגעת ל-rate limit של Anthropic. המתן כדקה והפעל מחדש את המחקר.';
-        }
-        Store.setError(friendly);
-        alert('המחקר נעצר: ' + friendly);
+        // A1#12 — same translation table as every other screen (error-text.js).
+        Store.setError('המחקר נעצר: ' + friendlyClaudeError(data.message));
+        return;
       }
+      // A3#5 — a single query failed and the run continues. This used to end in
+      // the console only, so a summary built on 2 of 6 queries looked complete.
+      // Reported quietly and aggregated — never an alert, the research is still
+      // running and a popup would read as "everything collapsed".
+      failedQueries.count += 1;
+      failedQueries.lastMessage = (data && data.message) || failedQueries.lastMessage;
+      const many = failedQueries.count > 1;
+      Store.setError(
+        (many
+          ? `${failedQueries.count} שאילתות מחקר נכשלו ולא נכללו בממצאים.`
+          : 'שאילתת מחקר אחת נכשלה ולא נכללה בממצאים.')
+        + ' המחקר ממשיך — קח בחשבון שהסיכום מבוסס על פחות מקורות.'
+        // The reason comes straight off the wire, so it goes through the same
+        // table as everything else — otherwise this Hebrew bubble ends with a
+        // bare 'Server error'. friendlyClaudeError (not toHebrewError) because
+        // it's already nested inside the sentence built above.
+        + (failedQueries.lastMessage ? ' סיבה: ' + friendlyClaudeError(failedQueries.lastMessage) : '')
+      );
     },
     done: (data) => {
       Store.setResearchRunning(false);
+      Store.setPacing(null);
+      // The run is over for real (summary landed, or it failed) — a retry is
+      // allowed again from here on.
+      Store.setSummarizing(false);
       activeStream?.close();
       activeStream = null;
     }
@@ -316,7 +370,11 @@ function init() {
     try {
       const fresh = await ApiClient.getSession(s.id);
       if (fresh?.session) Store.setSession(fresh.session, { findings: fresh.findings });
-    } catch (_) { /* ignore */ }
+    } catch (_) {
+      // Swallowed ON PURPOSE — do NOT add a notice here (A1#10). This fires on
+      // every tab focus; a session deleted elsewhere would pop a dialog every
+      // time the user glances back at the tab. Same reason as the 15s poll above.
+    }
   });
 
   // (Drive sync button removed — the /sessions/:id/drive/sync endpoint
@@ -327,12 +385,23 @@ function init() {
   const resumeId = params.get('session');
   if (resumeId) {
     ApiClient.getSession(resumeId)
-      .then(({ session, findings }) => {
-        Store.setSession(session, { findings: findings || [] });
+      .then((data) => {
+        // A 401 makes ApiClient redirect to /login and resolve with undefined —
+        // destructuring it here would throw and pop the notice below mid-logout.
+        if (!data || !data.session) return;
+        Store.setSession(data.session, { findings: data.findings || [] });
         maybeAttachStream();
         proposeQueriesForCurrentSession();
       })
-      .catch(err => console.warn('Failed to resume session', err));
+      .catch(err => {
+        // A1#10 — a link to a session that was deleted (or a URL that lost a
+        // character on the way through WhatsApp) used to land on the empty
+        // "you haven't started a session yet" screen with the id still in the
+        // address bar, so every refresh retried the same dead id in silence.
+        console.warn('Failed to resume session', err);
+        alert('הסשן כבר לא קיים או שהקישור שגוי.');
+        history.replaceState(null, '', window.location.pathname);
+      });
   }
 
   // Reflect current session into the URL + react to new sessions.
@@ -378,30 +447,70 @@ function init() {
     if (status !== lastStatus) {
       lastStatus = status;
       if (status === 'writing' && !state.post.content && !state.post.generating) {
-        writingConfig.open(state.session);
+        openWritingConfigIfNoDraft(state.session, writingConfig);
       }
     }
   });
 }
 
-async function loadLatestPostDraft() {
+// Returns a promise that settles once the latest draft has been loaded (or the
+// attempt failed). Concurrent callers share the same in-flight request instead
+// of firing a second /drafts fetch.
+function loadLatestPostDraft() {
   const s = Store.get().session;
-  if (!s) return;
-  if (!['writing', 'done'].includes(s.status)) return;
-  try {
-    const { drafts } = await ApiClient.listPostDrafts(s.id);
-    if (drafts && drafts.length > 0) {
-      const latest = drafts[0];
-      Store.setPost({
-        draftId: latest.id,
-        content: latest.content,
-        lengthPref: latest.length_pref,
-        wordCount: countWordsLocal(latest.content)
-      });
+  if (!s) return Promise.resolve();
+  // Reuse the in-flight request ONLY for the same session. Returning session A's
+  // promise to a caller working on session B means B's /drafts request is never
+  // sent, and A's draft lands on B's screen.
+  if (inflight.loadDraft && inflight.loadDraftSessionId === s.id) return inflight.loadDraft;
+  if (!['writing', 'done'].includes(s.status)) return Promise.resolve();
+  const sessionId = s.id;
+  const p = (async () => {
+    try {
+      const { drafts } = await ApiClient.listPostDrafts(sessionId);
+      // The user may have switched sessions while this was in flight. Writing the
+      // draft into another session shows the wrong post and sends a foreign
+      // draft_id to the server (which filters by id + session_id and fails).
+      if (Store.get().session?.id !== sessionId) return;
+      if (drafts && drafts.length > 0) {
+        const latest = drafts[0];
+        Store.setPost({
+          draftId: latest.id,
+          content: latest.content,
+          lengthPref: latest.length_pref,
+          wordCount: countWordsLocal(latest.content)
+        });
+      }
+    } catch (err) {
+      // Never rejects — a failed load must not stall the modal decision below.
+      console.warn('failed to load post drafts', err);
     }
-  } catch (err) {
-    console.warn('failed to load post drafts', err);
+  })();
+  inflight.loadDraft = p;
+  inflight.loadDraftSessionId = sessionId;
+  p.finally(() => {
+    if (inflight.loadDraft === p) {
+      inflight.loadDraft = null;
+      inflight.loadDraftSessionId = null;
+    }
+  });
+  return p;
+}
+
+// Opens the writing-config modal ONLY after we know whether a draft exists.
+// The status flip to 'writing' is evaluated synchronously inside Store.subscribe
+// while the draft fetch is still in flight — hence the modal used to pop over an
+// existing draft (A1#7 / A4#8).
+async function openWritingConfigIfNoDraft(session, writingConfig) {
+  await loadLatestPostDraft();
+  const st = Store.get();
+  if (st.session?.id !== session.id) return;   // user moved to another session
+  if (st.post.content || st.post.generating) {
+    console.debug('[wa] draft found — writing-config modal not opened');
+    return;
   }
+  console.debug('[wa] no draft — opening writing-config modal');
+  writingConfig.open(session);
 }
 
 function countWordsLocal(text) {

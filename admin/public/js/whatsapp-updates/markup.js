@@ -116,6 +116,21 @@ export function formatMarkdown(text) {
 }
 
 /**
+ * Strip the trailing "מקורות:" / "Sources:" section from a research summary.
+ * Sources are shown separately in the research panel so we don't need them
+ * cluttering the chat bubble.
+ *
+ * Lives here (a leaf module) so both chat-view.js and selection-popover.js can
+ * use it without importing each other.
+ */
+export function stripSourcesSection(text) {
+  if (!text) return '';
+  // Match "**מקורות:**" / "*מקורות*" / "מקורות:" / "Sources:" anywhere on its own line
+  const pattern = /\n\s*\*{0,2}\s*(?:מקורות|מקור|Sources?)\s*:?\s*\*{0,2}\s*\n[\s\S]*$/i;
+  return text.replace(pattern, '').trimEnd();
+}
+
+/**
  * Replace an element's content with a markdown-formatted fragment.
  * Convenience wrapper for the common case.
  */

@@ -4,6 +4,8 @@
 
 import { Store } from './state.js';
 import { ApiClient } from './api-client.js';
+import { resetTopicSelection } from './topic-discovery.js';
+import { toHebrewError } from './error-text.js';
 
 function uid() { return 'q' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
@@ -111,11 +113,70 @@ export function renderQueriesBubble(container, queries, opts = {}) {
   addBtn.innerHTML = '<span class="material-symbols-outlined">add</span> הוסף שאילתה';
   addBtn.addEventListener('click', () => {
     queriesRef.push({ id: uid(), text: '', lang: 'en', rationale: '', enabled: true });
-    repaint();
-    // Focus the new row's text
-    const lastRow = list.lastElementChild;
-    lastRow?.querySelector('.wa-query-text')?.focus();
+    // Write through to the Store. Pushing only into the local copy meant the
+    // next chat re-render rebuilt this bubble from state.queries and the added
+    // row was gone (A2#9).
+    Store.setQueries(queriesRef.slice());
+    // Store.subscribe → chat-view re-render is SYNCHRONOUS (state.js emit), so
+    // by now this whole bubble has been rebuilt and `list` above is detached.
+    // Focus must go through the LIVE DOM, not the closure variable.
+    document.querySelector('.wa-queries-list')?.lastElementChild
+      ?.querySelector('.wa-query-text')?.focus();
   });
+
+  // A2#4 — the way back to the topic list. The discovery bubble only renders
+  // while the session has no topic_brief, and nothing ever cleared it, so a
+  // wrong pick could only be undone by opening a NEW session — i.e. paying for
+  // topic discovery all over again. The topics themselves are already stored in
+  // discovered_topics; bringing them back costs nothing.
+  //
+  // Only offered while `opts.canChangeTopic` (see chat-view): before research
+  // started, and only in the auto-topic flow where there IS a list to go back
+  // to. Clearing topic_brief in the manual flow would leave an empty screen.
+  let changeBtn = null;
+  if (opts.canChangeTopic) {
+    changeBtn = document.createElement('button');
+    changeBtn.type = 'button';
+    changeBtn.className = 'wa-queries-add';
+    changeBtn.innerHTML = '<span class="material-symbols-outlined">swap_horiz</span> החלף נושא';
+    changeBtn.addEventListener('click', async () => {
+      if (busy) return;
+      const session = Store.get().session;
+      if (!session) return;
+      // X3 — never spend money silently. Re-picking a topic triggers a fresh
+      // (paid) query-building call, so say so before, not after.
+      if (!confirm('לחזור לרשימת הנושאים ולבחור מחדש?\n\nהשאילתות שנבנו לנושא הנוכחי יימחקו, ובחירת נושא חדש תבנה שאילתות מחדש — קריאה בתשלום ל-Claude. רשימת הנושאים עצמה כבר שמורה ולא עולה כלום.')) return;
+      busy = true;
+      changeBtn.disabled = true;
+      runBtn.disabled = true;
+      const origHTML = changeBtn.innerHTML;
+      changeBtn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> מחזיר…';
+      try {
+        // Order matters. Clearing the topic FIRST means a failure on the second
+        // call leaves the session without a topic — harmless, and /select-topic
+        // wipes proposed_queries itself when the user picks again. The reverse
+        // order would leave a topic with no queries, which index.js reads as
+        // "queries are missing" and answers with a paid rebuild the user never
+        // asked for.
+        const { session: updated } = await ApiClient.patchSession(session.id, {
+          topic_brief: null,
+          focus_notes: null
+        });
+        // Old queries belong to the old topic. Leaving them is the silent
+        // failure this fix exists to avoid: queries for topic A under topic B.
+        await ApiClient.saveQueries(session.id, []);
+        resetTopicSelection();
+        Store.setSession(updated, { queries: [] });
+      } catch (err) {
+        console.error('Change topic failed', err);
+        alert(toHebrewError(err.message));
+        changeBtn.disabled = false;
+        runBtn.disabled = false;
+        changeBtn.innerHTML = origHTML;
+        busy = false;
+      }
+    });
+  }
 
   const runBtn = document.createElement('button');
   runBtn.type = 'button';
@@ -150,6 +211,7 @@ export function renderQueriesBubble(container, queries, opts = {}) {
   });
 
   actions.appendChild(addBtn);
+  if (changeBtn) actions.appendChild(changeBtn);
   actions.appendChild(runBtn);
   bubble.appendChild(actions);
 

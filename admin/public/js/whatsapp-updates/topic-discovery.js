@@ -23,6 +23,17 @@ const CATEGORY_LABEL = {
 // card the user picks. Preserves textarea state across selections naturally.
 let expansionEl = null;
 let confirmHandler = null;
+// Which session the shared expansion element currently belongs to (A2#6).
+let lastDiscoverySessionId = null;
+
+// A2#4 — "החלף נושא" clears topic_brief on the SAME session, so the guard in
+// renderDiscoveryBubble (which only resets on a session id change) would leave
+// the old card marked active with the old focus notes still typed in it. The
+// list is coming back precisely because that choice was wrong, so clear it.
+export function resetTopicSelection() {
+  expansionEl = null;
+  confirmHandler = null;
+}
 
 function ensureExpansion() {
   if (expansionEl) return expansionEl;
@@ -107,6 +118,18 @@ export function renderDiscoveryBubble(container) {
   const state = Store.get();
   const session = state.session;
   if (!session) return;
+
+  // The expansion element is shared across renders and survives a session swap.
+  // Topic ids are per-session counters ('1','2','3'…), so a leftover selection
+  // matches a card in the NEW session almost every time — the user would see a
+  // topic marked, and focus notes typed for a different session (A2#6).
+  // מאפסים רק כשמזהה הסשן השתנה — איפוס בכל ציור מוחק את מה שהמשתמש מקליד
+  // (chat-view מצייר מחדש גם ברקע: polling, SSE, auto-save).
+  if (lastDiscoverySessionId !== session.id) {
+    lastDiscoverySessionId = session.id;
+    expansionEl = null;
+    confirmHandler = null;
+  }
 
   const wrap = document.createElement('div');
   wrap.className = 'wa-msg wa-msg-assistant wa-discovery-bubble';

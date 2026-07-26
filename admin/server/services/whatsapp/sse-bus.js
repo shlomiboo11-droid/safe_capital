@@ -85,7 +85,13 @@ function publish(sessionId, event, data) {
 }
 
 /**
- * Close all subscribers and clear the buffer (e.g. on session deletion).
+ * Close all subscribers and clear the buffer.
+ *
+ * A3#11 — call this ONLY when the session itself is gone (DELETE /sessions/:id).
+ * Do NOT call it when a research run finishes "for symmetry": the ring buffer
+ * above is what replays `summary_ready` to a tab whose EventSource dropped
+ * (backgrounded tab, network blip). Dropping it at the end of a run means the
+ * user never sees the summary they paid for, and nothing reports an error.
  */
 function destroy(sessionId) {
   const ch = channels.get(sessionId);

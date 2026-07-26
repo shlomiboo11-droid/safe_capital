@@ -3,6 +3,7 @@
 
 import { Store } from './state.js';
 import { ApiClient } from './api-client.js';
+import { postRawRange } from './raw-text-map.js';
 
 const QUICK_ACTIONS = [
   { key: 'verify',   label: 'תאמת מחקרית', icon: 'fact_check' },
@@ -16,6 +17,7 @@ const QUICK_ACTIONS = [
 let popoverEl = null;
 let currentTarget = null;
 let savedSelectionText = '';
+let savedSelectionStart = -1;   // index of the selection inside the RAW post text
 
 function ensurePopover() {
   if (popoverEl) return popoverEl;
@@ -92,6 +94,7 @@ function hidePopover() {
   const input = popoverEl.querySelector('.wa-popover-input');
   if (input) input.value = '';
   savedSelectionText = '';
+  savedSelectionStart = -1;
   currentTarget = null;
 }
 
@@ -106,10 +109,18 @@ async function submitEdit(action, instruction) {
   if (!savedSelectionText || !currentTarget) return;
   const state = Store.get();
   if (!state.session || !state.post.draftId) return;
+  // Snapshot — an outside click during the request calls hidePopover().
+  const selText = savedSelectionText;
+  const selStart = savedSelectionStart;
+
   setBusy(true);
   try {
     const result = await ApiClient.editPostSelection(state.session.id, state.post.draftId, {
-      selection_text: savedSelectionText,
+      selection_text: selText,
+      // A4#3 / A4#4 — the exact index in the stored text. The server splices
+      // there instead of searching, so the third "אין ריבית" is the one that
+      // changes and a `$&` in the answer can't duplicate the post (A4#14).
+      selection_start: selStart,
       action,
       instruction
     });
@@ -130,13 +141,17 @@ export function attachSelectionPopoverForPost(el) {
   ensurePopover();
 
   function maybeShow() {
+    if (el.dataset.editing === '1') return;   // free-edit in progress
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
     const range = sel.getRangeAt(0);
     if (!el.contains(range.commonAncestorContainer)) return;
-    const text = sel.toString().trim();
-    if (text.length < 3) return;
-    savedSelectionText = text;
+    // A4#3 — sel.toString() drops the `*` markers, so it never matched the
+    // stored text. Read the RAW slice the selection covers instead.
+    const raw = postRawRange(el, range, Store.get().post.content || '');
+    if (!raw || raw.text.length < 3) return;
+    savedSelectionText = raw.text;
+    savedSelectionStart = raw.start;
     currentTarget = el;
     positionPopover(range.getBoundingClientRect());
     popoverEl.querySelector('.wa-popover-input')?.focus();

@@ -18,6 +18,7 @@
 const pool = require('../../db');
 const { callClaude, estimateCost, NATIVE_WEB_SEARCH, MODELS } = require('../claude-client');
 const { getCachedSystemBlocks } = require('./voice-guide-loader');
+const { locateSelection, spliceAt } = require('./selection-splice');
 
 // ── Length targets ──────────────────────────────────────────────────
 
@@ -38,6 +39,39 @@ const UPDATE_TYPE_LABELS = {
   memorial:    'יום זיכרון / רגעי כובד',
   other:       'אחר'
 };
+
+// ── final_post sync ─────────────────────────────────────────────────
+
+/**
+ * A4#11 — "שמור כסופי" MARKS, it does not lock (product decision, 26.07.2026).
+ * Every edit path therefore has to carry the final version along with it, or
+ * the archived copy keeps text the user already replaced: drive-sync.js exports
+ * `session.final_post`, not the newest draft.
+ *
+ * This used to be an inline block in manualEditPost only, which is why the
+ * other edit paths (quick action, selection revise, alternative) silently left
+ * `final_post` behind.
+ *
+ * FIVE call sites, and that is the complete list — verified by grepping every
+ * `INSERT INTO whatsapp_drafts` in the server: the only ones that write
+ * kind='post'/'alternative' are generatePost, generateAlternative,
+ * applyQuickAction, reviseSelection and manualEditPost, all in this file.
+ * (claude-research-provider.js also inserts drafts, but only kind =
+ * 'research_summary', which never becomes the post.) finalizePost writes
+ * `final_post` itself. Any new path that produces post text must call this too.
+ *
+ * The condition is deliberately unchanged from the original inline version:
+ * `status === 'done'` covers the normal finalized session, and `final_post`
+ * covers a session that was finalized and then moved on. Before finalizing,
+ * both are falsy and nothing is written.
+ */
+async function syncFinalPost(session, content) {
+  if (!(session.status === 'done' || session.final_post)) return;
+  await pool.query(
+    `UPDATE whatsapp_sessions SET final_post = $1, updated_at = NOW() WHERE id = $2`,
+    [content, session.id]
+  );
+}
 
 // ── Builders ────────────────────────────────────────────────────────
 
@@ -141,6 +175,15 @@ async function generatePost(session, lengthKey) {
     ]
   );
 
+  // A4#11 — the fifth path, and the least obvious one. "ערוך הגדרות וכתוב
+  // מחדש" (writing-view.js) and the length switcher both POST to
+  // /sessions/:id/write, which lands here — with no status gate, so it is
+  // reachable on a session that is already 'done'. The screen and the draft
+  // list then hold the new text while `final_post` still held the replaced
+  // one, and drive-sync.js archives `final_post`. Same condition as the other
+  // four call sites: before finalizing, this writes nothing.
+  await syncFinalPost(session, content);
+
   return {
     draft_id: ins.rows[0].id,
     content,
@@ -202,6 +245,10 @@ async function generateAlternative(session, lengthKey) {
       session.id
     ]
   );
+
+  // A4#11 — an alternative generated after "שמור כסופי" becomes the post on
+  // screen, so the archived copy has to move with it.
+  await syncFinalPost(session, content);
 
   return {
     draft_id: ins.rows[0].id,
@@ -276,6 +323,10 @@ ${draft.content}
     [cost, (resp.usage.input_tokens || 0) + (resp.usage.output_tokens || 0), session.id]
   );
 
+  // A4#11 — a quick action after "שמור כסופי" replaces the post on screen, so
+  // it has to replace the archived copy too.
+  await syncFinalPost(session, content);
+
   return {
     draft_id: ins.rows[0].id,
     content,
@@ -306,8 +357,14 @@ async function reviseSelection(session, draftId, args) {
 
   const selection = (args.selection_text || '').trim();
   if (!selection) throw new Error('selection_text is required');
-  if (!draft.content.includes(selection)) {
-    throw new Error('Selection not found in current post — may have been edited.');
+
+  // A4#3 / A4#4 — locate the selection by the exact index the client measured
+  // against this very text, not by searching for it. Searching used to fail
+  // outright whenever the selection crossed a `*bold*` marker, and when it did
+  // match it hit the FIRST occurrence rather than the one the user marked.
+  const selStart = locateSelection(draft.content, selection, args.selection_start);
+  if (selStart < 0) {
+    throw new Error('הקטע שסומן כבר לא תואם לטקסט השמור. רענן את הדף ונסה שוב.');
   }
 
   const action = args.action || 'freeform';
@@ -344,7 +401,10 @@ ${selection}
   newText = newText.replace(/^```[\w]*\n?/, '').replace(/```$/, '').trim();
   newText = newText.replace(/^["“'״]+|["”'״]+$/g, '').trim();
 
-  const newFull = draft.content.replace(selection, newText);
+  // A4#14 — slice+concat, never String.replace: `replace` with a string argument
+  // interprets `$&` / `` $` `` in the replacement and would splice half the post
+  // back into itself.
+  const newFull = spliceAt(draft.content, selStart, selection.length, newText);
   const cost = estimateCost(MODELS.SONNET, resp.usage);
 
   const ins = await pool.query(
@@ -369,6 +429,10 @@ ${selection}
      WHERE id = $3`,
     [cost, (resp.usage.input_tokens || 0) + (resp.usage.output_tokens || 0), session.id]
   );
+
+  // A4#11 — same reason as the quick-action path: the spliced text is what the
+  // user now sees, so it must also be what gets archived.
+  await syncFinalPost(session, newFull);
 
   return {
     draft_id: ins.rows[0].id,
@@ -396,6 +460,9 @@ async function manualEditPost(session, draftId, content) {
      RETURNING id`,
     [session.id, cur.rows[0].length_pref, content, draftId]
   );
+
+  await syncFinalPost(session, content);
+
   return {
     draft_id: ins.rows[0].id,
     content,

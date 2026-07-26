@@ -6,6 +6,16 @@
 import { Store } from './state.js';
 import { ApiClient } from './api-client.js';
 import { attachSelectionPopoverForPost } from './selection-popover-post.js';
+import { serializeDom } from './raw-text-map.js';
+import { toHebrewError } from './error-text.js';
+
+// A4#6 — ONE paid post-rewrite at a time, for the whole bubble.
+// Each button only ever disabled itself, so pressing "קצר ב-30%" and then
+// "הוסף CTA" fired two billed calls that both started from the SAME source
+// draft; the slower one overwrote the faster one and that result vanished —
+// paid for, never seen. Must be reset in `finally` on BOTH handlers: leaving it
+// stuck on a failure would freeze every action until a page refresh.
+let postActionInFlight = false;
 
 const LENGTH_TARGETS = {
   short:  { min: 70,  max: 110, label: 'קצר' },
@@ -157,7 +167,9 @@ async function onLengthChange(newLength) {
     });
   } catch (err) {
     console.error('length change failed', err);
-    alert('שגיאה: ' + err.message);
+    // A1#12 / A4#10 — the one alert in this file the translation pass missed.
+    // Every other catch here already goes through error-text.js.
+    alert(toHebrewError(err.message));
     Store.setPostGenerating(false);
   }
 }
@@ -165,6 +177,8 @@ async function onLengthChange(newLength) {
 async function onQuickAction(actionKey, btn) {
   const state = Store.get();
   if (!state.session || !state.post.draftId) return;
+  if (postActionInFlight) return;   // A4#6
+  postActionInFlight = true;
   btn.disabled = true;
   const orig = btn.innerHTML;
   btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> <span class="wa-quick-label">חושב…</span>';
@@ -177,8 +191,9 @@ async function onQuickAction(actionKey, btn) {
     });
   } catch (err) {
     console.error('quick action failed', err);
-    alert('שגיאה: ' + err.message);
+    alert(toHebrewError(err.message));
   } finally {
+    postActionInFlight = false;
     btn.disabled = false;
     btn.innerHTML = orig;
   }
@@ -187,6 +202,8 @@ async function onQuickAction(actionKey, btn) {
 async function onAlternative(btn) {
   const state = Store.get();
   if (!state.session) return;
+  if (postActionInFlight) return;   // A4#6
+  postActionInFlight = true;
   btn.disabled = true;
   const orig = btn.innerHTML;
   btn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span> מייצר…';
@@ -199,32 +216,91 @@ async function onAlternative(btn) {
     });
   } catch (err) {
     console.error('alternative failed', err);
-    alert('שגיאה: ' + err.message);
+    alert(toHebrewError(err.message));
   } finally {
+    postActionInFlight = false;
     btn.disabled = false;
     btn.innerHTML = orig;
   }
 }
 
+// A4#12 — `navigator.clipboard` does not exist in an insecure context (plain
+// HTTP on a LAN IP — i.e. opening the admin from a phone on the office
+// network). `await navigator.clipboard.writeText(...)` threw a TypeError, the
+// old catch showed "שגיאה בהעתקה" and left the user with no way to get the
+// post out, at the exact moment the post is finally ready.
+//
+// Order: modern API when it's actually available → the legacy execCommand path
+// (works over plain HTTP) → give up and hand the user a selection to Ctrl+C.
+// The secure path MUST stay first — do not "simplify" this to execCommand only.
+async function copyTextToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (err) {
+    console.warn('clipboard API failed, falling back', err);
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    // Off-screen and removed immediately — nothing visible changes on the page.
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);   // iOS needs the explicit range
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (ok) return true;
+  } catch (err) {
+    console.warn('execCommand copy failed', err);
+  }
+  return false;
+}
+
+function selectPostBody() {
+  const body = document.querySelector('.wa-post-body');
+  if (!body) return false;
+  try {
+    const range = document.createRange();
+    range.selectNodeContents(body);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    return true;
+  } catch (_) { return false; }
+}
+
 async function onCopy(btn) {
   const text = Store.get().post.content;
   if (!text) return;
-  try {
-    await navigator.clipboard.writeText(text);
+  const copied = await copyTextToClipboard(text);
+  if (copied) {
     const orig = btn.innerHTML;
     btn.innerHTML = '<span class="material-symbols-outlined">check</span> הועתק!';
     setTimeout(() => { btn.innerHTML = orig; }, 1800);
-  } catch (err) {
-    console.error('copy failed', err);
-    alert('שגיאה בהעתקה');
+    return;
   }
+  const selected = selectPostBody();
+  alert(selected
+    ? 'לא ניתן להעתיק אוטומטית בחיבור הזה — הטקסט מסומן, העתק עם Ctrl+C (או לחיצה ארוכה בנייד).'
+    : 'לא ניתן להעתיק אוטומטית בחיבור הזה — סמן את הטקסט של הפוסט והעתק ידנית.');
 }
 
+// A4#2 / A4#13 — free edit on the post is a transparent round-trip (decision 5).
+// The bold text stays bold while editing; `serializeDom` rebuilds the raw text
+// from the DOM — `<strong>` back to a SINGLE `*…*` (exactly what
+// renderWhatsappFormatted consumed), and the browser's <div>/<br> line breaks
+// back to real "\n". `body.textContent` did neither.
 function onFreeEdit(body, copyBtn, altBtn, freeBtn) {
   const editing = body.dataset.editing === '1';
   if (!editing) {
     body.dataset.editing = '1';
-    body.dataset.originalText = body.textContent;
+    body.dataset.originalText = Store.get().post.content || '';
     body.contentEditable = 'true';
     body.classList.add('wa-post-editing');
     body.focus();
@@ -232,7 +308,15 @@ function onFreeEdit(body, copyBtn, altBtn, freeBtn) {
     copyBtn.disabled = true;
     altBtn.disabled = true;
   } else {
-    const newText = body.textContent;
+    const newText = serializeDom(body, { bold: true });
+    // A4#9 — an empty post would be saved as a new draft and the bubble would
+    // vanish with no way back. Stay in edit mode instead. A lone emoji counts
+    // as content: the test is "no non-whitespace character".
+    if (!/\S/.test(newText)) {
+      alert('אי אפשר לשמור פוסט ריק. הקלד תוכן או שחזר את הטקסט הקודם.');
+      body.focus();
+      return;
+    }
     body.contentEditable = 'false';
     body.classList.remove('wa-post-editing');
     body.dataset.editing = '';
@@ -249,7 +333,7 @@ function onFreeEdit(body, copyBtn, altBtn, freeBtn) {
       })
       .catch((err) => {
         console.error('manual edit failed', err);
-        alert('שגיאה: ' + err.message);
+        alert(toHebrewError(err.message));
       })
       .finally(() => {
         freeBtn.innerHTML = '<span class="material-symbols-outlined">edit_note</span> ערוך טקסט חופשית';
@@ -272,7 +356,7 @@ async function onFinalize(btn) {
     Store.setSession(fresh.session, { findings: fresh.findings });
   } catch (err) {
     console.error('finalize failed', err);
-    alert('שגיאה: ' + err.message);
+    alert(toHebrewError(err.message));
     btn.disabled = false;
     btn.innerHTML = '<span class="material-symbols-outlined">lock</span> שמור כסופי';
   }

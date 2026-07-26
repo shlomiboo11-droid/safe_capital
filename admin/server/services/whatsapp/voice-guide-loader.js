@@ -65,12 +65,16 @@ function getCachedSystemBlocks(extraIntro) {
     });
   }
 
-  // Voice guide block — cached.
-  blocks.push({
-    type: 'text',
-    text: voice,
-    cache_control: { type: 'ephemeral' }
-  });
+  // Voice guide block — cached. Guarded like the business block above: an empty
+  // text block is rejected by the Messages API, so a missing/unreadable
+  // voice-guide.md would fail every writing call instead of degrading.
+  if (voice) {
+    blocks.push({
+      type: 'text',
+      text: voice,
+      cache_control: { type: 'ephemeral' }
+    });
+  }
 
   return blocks;
 }

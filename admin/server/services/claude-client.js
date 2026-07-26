@@ -130,22 +130,85 @@ async function callClaude(opts) {
 }
 
 /**
+ * Scan `text` for every brace/bracket-balanced block, in order of appearance.
+ * String- and escape-aware, so braces inside JSON strings never break nesting.
+ * A block that never closes is skipped (we advance one char and keep looking),
+ * which is what lets a valid answer survive an unbalanced brace in the preamble.
+ */
+function scanBalancedBlocks(text) {
+  const blocks = [];
+  let i = 0;
+  let starts = 0;
+  while (i < text.length && starts < 200) {
+    const ch = text[i];
+    if (ch !== '{' && ch !== '[') { i++; continue; }
+    starts++;
+    let depth = 0, inStr = false, esc = false, end = -1;
+    for (let j = i; j < text.length; j++) {
+      const c = text[j];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (c === '\\') esc = true;
+        else if (c === '"') inStr = false;
+        continue;
+      }
+      if (c === '"') { inStr = true; continue; }
+      if (c === '{' || c === '[') depth++;
+      else if (c === '}' || c === ']') {
+        depth--;
+        if (depth === 0) { end = j; break; }
+      }
+    }
+    if (end === -1) { i++; continue; }   // unterminated — keep scanning inward
+    blocks.push({ text: text.slice(i, end + 1), isObject: ch === '{' });
+    i = end + 1;
+  }
+  return blocks;
+}
+
+/**
  * Try to extract the first JSON object/array from a model response.
  * Handles fenced ```json``` blocks as well as bare JSON.
+ *
+ * A2#2 — the previous version used greedy /\{[\s\S]*\}/ plus /\[[\s\S]*\]/ and
+ * failed on three separate shapes, one of which happens even when Claude answers
+ * perfectly:
+ *   1. a truncated answer (max_tokens) → no closing brace → null
+ *   2. prose containing a brace + a list → the object match spanned from the
+ *      FIRST brace in the prose to the LAST brace of the answer (unparsable),
+ *      and the array fallback then returned the inner ARRAY, so callers read
+ *      `.topics` / `.queries` off an array and silently got an empty list
+ *   3. a polite preamble containing a brace followed by a completely valid
+ *      answer → same greedy span → same silent empty list
+ * Balanced scanning fixes 2 and 3 at the root; 1 is unrecoverable here and is
+ * reported by the callers instead of being swallowed as "success with 0 items".
+ *
+ * A real object always wins over a bare array: both callers in this project read
+ * a named key off a wrapper object, so a stray parsable array in the prose must
+ * never be mistaken for the answer.
  */
 function extractJson(text) {
   if (!text) return null;
-  const fence = text.match(/```json\s*([\s\S]*?)```/i) || text.match(/```\s*([\s\S]*?)```/);
   const candidates = [];
-  if (fence) candidates.push(fence[1]);
-  const obj = text.match(/\{[\s\S]*\}/);
-  const arr = text.match(/\[[\s\S]*\]/);
-  if (obj) candidates.push(obj[0]);
-  if (arr) candidates.push(arr[0]);
-  for (const c of candidates) {
-    try { return JSON.parse(c); } catch (_) { /* try next */ }
+
+  // Fenced blocks first — an explicit delimiter is the strongest signal.
+  const fenceRe = /```(?:json)?\s*([\s\S]*?)```/gi;
+  let m;
+  while ((m = fenceRe.exec(text)) !== null) {
+    const inner = (m[1] || '').trim();
+    if (inner) candidates.push({ text: inner, isObject: inner[0] === '{' });
   }
-  return null;
+  for (const b of scanBalancedBlocks(text)) candidates.push(b);
+
+  let firstArray = null;
+  for (const c of candidates) {
+    let parsed;
+    try { parsed = JSON.parse(c.text); } catch (_) { continue; }
+    if (!parsed || typeof parsed !== 'object') continue;
+    if (!Array.isArray(parsed)) return parsed;
+    if (!firstArray) firstArray = parsed;
+  }
+  return firstArray;
 }
 
 // ── Pricing (USD per 1M tokens, rough est. — refreshable) ───────────

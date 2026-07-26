@@ -11,6 +11,17 @@ const sseBus = require('../services/whatsapp/sse-bus');
 // restart, deploy), any session left in 'researching' status is orphaned —
 // no runner is actually working on it. Mark them as 'research_review' on
 // boot so the UI can recover instead of spinning forever.
+//
+// A3#7 — the age filter below is NOT optional, do not remove it. Without it
+// this reclaims sessions that are genuinely running right now in ANOTHER
+// process (dev `node --watch` restart, a Vercel cold start next to a live
+// instance): the runner sees the status flip, stops after the current query,
+// and hands the user a partial summary that looks complete.
+// Why 20 minutes and not 5: `updated_at` is only touched BETWEEN queries
+// (claude-research-provider.js), and a single slow query can legitimately run
+// ~17.5 minutes (claude-client.js: 4 retries × a 4-minute timeout + backoff)
+// without any heartbeat. A shorter window would still cut live research off,
+// just more rarely — which is worse, because it looks fixed.
 (async () => {
   try {
     const r = await pool.query(
@@ -18,6 +29,7 @@ const sseBus = require('../services/whatsapp/sse-bus');
          SET status = 'research_review',
              updated_at = NOW()
        WHERE status = 'researching'
+         AND updated_at < NOW() - INTERVAL '20 minutes'
        RETURNING id`
     );
     console.log(`[whatsapp] Startup cleanup: reclaimed ${r.rowCount} orphaned 'researching' sessions.`);
@@ -113,9 +125,14 @@ router.get('/sessions', async (req, res) => {
     );
 
     const countMap = {};
-    for (const r of counts.rows) countMap[r.status] = r.c;
+    let total = 0;
+    for (const r of counts.rows) { countMap[r.status] = r.c; total += r.c; }
 
-    res.json({ sessions: result.rows, counts: countMap });
+    // A1#11 — the LIMIT above is a real ceiling and the client search only ever
+    // sees what came back. `total` lets it say "showing the newest N of M"
+    // instead of implying an older session simply doesn't exist. It comes from
+    // the counts query that was already running here, so no extra DB work.
+    res.json({ sessions: result.rows, counts: countMap, total });
   } catch (err) {
     console.error('List whatsapp sessions error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -154,6 +171,14 @@ router.get('/sessions/:id', async (req, res) => {
       drafts: draftsRes.rows
     });
   } catch (err) {
+    // A1#10 — a link that lost a character on its way through WhatsApp is not
+    // a valid UUID, so Postgres rejects the cast with 22P02 (invalid_text_
+    // representation) and this used to answer 500 'Server error'. It is a
+    // missing session, not a broken server — same answer as an id that simply
+    // isn't there, so the client shows one honest message for both.
+    if (err && err.code === '22P02') {
+      return res.status(404).json({ error: 'Session not found' });
+    }
     console.error('Get whatsapp session error:', err);
     res.status(500).json({ error: 'Server error' });
   }
@@ -256,6 +281,12 @@ router.delete('/sessions/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Session not found' });
     }
+    // A3#11 — the SSE channel (subscribers + a 100-event replay buffer) lived
+    // in memory forever after the row was gone. Only ON DELETE: closing a
+    // channel when a run ENDS would break reconnect recovery, because that
+    // buffer is exactly what replays `summary_ready` to a tab that was
+    // backgrounded. See the note above destroy() in sse-bus.js.
+    sseBus.destroy(req.params.id);
     res.json({ ok: true });
   } catch (err) {
     console.error('Delete whatsapp session error:', err);
@@ -320,7 +351,7 @@ router.post('/sessions/:id/discover-topics', async (req, res) => {
       return res.status(404).json({ error: 'Session not found' });
     }
     const session = sessionRes.rows[0];
-    const { topics, usage, cost } = await researchProvider.discoverTopics(session);
+    const { topics, usage, cost, truncated } = await researchProvider.discoverTopics(session);
 
     await pool.query(
       `UPDATE whatsapp_sessions
@@ -336,6 +367,18 @@ router.post('/sessions/:id/discover-topics', async (req, res) => {
         session.id
       ]
     );
+
+    // A2#2 — zero topics is a failure, not a result. Reporting it as success
+    // left the screen blank with nothing to click and no explanation, and a
+    // refresh silently paid for a second run. The cost above is still recorded
+    // (the call really happened) — only the response changes.
+    if (topics.length === 0) {
+      return res.status(502).json({
+        error: truncated
+          ? 'גילוי הנושאים נכשל — התשובה מ-Claude נקטעה באמצע. נסה שוב.'
+          : 'גילוי הנושאים נכשל — לא הצלחתי לפענח את התשובה מ-Claude. נסה שוב.'
+      });
+    }
 
     res.json({ topics, cost });
   } catch (err) {
@@ -420,7 +463,7 @@ router.post('/sessions/:id/select-topic', async (req, res) => {
 router.post('/sessions/:id/topic', async (req, res) => {
   try {
     const sessionRes = await pool.query(
-      `SELECT id, topic_brief FROM whatsapp_sessions WHERE id = $1`,
+      `SELECT id, title, topic_brief, focus_notes FROM whatsapp_sessions WHERE id = $1`,
       [req.params.id]
     );
     if (sessionRes.rows.length === 0) {
@@ -428,11 +471,19 @@ router.post('/sessions/:id/topic', async (req, res) => {
     }
     const session = sessionRes.rows[0];
 
-    const { title, queries, usage, cost } = await researchProvider.proposeQueries(session);
+    const { title, queries, usage, cost, truncated } = await researchProvider.proposeQueries(session);
 
-    // Update the session title only if Claude returned a non-empty one.
-    // The existing title (auto-generated 'סשן · date') stays as a safe fallback.
-    if (title && title.length >= 2) {
+    // A1#9 — the bot may replace the title ONLY while it is still the automatic
+    // stamp this server writes on create ('סשן · <date>', see POST /sessions).
+    // It used to overwrite whatever was there, which erased the ' · עותק <date>'
+    // marker a duplicate is created with — and since a duplicate researches the
+    // same topic, both rows ended up with near-identical titles and the list
+    // showed what looked like the same session twice. Anchored at both ends on
+    // purpose: a duplicate of an untitled session reads 'סשן · 26.7.2026 · עותק
+    // 26.7.2026', which starts with the stamp but must NOT be replaced.
+    // Same protection covers a title the user renamed by hand.
+    const isAutoStamp = /^סשן · [\d.]+$/.test(session.title || '');
+    if (title && title.length >= 2 && isAutoStamp) {
       await pool.query(
         `UPDATE whatsapp_sessions
            SET title = $1,
@@ -464,6 +515,17 @@ router.post('/sessions/:id/topic', async (req, res) => {
           session.id
         ]
       );
+    }
+
+    // A2#2 — the second dead screen, same root cause. An empty query list was
+    // saved as "success" and the chat showed nothing after the user picked a
+    // topic. The cost above is still recorded — only the response changes.
+    if (queries.length === 0) {
+      return res.status(502).json({
+        error: truncated
+          ? 'בניית שאילתות המחקר נכשלה — התשובה מ-Claude נקטעה באמצע. נסה שוב.'
+          : 'בניית שאילתות המחקר נכשלה — לא הצלחתי לפענח את התשובה מ-Claude. נסה שוב.'
+      });
     }
 
     res.json({ title, queries, cost });
@@ -509,6 +571,38 @@ router.post('/sessions/:id/queries', async (req, res) => {
   }
 });
 
+// Sessions with a research run in flight (this process only). The entry covers
+// the WHOLE run — the query loop AND the summarize step that follows it.
+// /research/stop flips status to 'research_review' while summarizeResearch is
+// still working, so status alone can't tell whether a run is over; without this
+// set a second /research/start in that window would double-charge the API and
+// later overwrite a summary the user may already have edited.
+//
+// ⚠️ PARTIAL PROTECTION IN PRODUCTION — READ BEFORE RELYING ON IT.
+// This Set lives in ONE process's memory. `admin/vercel.json` deploys the
+// server as @vercel/node, i.e. serverless with several concurrent instances,
+// so two /research/start requests that land on different instances will BOTH
+// pass this check and both runs will be billed. It is fully effective only on
+// localhost and on a single-instance deployment — which is why it is kept
+// rather than removed, but it is not a guarantee.
+//
+// The complete fix is an ATOMIC DB LOCK, not a bigger in-memory structure:
+// a conditional write such as
+//   UPDATE whatsapp_sessions SET status = 'researching', research_started_at = NOW()
+//    WHERE id = $1 AND status <> 'researching' RETURNING id
+// and treating "0 rows" as the 409 below. That is a schema change and was
+// deliberately raised as a decision for the user (FIX-PLAN-MASTER.md §2,
+// decision 3) instead of being slipped in. Until that decision is made, do NOT
+// add further in-memory locks anywhere in this feature — they read as real
+// protection while providing none in production.
+//
+// Independent of the run-recovery fix: the `finally` in runResearchAsync owns
+// the status UPDATE and this Set's release separately. The UPDATE is wrapped in
+// its own try/catch so a DB failure there still reaches the delete below, and
+// the UPDATE's `AND status = 'researching'` guard does not consult this Set.
+// Either mechanism can be changed without breaking the other.
+const runningSessions = new Set();
+
 // POST /api/whatsapp/sessions/:id/research/start
 // Kick off research execution in the background. Client opens /stream to follow.
 router.post('/sessions/:id/research/start', async (req, res) => {
@@ -521,6 +615,9 @@ router.post('/sessions/:id/research/start', async (req, res) => {
       return res.status(404).json({ error: 'Session not found' });
     }
     const session = sessionRes.rows[0];
+    if (runningSessions.has(String(session.id))) {
+      return res.status(409).json({ error: 'מחקר כבר רץ עבור הסשן הזה. המתן לסיכום לפני שמתחילים ריצה חדשה.' });
+    }
     const queries = Array.isArray(session.proposed_queries) ? session.proposed_queries : [];
     if (queries.filter(q => q.enabled !== false).length === 0) {
       return res.status(400).json({ error: 'No enabled queries to run' });
@@ -531,6 +628,10 @@ router.post('/sessions/:id/research/start', async (req, res) => {
       `UPDATE whatsapp_sessions SET status = 'researching', updated_at = NOW() WHERE id = $1`,
       [session.id]
     );
+
+    // Register BEFORE responding — a double-click must not slip a second run
+    // past the guard above while this one is still being set up.
+    runningSessions.add(String(session.id));
 
     // Respond fast — research runs async in this process.
     res.json({ ok: true, stream_url: `/api/whatsapp/sessions/${session.id}/stream` });
@@ -558,6 +659,32 @@ async function runResearchAsync(session, queries) {
   } catch (err) {
     sseBus.publish(session.id, 'error', { message: err.message, recoverable: false });
     sseBus.publish(session.id, 'done', { reason: 'error' });
+  } finally {
+    // A1#1 ≡ A3#1 — safety net. Every path out of this function is the end of
+    // the run, so the row must never be left on 'researching' with nobody
+    // working on it: the catch above only publishes to SSE, and a summarize
+    // failure (network drop, credit exhausted after the last query) used to
+    // leave the session spinning forever after a refresh.
+    //
+    // `AND status = 'researching'` is the heart of this, not decoration. On
+    // every healthy path the status has already moved on — summarize wrote
+    // 'research_review', /research/stop wrote it, /research/accept may have
+    // written 'writing' mid-run — and this UPDATE must match 0 rows there.
+    // Without the condition it would drag a user who already advanced to
+    // writing back to research review.
+    try {
+      await pool.query(
+        `UPDATE whatsapp_sessions
+            SET status = 'research_review', updated_at = NOW()
+          WHERE id = $1 AND status = 'researching'`,
+        [session.id]
+      );
+    } catch (dbErr) {
+      console.error('Research finalize status update failed:', dbErr);
+    }
+    // Released only after summarizeResearch finished (or threw) — that is the
+    // real end of the run, not the end of the query loop.
+    runningSessions.delete(String(session.id));
   }
 }
 
@@ -572,10 +699,19 @@ const activeRuns = new Map(); // sessionId -> abort flag (in-process only)
 router.post('/sessions/:id/research/stop', async (req, res) => {
   try {
     activeRuns.set(req.params.id, true);
-    await pool.query(
-      `UPDATE whatsapp_sessions SET status = 'research_review', updated_at = NOW() WHERE id = $1`,
+    // A3#14 — RETURNING + the 404 below. Without them this answered
+    // { ok: true } for any id, including one that was never in the system, so a
+    // stop that did nothing at all was indistinguishable from a real one.
+    // Same pattern as /queries, /edit-selection and /accept in this file.
+    const result = await pool.query(
+      `UPDATE whatsapp_sessions SET status = 'research_review', updated_at = NOW()
+        WHERE id = $1
+        RETURNING id`,
       [req.params.id]
     );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
     sseBus.publish(req.params.id, 'stopped', { reason: 'user_requested' });
     res.json({ ok: true });
   } catch (err) {
@@ -640,10 +776,32 @@ router.post('/sessions/:id/research/accept', async (req, res) => {
       [req.params.id]
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Session not found or not ready' });
+      // A1#5 — 0 rows meant two completely different things and both answered
+      // 404 'Session not found or not ready'. When the session is already in
+      // 'writing'/'done' that message is simply false: the session exists, the
+      // step is just behind us. The client hides the button in those states now;
+      // this is the server half, for a stale tab that still has it.
+      const exists = await pool.query(
+        `SELECT status FROM whatsapp_sessions WHERE id = $1`,
+        [req.params.id]
+      );
+      if (exists.rows.length === 0) {
+        return res.status(404).json({ error: 'הסשן כבר לא קיים.' });
+      }
+      // Two ways to be "not ready", and they need opposite sentences: past the
+      // step ('writing'/'done') or not there yet ('onboarding'/'archived').
+      const cur = exists.rows[0].status;
+      return res.status(409).json({
+        error: ['writing', 'done'].includes(cur)
+          ? 'הסשן כבר עבר לשלב הכתיבה — אין צורך לאשר את המחקר שוב.'
+          : 'הסשן עדיין לא בשלב סקירת המחקר — אין מה לאשר.'
+      });
     }
     res.json({ session: result.rows[0] });
   } catch (err) {
+    if (err && err.code === '22P02') {
+      return res.status(404).json({ error: 'הסשן כבר לא קיים.' });
+    }
     console.error('Accept research error:', err);
     res.status(500).json({ error: 'Server error' });
   }

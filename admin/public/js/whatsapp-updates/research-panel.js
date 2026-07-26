@@ -57,10 +57,17 @@ export function initResearchPanel() {
     if (listEl) {
       listEl.innerHTML = '';
       // De-duplicate findings by source_url (one entry per source, latest note wins)
+      // A3#10 — the same row arrives as `finding_id` over SSE and as `id` when
+      // it's re-read from the DB (both are whatsapp_research_findings.id, only
+      // the field name differs). Reading `finding_id` alone made every
+      // source-less finding key on 'finding-undefined' after a refresh, so they
+      // all collapsed into one row and the research looked far thinner than it
+      // was. Accepting both names also stops the SSE copy and the DB copy of one
+      // finding from showing up twice (A3#12).
       const byUrl = new Map();
       for (const f of state.findings) {
         if (!f) continue;
-        const key = f.source_url || ('finding-' + f.finding_id);
+        const key = f.source_url || ('finding-' + (f.finding_id || f.id));
         byUrl.set(key, f);
       }
       const items = Array.from(byUrl.values()).slice(-30);

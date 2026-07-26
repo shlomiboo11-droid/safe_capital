@@ -5,10 +5,15 @@ export function connectStream(url, handlers = {}) {
   const es = new EventSource(url);
 
   // Default handlers
+  // A3#15 — 'stopped' and 'pacing' were missing here. The server published both
+  // (routes/whatsapp.js on stop, claude-research-provider.js between queries)
+  // and the browser threw them away without a trace, which is why "עצור מחקר"
+  // pressed in one tab did nothing visible in another and the 25-35s gap
+  // between queries looked like the run had died.
   const eventNames = [
     'query_started', 'finding', 'tokens', 'query_done',
     'consultation_needed', 'summarizing', 'summary_ready',
-    'error', 'done'
+    'pacing', 'stopped', 'error', 'done'
   ];
 
   for (const name of eventNames) {

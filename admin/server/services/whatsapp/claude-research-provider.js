@@ -17,6 +17,7 @@ const pool = require('../../db');
 const { callClaude, extractJson, estimateCost, NATIVE_WEB_SEARCH, MODELS } = require('../claude-client');
 const { getBusinessSystemBlocks, loadBusinessContext } = require('./business-context-loader');
 const sseBus = require('./sse-bus');
+const { locateSelection, spliceAt } = require('./selection-splice');
 
 // ── Prompts ─────────────────────────────────────────────────────────
 
@@ -222,18 +223,33 @@ JSON בלבד (ללא markdown, ללא טקסט נוסף). תאריך היום: 
     messages: [{ role: 'user', content: userPrompt }]
   });
 
+  // A2#2 — a truncated answer can't be parsed and used to come back as an empty
+  // list that looked like "success". Surfaced to the route so it can say why.
+  const truncated = resp.stop_reason === 'max_tokens';
+  if (truncated) {
+    console.warn(`[whatsapp] discoverTopics: Claude stopped at max_tokens (session ${session.id}) — answer may be cut off.`);
+  }
+
   const parsed = extractJson(resp.text);
   const rawTopics = (parsed && Array.isArray(parsed.topics)) ? parsed.topics : [];
 
-  const topics = rawTopics.slice(0, 10).map((t, i) => ({
+  const capped = rawTopics.slice(0, 10);
+  const topics = capped.map((t, i) => ({
     id: t.id || ('t' + (i + 1)),
     title: String(t.title || '').trim().slice(0, 120),
     description: String(t.description || '').trim().slice(0, 400),
     category: String(t.category || 'other').trim()
   })).filter(t => t.title && t.description);
 
+  // A2#12 — a topic that came back without a title or description is dropped on
+  // purpose (a card with no text is broken), but it used to vanish without a
+  // trace, so "4 cards instead of 6" was indistinguishable from "only 4 found".
+  if (capped.length > topics.length) {
+    console.warn(`[whatsapp] discoverTopics: dropped ${capped.length - topics.length} of ${capped.length} topics (missing title/description), ${topics.length} shown.`);
+  }
+
   const cost = estimateCost(MODELS.SONNET, resp.usage);
-  return { topics, usage: resp.usage, cost };
+  return { topics, usage: resp.usage, cost, truncated };
 }
 
 // ── 1. Propose queries ──────────────────────────────────────────────
@@ -252,6 +268,13 @@ async function proposeQueries(session) {
     system: getBusinessSystemBlocks(COMPANY_CONTEXT),
     messages: [{ role: 'user', content: prompt }]
   });
+
+  // A2#2 — same dead-screen mechanism as discoverTopics: this step used to
+  // return "success" with an empty query list and the chat showed nothing.
+  const truncated = resp.stop_reason === 'max_tokens';
+  if (truncated) {
+    console.warn(`[whatsapp] proposeQueries: Claude stopped at max_tokens (session ${session.id}) — answer may be cut off.`);
+  }
 
   const parsed = extractJson(resp.text);
   const rawQueries = (parsed && Array.isArray(parsed.queries)) ? parsed.queries : [];
@@ -273,7 +296,8 @@ async function proposeQueries(session) {
     title,
     queries,
     usage: resp.usage,
-    cost
+    cost,
+    truncated
   };
 }
 
@@ -478,16 +502,12 @@ ${langInstruction}${focusBlock}
     }
   }
 
-  // Persist totals to the session
-  await pool.query(
-    `UPDATE whatsapp_sessions
-       SET tokens_used = COALESCE(tokens_used, 0) + $1,
-           estimated_cost_usd = COALESCE(estimated_cost_usd, 0) + $2,
-           updated_at = NOW()
-     WHERE id = $3`,
-    [totalTokens, totalCost, session.id]
-  );
-
+  // NOTE: totals are NOT persisted here. The per-query UPDATE inside the loop
+  // above already added each query's tokens/cost to the session row, and
+  // totalTokens/totalCost are just the running sum of those same deltas —
+  // adding them again stored exactly 2x the real cost. The in-loop update must
+  // stay (it keeps the 15s polling fallback from overwriting the live SSE
+  // numbers with a stale 0) and it also survives a mid-run stop or fatal error.
   return { totalTokens, totalCost, totalFindings };
 }
 
@@ -523,7 +543,22 @@ async function summarizeResearch(session) {
   );
 
   if (findings.rows.length === 0) {
-    return { summary: 'לא נמצאו ממצאים. נסה לבחור שאילתות אחרות או להעמיק את החיפוש.', usage: {}, cost: 0 };
+    // A1#1 ≡ A3#1 — this early return used to skip BOTH writes at the bottom of
+    // this function, so a zero-findings run left the row on 'researching' with
+    // no research_summary. The message only ever reached the browser over SSE;
+    // the 15s poll (or any refresh) read the DB back and put the spinner up
+    // again, forever. Persist the same two fields the normal path persists —
+    // no cost is added because no model call was made on this branch.
+    const emptySummary = 'לא נמצאו ממצאים. נסה לבחור שאילתות אחרות או להעמיק את החיפוש.';
+    await pool.query(
+      `UPDATE whatsapp_sessions
+          SET research_summary = $1,
+              status = 'research_review',
+              updated_at = NOW()
+        WHERE id = $2`,
+      [emptySummary, session.id]
+    );
+    return { summary: emptySummary, usage: {}, cost: 0 };
   }
 
   const findingsBlock = findings.rows.map((f, i) => {
@@ -603,8 +638,14 @@ async function reviseSelection(session, args) {
   const fullSummary = session.research_summary || '';
   const selection = (args.selection_text || '').trim();
   if (!selection) throw new Error('selection_text is required');
-  if (!fullSummary.includes(selection)) {
-    throw new Error('Selection not found in current summary — may have been edited.');
+
+  // A3#8 / A4#4 — same fix as the post path (writing-service.js): trust the
+  // index the client measured, never a blind search. Searching failed every
+  // time the selection crossed a `#`/`*` marker, and otherwise hit the first
+  // occurrence instead of the marked one.
+  const selStart = locateSelection(fullSummary, selection, args.selection_start);
+  if (selStart < 0) {
+    throw new Error('הקטע שסומן כבר לא תואם לטקסט השמור. רענן את הדף ונסה שוב.');
   }
 
   const action = args.action || 'freeform';
@@ -651,8 +692,9 @@ ${selection}
   newText = newText.replace(/^```[\w]*\n?/, '').replace(/```$/, '').trim();
   newText = newText.replace(/^["“'״]+|["”'״]+$/g, '').trim();
 
-  // Build the new full summary by replacing first occurrence.
-  const newFull = fullSummary.replace(selection, newText);
+  // A4#14 — splice at the known index. String.replace would hit the first
+  // occurrence and interpret `$&` / `` $` `` inside the model's answer.
+  const newFull = spliceAt(fullSummary, selStart, selection.length, newText);
 
   // Save as a new draft with parent pointing to the most recent research_summary draft.
   const parent = await pool.query(

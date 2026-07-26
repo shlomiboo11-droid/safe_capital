@@ -3,15 +3,11 @@
 import { Store } from './state.js';
 import { ApiClient } from './api-client.js';
 import { attachDragToDismiss } from './sheet-utils.js';
-
-const STATUS_LABEL = {
-  onboarding:      'בהמתנה',
-  researching:     'במהלך מחקר',
-  research_review: 'סקירת מחקר',
-  writing:         'בכתיבה',
-  done:            'הושלם',
-  archived:        'בארכיון'
-};
+// A1#14 — this file used to keep its own label table, and two rows disagreed
+// with the chat header. Searching for the word you saw in the header then
+// returned "no matches" on a session sitting right there in the list.
+import { STATUS_LABELS as STATUS_LABEL } from './status-labels.js';
+import { toHebrewError } from './error-text.js';
 
 function formatDate(iso) {
   if (!iso) return '';
@@ -23,6 +19,10 @@ function formatDate(iso) {
 }
 
 let cachedSessions = [];
+// A1#11 — the server hands back only the newest page of sessions, and the
+// search box filters that page CLIENT-side. Without knowing the real total,
+// "לא נמצאו התאמות" was indistinguishable from "this session was deleted".
+let cachedTotal = 0;
 
 function renderItem(s, container) {
   const item = document.createElement('div');
@@ -58,7 +58,7 @@ function renderItem(s, container) {
       closeModal();
     } catch (err) {
       console.error('Failed to load session', err);
-      alert('שגיאה בטעינה: ' + err.message);
+      alert(toHebrewError(err.message));
     }
   });
 
@@ -76,7 +76,7 @@ function renderItem(s, container) {
       closeModal();
     } catch (err) {
       console.error('Duplicate failed', err);
-      alert('שגיאה: ' + err.message);
+      alert(toHebrewError(err.message));
     }
   });
 
@@ -91,6 +91,7 @@ function renderItem(s, container) {
     try {
       await ApiClient.deleteSession(s.id);
       cachedSessions = cachedSessions.filter(x => x.id !== s.id);
+      if (cachedTotal > 0) cachedTotal -= 1;   // keep the "x of y" note honest
       renderList(getSearchValue());
       // If the deleted session is the active one, clear it.
       if (Store.get().session?.id === s.id) {
@@ -99,7 +100,7 @@ function renderItem(s, container) {
       }
     } catch (err) {
       console.error('Delete failed', err);
-      alert('שגיאה: ' + err.message);
+      alert(toHebrewError(err.message));
     }
   });
 
@@ -130,12 +131,30 @@ function renderList(query) {
         || (STATUS_LABEL[s.status] || '').toLowerCase().includes(query))
     : cachedSessions;
 
+  // A1#11 — true when the server withheld older sessions. Everything below only
+  // ever saw `cachedSessions`, so it must say so out loud instead of implying
+  // the missing ones don't exist.
+  const truncated = cachedTotal > cachedSessions.length;
+
   listEl.innerHTML = '';
   if (filtered.length === 0) {
-    listEl.innerHTML = `<div class="wa-sessions-empty">${query ? 'לא נמצאו התאמות.' : 'עדיין אין סשנים קודמים.'}</div>`;
+    const msg = query
+      ? (truncated ? 'לא נמצאו התאמות מבין הסשנים שנטענו.' : 'לא נמצאו התאמות.')
+      : 'עדיין אין סשנים קודמים.';
+    listEl.innerHTML = `<div class="wa-sessions-empty">${msg}</div>`;
+    if (query && truncated) appendTruncationNote(listEl);
     return;
   }
   for (const s of filtered) renderItem(s, listEl);
+  if (truncated) appendTruncationNote(listEl);
+}
+
+function appendTruncationNote(container) {
+  const note = document.createElement('div');
+  // Reuses the existing empty-state class on purpose — no new markup, no CSS.
+  note.className = 'wa-sessions-empty';
+  note.textContent = `מוצגים ${cachedSessions.length} הסשנים האחרונים מתוך ${cachedTotal}. החיפוש פועל על אלה בלבד.`;
+  container.appendChild(note);
 }
 
 function closeModal() {
@@ -174,8 +193,11 @@ export function initSessionsList() {
     const listEl = document.getElementById('waSessionsList');
     listEl.innerHTML = '<div class="wa-sessions-empty">טוען…</div>';
     try {
-      const { sessions } = await ApiClient.listSessions();
+      const { sessions, total } = await ApiClient.listSessions();
       cachedSessions = sessions || [];
+      // `total` is the full row count for this user; older servers omit it, in
+      // which case we fall back to "nothing was withheld".
+      cachedTotal = Number.isFinite(total) ? total : cachedSessions.length;
       renderList(getSearchValue());
     } catch (err) {
       console.error('Failed to list sessions', err);

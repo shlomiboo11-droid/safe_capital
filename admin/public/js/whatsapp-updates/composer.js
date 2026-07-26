@@ -2,6 +2,7 @@
 
 import { Store } from './state.js';
 import { ApiClient } from './api-client.js';
+import { toHebrewError } from './error-text.js';
 
 export function initComposer() {
   const input  = document.getElementById('waComposerInput');
@@ -40,7 +41,13 @@ export function initComposer() {
       Store.setSession(fresh.session);
     } catch (err) {
       console.error('send failed', err);
-      Store.setError(err.message);
+      // `state.error` is rendered as a ⚠️ chat bubble now (chat-view section 6).
+      // Before that it had writers and no readers, so the raw server string here
+      // never reached a human — 'Failed to fetch' / 'Server error' would now sit
+      // inside a Hebrew bubble, which is exactly what error-text.js exists to
+      // prevent. toHebrewError (not friendlyClaudeError) because this notice
+      // stands on its own rather than being wrapped in another sentence.
+      Store.setError(toHebrewError(err.message));
     } finally {
       button.disabled = false;
       input.disabled = false;
