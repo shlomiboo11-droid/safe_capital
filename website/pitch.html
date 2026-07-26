@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="images/logo-icon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Safe Capital — מצגת השקעה</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+
+  <link href="css/tokens.css?v=3" rel="stylesheet">
+  <link href="css/typography.css" rel="stylesheet">
+  <link href="css/shared.css?v=15" rel="stylesheet">
+  <link href="css/pitch.css?v=2" rel="stylesheet">
+</head>
+<body>
+
+<main id="deck">
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 1 — HERO (פתיחה)
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide is-active" data-slide="1" data-tone="hero">
+    <div class="slide__inner slide__inner--centered">
+      <div class="hero-eyebrow t-eyebrow">סייף קפיטל · Safe Capital</div>
+      <h1 class="hero-title t-display">
+        אתם ראשונים ברווח.<br>
+        <span class="hero-title__accent">אנחנו מנהלים.</span><br>
+        אתם לא נוגעים בנייר.
+      </h1>
+      <p class="hero-sub t-body-lg">
+        השקעות נדל״ן Flip בבירמינגהם, אלבמה — קצרות, שקופות, בליווי ישראלי מלא.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 2 — הסיפור שלנו
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="2">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">02</span>
+        <h2 class="slide-header__title t-h1">הסיפור שלנו</h2>
+        <p class="slide-header__sub t-body-lg">
+          ארבעה שותפים, חברים ועמיתים, שבנו ביחד את מה שחסר להם בעצמם בתור משקיעים.
+        </p>
+      </header>
+
+      <div class="story-grid">
+        <div class="story-narrative">
+          <p class="t-body-lg">
+            <strong>איתן</strong> חיפש שלוש שנים את השוק הנכון. הוא נסע לארה״ב, בדק עיר אחר עיר,
+            ספר אחר ספר, מנהל קבלנים אחר מנהל קבלנים. בסוף הוא עצר בבירמינגהם, אלבמה —
+            שילוב נדיר של מרווח רווח גבוה, ביקוש יציב, ועוגנים מוסדיים (UAB Hospital, האוניברסיטה).
+          </p>
+          <p class="t-body-lg">
+            כשחזר ארצה, הוא חיבר את <strong>שלומי</strong> (CEO ובעל ניסיון תפעולי), את <strong>עדי</strong>
+            ואת <strong>הוטר</strong> — שניהם בנויים ליחסי משקיעים. ביחד החלטנו להציע את אותו מנגנון
+            שאנחנו עצמנו רצינו להשקיע בו: עסקה קצרה, שקיפות מלאה, והמשקיע ראשון בתור על הרווח.
+          </p>
+        </div>
+
+        <div class="story-team">
+          <article class="team-card">
+            <div class="team-card__avatar" aria-hidden="true">ש</div>
+            <div class="team-card__body">
+              <div class="team-card__name t-h4">שלומי דוד</div>
+              <div class="team-card__role t-body-sm">CEO · מנכ״ל</div>
+            </div>
+          </article>
+          <article class="team-card">
+            <div class="team-card__avatar" aria-hidden="true">א</div>
+            <div class="team-card__body">
+              <div class="team-card__name t-h4">איתן</div>
+              <div class="team-card__role t-body-sm">רכישות · ניהול שטח בארה״ב</div>
+            </div>
+          </article>
+          <article class="team-card">
+            <div class="team-card__avatar" aria-hidden="true">ע</div>
+            <div class="team-card__body">
+              <div class="team-card__name t-h4">עדי</div>
+              <div class="team-card__role t-body-sm">יחסי משקיעים</div>
+            </div>
+          </article>
+          <article class="team-card">
+            <div class="team-card__avatar" aria-hidden="true">ה</div>
+            <div class="team-card__body">
+              <div class="team-card__name t-h4">הוטר</div>
+              <div class="team-card__role t-body-sm">יחסי משקיעים</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 3 — פליפ בישראל מול פליפ בארה״ב
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="3">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">03</span>
+        <h2 class="slide-header__title t-h1">פליפ בישראל · פליפ בארה״ב</h2>
+        <p class="slide-header__sub t-body-lg">
+          אותו מודל — שני שווקים שונים לחלוטין. ההפרש הוא בקנה מידה, באופק, ובכלים שהשוק האמריקאי נותן לנו לעבוד איתם.
+        </p>
+      </header>
+
+      <div class="compare-grid">
+        <article class="compare-card compare-card--muted">
+          <div class="compare-card__label t-eyebrow">פליפ בישראל</div>
+          <div class="compare-card__metric"><span class="metric-value">3–5%</span><span class="metric-tag">תשואה שנתית</span></div>
+          <ul class="compare-card__list t-body">
+            <li>מחירי כניסה <bdi>₪2M+</bdi></li>
+            <li>אופק <bdi>7–15</bdi> שנה</li>
+            <li>חשיפה גיאופוליטית מתמשכת</li>
+            <li>רגולציה כבדה ושוכרים מורכבים</li>
+          </ul>
+        </article>
+
+        <article class="compare-card compare-card--accent">
+          <div class="compare-card__label t-eyebrow">פליפ בארה״ב</div>
+          <div class="compare-card__metric"><span class="metric-value">18–22%</span><span class="metric-tag">לעסקה (<bdi>6–12</bdi> חודשים)</span></div>
+          <ul class="compare-card__list t-body">
+            <li>כניסה מ-<bdi>$50K</bdi></li>
+            <li>אופק <bdi>6–12</bdi> חודשים — יציאה מהירה</li>
+            <li>שוק נזיל · פתוח לחלוטין למשקיע זר</li>
+            <li>מסגרת משפטית ברורה · LLC לכל עסקה</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-card__icon material-symbols-outlined" aria-hidden="true">payments</div>
+          <h3 class="t-h4">Hard Money Lending</h3>
+          <p class="t-body">מימון מקומי קצר־טווח שלא קיים בישראל — מאפשר לרכוש מהר, לשפץ ולמכור בלי לשעבד הון יקר לטווח ארוך.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card__icon material-symbols-outlined" aria-hidden="true">schedule</div>
+          <h3 class="t-h4">אופק קצר = הגנה</h3>
+          <p class="t-body"><bdi>6–12</bdi> חודשים בלבד. תנודות שוק או אירועים גיאופוליטיים לא מספיקים לפגוע בעסקה אחת.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card__icon material-symbols-outlined" aria-hidden="true">apartment</div>
+          <h3 class="t-h4">LLC ייעודי לכל עסקה</h3>
+          <p class="t-body">חברה משפטית נפרדת לכל פרויקט, על שם המשקיע. הגנה מבודדת, שקיפות מלאה, יכולת תביעה ישירה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 4 — ההצעה
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="4">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">04</span>
+        <h2 class="slide-header__title t-h1">ההצעה — מה אתה מקבל</h2>
+        <p class="slide-header__sub t-body-lg">בלי שכבות, בלי כוכביות. שלושה מספרים, מנגנון אחד.</p>
+      </header>
+
+      <div class="offer-stats">
+        <div class="offer-stat">
+          <div class="offer-stat__value">$50K</div>
+          <div class="offer-stat__label t-body-sm">השקעה מינימלית</div>
+        </div>
+        <div class="offer-stat offer-stat--accent">
+          <div class="offer-stat__value">20%</div>
+          <div class="offer-stat__label t-body-sm">Preferred Return</div>
+        </div>
+        <div class="offer-stat">
+          <div class="offer-stat__value">6–12<span class="offer-stat__unit">חודשים</span></div>
+          <div class="offer-stat__label t-body-sm">משך עסקה</div>
+        </div>
+      </div>
+
+      <div class="waterfall">
+        <h3 class="t-h3 waterfall__title">איך מתחלק הרווח</h3>
+        <ol class="waterfall__steps">
+          <li class="waterfall__step">
+            <span class="waterfall__num">1</span>
+            <div>
+              <div class="t-h4">המשקיע ראשון בתור</div>
+              <p class="t-body">מתוך הרווח של העסקה — המשקיע מקבל את ה-20% הראשונים על הקרן שלו.</p>
+            </div>
+          </li>
+          <li class="waterfall__step">
+            <span class="waterfall__num">2</span>
+            <div>
+              <div class="t-h4">אם הרווח גבוה מ-20% — אנחנו מקבלים את היתר</div>
+              <p class="t-body">העסקה הניבה 25%? המשקיע לוקח 20%, ואת ה-5% הנותרים אנחנו מקבלים. זה התמריץ שלנו לדחוף קדימה.</p>
+            </div>
+          </li>
+          <li class="waterfall__step">
+            <span class="waterfall__num">3</span>
+            <div>
+              <div class="t-h4">אם הרווח נמוך מ-20% — המשקיע לוקח את הכל</div>
+              <p class="t-body">אנחנו לא רואים אגורה לפני שאתה מקבל את ה-20% שלך. זה Skin in the Game אמיתי.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 5 — מודל היחסים
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="5">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">05</span>
+        <h2 class="slide-header__title t-h1">זה לא One-Shot. זו מערכת יחסים.</h2>
+        <p class="slide-header__sub t-body-lg">
+          הכוח האמיתי הוא הצבירה. הקרן נשארת אצלנו, מתגלגלת לעסקה הבאה — ומפיקה 20% שוב ושוב.
+        </p>
+      </header>
+
+      <div class="cycle">
+        <div class="cycle__stage">
+          <div class="cycle__num">1</div>
+          <div class="cycle__label t-body-sm">משקיע מעביר $50K</div>
+        </div>
+        <div class="cycle__arrow material-symbols-outlined" aria-hidden="true">arrow_forward</div>
+        <div class="cycle__stage">
+          <div class="cycle__num">2</div>
+          <div class="cycle__label t-body-sm">עסקה: 6–12 חודשים</div>
+        </div>
+        <div class="cycle__arrow material-symbols-outlined" aria-hidden="true">arrow_forward</div>
+        <div class="cycle__stage">
+          <div class="cycle__num">3</div>
+          <div class="cycle__label t-body-sm">+20% רווח · קרן נשארת</div>
+        </div>
+        <div class="cycle__arrow material-symbols-outlined" aria-hidden="true">arrow_forward</div>
+        <div class="cycle__stage cycle__stage--loop">
+          <div class="cycle__num">4</div>
+          <div class="cycle__label t-body-sm">העסקה הבאה — אוטומטית</div>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <div class="example-card__title t-eyebrow">לדוגמה — ביצוע 18 חודשים</div>
+        <div class="example-row">
+          <div class="example-row__leg"><span class="t-caption">השקעת</span><strong>$50,000</strong></div>
+          <div class="example-row__leg"><span class="t-caption">אחרי עסקה 1</span><strong>+$10,000</strong></div>
+          <div class="example-row__leg"><span class="t-caption">אחרי עסקה 2</span><strong>+$10,000</strong></div>
+          <div class="example-row__leg example-row__leg--accent"><span class="t-caption">סך רווח</span><strong>$20,000</strong></div>
+        </div>
+      </div>
+
+      <div class="three-options">
+        <div class="three-options__title t-eyebrow">בכל סוף עסקה — 3 אפשרויות</div>
+        <ul class="three-options__list t-body">
+          <li>השאר הכל בחשבון (קרן + רווח) להשקעה הבאה</li>
+          <li>משוך רווח, השאר קרן</li>
+          <li>משוך הכל — בחזרה ל-IBAN בישראל</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 6 — TRACK RECORD (ריק — שלומי ימלא ידנית)
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="6">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">06</span>
+        <h2 class="slide-header__title t-h1">מה כבר עשינו</h2>
+        <p class="slide-header__sub t-body-lg">לא מילים — מספרים ונכסים אמיתיים.</p>
+      </header>
+
+      <div class="track-stats">
+        <div class="track-stat">
+          <div class="track-stat__value" data-fill="investors">—</div>
+          <div class="track-stat__label t-body-sm">משקיעים פעילים</div>
+        </div>
+        <div class="track-stat">
+          <div class="track-stat__value" data-fill="capital">—</div>
+          <div class="track-stat__label t-body-sm">הון מנוהל</div>
+        </div>
+        <div class="track-stat">
+          <div class="track-stat__value" data-fill="roi">—</div>
+          <div class="track-stat__label t-body-sm">ROI ממוצע</div>
+        </div>
+        <div class="track-stat">
+          <div class="track-stat__value" data-fill="deals">—</div>
+          <div class="track-stat__label t-body-sm">עסקאות שהושלמו</div>
+        </div>
+      </div>
+
+      <!-- HTML comment: השדות לעיל ריקים בכוונה. שלומי ממלא ידנית בפגישה.
+           אפשר גם לערוך את ה-HTML ולהחליף את ה"—" במספרים אמיתיים. -->
+
+      <div class="track-empty">
+        <p class="t-body-lg">המספרים יוצגו ידנית בפגישה.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 6.5 — INTERNAL · HIDDEN (Cmd+Shift+H)
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide slide--internal" data-slide="6.5" data-internal>
+    <div class="internal-banner">⚠ INTERNAL — DO NOT SHOW · דף הכנה לשלומי</div>
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">תשובות מוכנות</span>
+        <h2 class="slide-header__title t-h2">7 ההתנגדויות הנפוצות</h2>
+      </header>
+
+      <div class="objections">
+        <article class="objection">
+          <h3 class="t-h4">1. עיכוב בלוח זמנים — השיפוץ לוקח יותר זמן</h3>
+          <p class="t-body">חוזית: 2 חודשי חסד. אם עובר 3 חודשים מהדדליין — המשקיע יכול לכפות buyout בהנחה.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">2. הנכס לא נמכר / נתקע בשוק</h3>
+          <p class="t-body">נכסים דומים נמכרים תוך 25 ימים מקסימום. אם נתקע — אנחנו מורידים מחיר וסופגים. הקרן של המשקיע מוגנת.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">3. איך אני יודע שהכסף שלי באמת הולך לשיפוץ?</h3>
+          <p class="t-body">חשבון בנק ייעודי לכל פרויקט. שקיפות מלאה דרך פורטל המשקיעים — רואים כל תזרים.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">4. מה אם יש בעיה משפטית או נזק באתר הבנייה?</h3>
+          <p class="t-body">אנחנו נמנעים מנכסים בעייתיים מראש. ביטוח בנייה מלא מכסה פציעות או תקריות.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">5. מסים וציות — האם זה בטוח למשקיע ישראלי?</h3>
+          <p class="t-body">אנחנו מטפלים בכל המסמכים. מחברים לרו״ח מומחה — דיווח מס בשתי המדינות.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">6. מה אם השוק קורס במהלך הפרויקט?</h3>
+          <p class="t-body">עסקאות קצרות = תנודות שוק לא מספיקות לפגוע. קונים מתחת לשוק. המשקיע ראשון על הרווח.</p>
+        </article>
+        <article class="objection">
+          <h3 class="t-h4">7. מה אם תיעלמו / משהו יקרה לצוות?</h3>
+          <p class="t-body">יחסים אישיים (חברים, מילואים יחד) · LLC על שם המשקיע · יכולת לתבוע · עתידית: ערבות בנקאית.</p>
+        </article>
+      </div>
+
+      <div class="internal-hint t-caption">Esc חזרה לשקופית 6 · השקופית הזו לא נספרת בניווט הרגיל</div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 7 — העסקה (Oxmoore · LIVE)
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="7" data-deal-slide>
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">07</span>
+        <h2 class="slide-header__title t-h1">העסקה הקונקרטית — היום</h2>
+        <p class="slide-header__sub t-body-lg" data-deal-status>טוען נתוני עסקה...</p>
+      </header>
+
+      <div class="deal" data-deal-root>
+        <div class="deal__loading">
+          <div class="material-symbols-outlined" aria-hidden="true">hourglass_top</div>
+          <p class="t-body">שולף את העסקה הפעילה מהשרת...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 8 — החוזה
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="8">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">08</span>
+        <h2 class="slide-header__title t-h1">החוזה — לא מבוסס על אמון בלבד</h2>
+        <p class="slide-header__sub t-body-lg">מסגרת משפטית ברורה. כל שורה הגיונית, אין שפה מתפלפלת.</p>
+      </header>
+
+      <ul class="checklist">
+        <li class="checklist__item">
+          <span class="checklist__icon material-symbols-outlined" aria-hidden="true">verified</span>
+          <div>
+            <div class="t-h4">סכום, לוח זמנים, תשואה</div>
+            <p class="t-body">$50K (או יותר) · עד 12 חודשים · 20% Preferred Return — שחור על גבי לבן.</p>
+          </div>
+        </li>
+        <li class="checklist__item">
+          <span class="checklist__icon material-symbols-outlined" aria-hidden="true">schedule</span>
+          <div>
+            <div class="t-h4">2 חודשי חסד</div>
+            <p class="t-body">אם הפרויקט מתעכב — יש לנו חודשיים לסגור. מעבר לכך, המשקיע יכול לכפות buyout בהנחה.</p>
+          </div>
+        </li>
+        <li class="checklist__item">
+          <span class="checklist__icon material-symbols-outlined" aria-hidden="true">shield</span>
+          <div>
+            <div class="t-h4">המשקיע מוגן אם נכס לא נמכר</div>
+            <p class="t-body">אנחנו סופגים הפסד מחיר, לא הקרן. המשקיע יוצא ראשון.</p>
+          </div>
+        </li>
+        <li class="checklist__item">
+          <span class="checklist__icon material-symbols-outlined" aria-hidden="true">apartment</span>
+          <div>
+            <div class="t-h4">LLC על שם המשקיע</div>
+            <p class="t-body">לכל עסקה — חברה משפטית נפרדת. שמך על הנייר, יכולת תביעה ישירה.</p>
+          </div>
+        </li>
+        <li class="checklist__item">
+          <span class="checklist__icon material-symbols-outlined" aria-hidden="true">edit_document</span>
+          <div>
+            <div class="t-h4">חתימה דיגיטלית או פיזית</div>
+            <p class="t-body">כל מה שנוח. עו״ד ישראלי + עו״ד אמריקאי מלווים את התהליך.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 9 — Money Flow
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="9">
+    <div class="slide__inner">
+      <header class="slide-header">
+        <span class="slide-header__num t-eyebrow">09</span>
+        <h2 class="slide-header__title t-h1">איך הכסף זז</h2>
+        <p class="slide-header__sub t-body-lg">פנימה והחוצה. שום דבר מוסתר.</p>
+      </header>
+
+      <div class="flow-block">
+        <div class="flow-block__title t-eyebrow">A · תזרים פנימה</div>
+        <ul class="flow-list t-body">
+          <li>המשקיע מעביר את הכסף תוך <strong>10 ימים</strong> מחתימה</li>
+          <li>איחור — לפי הקבוע בחוזה</li>
+          <li>המרה ל-USD על המשקיע · עמלת העברה — לפי החוזה</li>
+          <li><strong>חשבון בנק ייעודי לכל פרויקט</strong> — לא חשבון מאוחד</li>
+        </ul>
+      </div>
+
+      <div class="flow-block">
+        <div class="flow-block__title t-eyebrow">B · בסוף עסקה — 3 אפשרויות</div>
+        <div class="flow-options">
+          <article class="flow-option">
+            <div class="flow-option__num">1</div>
+            <h3 class="t-h4">השאר הכל בחשבון</h3>
+            <p class="t-body">קרן + רווח נשארים, נכנסים ישר לעסקה הבאה. רק מס משולם.</p>
+          </article>
+          <article class="flow-option flow-option--accent">
+            <div class="flow-option__num">2</div>
+            <h3 class="t-h4">משוך רווח, השאר קרן</h3>
+            <p class="t-body">הקרן ממשיכה לעבוד. הרווח חוזר ל-IBAN בישראל. מס משולם.</p>
+          </article>
+          <article class="flow-option">
+            <div class="flow-option__num">3</div>
+            <h3 class="t-h4">משוך הכל</h3>
+            <p class="t-body">קרן + רווח חוזרים בחזרה לישראל. מס משולם. בלי שאלות.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="flow-block">
+        <div class="flow-block__title t-eyebrow">C · ניהול</div>
+        <p class="t-body">אנחנו מנהלים את הכסף לאורך כל הפרויקט. עדכון תזרים בכל אבן דרך — דרך פורטל המשקיעים והווצאפ.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════
+       SLIDE 10 — סגירה
+       ═════════════════════════════════════════════════════════════ -->
+  <section class="slide" data-slide="10" data-tone="hero">
+    <div class="slide__inner slide__inner--centered">
+      <div class="hero-eyebrow t-eyebrow">סגירה · ללא לחץ</div>
+      <h2 class="hero-title t-display">
+        קח את הזמן<br>
+        <span class="hero-title__accent">לחשוב על זה.</span>
+      </h2>
+      <p class="hero-sub t-body-lg">
+        תישן על זה לילה או שניים. תתייעץ עם מי שצריך.<br>
+        אנחנו לא מחפשים חתימה עכשיו — ניצור איתך קשר בעוד יומיים.
+      </p>
+      <p class="hero-signature t-caption">Safe Capital · סייף קפיטל</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Navigation -->
+<nav class="deck-controls" aria-label="ניווט מצגת">
+  <button class="deck-btn" data-prev aria-label="שקופית קודמת">
+    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+  </button>
+  <span class="deck-counter" data-counter>1 / 10</span>
+  <button class="deck-btn" data-next aria-label="שקופית הבאה">
+    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+  </button>
+</nav>
+
+<script src="js/pitch.js?v=2"></script>
+</body>
+</html>

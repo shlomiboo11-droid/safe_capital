@@ -1,0 +1,9 @@
+Screenshot reference (image was attached to chat, not saved to disk by capture flow).
+
+Context: birmingham.html — desktop view zoomed in on the "עמודי התווך של הכלכלה" section.
+Visible: a single pillar card showing the Technology pillar:
+- Top half of card: a pale beige square placeholder containing only a microscope icon (material symbol "biotech") and a small crimson label "טכנולוגיה וחדשנות"
+- Below: title "אינובישן דפו ומרכז טכנולוגי פדרלי"
+- Below: long body text describing the innovation depot, biotech, etc.
+
+User concern: each pillar card currently has an icon placeholder where a real photographic image should be. The user wants a real image (photo) for each of the 3 pillars instead of the icon placeholder.

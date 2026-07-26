@@ -44,6 +44,8 @@ supabase-credentials.txt
 .mcp.json
 .vercel-token.txt
 *.token.txt
+*token*.txt
+.github-token.txt
 
 # Source/design files
 google_stitch/

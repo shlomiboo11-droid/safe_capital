@@ -220,16 +220,7 @@ tailwind.config = {
 </div>
 </nav>
 
-<main class="pt-24 pb-20">
-<!-- Sub Navigation -->
-<div class="bg-surface-container-low">
-<div class="max-w-[900px] mx-auto px-6 flex gap-2 overflow-x-auto no-scrollbar">
-<a href="birmingham-info.html" class="sub-nav-tab">הכירו את בירמינגהם</a>
-<a href="birmingham-compare.html" class="sub-nav-tab active">השוואה</a>
-<a href="birmingham-news.html" class="sub-nav-tab">חדשות</a>
-</div>
-</div>
-
+<main class="pb-20">
 <!-- Split Hero -->
 <section class="split-hero">
 <!-- Israel Side -->
@@ -249,6 +240,15 @@ tailwind.config = {
 <span class="font-label font-bold text-lg text-primary">מול</span>
 </div>
 </section>
+
+<!-- Sub Navigation (sticky below site nav) -->
+<div class="bg-surface-container-low sticky top-[60px] z-30">
+<div class="max-w-[900px] mx-auto px-6 flex gap-2 overflow-x-auto no-scrollbar">
+<a href="birmingham-info.html" class="sub-nav-tab">הכירו את בירמינגהם</a>
+<a href="birmingham-compare.html" class="sub-nav-tab active">השוואה</a>
+<a href="birmingham-news.html" class="sub-nav-tab">חדשות</a>
+</div>
+</div>
 
 <!-- Page Title -->
 <section class="bg-background py-10 md:py-14">

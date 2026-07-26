@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920">
+  <title>Slide 3b — למה ברמינגהם (פירוט)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+  <link href="css/tokens.css?v=3" rel="stylesheet">
+  <link href="css/typography.css" rel="stylesheet">
+  <style>
+    /* ============================================================
+       Slide 3b — exported as 1920x1080 PNG for Google Slides
+       Layout: 50/50 split — left=map image, right=5 reasons
+       ============================================================ */
+    :root {
+      --pitch-cream:        #fbf9f6;
+      --pitch-cream-soft:   #f5f3f0;
+      --pitch-navy:         #022445;
+      --pitch-navy-soft:    #1e3a5c;
+      --pitch-crimson:      #984349;
+      --pitch-crimson-soft: #b35158;
+      --pitch-text:         #1b1c1a;
+      --pitch-muted:        #43474e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 1920px;
+      height: 1080px;
+      background: var(--pitch-cream);
+      font-family: 'Heebo', system-ui, sans-serif;
+      color: var(--pitch-text);
+      overflow: hidden;
+    }
+
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      display: grid;
+      grid-template-columns: 760px 1fr;
+      gap: 0;
+    }
+
+    /* ─── Left: map image ─── */
+    .map-pane {
+      position: relative;
+      background: var(--pitch-cream-soft);
+      overflow: hidden;
+      padding: 80px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .map-pane__eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pitch-crimson);
+      margin-bottom: 14px;
+    }
+    .map-pane__title {
+      font-weight: 800;
+      font-size: 38px;
+      color: var(--pitch-navy);
+      line-height: 1.15;
+      margin-bottom: 32px;
+    }
+    .map-pane__img {
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(2, 36, 69, 0.08);
+    }
+    .map-pane__caption {
+      font-size: 18px;
+      color: var(--pitch-muted);
+      line-height: 1.6;
+      margin-top: 32px;
+      font-weight: 300;
+    }
+    .map-pane__caption strong {
+      color: var(--pitch-navy);
+      font-weight: 700;
+    }
+
+    /* ─── Right: reasons ─── */
+    .reasons-pane {
+      padding: 80px 80px 80px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+    }
+    .reasons-pane__eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pitch-crimson);
+    }
+    .reasons-pane__title {
+      font-weight: 800;
+      font-size: 56px;
+      color: var(--pitch-navy);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .reasons-pane__sub {
+      font-size: 19px;
+      color: var(--pitch-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+    .reasons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .reason {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 16px 20px;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(27, 28, 26, 0.04);
+    }
+    .reason__num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--pitch-cream-soft);
+      color: var(--pitch-crimson);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .reason__body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .reason__title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--pitch-navy);
+      line-height: 1.3;
+    }
+    .reason__desc {
+      font-size: 15px;
+      color: var(--pitch-muted);
+      line-height: 1.55;
+      font-weight: 300;
+    }
+    .reason--accent {
+      background: linear-gradient(135deg, var(--pitch-navy) 0%, var(--pitch-navy-soft) 100%);
+    }
+    .reason--accent .reason__num {
+      background: rgba(255,255,255,0.1);
+      color: var(--pitch-crimson-soft);
+    }
+    .reason--accent .reason__title { color: #ffffff; }
+    .reason--accent .reason__desc  { color: rgba(255,255,255,0.78); }
+  </style>
+</head>
+<body>
+
+<div class="slide">
+
+  <!-- LEFT: map -->
+  <div class="map-pane">
+    <div class="map-pane__eyebrow">03 · בירמינגהם, אלבמה</div>
+    <div class="map-pane__title">השכונות שלנו —<br>Homewood &amp; Mountain Brook</div>
+    <img class="map-pane__img" src="images/maps/birmingham-neighborhoods.png" alt="Birmingham neighborhoods map">
+    <div class="map-pane__caption">
+      שכונות יוקרה דרומית למרכז ברמינגהם, צמודות ל-<strong>UAB Hospital</strong> ולמרכזי התעסוקה הגדולים בעיר.
+    </div>
+  </div>
+
+  <!-- RIGHT: 5 reasons -->
+  <div class="reasons-pane">
+    <div class="reasons-pane__eyebrow">למה דווקא העיר הזו</div>
+    <h1 class="reasons-pane__title">5 סיבות שעושות את ההבדל</h1>
+    <p class="reasons-pane__sub">
+      לא בחרנו ברמינגהם במקרה. הצירוף הזה של ביקוש קשיח, מרכזי תעסוקה, ועצלנות שוק מקומית — לא קיים בכל עיר אמריקאית.
+    </p>
+
+    <div class="reasons-list">
+
+      <article class="reason">
+        <div class="reason__num">1</div>
+        <div class="reason__body">
+          <div class="reason__title">שכונות יוקרה · ביקוש גבוה, היצע נמוך</div>
+          <div class="reason__desc">בתים מושקעים מתחת למיליון דולר נחטפים תוך 25 ימים בממוצע. ההיצע לא עומד בקצב הביקוש.</div>
+        </div>
+      </article>
+
+      <article class="reason">
+        <div class="reason__num">2</div>
+        <div class="reason__body">
+          <div class="reason__title">מרכזי תעסוקה ענקיים</div>
+          <div class="reason__desc">UAB Hospital (28K עובדים) · Regions Bank (HQ) · BBVA Compass · Honda Manufacturing · Mercedes-Benz US Int'l. עוגנים תעשייתיים-פיננסיים יציבים.</div>
+        </div>
+      </article>
+
+      <article class="reason">
+        <div class="reason__num">3</div>
+        <div class="reason__body">
+          <div class="reason__title">אוניברסיטה — מנוע צמיחה</div>
+          <div class="reason__desc">University of Alabama at Birmingham — 22,000 סטודנטים, סגל, וצוות מחקר. אחת מ-31 Tech Hubs פדרליים בארה״ב.</div>
+        </div>
+      </article>
+
+      <article class="reason">
+        <div class="reason__num">4</div>
+        <div class="reason__body">
+          <div class="reason__title">הגירה של משפחות אמידות</div>
+          <div class="reason__desc">משפחות עם הכנסה גבוהה מהגרות לאזור, מחפשות בתים איכותיים מוכנים-לכניסה ולא חוסכות באיכות. שוק הקונים שלהן.</div>
+        </div>
+      </article>
+
+      <article class="reason reason--accent">
+        <div class="reason__num">5</div>
+        <div class="reason__body">
+          <div class="reason__title">העצלנות האמריקאית · היזמות הישראלית</div>
+          <div class="reason__desc">הקונה האמריקאי המקומי לא רוצה לנהל שיפוץ — הוא רוצה בית גמור ומוכן לשלם פרמיה גבוהה עליו. אנחנו מביאים את היזמות, הוא מביא את הכסף.</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
