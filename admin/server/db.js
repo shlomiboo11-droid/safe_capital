@@ -1,9 +1,21 @@
 const { Pool } = require('pg');
-require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
+const path = require('path');
+
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+// .env.local wins over .env. It holds the local dev DATABASE_URL and is
+// gitignored, so it never exists on Vercel — production keeps reading .env.
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local'), override: true });
+
+const connectionString = process.env.DATABASE_URL;
+
+// Supabase requires TLS; a local Postgres does not offer it and would refuse
+// the connection outright. Pick from the host rather than from NODE_ENV so the
+// two never disagree.
+const isLocalDb = /@(localhost|127\.0\.0\.1)([:/]|$)/.test(connectionString || '');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  connectionString,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false },
   max: 3,                        // keep low for Supabase Session mode + Vercel serverless
   idleTimeoutMillis: 10000,      // close idle connections after 10s
   connectionTimeoutMillis: 10000 // fail fast if can't connect within 10s
@@ -727,6 +739,37 @@ DO $$ BEGIN
     ALTER TABLE whatsapp_sessions ADD COLUMN focus_notes TEXT;
   END IF;
 END $$;
+
+-- ── Backfill: schema that existed in production but was never in this file ──
+-- Found 26.07.2026 when a fresh local database failed on deals.opens_at_date.
+-- These columns/tables were added straight to the live database, so any new
+-- environment built from this file came out broken. Definitions copied from
+-- production so local, staging and production stay identical from here on.
+
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS opens_at_date                DATE;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS sold_at_date                 DATE;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS renovation_progress_percent  NUMERIC;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS sale_completion_note         TEXT;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS investor_roi_cap_percent     NUMERIC DEFAULT 20;
+
+ALTER TABLE event_registrations ADD COLUMN IF NOT EXISTS guest_name TEXT;
+
+-- Orphan column: present in production, referenced by no code path. Recreated
+-- so schemas match; safe to drop once confirmed unused in production too.
+ALTER TABLE whatsapp_sessions ADD COLUMN IF NOT EXISTS template TEXT DEFAULT 'news_impact';
+
+CREATE TABLE IF NOT EXISTS deal_waitlist (
+  id           SERIAL PRIMARY KEY,
+  deal_id      INT NOT NULL REFERENCES deals(id) ON DELETE CASCADE,
+  investor_id  UUID REFERENCES investors(id) ON DELETE CASCADE,
+  email        TEXT,
+  phone        TEXT,
+  joined_at    TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT deal_waitlist_check CHECK (investor_id IS NOT NULL OR email IS NOT NULL),
+  CONSTRAINT deal_waitlist_deal_id_investor_id_key UNIQUE (deal_id, investor_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_deal_waitlist_deal_id ON deal_waitlist(deal_id);
 
     `);
     console.log('Database schema initialized.');
