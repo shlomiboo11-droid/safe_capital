@@ -55,7 +55,13 @@ async function ensureTables() {
       last_synced     TIMESTAMPTZ,
       created_at      TIMESTAMPTZ DEFAULT NOW(),
       UNIQUE(deal_id, category)
-    )
+    );
+
+    -- Track Drive provenance of imported images (for sync diff)
+    ALTER TABLE deal_images ADD COLUMN IF NOT EXISTS drive_file_id TEXT;
+    CREATE INDEX IF NOT EXISTS idx_deal_images_drive_file_id
+      ON deal_images(deal_id, category, drive_file_id)
+      WHERE drive_file_id IS NOT NULL;
   `);
 }
 
@@ -100,6 +106,90 @@ async function getAuthenticatedDrive() {
   }
 
   return google.drive({ version: 'v3', auth: oauth2Client });
+}
+
+// ── File system helpers (Drive → local uploads) ──────────────────────────────
+
+const fs = require('fs');
+const path = require('path');
+
+const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'public', 'uploads');
+const MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024; // 20MB
+
+// mimeType → extension fallback (only used if filename has no extension)
+const MIME_EXT = {
+  'image/jpeg': '.jpg',
+  'image/jpg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+  'image/gif': '.gif',
+  'image/heic': '.heic',
+  'image/heif': '.heif',
+  'image/avif': '.avif',
+  'image/svg+xml': '.svg',
+  'image/bmp': '.bmp',
+  'image/tiff': '.tiff'
+};
+
+function sanitizeFilename(name) {
+  if (!name) return 'file';
+  // Strip path separators and limit to safe chars
+  return name.replace(/[^a-zA-Z0-9_.-]/g, '_').slice(0, 120) || 'file';
+}
+
+function buildDealUploadsDir(dealId) {
+  return path.join(UPLOADS_ROOT, String(dealId));
+}
+
+function buildDriveFilename(fileId, originalName, mimeType) {
+  const safe = sanitizeFilename(originalName || '');
+  const hasExt = /\.[a-zA-Z0-9]{2,5}$/.test(safe);
+  const ext = hasExt ? '' : (MIME_EXT[mimeType] || '');
+  return `drive_${fileId}_${safe}${ext}`;
+}
+
+// Stream a Drive file to disk. Resolves with file metadata, rejects on any error.
+// Cleans up partial files on failure.
+async function downloadDriveFileToDisk(drive, fileId, destPath) {
+  const meta = await drive.files.get({
+    fileId,
+    fields: 'id,name,mimeType,size'
+  });
+  const size = parseInt(meta.data.size || '0', 10);
+  if (size && size > MAX_DOWNLOAD_BYTES) {
+    const err = new Error(`file too large: ${size} bytes (max ${MAX_DOWNLOAD_BYTES})`);
+    err.code = 'FILE_TOO_LARGE';
+    throw err;
+  }
+
+  await fs.promises.mkdir(path.dirname(destPath), { recursive: true });
+
+  const res = await drive.files.get(
+    { fileId, alt: 'media' },
+    { responseType: 'stream' }
+  );
+
+  await new Promise((resolve, reject) => {
+    const out = fs.createWriteStream(destPath);
+    let settled = false;
+    const fail = async (e) => {
+      if (settled) return;
+      settled = true;
+      out.destroy();
+      try { await fs.promises.unlink(destPath); } catch { /* ignore */ }
+      reject(e);
+    };
+    res.data.on('error', fail);
+    out.on('error', fail);
+    out.on('finish', () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    });
+    res.data.pipe(out);
+  });
+
+  return meta.data;
 }
 
 // ── One-time OAuth ───────────────────────────────────────────────────────────
@@ -250,7 +340,11 @@ router.post('/link', authenticate, async (req, res) => {
 // ── Sync folder ──────────────────────────────────────────────────────────────
 
 // POST /api/google-drive/sync/:dealId/:category
+// @deprecated — replaced by POST /sync-selection/:dealId/:category which downloads
+// selected files to /uploads/{dealId}/ instead of saving proxy URLs.
+// Kept temporarily for backward compat until UI migration completes.
 router.post('/sync/:dealId/:category', authenticate, async (req, res) => {
+  console.warn('[deprecated] POST /api/google-drive/sync/:dealId/:category — use /sync-selection instead');
   const { dealId, category } = req.params;
 
   try {
@@ -372,6 +466,281 @@ router.get('/file/:fileId', async (req, res) => {
   } catch (err) {
     console.error('Drive proxy error:', err.message);
     res.status(500).send('proxy error');
+  }
+});
+
+// ── Thumbnail proxy (authenticated via header OR query token; used by <img> tags) ──
+
+const jwt = require('jsonwebtoken');
+
+function authenticateImg(req, res, next) {
+  // Accept token either from Authorization header or ?token= query (so <img src> works)
+  let token = null;
+  const header = req.headers.authorization;
+  if (header && header.startsWith('Bearer ')) token = header.split(' ')[1];
+  else if (req.query.token) token = req.query.token;
+  if (!token) return res.status(401).send('auth required');
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).send('invalid token');
+  }
+}
+
+// GET /api/google-drive/thumb/:fileId — small image stream for picker UI
+router.get('/thumb/:fileId', authenticateImg, async (req, res) => {
+  const { fileId } = req.params;
+  if (!/^[a-zA-Z0-9_-]{10,}$/.test(fileId)) {
+    return res.status(400).send('invalid file id');
+  }
+  try {
+    const drive = await getAuthenticatedDrive();
+    const meta = await drive.files.get({ fileId, fields: 'mimeType' });
+    const mime = meta.data.mimeType || 'application/octet-stream';
+    const stream = await drive.files.get(
+      { fileId, alt: 'media' },
+      { responseType: 'stream' }
+    );
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    stream.data.on('error', (e) => {
+      console.error('Drive thumb stream error:', e.message);
+      if (!res.headersSent) res.status(502).send('stream error');
+    });
+    stream.data.pipe(res);
+  } catch (err) {
+    console.error('Drive thumb error:', err.message);
+    res.status(500).send('thumb error');
+  }
+});
+
+// ── List folder files (for picker modal) ─────────────────────────────────────
+
+// GET /api/google-drive/folder/:folderId/files?dealId=X&category=Y
+// Returns { files: [...], orphans: [...] }
+//   files[]:    { id, name, mimeType, size, modifiedTime, synced, localUrl }
+//   orphans[]:  { imageId, drive_file_id, image_url, alt_text } — in DB but not in Drive
+router.get('/folder/:folderId/files', authenticate, async (req, res) => {
+  const { folderId } = req.params;
+  const { dealId, category } = req.query;
+
+  if (!dealId || !category) {
+    return res.status(400).json({ error: 'dealId and category query params required' });
+  }
+  if (!/^[a-zA-Z0-9_-]{10,}$/.test(folderId)) {
+    return res.status(400).json({ error: 'invalid folder id' });
+  }
+
+  try {
+    let drive;
+    try {
+      drive = await getAuthenticatedDrive();
+    } catch (authErr) {
+      if (authErr.message && authErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'invalid_grant' });
+      }
+      throw authErr;
+    }
+
+    // List all image files in the folder (with pagination)
+    const driveFiles = [];
+    let pageToken = undefined;
+    const HARD_LIMIT = 1000;
+    while (true) {
+      const listRes = await drive.files.list({
+        q: `'${folderId}' in parents and mimeType contains 'image/' and trashed=false`,
+        fields: 'nextPageToken, files(id,name,mimeType,size,modifiedTime)',
+        pageSize: 200,
+        pageToken
+      });
+      for (const f of (listRes.data.files || [])) {
+        driveFiles.push(f);
+        if (driveFiles.length >= HARD_LIMIT) break;
+      }
+      pageToken = listRes.data.nextPageToken;
+      if (!pageToken || driveFiles.length >= HARD_LIMIT) break;
+    }
+
+    // Cross-reference with deal_images
+    const existing = await pool.query(
+      `SELECT id, drive_file_id, image_url, alt_text
+         FROM deal_images
+        WHERE deal_id = $1 AND category = $2 AND drive_file_id IS NOT NULL`,
+      [dealId, category]
+    );
+    const byFileId = new Map();
+    for (const row of existing.rows) byFileId.set(row.drive_file_id, row);
+
+    const driveFileIds = new Set(driveFiles.map(f => f.id));
+
+    const files = driveFiles.map(f => {
+      const local = byFileId.get(f.id);
+      return {
+        id: f.id,
+        name: f.name,
+        mimeType: f.mimeType,
+        size: f.size ? parseInt(f.size, 10) : null,
+        modifiedTime: f.modifiedTime,
+        synced: !!local,
+        localUrl: local ? local.image_url : null
+      };
+    });
+
+    // Orphans: in DB with drive_file_id, but file no longer in Drive folder
+    const orphans = existing.rows
+      .filter(row => !driveFileIds.has(row.drive_file_id))
+      .map(row => ({
+        imageId: row.id,
+        drive_file_id: row.drive_file_id,
+        image_url: row.image_url,
+        alt_text: row.alt_text
+      }));
+
+    res.json({ files, orphans, truncated: driveFiles.length >= HARD_LIMIT });
+  } catch (err) {
+    console.error('Drive folder list error:', err.message);
+    if (err.code === 404 || /not found/i.test(err.message)) {
+      return res.status(404).json({ error: 'folder_not_found' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Sync by user selection (download to uploads, delete locally if unchecked) ─
+
+// POST /api/google-drive/sync-selection/:dealId/:category
+// Body: { fileIds: string[] }
+// Performs diff vs current deal_images (matched by drive_file_id):
+//   • toAdd   — download to /uploads/{dealId}/ + INSERT deal_images
+//   • toRemove— DELETE deal_images + unlink local file (Drive untouched)
+//   • kept    — no-op
+router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) => {
+  const { dealId, category } = req.params;
+  const { fileIds } = req.body || {};
+
+  if (!Array.isArray(fileIds)) {
+    return res.status(400).json({ error: 'fileIds (array) required' });
+  }
+  // Validate all file IDs
+  for (const id of fileIds) {
+    if (typeof id !== 'string' || !/^[a-zA-Z0-9_-]{10,}$/.test(id)) {
+      return res.status(400).json({ error: `invalid file id: ${id}` });
+    }
+  }
+
+  try {
+    let drive;
+    try {
+      drive = await getAuthenticatedDrive();
+    } catch (authErr) {
+      if (authErr.message && authErr.message.includes('invalid_grant')) {
+        return res.status(401).json({ error: 'invalid_grant' });
+      }
+      throw authErr;
+    }
+
+    // Current synced files for this deal+category
+    const currentRes = await pool.query(
+      `SELECT id, drive_file_id, image_url
+         FROM deal_images
+        WHERE deal_id = $1 AND category = $2 AND drive_file_id IS NOT NULL`,
+      [dealId, category]
+    );
+    const currentMap = new Map();
+    for (const row of currentRes.rows) currentMap.set(row.drive_file_id, row);
+
+    const desired = new Set(fileIds);
+    const current = new Set(currentMap.keys());
+
+    const toAdd = [...desired].filter(id => !current.has(id));
+    const toRemove = [...current].filter(id => !desired.has(id));
+    const kept = [...desired].filter(id => current.has(id));
+
+    const added = [];
+    const removed = [];
+    const failed = [];
+
+    // Process additions: download + INSERT
+    const uploadsDir = buildDealUploadsDir(dealId);
+    for (const fileId of toAdd) {
+      try {
+        // Fetch metadata first so we know the filename
+        const meta = await drive.files.get({
+          fileId,
+          fields: 'id,name,mimeType,size'
+        });
+        const size = parseInt(meta.data.size || '0', 10);
+        if (size && size > MAX_DOWNLOAD_BYTES) {
+          failed.push({ fileId, name: meta.data.name, error: 'file_too_large' });
+          continue;
+        }
+        const filename = buildDriveFilename(fileId, meta.data.name, meta.data.mimeType);
+        const destPath = path.join(uploadsDir, filename);
+
+        await downloadDriveFileToDisk(drive, fileId, destPath);
+
+        const imageUrl = `/uploads/${dealId}/${filename}`;
+        const ins = await pool.query(
+          `INSERT INTO deal_images (deal_id, image_url, alt_text, category, sort_order, drive_file_id)
+           VALUES ($1, $2, $3, $4,
+             (SELECT COALESCE(MAX(sort_order),0)+1 FROM deal_images WHERE deal_id=$1 AND category=$4),
+             $5)
+           RETURNING id`,
+          [dealId, imageUrl, meta.data.name, category, fileId]
+        );
+        added.push({ fileId, name: meta.data.name, imageId: ins.rows[0].id, imageUrl });
+      } catch (e) {
+        console.error(`sync-selection add failed for ${fileId}:`, e.message);
+        failed.push({ fileId, error: e.code || e.message });
+      }
+    }
+
+    // Process removals: DELETE row + unlink local file (NEVER touch Drive)
+    for (const fileId of toRemove) {
+      const row = currentMap.get(fileId);
+      try {
+        // Remove physical file (best-effort)
+        if (row.image_url && row.image_url.startsWith('/uploads/')) {
+          const localPath = path.join(__dirname, '..', '..', 'public', row.image_url);
+          try { await fs.promises.unlink(localPath); } catch { /* file missing — ok */ }
+        }
+        // Clear thumbnail_url if it points to this image
+        await pool.query(
+          `UPDATE deals SET thumbnail_url = NULL WHERE id = $1 AND thumbnail_url = $2`,
+          [dealId, row.image_url]
+        );
+        await pool.query(`DELETE FROM deal_images WHERE id = $1`, [row.id]);
+        removed.push({ fileId, imageId: row.id, image_url: row.image_url });
+      } catch (e) {
+        console.error(`sync-selection remove failed for ${fileId}:`, e.message);
+        failed.push({ fileId, error: e.message });
+      }
+    }
+
+    // Update last_synced (if folder linked)
+    await pool.query(
+      `UPDATE deal_drive_folders SET last_synced = NOW()
+        WHERE deal_id = $1 AND category = $2`,
+      [dealId, category]
+    );
+
+    res.json({
+      ok: true,
+      added,
+      removed,
+      kept,
+      failed,
+      summary: {
+        added: added.length,
+        removed: removed.length,
+        kept: kept.length,
+        failed: failed.length
+      }
+    });
+  } catch (err) {
+    console.error('sync-selection error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
