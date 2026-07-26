@@ -48,6 +48,27 @@
 - **After every code change** — verify it works (restart server if needed, test endpoint)
 - **One agent max per task** — never spawn multiple agents
 
+## Git Workflow — ערוץ אחד בלבד
+
+**התיקייה `/Users/shlomidavid/claudecode/safe_capital` על ברנץ' `main` היא מקור האמת היחיד.**
+
+הזרימה, ואין אחרת:
+```
+עורכים ב-main → בודקים ב-localhost → commit → push → Vercel מדפלוי → פרודקשן
+```
+
+חוקים:
+- **אסור ליצור worktrees.** לא `git worktree add`, ולא `isolation: "worktree"` בקריאה ל-Agent. כל עבודה נעשית בתיקייה הראשית.
+- **אסור ליצור ברנצ'ים.** לא `claude/*`, לא feature branches. עובדים ישירות על `main`.
+- **`git pull` בתחילת כל סשן** שנוגע בקוד — לפני שנוגעים בקובץ הראשון.
+- **`git push` בסוף כל סשן** שבו נעשה commit. שינוי שלא נדחף = שינוי שלא קיים בפרודקשן.
+- לפני commit — לוודא שאין קבצי סוד בסטייג': `git diff --cached --name-only | grep -i "token\|secret\|credential\|\.env"`
+
+**למה:** בעבר פיצ'ר שלם (WhatsApp Updates, 153 קבצים) נבנה ב-worktree, נדחף ל-GitHub, ועלה לפרודקשן — בזמן שהתיקייה הראשית נשארה תקועה חודשיים אחורה. שלומי גילה בפרודקשן פיצ'ר שלא היה קיים אצלו בלוקלהוסט. ערוץ אחד מונע את זה.
+
+### פרודקשן
+Vercel מחובר ל-`origin/main` ב-GitHub ומדפלוי אוטומטית בכל דחיפה. שורש הדיפלוי של האדמין הוא `admin/` — **כל קובץ שהקוד בצד השרת קורא בזמן ריצה חייב לשבת בתוך `admin/`**, אחרת הוא לא נכלל בחבילה ויקרוס ב-ENOENT בפרודקשן בלבד (זה בדיוק מה שקרה עם `docs/voice-guide.md`, שהועבר ל-`admin/docs/`).
+
 ## Key Design Constraints
 These rules are non-negotiable. Violating them produces an off-brand result:
 
