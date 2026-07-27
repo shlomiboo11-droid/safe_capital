@@ -18,6 +18,7 @@ const { callClaude, extractJson, estimateCost, NATIVE_WEB_SEARCH, MODELS } = req
 const { getBusinessSystemBlocks, loadBusinessContext } = require('./business-context-loader');
 const sseBus = require('./sse-bus');
 const { locateSelection, spliceAt } = require('./selection-splice');
+const { todayLine, todayBlock } = require('./today');
 
 // ── Prompts ─────────────────────────────────────────────────────────
 
@@ -66,6 +67,8 @@ ${queryFormatExplanation}
 ${focusBlock}
 
 # פלט
+${todayBlock()}
+
 JSON בלבד (ללא markdown, ללא טקסט נוסף):
 {
   "title": "כותרת קצרה בעברית (2-4 מילים)",
@@ -97,6 +100,8 @@ ${focusBlock}
 ${queryFormatExplanation}
 
 # פלט
+${todayBlock()}
+
 JSON בלבד (ללא markdown, ללא טקסט נוסף):
 {
   "title": "כותרת קצרה בעברית (2-4 מילים)",
@@ -124,7 +129,9 @@ function buildResearchSystemPrompt() {
 - כותרות markdown מרובות
 - קלישאות AI ("במציאות הדינמית", "כידוע")
 - שפה תאגידית
-- רשימת מקורות בסוף (המקורות מצוטטים בטקסט)`;
+- רשימת מקורות בסוף (המקורות מצוטטים בטקסט)
+
+${todayBlock()}`;
 }
 
 /**
@@ -158,7 +165,9 @@ function buildSummarizeSystemPrompt() {
 - **3-6 פסקאות קצרות** בעברית. כל פסקה = רעיון אחד.
 - **מספרים מדויקים** עם תאריכים. ניתן לציין מקור בתוך השוטף ("לפי Bloomberg", "מנתוני בנק ישראל") אבל **בלי URLs ובלי רשימת מקורות בסוף** — המקורות מוצגים בנפרד בפאנל הצדדי.
 - **בלי קלישאות AI** ("בעולם של היום", "במציאות הדינמית").
-- **בלי המלצות**. רק תיאור עובדתי.`;
+- **בלי המלצות**. רק תיאור עובדתי.
+
+${todayLine()}`;
 }
 
 // ── 0. Discover trending topics (auto-topic flow) ───────────────────
@@ -179,9 +188,10 @@ async function discoverTopics(session) {
   const depth = session.research_depth || 'normal';
   const maxUses = depth === 'deep' ? 10 : 6;
 
-  const todayStr = new Date().toLocaleDateString('he-IL', {
-    day: '2-digit', month: '2-digit', year: 'numeric'
-  });
+  // Single source of truth for "now" — see ./today.js. Was a local
+  // toLocaleDateString here, which left the other four prompt builders with no
+  // date at all and let the model date its output from its training cutoff.
+  const todayStr = todayBlock();
 
   const systemPrompt = `אתה מסייע לצוות Safe Capital לזהות נושאים חמים מהשבוע האחרון לפוסט וואטסאפ למשקיעים. השתמש בהקשר העסקי המלא שלמעלה (שכונות, סוגי דילים, פרופיל משקיעים) כדי לבחור נושאים שבאמת רלוונטיים אלינו.
 
@@ -199,8 +209,10 @@ ${COMPANY_CONTEXT}
 3. ודא שהנושא **רלוונטי לקבוצה** של משקיעי נדל"ן ישראלים בארה"ב — שיש לו זווית כספית/אסטרטגית/מעשית.
 4. שלב נושאים מ-2-3 קטגוריות שונות כדי לתת לי מבחר.
 
+${todayStr}
+
 # פלט
-JSON בלבד (ללא markdown, ללא טקסט נוסף). תאריך היום: ${todayStr}.
+JSON בלבד (ללא markdown, ללא טקסט נוסף).
 {
   "topics": [
     {

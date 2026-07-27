@@ -19,6 +19,7 @@ const pool = require('../../db');
 const { callClaude, estimateCost, NATIVE_WEB_SEARCH, MODELS } = require('../claude-client');
 const { getCachedSystemBlocks } = require('./voice-guide-loader');
 const { locateSelection, spliceAt } = require('./selection-splice');
+const { todayLine } = require('./today');
 
 // ── Length targets ──────────────────────────────────────────────────
 
@@ -127,6 +128,8 @@ ${summary}
 """
 
 # הוראה
+${todayLine()}
+
 בהתבסס על הכיוון העריכתי שלמעלה ועל ה-Hard rules של ה-voice guide, כתוב את הפוסט. הטון, האמוג׳ים והאנרגיה צריכים להיגזר מהקונטקסט של הזווית והמסר (פוסט שואל-פרובוקטיבי דורש hook חזק; פוסט רגיש דורש שקט; וכו׳).
 
 החזר **רק את הפוסט** בעברית, מוכן להעתקה לוואטסאפ. ללא הקדמות, ללא הסברים, ללא markdown.`;
