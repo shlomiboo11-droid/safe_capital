@@ -1,6 +1,6 @@
 // Renders chat bubbles. Reads from Store, observes changes.
 
-import { Store } from './state.js';
+import { Store, missingQueries } from './state.js';
 import { renderQueriesBubble } from './query-list.js';
 import { ApiClient } from './api-client.js';
 import { attachSelectionPopover, detachAllPopovers } from './selection-popover.js';
@@ -344,7 +344,19 @@ export function initChatView() {
         //   topic_brief       → there is something to change.
         canChangeTopic: status === 'onboarding'
                         && !!state.session.topic_brief
-                        && Array.isArray(state.topics) && state.topics.length > 0
+                        && Array.isArray(state.topics) && state.topics.length > 0,
+        // The two recovery buttons, both live only in the state this branch
+        // already narrowed to: research is over, findings exist, no summary was
+        // ever produced. That is exactly the shape a killed run leaves behind.
+        // A number, not a boolean — the labels count what they act on.
+        canSummarizeExisting: (status === 'research_review' && state.findings.length > 0)
+                        ? state.findings.length : 0,
+        // `findings.length > 0` is load-bearing: with nothing collected at all,
+        // "run the 10 that didn't run" and "אשר והתחל מחקר" are the same button
+        // with two labels. Resuming only means something once part of the run
+        // actually landed.
+        missingCount: (status === 'research_review' && state.findings.length > 0)
+                        ? missingQueries(state).length : 0
       });
     }
 

@@ -47,8 +47,16 @@ export const ApiClient = {
   proposeQueries: (id) => request('/sessions/' + id + '/topic', { method: 'POST' }),
   saveQueries:    (id, queries) =>
     request('/sessions/' + id + '/queries', { method: 'POST', body: { queries } }),
-  startResearch:  (id) => request('/sessions/' + id + '/research/start', { method: 'POST' }),
+  // `opts` is the request body. Called with no argument (the normal "start
+  // research" button) it posts {} — same as the empty body it used to send.
+  // { only_missing: true } re-runs just the queries that produced no finding.
+  startResearch:  (id, opts = {}) =>
+    request('/sessions/' + id + '/research/start', { method: 'POST', body: opts }),
   stopResearch:   (id) => request('/sessions/' + id + '/research/stop', { method: 'POST' }),
+  // Turn the findings already in the DB into a summary, without running any
+  // query. The rescue path for a run that was killed mid-flight.
+  summarizeExisting: (id) =>
+    request('/sessions/' + id + '/research/summarize', { method: 'POST' }),
   acceptResearch: (id) => request('/sessions/' + id + '/research/accept', { method: 'POST' }),
   editSelection:  (id, payload) =>
     request('/sessions/' + id + '/research/edit-selection', { method: 'POST', body: payload }),

@@ -618,9 +618,30 @@ router.post('/sessions/:id/research/start', async (req, res) => {
     if (runningSessions.has(String(session.id))) {
       return res.status(409).json({ error: 'מחקר כבר רץ עבור הסשן הזה. המתן לסיכום לפני שמתחילים ריצה חדשה.' });
     }
-    const queries = Array.isArray(session.proposed_queries) ? session.proposed_queries : [];
+    let queries = Array.isArray(session.proposed_queries) ? session.proposed_queries : [];
     if (queries.filter(q => q.enabled !== false).length === 0) {
       return res.status(400).json({ error: 'No enabled queries to run' });
+    }
+
+    // `only_missing` — resume a run that stopped before it reached the end
+    // (budget deadline, a killed process) without paying for the queries that
+    // already produced findings. Absent or false, the list is untouched and the
+    // behaviour is byte-for-byte what it was: run every enabled query.
+    //
+    // The match is on the EXACT query text, because that is what the runner
+    // writes into whatsapp_research_findings.query. A query whose text the user
+    // edited after the run counts as "never ran" and runs again — an error in
+    // the safe direction (costs a call, loses nothing).
+    if (req.body && req.body.only_missing === true) {
+      const ran = await pool.query(
+        `SELECT DISTINCT query FROM whatsapp_research_findings WHERE session_id = $1`,
+        [session.id]
+      );
+      const alreadyRun = new Set(ran.rows.map(r => r.query).filter(Boolean));
+      queries = queries.filter(q => q.enabled !== false && !alreadyRun.has(q.text));
+      if (queries.length === 0) {
+        return res.status(400).json({ error: 'כל השאילתות כבר רצו.' });
+      }
     }
 
     // Mark as researching immediately so the UI updates.
@@ -717,6 +738,84 @@ router.post('/sessions/:id/research/stop', async (req, res) => {
   } catch (err) {
     console.error('Stop research error:', err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// POST /api/whatsapp/sessions/:id/research/summarize
+// Summarize the findings ALREADY in the database — no query is run, nothing is
+// searched, only the (single, cheap) summarize call is made.
+//
+// Why this exists: summarizeResearch had exactly one caller, runResearchAsync.
+// When a run died mid-flight (process killed, deadline) the findings it had
+// already paid for stayed in the DB with no way to turn them into a summary,
+// and the only button the UI offered in that state was "start research", which
+// re-runs — and re-pays for — every query. Three production sessions sat like
+// that, ~$1.73 of research with nothing to show.
+router.post('/sessions/:id/research/summarize', async (req, res) => {
+  try {
+    const sessionRes = await pool.query(
+      `SELECT * FROM whatsapp_sessions WHERE id = $1`,
+      [req.params.id]
+    );
+    if (sessionRes.rows.length === 0) {
+      return res.status(404).json({ error: 'הסשן כבר לא קיים.' });
+    }
+    const session = sessionRes.rows[0];
+
+    // Guard 1 — a live run. The status is the real guard; runningSessions is an
+    // in-memory Set that only covers this process (see the note above it), so it
+    // is a bonus, not the fence. Summarizing over a run in flight would write a
+    // summary of half the findings and the run would then overwrite it.
+    if (session.status === 'researching' || runningSessions.has(String(session.id))) {
+      return res.status(409).json({ error: 'מחקר רץ כרגע עבור הסשן הזה. המתן שיסתיים.' });
+    }
+
+    // Guard 2 — past this step. summarizeResearch writes status='research_review'
+    // unconditionally, so calling it on a session that already moved to writing
+    // would drag the user backwards a stage.
+    if (['writing', 'done', 'archived'].includes(session.status)) {
+      return res.status(409).json({ error: 'הסשן כבר עבר את שלב המחקר — אין מה לסכם מחדש.' });
+    }
+
+    // Guard 3 — a summary already exists. It may have been edited by hand
+    // (/research/manual-edit or a selection edit); a second summarize overwrites
+    // research_summary and that edit is gone.
+    if (session.research_summary && String(session.research_summary).trim()) {
+      return res.status(409).json({ error: 'לסשן הזה כבר יש סיכום מחקר.' });
+    }
+
+    const cnt = await pool.query(
+      `SELECT COUNT(*)::int AS c FROM whatsapp_research_findings WHERE session_id = $1`,
+      [session.id]
+    );
+    if (cnt.rows[0].c === 0) {
+      return res.status(400).json({ error: 'אין ממצאים לסכם.' });
+    }
+
+    // Hold the same lock runResearchAsync holds, for the same reason it holds it
+    // across summarize and not just across the query loop: for the ~40s this
+    // call takes, the session's status is still 'research_review', so nothing
+    // else would stop a /research/start from a second tab. That run would then
+    // be overwritten by the summary landing here, or vice versa. Released in
+    // `finally` so a failure can't strand the session as permanently locked.
+    runningSessions.add(String(session.id));
+    let result;
+    try {
+      result = await researchProvider.summarizeResearch(session);
+    } finally {
+      runningSessions.delete(String(session.id));
+    }
+    const { summary, draft_id, cost } = result;
+    // Same event the normal path publishes, for any other tab watching this
+    // session's stream.
+    sseBus.publish(session.id, 'summary_ready', { draft_id, content: summary, cost });
+    res.json({ summary, draft_id, cost });
+  } catch (err) {
+    if (err && err.code === '22P02') {
+      return res.status(404).json({ error: 'הסשן כבר לא קיים.' });
+    }
+    console.error('Summarize existing findings error:', err);
+    res.status(500).json({ error: err.message || 'Server error' });
   }
 });
 

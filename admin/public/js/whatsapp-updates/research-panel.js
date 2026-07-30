@@ -2,7 +2,7 @@
 // Renders into a fixed container `#waResearchPanel`. On mobile this can be
 // collapsed via a top-bar toggle (Phase 5).
 
-import { Store } from './state.js';
+import { Store, missingQueries } from './state.js';
 import { setMarkdown } from './markup.js';
 
 function fmtCost(c) {
@@ -56,6 +56,35 @@ export function initResearchPanel() {
 
     if (listEl) {
       listEl.innerHTML = '';
+
+      // The gap between what was asked and what came back. When a run is killed
+      // mid-flight nothing anywhere says so: no error event is published (the
+      // process is simply gone), the SSE buffer is per-process so a refresh
+      // wipes what little was on screen, and the panel below happily shows 5
+      // findings as if 5 were all that was ever planned. This line is the only
+      // place the user learns that 3 queries never ran.
+      //
+      // Only while the run is over — during it, "not yet" and "never" look the
+      // same and every gap is expected.
+      const missing = missingQueries(state);
+      if (missing.length > 0
+          && !state.research.running
+          && ['research_review', 'writing', 'done'].includes(state.session.status)) {
+        const total = (Array.isArray(state.session.proposed_queries) ? state.session.proposed_queries : [])
+          .filter(q => q && q.enabled !== false).length;
+        const note = document.createElement('div');
+        note.className = 'wa-panel-empty';
+        // Two different stories, and the "stopped partway" sentence is a lie
+        // about the second one: a session whose research never started (or was
+        // reclaimed by the startup cleanup before the first query) has every
+        // query missing, and telling the user it "stopped before reaching them"
+        // invents a run that never happened.
+        note.textContent = state.findings.length > 0
+          ? `${missing.length} מתוך ${total} השאילתות לא רצו — המחקר נעצר לפני שהספיק להגיע אליהן.`
+          : `אף אחת מ-${total} השאילתות לא הפיקה ממצא — המחקר לא רץ, או נעצר לפני השאילתה הראשונה.`;
+        listEl.appendChild(note);
+      }
+
       // De-duplicate findings by source_url (one entry per source, latest note wins)
       // A3#10 — the same row arrives as `finding_id` over SSE and as `id` when
       // it's re-read from the DB (both are whatsapp_research_findings.id, only

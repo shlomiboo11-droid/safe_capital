@@ -241,14 +241,32 @@ async function discoverTopicsIfNeeded() {
 // A3#5 — per-query failures are counted, not announced one by one. A run where
 // 4 of 6 queries time out would otherwise fill the chat with four notices in a
 // row, on a research run that is still going.
+//
+// The counter is per RUN, and resetting it only in attachStreamFor was not
+// enough: that function is skipped whenever a stream is still attached when a
+// new run begins — which is exactly what happens after a run whose process was
+// killed, because no `done` event ever arrived to close it. The failures of the
+// dead run then kept adding up, and the user was told "13 שאילתות מחקר נכשלו"
+// on a session that only ever had 8. resetFailedQueries is called from the
+// status transition into 'researching' as well, so every run starts at zero
+// however it was started.
 let failedQueries = { count: 0, lastMessage: '' };
+function resetFailedQueries() {
+  failedQueries = { count: 0, lastMessage: '' };
+  // The notice bubble IS this counter's rendering — zeroing the number while
+  // "13 שאילתות מחקר נכשלו" stays on screen fixes nothing the user can see.
+  // Safe to drop here: at the start of a run, any notice on screen belongs to
+  // the previous one. (Same as proposeQueriesForCurrentSession does before it
+  // starts its own call.)
+  if (Store.get().error) Store.setError(null);
+}
 
 function attachStreamFor(sessionId) {
   if (activeStream) {
     activeStream.close();
     activeStream = null;
   }
-  failedQueries = { count: 0, lastMessage: '' };
+  resetFailedQueries();
   activeStream = connectStream(ApiClient.streamUrl(sessionId), {
     query_started: (data) => {
       // The query is running now — the "waiting before query N" note from the
@@ -271,6 +289,25 @@ function attachStreamFor(sessionId) {
     stopped: () => {
       Store.setPacing(null);
       Store.setSummarizing(true);
+    },
+    // The runner decided on its own to stop early — it ran out of run budget or
+    // hit the rate limit — and is about to summarize what it has. Said out loud
+    // through the same notice bubble as everything else (chat-view section 6),
+    // never an alert: the run did not fail, it came back short, and a popup
+    // would read as "everything collapsed".
+    budget_exhausted: (data) => {
+      Store.setPacing(null);
+      const done   = Number(data && data.queries_done) || 0;
+      const total  = Number(data && data.queries_total) || 0;
+      const why    = (data && data.reason === 'rate_limit')
+        ? 'בגלל מגבלת הקצב של Anthropic'
+        : 'בגלל מגבלת הזמן של הריצה';
+      Store.setError(
+        (done && total
+          ? `המחקר נעצר אחרי ${done} מתוך ${total} שאילתות ${why}.`
+          : `המחקר נעצר לפני שהספיק להריץ את כל השאילתות ${why}.`)
+        + ' הסיכום מבוסס על מה שנאסף עד כה — אפשר להריץ את השאילתות שנותרו בנפרד.'
+      );
     },
     finding: (data) => {
       Store.addFinding(data);
@@ -446,6 +483,10 @@ function init() {
     const status = state.session.status;
     if (status !== lastStatus) {
       lastStatus = status;
+      // A new run begins here regardless of whether a stream had to be opened
+      // for it — see the note on resetFailedQueries. Without this the failures
+      // of a previous run are still on the tally when this one reports its own.
+      if (status === 'researching') resetFailedQueries();
       if (status === 'writing' && !state.post.content && !state.post.generating) {
         openWritingConfigIfNoDraft(state.session, writingConfig);
       }

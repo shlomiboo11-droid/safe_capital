@@ -10,10 +10,14 @@ export function connectStream(url, handlers = {}) {
   // and the browser threw them away without a trace, which is why "עצור מחקר"
   // pressed in one tab did nothing visible in another and the 25-35s gap
   // between queries looked like the run had died.
+  // `budget_exhausted` is published when the runner stops itself before it has
+  // gone through every query (time budget, rate limit) and goes on to summarize
+  // what it collected. Without it in this list the run would look like it simply
+  // finished, and a summary built on 5 of 8 queries would read as complete.
   const eventNames = [
     'query_started', 'finding', 'tokens', 'query_done',
     'consultation_needed', 'summarizing', 'summary_ready',
-    'pacing', 'stopped', 'error', 'done'
+    'pacing', 'stopped', 'budget_exhausted', 'error', 'done'
   ];
 
   for (const name of eventNames) {

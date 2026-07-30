@@ -211,3 +211,28 @@ export const Store = {
 
   setError(err) { data.error = err; emit(); }
 };
+
+// Which enabled queries produced no finding at all — i.e. the ones a run never
+// reached before it stopped. Derived purely from data the client already has:
+// GET /sessions/:id returns both `proposed_queries` and every finding, so this
+// needs no new column, no new endpoint, and it works retroactively on sessions
+// that were already stranded.
+//
+// Read from session.proposed_queries and NOT from data.queries: the latter can
+// hold unsaved on-screen edits, and the comparison has to be against the list
+// the runner actually worked from. The match is on exact query text, the same
+// key the server uses (whatsapp_research_findings.query is written from q.text).
+//
+// Two ways it can over-report, both harmless — it warns, it never silences:
+//   • a query whose text the user edited after the run reads as "never ran"
+//   • a query that ran and returned nothing would too, except the runner always
+//     inserts a row, so that case doesn't occur.
+export function missingQueries(state) {
+  const proposed = (state && state.session && state.session.proposed_queries) || [];
+  const enabled = Array.isArray(proposed) ? proposed.filter(q => q && q.enabled !== false) : [];
+  if (enabled.length === 0) return [];
+  const ran = new Set(
+    (state.findings || []).map(f => f && f.query).filter(Boolean)
+  );
+  return enabled.filter(q => !ran.has(q.text));
+}

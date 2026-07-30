@@ -19,6 +19,16 @@ const { getBusinessSystemBlocks, loadBusinessContext } = require('./business-con
 const sseBus = require('./sse-bus');
 const { locateSelection, spliceAt } = require('./selection-splice');
 const { todayLine, todayBlock } = require('./today');
+const {
+  readRunBudgetMs,
+  estimateQueryMs,
+  estimateNextInputTokens,
+  shouldStopForBudget,
+  decidePacing,
+  BUDGET
+} = require('./research-budget');
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 // ── Prompts ─────────────────────────────────────────────────────────
 
@@ -344,18 +354,46 @@ async function executeResearchInner(session, queries, depthOverride) {
   const depth = depthOverride || session.research_depth || 'normal';
   const model = depth === 'deep' ? MODELS.OPUS : MODELS.SONNET;
   // Tight bounds keep per-call input tokens low so we stay under Anthropic's
-  // 30K input-tokens-per-minute org limit.
+  // 30K input-tokens-per-minute org limit. Deliberately below the shared
+  // NATIVE_WEB_SEARCH default of 5: a research run fires 5-8 of these calls
+  // back to back, so the per-call ceiling has to be tighter than what a
+  // one-off call (topic discovery, a verify) can afford.
   const maxUses = depth === 'deep' ? 4 : 2;
 
-  // Pacing: ~30K input-tokens-per-minute means roughly 1 query every 25-35s
-  // is the safe ceiling once you account for web_search results piling in.
+  // Pacing floor: ~30K input-tokens-per-minute means roughly 1 query every
+  // 25-35s is the safe ceiling once you account for web_search results piling
+  // in. This stays the fallback — when the API reports the real remaining
+  // quota (see decidePacing) that measurement wins over this guess.
   const GAP_MS_BETWEEN_QUERIES = depth === 'deep' ? 35_000 : 25_000;
+
+  // ── Run budget ────────────────────────────────────────────────────
+  // The loop now measures itself. Before each query it asks whether the query
+  // still fits alongside the summary reserve; if not it stops on purpose and
+  // lets the caller summarize what was gathered, instead of running until
+  // something outside kills it and leaves the findings stranded.
+  const runStartedAt = Date.now();
+  const budgetMs  = readRunBudgetMs();
+  const reserveMs = BUDGET.DEFAULT_SUMMARY_RESERVE_MS;
+  // Seed estimate for one query, until a real measurement replaces it.
+  // Measured: a healthy 8-query normal run spends ~35s per query end-to-end;
+  // deep adds Opus + 2K thinking tokens + twice the searches. Seeds are padded
+  // above the measurement so the first budget check errs toward stopping.
+  const SEED_QUERY_MS = depth === 'deep' ? 90_000 : 60_000;
+  // Absolute ceiling for one query's call, retries and rate-limit waits
+  // included. Without it a single wedged query could burn ~1,050s — more than
+  // the whole run budget. 3x the seed leaves room for one honoured rate-limit
+  // wait plus a slow web search, and nothing beyond that.
+  const PER_QUERY_MAX_MS = SEED_QUERY_MS * 3;
 
   const enabled = queries.filter(q => q.enabled !== false);
   let totalTokens = 0;
   let totalCost   = 0;
   let totalFindings = 0;
   let qIndex = 0;
+  let maxObservedQueryMs = 0;
+  let lastRateLimit = null;      // from the previous successful call, may be null
+  let lastInputTokens = 0;
+  let stopReason = null;         // 'time' | 'rate_limit' when we stopped early
 
   // The runner checks DB status before each query — if /research/stop ran or
   // the session was archived, exit cleanly.
@@ -370,13 +408,45 @@ async function executeResearchInner(session, queries, depthOverride) {
       sseBus.publish(session.id, 'stopped', { reason: 'status_changed' });
       break;
     }
-    if (qIndex > 1) {
-      sseBus.publish(session.id, 'pacing', {
-        gap_ms: GAP_MS_BETWEEN_QUERIES,
-        next_query_index: qIndex,
-        of: enabled.length
+
+    // How long we would wait before this query: the fixed gap normally, or the
+    // real reset time when the API told us the remaining quota is too small.
+    const pacing = qIndex > 1
+      ? decidePacing({
+          rateLimit: lastRateLimit,
+          estimatedInputTokens: estimateNextInputTokens(lastInputTokens),
+          defaultGapMs: GAP_MS_BETWEEN_QUERIES
+        })
+      : { waitMs: 0, waitingFor: 'gap' };
+
+    // Does wait + query + the summary reserve still fit in the budget?
+    const nextSlotMs = pacing.waitMs + estimateQueryMs(SEED_QUERY_MS, maxObservedQueryMs);
+    if (shouldStopForBudget({
+      elapsedMs: Date.now() - runStartedAt,
+      budgetMs,
+      reserveMs,
+      nextSlotMs
+    })) {
+      // queries_done counts the loop iterations that finished (successfully or
+      // not) — this one never started.
+      stopReason = pacing.waitingFor === 'rate_limit' ? 'rate_limit' : 'time';
+      console.warn(`[whatsapp] research stopped early (${stopReason}) for session ${session.id}: ${qIndex - 1}/${enabled.length} queries in ${Math.round((Date.now() - runStartedAt) / 1000)}s.`);
+      sseBus.publish(session.id, 'budget_exhausted', {
+        reason: stopReason,
+        queries_done: qIndex - 1,
+        queries_total: enabled.length
       });
-      await new Promise(r => setTimeout(r, GAP_MS_BETWEEN_QUERIES));
+      break;
+    }
+
+    if (pacing.waitMs > 0) {
+      sseBus.publish(session.id, 'pacing', {
+        gap_ms: pacing.waitMs,
+        next_query_index: qIndex,
+        of: enabled.length,
+        waiting_for: pacing.waitingFor
+      });
+      await sleep(pacing.waitMs);
     }
     if (await shouldAbort()) {
       sseBus.publish(session.id, 'stopped', { reason: 'status_changed' });
@@ -385,7 +455,8 @@ async function executeResearchInner(session, queries, depthOverride) {
     sseBus.publish(session.id, 'query_started', { query_id: q.id, text: q.text });
 
     try {
-      const tools = [{ ...NATIVE_WEB_SEARCH, max_uses: maxUses }];
+      // The ceiling is stated once, via web_search_max_uses on the call below.
+      const tools = [NATIVE_WEB_SEARCH];
 
       const focusBlock = (session.focus_notes && session.focus_notes.trim())
         ? `\n\nהמשתמש ביקש להתמקד גם ב:\n"""\n${session.focus_notes.trim()}\n"""\nאם יש זווית מהממצא שלך שעוזרת לבסס את ההתמקדויות האלה — הדגש אותה.`
@@ -404,6 +475,15 @@ ${langInstruction}${focusBlock}
 
 הצלב לפחות 2 מקורות, ותחזיר ממצא בעברית עם מקורות מצוטטים (URLs מלאים).`;
 
+      // Never let one query outlive its share of the run: whichever is smaller,
+      // the per-query ceiling or the time actually left after the summary
+      // reserve. The floor keeps a degenerate value (a nearly spent budget)
+      // from asking for a call with no time at all.
+      const timeLeftForQueryMs = Math.max(
+        30_000,
+        Math.min(PER_QUERY_MAX_MS, budgetMs - (Date.now() - runStartedAt) - reserveMs)
+      );
+
       const callOpts = {
         model,
         // Smaller output budgets to keep total tokens-per-minute within the
@@ -412,13 +492,23 @@ ${langInstruction}${focusBlock}
         max_tokens: depth === 'deep' ? 3000 : 1800,
         system: getBusinessSystemBlocks(buildResearchSystemPrompt()),
         tools,
+        web_search_max_uses: maxUses,
+        max_total_ms: timeLeftForQueryMs,
         messages: [{ role: 'user', content: userPrompt }]
       };
       if (depth === 'deep') {
         callOpts.thinking = { type: 'enabled', budget_tokens: 2000 };
       }
 
+      const queryStartedAt = Date.now();
       const resp = await callClaude(callOpts);
+      // Measured cost of a real query, used by the next budget check. Includes
+      // the retries and rate-limit waits that happened inside callClaude —
+      // which is the point: those are what make a query expensive.
+      maxObservedQueryMs = Math.max(maxObservedQueryMs, Date.now() - queryStartedAt);
+      // Quota as of this response. null when the headers are missing, and
+      // decidePacing then falls back to the fixed gap — same as before.
+      lastRateLimit = resp.rateLimit || null;
 
       // Extract source URLs from the response text (best-effort regex pass)
       // and from any web_search_tool_result blocks in the content.
@@ -454,6 +544,13 @@ ${langInstruction}${focusBlock}
       sseBus.publish(session.id, 'finding', {
         finding_id: ins.rows[0].id,
         query_id: q.id,
+        // The query TEXT, not just its id: the browser keeps live findings in
+        // memory exactly as they arrive here, and missingQueries() (state.js)
+        // decides "which query never ran" by matching this field against
+        // proposed_queries[].text — the same key the DB row is written with
+        // above. Without it every finding from a live run looks query-less and
+        // a fully successful run reports "8 of 8 queries never ran".
+        query: q.text,
         source_url: ins.rows[0].source_url,
         source_name: ins.rows[0].source_name,
         extra_sources: extraSources,
@@ -462,6 +559,13 @@ ${langInstruction}${focusBlock}
 
       const inTok  = (resp.usage.input_tokens || 0) + (resp.usage.cache_read_input_tokens || 0);
       const outTok = resp.usage.output_tokens || 0;
+      // What the NEXT query is likely to charge against the input-token quota.
+      // Counts cache reads and cache writes as well as fresh input — the
+      // deliberately conservative reading. Over-estimating costs at most one
+      // extra wait-for-reset (<=90s); under-estimating costs a 429 and up to
+      // three honoured retries, which is far more expensive. If the pacer ever
+      // looks too eager, the knob to turn is dropping cache_read from here.
+      lastInputTokens = inTok + (resp.usage.cache_creation_input_tokens || 0);
       const queryTokens = inTok + outTok;
       const queryCost   = estimateCost(model, resp.usage);
       totalTokens += queryTokens;
@@ -487,6 +591,10 @@ ${langInstruction}${focusBlock}
       sseBus.publish(session.id, 'query_done', { query_id: q.id });
     } catch (err) {
       console.error('Query failed:', q.text, err.message);
+      // The quota snapshot we were holding belongs to a call that is now old
+      // news. Drop it rather than pace the next query on stale numbers — with
+      // null, decidePacing falls back to the fixed gap.
+      lastRateLimit = null;
       // Fatal errors that affect the whole account, not just this query — stop
       // the whole run so the user gets an immediate, actionable message.
       const fatalPatterns = [
@@ -520,7 +628,19 @@ ${langInstruction}${focusBlock}
   // adding them again stored exactly 2x the real cost. The in-loop update must
   // stay (it keeps the 15s polling fallback from overwriting the live SSE
   // numbers with a stale 0) and it also survives a mid-run stop or fatal error.
-  return { totalTokens, totalCost, totalFindings };
+  //
+  // Returning normally after an early stop is the whole point: the caller goes
+  // straight on to summarizeResearch, so a run that ran out of budget still
+  // produces a summary of what it did gather instead of nothing.
+  return {
+    totalTokens,
+    totalCost,
+    totalFindings,
+    stoppedEarly: stopReason !== null,
+    stopReason,
+    queriesDone: qIndex - (stopReason === null ? 0 : 1),
+    queriesTotal: enabled.length
+  };
 }
 
 function hostnameOf(url) {
