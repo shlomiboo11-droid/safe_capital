@@ -358,7 +358,15 @@ async function executeResearchInner(session, queries, depthOverride) {
   // NATIVE_WEB_SEARCH default of 5: a research run fires 5-8 of these calls
   // back to back, so the per-call ceiling has to be tighter than what a
   // one-off call (topic discovery, a verify) can afford.
-  const maxUses = depth === 'deep' ? 4 : 2;
+  //
+  // 3 and not 2: buildResearchSystemPrompt demands the model cross-check at
+  // least two sources, and at exactly 2 it has no move left when the first
+  // search comes back useless — the finding then rests on a single source or
+  // on nothing. The third search is the retry. Affordable now that a rate
+  // limit only slows a query down (claude-client.js honours the reset header)
+  // instead of killing it after three premature retries, which is what
+  // stranded runs on exactly 5 findings.
+  const maxUses = depth === 'deep' ? 4 : 3;
 
   // Pacing floor: ~30K input-tokens-per-minute means roughly 1 query every
   // 25-35s is the safe ceiling once you account for web_search results piling
