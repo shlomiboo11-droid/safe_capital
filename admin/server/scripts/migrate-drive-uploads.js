@@ -1,4 +1,10 @@
 /**
+ * ⚠ SUPERSEDED — do not run. Phases 2 and 3 write to admin/public/uploads/,
+ * which is a read-only filesystem on Vercel (EROFS). Uploads now live in object
+ * storage; use server/scripts/migrate-uploads-to-storage.js instead. Its Phase 0
+ * replaces Phase 1 below (drive_file_id backfill) and matches both the legacy
+ * and the migrated URL shapes. Kept only as a record of the previous migration.
+ *
  * One-time migration: unify deal_images storage on /uploads/{dealId}/
  *
  * Phase 1: Backfill drive_file_id for rows already in /uploads/ with

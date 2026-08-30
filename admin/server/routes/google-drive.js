@@ -108,88 +108,51 @@ async function getAuthenticatedDrive() {
   return google.drive({ version: 'v3', auth: oauth2Client });
 }
 
-// ── File system helpers (Drive → local uploads) ──────────────────────────────
+// ── Drive → object storage helpers ───────────────────────────────────────────
+// Nothing here touches the filesystem: on Vercel the code dir is read-only
+// (EROFS) and every disk write fails in production. Files are buffered in
+// memory (capped at MAX_DOWNLOAD_BYTES) and pushed to Supabase Storage.
 
-const fs = require('fs');
-const path = require('path');
+const storage = require('../services/storage');
 
-const UPLOADS_ROOT = path.join(__dirname, '..', '..', 'public', 'uploads');
 const MAX_DOWNLOAD_BYTES = 20 * 1024 * 1024; // 20MB
 
-// mimeType → extension fallback (only used if filename has no extension)
-const MIME_EXT = {
-  'image/jpeg': '.jpg',
-  'image/jpg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/gif': '.gif',
-  'image/heic': '.heic',
-  'image/heif': '.heif',
-  'image/avif': '.avif',
-  'image/svg+xml': '.svg',
-  'image/bmp': '.bmp',
-  'image/tiff': '.tiff'
-};
+const { buildDriveFilename } = storage;
 
-function sanitizeFilename(name) {
-  if (!name) return 'file';
-  // Strip path separators and limit to safe chars
-  return name.replace(/[^a-zA-Z0-9_.-]/g, '_').slice(0, 120) || 'file';
-}
+/**
+ * Pull a Drive file into memory and upload it to object storage.
+ * Pass `knownMeta` when the caller already fetched metadata, to save an API call.
+ * @returns {Promise<{meta: object, url: string, key: string}>}
+ */
+async function copyDriveFileToStorage(drive, fileId, key, knownMeta) {
+  let meta = knownMeta;
+  if (!meta) {
+    const metaRes = await drive.files.get({ fileId, fields: 'id,name,mimeType,size' });
+    meta = metaRes.data;
+  }
 
-function buildDealUploadsDir(dealId) {
-  return path.join(UPLOADS_ROOT, String(dealId));
-}
-
-function buildDriveFilename(fileId, originalName, mimeType) {
-  const safe = sanitizeFilename(originalName || '');
-  const hasExt = /\.[a-zA-Z0-9]{2,5}$/.test(safe);
-  const ext = hasExt ? '' : (MIME_EXT[mimeType] || '');
-  return `drive_${fileId}_${safe}${ext}`;
-}
-
-// Stream a Drive file to disk. Resolves with file metadata, rejects on any error.
-// Cleans up partial files on failure.
-async function downloadDriveFileToDisk(drive, fileId, destPath) {
-  const meta = await drive.files.get({
-    fileId,
-    fields: 'id,name,mimeType,size'
-  });
-  const size = parseInt(meta.data.size || '0', 10);
+  const size = parseInt(meta.size || '0', 10);
   if (size && size > MAX_DOWNLOAD_BYTES) {
     const err = new Error(`file too large: ${size} bytes (max ${MAX_DOWNLOAD_BYTES})`);
     err.code = 'FILE_TOO_LARGE';
     throw err;
   }
 
-  await fs.promises.mkdir(path.dirname(destPath), { recursive: true });
-
   const res = await drive.files.get(
     { fileId, alt: 'media' },
-    { responseType: 'stream' }
+    { responseType: 'arraybuffer' }
   );
+  const buffer = Buffer.from(res.data);
 
-  await new Promise((resolve, reject) => {
-    const out = fs.createWriteStream(destPath);
-    let settled = false;
-    const fail = async (e) => {
-      if (settled) return;
-      settled = true;
-      out.destroy();
-      try { await fs.promises.unlink(destPath); } catch { /* ignore */ }
-      reject(e);
-    };
-    res.data.on('error', fail);
-    out.on('error', fail);
-    out.on('finish', () => {
-      if (settled) return;
-      settled = true;
-      resolve();
-    });
-    res.data.pipe(out);
-  });
+  // Drive doesn't always report size in metadata — enforce the cap on real bytes too.
+  if (buffer.length > MAX_DOWNLOAD_BYTES) {
+    const err = new Error(`file too large: ${buffer.length} bytes (max ${MAX_DOWNLOAD_BYTES})`);
+    err.code = 'FILE_TOO_LARGE';
+    throw err;
+  }
 
-  return meta.data;
+  const uploaded = await storage.uploadBuffer(buffer, key, { contentType: meta.mimeType });
+  return { meta, url: uploaded.url, key: uploaded.key };
 }
 
 // ── One-time OAuth ───────────────────────────────────────────────────────────
@@ -629,6 +592,10 @@ router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) 
     }
   }
 
+  if (!storage.isStorageConfigured()) {
+    return res.status(500).json({ error: 'אחסון הקבצים לא מוגדר. יש להגדיר SUPABASE_URL ו-SUPABASE_SERVICE_KEY.' });
+  }
+
   try {
     let drive;
     try {
@@ -661,8 +628,7 @@ router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) 
     const removed = [];
     const failed = [];
 
-    // Process additions: download + INSERT
-    const uploadsDir = buildDealUploadsDir(dealId);
+    // Process additions: copy Drive → object storage + INSERT
     for (const fileId of toAdd) {
       try {
         // Fetch metadata first so we know the filename
@@ -676,11 +642,10 @@ router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) 
           continue;
         }
         const filename = buildDriveFilename(fileId, meta.data.name, meta.data.mimeType);
-        const destPath = path.join(uploadsDir, filename);
+        const key = storage.buildKey('uploads', dealId, filename);
 
-        await downloadDriveFileToDisk(drive, fileId, destPath);
+        const { url: imageUrl } = await copyDriveFileToStorage(drive, fileId, key, meta.data);
 
-        const imageUrl = `/uploads/${dealId}/${filename}`;
         const ins = await pool.query(
           `INSERT INTO deal_images (deal_id, image_url, alt_text, category, sort_order, drive_file_id)
            VALUES ($1, $2, $3, $4,
@@ -696,15 +661,13 @@ router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) 
       }
     }
 
-    // Process removals: DELETE row + unlink local file (NEVER touch Drive)
+    // Process removals: DELETE row + delete stored object (NEVER touch Drive)
     for (const fileId of toRemove) {
       const row = currentMap.get(fileId);
       try {
-        // Remove physical file (best-effort)
-        if (row.image_url && row.image_url.startsWith('/uploads/')) {
-          const localPath = path.join(__dirname, '..', '..', 'public', row.image_url);
-          try { await fs.promises.unlink(localPath); } catch { /* file missing — ok */ }
-        }
+        // Remove the stored object (best-effort). Legacy '/uploads/...' rows that
+        // were never migrated have no object to delete — they're git-tracked files.
+        await storage.deleteObject(row.image_url);
         // Clear thumbnail_url if it points to this image
         await pool.query(
           `UPDATE deals SET thumbnail_url = NULL WHERE id = $1 AND thumbnail_url = $2`,
@@ -718,25 +681,43 @@ router.post('/sync-selection/:dealId/:category', authenticate, async (req, res) 
       }
     }
 
-    // Update last_synced (if folder linked)
-    await pool.query(
-      `UPDATE deal_drive_folders SET last_synced = NOW()
-        WHERE deal_id = $1 AND category = $2`,
-      [dealId, category]
-    );
+    const summary = {
+      added: added.length,
+      removed: removed.length,
+      kept: kept.length,
+      failed: failed.length
+    };
+
+    // last_synced means "the folder and the DB are in sync". Stamping it after a
+    // failed run is what hid the EROFS bug for months — the UI reported success
+    // while every single file had failed to save. Only stamp a clean run.
+    if (failed.length === 0) {
+      await pool.query(
+        `UPDATE deal_drive_folders SET last_synced = NOW()
+          WHERE deal_id = $1 AND category = $2`,
+        [dealId, category]
+      );
+    }
+
+    // Nothing we attempted succeeded → this is a failure, report it as one.
+    const attempted = toAdd.length + toRemove.length;
+    if (attempted > 0 && failed.length === attempted) {
+      const firstError = failed[0] && failed[0].error ? ` (${failed[0].error})` : '';
+      return res.status(502).json({
+        ok: false,
+        error: `הסנכרון נכשל — אף קובץ לא נשמר${firstError}`,
+        added, removed, kept, failed, summary
+      });
+    }
 
     res.json({
-      ok: true,
+      ok: failed.length === 0,
+      ...(failed.length ? { warning: `${failed.length} קבצים נכשלו בסנכרון` } : {}),
       added,
       removed,
       kept,
       failed,
-      summary: {
-        added: added.length,
-        removed: removed.length,
-        kept: kept.length,
-        failed: failed.length
-      }
+      summary
     });
   } catch (err) {
     console.error('sync-selection error:', err.message);

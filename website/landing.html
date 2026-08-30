@@ -1297,16 +1297,23 @@ tailwind.config = {
 
   var ADMIN_BASE = ADMIN_HOST;
 
+  // Images live in object storage and arrive as absolute https:// URLs.
+  // Legacy rows are still relative ('/uploads/...') and need the admin host.
+  function imgSrc(url) {
+    if (!url) return '';
+    return /^(https?:)?\/\//.test(url) ? url : ADMIN_BASE + url;
+  }
+
   function getDealThumb(deal) {
-    if (deal.thumbnail_url) return ADMIN_BASE + deal.thumbnail_url;
+    if (deal.thumbnail_url) return imgSrc(deal.thumbnail_url);
     if (deal.images && deal.images.length) {
       var prio = ['after', 'rendering', 'before', 'gallery'];
       for (var p = 0; p < prio.length; p++) {
         for (var i = 0; i < deal.images.length; i++) {
-          if (deal.images[i].category === prio[p]) return ADMIN_BASE + deal.images[i].image_url;
+          if (deal.images[i].category === prio[p]) return imgSrc(deal.images[i].image_url);
         }
       }
-      return ADMIN_BASE + deal.images[0].image_url;
+      return imgSrc(deal.images[0].image_url);
     }
     return '';
   }

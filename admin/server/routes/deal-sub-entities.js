@@ -5,10 +5,10 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const pool = require('../db');
 const { authenticate, authorize } = require('../middleware/auth');
 const { logAudit } = require('../helpers/audit');
+const storage = require('../services/storage');
 
 const router = express.Router();
 router.use(authenticate, authorize('super_admin', 'manager'));
@@ -273,7 +273,13 @@ router.put('/:dealId/images/:itemId', async (req, res) => {
 
 router.delete('/:dealId/images/:itemId', async (req, res) => {
   try {
+    const found = await pool.query(
+      'SELECT image_url FROM deal_images WHERE id = $1 AND deal_id = $2',
+      [req.params.itemId, req.params.dealId]
+    );
     await pool.query('DELETE FROM deal_images WHERE id = $1 AND deal_id = $2', [req.params.itemId, req.params.dealId]);
+    // Best-effort object removal — a leftover file must never block the DB delete.
+    if (found.rows[0]) await storage.deleteObject(found.rows[0].image_url);
     res.json({ message: 'Image deleted' });
   } catch (err) {
     console.error('Delete image error:', err);
@@ -282,25 +288,11 @@ router.delete('/:dealId/images/:itemId', async (req, res) => {
 });
 
 // ── Image File Upload ───────────────────────────────────────
-
-const imgUploadDir = path.resolve(__dirname, '..', '..', 'public', 'uploads');
-if (!fs.existsSync(imgUploadDir)) fs.mkdirSync(imgUploadDir, { recursive: true });
-
-const imgStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dealDir = path.join(imgUploadDir, req.params.dealId);
-    if (!fs.existsSync(dealDir)) fs.mkdirSync(dealDir, { recursive: true });
-    cb(null, dealDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
-    cb(null, `${Date.now()}_${base}${ext}`);
-  }
-});
+// memoryStorage, not diskStorage: on Vercel the code dir is read-only (EROFS).
+// The buffer goes straight from multer to Supabase Storage.
 
 const imgUpload = multer({
-  storage: imgStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 20 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
@@ -308,12 +300,27 @@ const imgUpload = multer({
   }
 });
 
+/**
+ * `{timestamp}-{i}_{safe-base}{ext}` — same shape the disk storage used, plus an
+ * index. Storage upserts by key, so two same-named files in one batch would
+ * otherwise silently overwrite each other within a single millisecond.
+ */
+function buildUploadFilename(originalname, i = 0) {
+  const ext = path.extname(originalname);
+  const base = path.basename(originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
+  return `${Date.now()}-${i}_${base}${ext}`;
+}
+
 router.post('/:dealId/images/upload', imgUpload.array('images', 30), async (req, res) => {
   const { dealId } = req.params;
   const category = req.body.category || 'before';
 
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: 'No image files uploaded' });
+  }
+
+  if (!storage.isStorageConfigured()) {
+    return res.status(500).json({ error: 'אחסון הקבצים לא מוגדר. יש להגדיר SUPABASE_URL ו-SUPABASE_SERVICE_KEY.' });
   }
 
   try {
@@ -324,20 +331,44 @@ router.post('/:dealId/images/upload', imgUpload.array('images', 30), async (req,
     let sortOrder = (parseInt(maxOrderRes.rows[0].max_order) || -1) + 1;
 
     const saved = [];
-    for (const file of req.files) {
-      const imageUrl = `/uploads/${dealId}/${file.filename}`;
-      const result = await pool.query(
-        'INSERT INTO deal_images (deal_id, image_url, alt_text, category, sort_order) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [dealId, imageUrl, file.originalname, category, sortOrder++]
-      );
-      saved.push(result.rows[0]);
+    const failed = [];
+
+    for (let i = 0; i < req.files.length; i++) {
+      const file = req.files[i];
+      const filename = buildUploadFilename(file.originalname, i);
+      const key = storage.buildKey('uploads', dealId, filename);
+      try {
+        const { url: imageUrl } = await storage.uploadBuffer(file.buffer, key, {
+          contentType: file.mimetype
+        });
+        const result = await pool.query(
+          'INSERT INTO deal_images (deal_id, image_url, alt_text, category, sort_order) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+          [dealId, imageUrl, file.originalname, category, sortOrder++]
+        );
+        saved.push(result.rows[0]);
+      } catch (e) {
+        console.error(`Image upload failed for ${file.originalname}:`, e.message);
+        failed.push({ filename: file.originalname, error: e.message });
+      }
+    }
+
+    // Every file failed — this is an error, not a silent partial success.
+    if (saved.length === 0) {
+      return res.status(502).json({
+        error: 'העלאת התמונות נכשלה. אף קובץ לא נשמר.',
+        failed
+      });
     }
 
     await logAudit(req.user.id, 'create', 'deal_images_upload', parseInt(dealId), {
-      count: saved.length, category
+      count: saved.length, category, failed: failed.length
     });
 
-    res.status(201).json({ images: saved, count: saved.length });
+    res.status(201).json({
+      images: saved,
+      count: saved.length,
+      ...(failed.length ? { failed, warning: `${failed.length} תמונות נכשלו בהעלאה` } : {})
+    });
   } catch (err) {
     console.error('Image upload error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -1024,18 +1055,9 @@ router.get('/:dealId/comps/:compId/images', async (req, res) => {
   }
 });
 
+// memoryStorage — see the note on imgUpload above.
 const compImageUpload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      const dir = path.join(__dirname, '..', '..', 'public', 'uploads', req.params.dealId, 'comps');
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, `comp_${req.params.compId}_${Date.now()}${ext}`);
-    }
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
@@ -1049,26 +1071,49 @@ router.post('/:dealId/comps/:compId/images/upload', compImageUpload.array('image
     return res.status(400).json({ error: 'No images provided' });
   }
 
+  if (!storage.isStorageConfigured()) {
+    return res.status(500).json({ error: 'אחסון הקבצים לא מוגדר. יש להגדיר SUPABASE_URL ו-SUPABASE_SERVICE_KEY.' });
+  }
+
   try {
     // Check if comp has any images yet
     const existing = await pool.query('SELECT COUNT(*) FROM deal_comp_images WHERE comp_id=$1', [compId]);
     const hasExisting = parseInt(existing.rows[0].count) > 0;
 
     const saved = [];
+    const failed = [];
+
     for (let i = 0; i < req.files.length; i++) {
       const file = req.files[i];
-      const publicUrl = `/uploads/${dealId}/comps/${file.filename}`;
-      const isPrimary = !hasExisting && i === 0; // First image is primary if none exist
+      const filename = `comp_${compId}_${Date.now()}_${i}${path.extname(file.originalname)}`;
+      const key = storage.buildKey('uploads', dealId, 'comps', filename);
+      const isPrimary = !hasExisting && saved.length === 0; // First stored image is primary if none exist
 
-      const result = await pool.query(
-        `INSERT INTO deal_comp_images (comp_id, image_url, is_primary, sort_order)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [compId, publicUrl, isPrimary, i]
-      );
-      saved.push(result.rows[0]);
+      try {
+        const { url: imageUrl } = await storage.uploadBuffer(file.buffer, key, {
+          contentType: file.mimetype
+        });
+        const result = await pool.query(
+          `INSERT INTO deal_comp_images (comp_id, image_url, is_primary, sort_order)
+           VALUES ($1, $2, $3, $4) RETURNING *`,
+          [compId, imageUrl, isPrimary, i]
+        );
+        saved.push(result.rows[0]);
+      } catch (e) {
+        console.error(`Comp image upload failed for ${file.originalname}:`, e.message);
+        failed.push({ filename: file.originalname, error: e.message });
+      }
     }
 
-    res.json({ images: saved, count: saved.length });
+    if (saved.length === 0) {
+      return res.status(502).json({ error: 'העלאת התמונות נכשלה. אף קובץ לא נשמר.', failed });
+    }
+
+    res.json({
+      images: saved,
+      count: saved.length,
+      ...(failed.length ? { failed, warning: `${failed.length} תמונות נכשלו בהעלאה` } : {})
+    });
   } catch (err) {
     console.error('Comp image upload error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -1088,7 +1133,12 @@ router.put('/:dealId/comps/:compId/images/:imageId/primary', async (req, res) =>
 
 router.delete('/:dealId/comps/:compId/images/:imageId', async (req, res) => {
   try {
+    const found = await pool.query(
+      'SELECT image_url FROM deal_comp_images WHERE id = $1 AND comp_id = $2',
+      [req.params.imageId, req.params.compId]
+    );
     await pool.query('DELETE FROM deal_comp_images WHERE id = $1 AND comp_id = $2', [req.params.imageId, req.params.compId]);
+    if (found.rows[0]) await storage.deleteObject(found.rows[0].image_url);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
