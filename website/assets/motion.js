@@ -763,6 +763,24 @@
       return;
     }
 
+    /* אותו שער. הכניסה מתחילה titleFrom מסכים לפני ראש הסקשן,
+       ולכן הגבול העליון נגזר ממנו ולא ממסך שרירותי. */
+    if (y < M.procMTop - (PROC_M.titleFrom + 0.3) * M.vh ||
+        y > M.procMTop + M.processTravel + M.vh) {
+      if (M.procMU !== undefined) {
+        [procTitle, mapEyebrow, mapPlace, mapSvg, railValues]
+          .forEach(function (el) {
+            if (el) el.style.transform = el.style.opacity =
+                    el.style.visibility = '';
+          });
+        procMValues.forEach(function (el) {
+          el.style.transform = el.style.opacity = el.style.visibility = '';
+        });
+        M.procMU = undefined;
+      }
+      return;
+    }
+
     var u = (y - M.procMTop) / M.vh;
     if (u === M.procMU) return;
     M.procMU = u;
@@ -843,6 +861,26 @@
           el.style.transform = el.style.opacity = el.style.visibility = '';
         });
         if (deepSlidesBox) deepSlidesBox.style.top = deepSlidesBox.style.transform = '';
+        M.deepU = undefined;
+      }
+      return;
+    }
+
+    /* מחוץ לטווח — מאפסים פעם אחת ויוצאים, בדיוק כמו updateAfter.
+       בלי זה הכותרת והשקפים ממשיכים לקבל transform חדש בכל פריים
+       עד תחתית העמוד: הם fixed, opacity 1, ועם will-change — כלומר
+       שכבות קומפוזיטור חיות — והתנועה שלהם רצה מעל האנימציה של
+       .after. נמדד: ב-12948 הם עוד נדחפו ל--4480px.
+       ה-top של תיבת השקפים לא מתאפס כאן בכוונה: הוא נכתב פעם
+       אחת ב-measure() ולא היה נכתב מחדש עד ה-resize הבא. */
+    if (y < M.deepTop - M.vh || y > M.deepEnd + M.vh) {
+      if (M.deepU !== undefined) {
+        deepLead.style.transform = deepLead.style.opacity =
+          deepLead.style.visibility = '';
+        deepSlides.forEach(function (el) {
+          el.style.transform = el.style.opacity = el.style.visibility = '';
+        });
+        if (deepSlidesBox) deepSlidesBox.style.transform = '';
         M.deepU = undefined;
       }
       return;
