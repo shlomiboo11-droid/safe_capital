@@ -2,19 +2,66 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/properties", "destination": "/deals", "permanent": true },
-    { "source": "/properties.html", "destination": "/deals", "permanent": true },
-    { "source": "/birmingham", "destination": "/", "permanent": true },
-    { "source": "/birmingham-article", "destination": "/", "permanent": true },
-    { "source": "/birmingham-compare", "destination": "/", "permanent": true },
-    { "source": "/birmingham-info", "destination": "/", "permanent": true },
-    { "source": "/birmingham-news", "destination": "/", "permanent": true },
-    { "source": "/investor-nights", "destination": "/", "permanent": true },
-    { "source": "/investor-nights-thankyou", "destination": "/", "permanent": true },
-    { "source": "/join", "destination": "/contact", "permanent": true },
-    { "source": "/landing", "destination": "/", "permanent": true }
+    {
+      "source": "/properties",
+      "destination": "/deals",
+      "permanent": true
+    },
+    {
+      "source": "/properties.html",
+      "destination": "/deals",
+      "permanent": true
+    },
+    {
+      "source": "/birmingham",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/birmingham-article",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/birmingham-compare",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/birmingham-info",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/birmingham-news",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/investor-nights",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/investor-nights-thankyou",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/join",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/landing",
+      "destination": "/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/quiz", "destination": "/fitcheck-preview.html" }
+    {
+      "source": "/quiz",
+      "destination": "/fitcheck-preview"
+    }
   ]
 }
