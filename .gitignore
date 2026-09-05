@@ -11,9 +11,10 @@ Thumbs.db
 
 # Media source files (too large for git)
 website_media/
-website/frames/
-website/frames-zoom/
-website/frames-house/
+website-legacy/frames/
+website-legacy/frames-zoom/
+website-legacy/frames-house/
+website-legacy/frames-vertical/
 
 # IDE
 .vscode/

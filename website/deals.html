@@ -3,11 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>צור קשר — סייף קפיטל</title>
-<meta name="description" content="השאירו פרטים וניצור קשר. סייף קפיטל — השקעות נדל״ן בבירמינגהם, אלבמה.">
+<title>עסקאות — סייף קפיטל</title>
+<meta name="description" content="העסקאות של סייף קפיטל בבירמינגהם, אלבמה. הנתונים והתמונות נמשכים מאדמין הפאנל.">
 <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- האדמין הוא מארח נפרד. preconnect חוסך את ה-DNS וה-TLS,
+     ו-preload מתחיל את תצלום הרצועה כבר בפרסינג — לפני שה-JS
+     בכלל רץ, ובמקביל ל-CSS ולגופנים במקום אחריהם. -->
+<link rel="preconnect" href="https://admin.safecapital.co.il" crossorigin>
+<link rel="preload" as="image" fetchpriority="high"
+      href="https://admin.safecapital.co.il/uploads/15/drive_1PWaXY7vN4cBiK7S3AA5pQHiQ5WG9Uyko_WhatsApp_Image_2026-01-14_at_07.49.49__1_.jpeg">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css?v=122">
 </head>
@@ -25,7 +31,7 @@
            נגררות שמאלה, מתכווצות ונבלעות מאחורי המגן.
            ה-span חותך את מה שיוצא מהמסגרת; ה-svg עצמו לא משנה מידה,
            כך שהמגן נשאר בדיוק באותו גודל לאורך כל המעבר. -->
-      <a class="brand" href="index.html" aria-label="סייף קפיטל — לעמוד הבית">
+      <a class="brand" href="index.html#top" aria-label="סייף קפיטל — לעמוד הבית">
         <span class="brand__logo">
           <svg class="logo" viewBox="0 0 459.98 129.02" role="img" aria-label="Safe Capital">
             <!-- afe — מצויר ראשון, ולכן המגן נצבע מעליו -->
@@ -52,9 +58,9 @@
       <nav id="menu" class="menu" aria-label="Primary">
         <ul class="menu__list">
           <li><a href="index.html">איך זה עובד</a></li>
-          <li><a href="deals.html">עסקאות</a></li>
+          <li><a href="deals.html" class="is-current">עסקאות</a></li>
           <li><a href="about.html">עלינו</a></li>
-          <li><a href="contact.html" class="is-current">צור קשר</a></li>
+          <li><a href="contact.html">צור קשר</a></li>
         </ul>
       </nav>
 
@@ -67,157 +73,81 @@
 <main id="main">
 
 <!-- ══════════════════════════════════════════════════
-     01 · כותרת העמוד — מוקלדת, בדיוק כמו בעמוד העסקאות
-     ובהירו. data-typed הוא החוזה: motion.js מאתר דרכו את
-     הכותרת ומריץ עליה את ההקלדה. הטקסט המלא יושב כאן
-     מלכתחילה, ולכן בלי JS או ב-reduced-motion הוא נקרא
-     כמות שהוא.
+     01 · כותרת העמוד — מוקלדת, בדיוק כמו ההירו בעמוד הבית
+     data-typed הוא החוזה: motion.js מאתר דרכו את הכותרת
+     ומריץ עליה את אותה פונקציית ההקלדה. הטקסט המלא יושב
+     כאן מלכתחילה, ולכן בלי JS או ב-reduced-motion הוא פשוט
+     נקרא כמות שהוא.
      ══════════════════════════════════════════════════ -->
-<section class="page-head">
-  <h1 class="page-head__title"><span data-typed>בואו נדבר</span><span class="caret" aria-hidden="true"></span></h1>
+<section class="page-head has-bg" id="page-head">
+  <!-- התצלומים יושבים כאן ולא נכתבים ב-JS, וזו כל ההבדל בזמן
+       הטעינה: כתובת שמגיעה מה-JSON נודעת רק אחרי נסיעה שלמה
+       לאדמין, ורק אז מתחילה נסיעה שנייה לתמונה — שתיהן בטור.
+       כאן הדפדפן מתחיל אותן בפרסינג.
+
+       זה לא סותר את הכלל שהנתונים חיים: תצלום ישן הוא עניין
+       קוסמטי ומוחלף כשהמשיכה חוזרת. מספר פיננסי ישן הוא לא,
+       ולכן הוא נשאר חי בלבד ואינו מוטמע כאן. -->
+  <div class="page-head__media" id="page-head-media" aria-hidden="true">
+    <img class="page-head__bg is-current" src="https://admin.safecapital.co.il/uploads/15/drive_1PWaXY7vN4cBiK7S3AA5pQHiQ5WG9Uyko_WhatsApp_Image_2026-01-14_at_07.49.49__1_.jpeg" alt="" loading="eager"
+         decoding="async" fetchpriority="high">
+    <img class="page-head__bg" src="https://admin.safecapital.co.il/uploads/16/1775364865691_Gemini_Generated_Image_5awbyw5awbyw5awb.png" alt="" loading="eager"
+         decoding="async" fetchpriority="low">
+    <img class="page-head__bg" src="https://admin.safecapital.co.il/uploads/20/drive_1nN_7ins8NTppOb3ARkE4ttJQ32WwkeXs_dd74a6d1646ae3b939198c4c68e3bac5-uncropped_scaled_within_1536_1152.webp" alt="" loading="eager"
+         decoding="async" fetchpriority="low">
+  </div>
+  <h1 class="page-head__title"><span data-typed>העסקאות שלנו</span><span class="caret" aria-hidden="true"></span></h1>
 </section>
 
 <!-- ══════════════════════════════════════════════════
-     02 · הטופס
-
-     המבנה נמדד מעמוד הרפרנס בדפדפן ב-1440 וב-375:
-
-       • עמודת תוכן 677 מתוך 1440 = 47vw, ממורכזת
-       • רשת של שתי עמודות, מרזב 30px, פסיעת שורה 90px
-         (שדה 40 + 50 מרווח)
-       • שדה = קו תחתון בלבד. בלי מסגרת, בלי מילוי, בלי
-         פינות. הטקסט הנראה הוא ה-placeholder; ה-label
-         קיים ל-sr-only בלבד
-       • שורת ההסכמה ושורת הכפתור על רוחב מלא
-       • כפתור pill ממורכז עם חץ
-
-     מה שונה אצלנו: מצע Paper במקום #1E1E1E (ההאדר שלנו
-     יושב על בהיר — נייבי מתחתיו היה מבליע את הלוגו),
-     והצבעים והסולם הטיפוגרפי מגיעים מהטוקנים שלנו.
-
-     השדות הם placeholder — "שדה 1..6". החלפת התוויות היא
-     שינוי טקסט בלבד; ה-type, ה-name וה-autocomplete
-     מסומנים בכל שדה ומחכים לתוכן האמיתי.
+     02 · העסקאות — בורר צף + תצוגה אחת גדולה
+     הבר נצמד מתחת ל-header ולובש את אותה גלולה בדיוק
+     באותו תזמון. התצוגה היא מסילה אופקית: הכל (תמונה
+     ומלל) זז כמקשה אחת.
+     הנתונים מאדמין הפאנל; מה שכתוב כאן הוא תצלום מצב
+     שנטען גם בלי JS, ו-assets/deals.js מרענן אותו.
      ══════════════════════════════════════════════════ -->
-<section class="contact" id="contact">
-  <div class="contact__inner">
+<section class="deals" id="work">
 
-    <!-- novalidate — הוולידציה מנוהלת ב-contact.js כדי
-         שההודעות יהיו בעברית ובעיצוב שלנו, ולא בבועה של
-         הדפדפן. השדות עדיין נושאים required, ולכן בלי JS
-         הדפדפן חוזר לוולידציה שלו. -->
-    <form class="form" id="contact-form" data-validate novalidate>
-
-      <!-- ── השדות ─────────────────────────────────────────────
-           שלוש שורות, שתי עמודות, הכל חובה. לכל שדה יש שלושה
-           דברים שנקבעים לפי **התווים שאמורים להיכנס בו**:
-
-             type          מה הדפדפן מוכן לקבל
-             inputmode     איזו מקלדת נפתחת בנייד
-             autocomplete  מאיפה הדפדפן ממלא לבד
-
-           ── למה label ולא placeholder ──
-           הטקסט שרואים בשדה ריק הוא **תווית אמיתית** שמרחפת
-           מעליו. הסיבה: הכוכבית צריכה להיצבע בבורדו כששדה
-           חסר, ו-placeholder הוא מחרוזת אחת שאי אפשר לצבוע
-           חצי ממנה. כתווית, הכוכבית היא <i> נפרד.
-
-           ‏dir נקבע לפי כיוון הכתב של התוכן, לא של העמוד:
-           אימייל וטלפון נכתבים משמאל לימין גם בעמוד עברי.
-
-           ── זה לא הטופס של רשימת ההמתנה ──
-           הטופס הזה הוא **פנייה כללית**. טופס ההרשמה לרשימה
-           הוא אחר, הוא יושב בחלון הצף (ראה #join-dialog),
-           והוא זה שתואם לשאלון בדיקת ההתאמה.
-           ═══════════════════════════════════════════════════ -->
-      <div class="form__grid">
-
-        <p class="field">
-          <input class="field__input" id="first-name" aria-describedby="err-first-name" name="first_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="given-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="first-name">שם<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-first-name"></span>
-        </p>
-
-        <p class="field">
-          <input class="field__input" id="last-name" aria-describedby="err-last-name" name="last_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="family-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="last-name">שם משפחה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-last-name"></span>
-        </p>
-
-        <p class="field">
-          <input class="field__input field__input--ltr" id="email" aria-describedby="err-email" name="email"
-                 type="email" placeholder=" " required data-rule="email"
-                 autocomplete="email" inputmode="email" dir="ltr"
-                 spellcheck="false" autocapitalize="off" maxlength="254">
-          <label class="field__label" for="email">אימייל<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-email"></span>
-        </p>
-
-        <!-- לא type=number: מספר טלפון אינו כמות. אסור לו לאבד
-             אפס מוביל, ואסור שגלגלת העכבר תשנה אותו. -->
-        <p class="field">
-          <input class="field__input field__input--ltr" id="phone" aria-describedby="err-phone" name="phone"
-                 type="tel" placeholder=" " required data-rule="phone"
-                 autocomplete="tel" inputmode="tel" dir="ltr"
-                 maxlength="20">
-          <label class="field__label" for="phone">מספר טלפון<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-phone"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="capital" aria-describedby="err-capital" name="capital" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="under-50k">עד 50 אלף דולר</option>
-            <option value="50k-100k">50 עד 100 אלף דולר</option>
-            <option value="100k-250k">100 עד 250 אלף דולר</option>
-            <option value="over-250k">מעל 250 אלף דולר</option>
-          </select>
-          <label class="field__label" for="capital">הון משוער להשקעה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-capital"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="liquid" aria-describedby="err-liquid" name="liquid" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="yes">כן, נזיל כרגע</option>
-            <option value="partial">חלקית</option>
-            <option value="no">לא נזיל כרגע</option>
-          </select>
-          <label class="field__label" for="liquid">האם ההון נזיל כרגע?<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-liquid"></span>
-        </p>
-
+  <div class="dealbar" id="dealbar">
+    <div class="dealbar__shell">
+      <div class="dealbar__bar" role="tablist" aria-label="בחירת נכס" id="dealbar-list">
+        <button type="button" class="dealbar__btn is-current" role="tab" data-deal="0" data-id="15"
+                id="dealtab-0" aria-controls="dealpane-0" aria-selected="true" tabindex="0" aria-label="206 Mountain Ave"><span class="dealbar__num" aria-hidden="true">206</span><span class="dealbar__full" aria-hidden="true">206 Mountain Ave</span></button>
+        <button type="button" class="dealbar__btn" role="tab" data-deal="1" data-id="16"
+                id="dealtab-1" aria-controls="dealpane-1" aria-selected="false" tabindex="-1" aria-label="1513 Oxmoor Rd"><span class="dealbar__num" aria-hidden="true">1513</span><span class="dealbar__full" aria-hidden="true">1513 Oxmoor Rd</span></button>
+        <button type="button" class="dealbar__btn" role="tab" data-deal="2" data-id="20"
+                id="dealtab-2" aria-controls="dealpane-2" aria-selected="false" tabindex="-1" aria-label="3425 Ridge Dell Cir"><span class="dealbar__num" aria-hidden="true">3425</span><span class="dealbar__full" aria-hidden="true">3425 Ridge Dell Cir</span></button>
       </div>
-
-      <!-- ההסכמה — שורה שלמה, כמו במקור -->
-      <p class="consent">
-        <input class="consent__box" id="consent" name="consent" type="checkbox" required
-               aria-describedby="err-consent">
-        <label class="consent__text" for="consent">אני מאשר שהפרטים שלי ישמשו ליצירת קשר ויישמרו במאגר המידע של העסק, בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a>.</label>
-        <span class="field__error" id="err-consent"></span>
-      </p>
-
-      <!-- שורת האישור שאחרי שליחה מוצלחת. **שגיאות לא מגיעות
-           לכאן** — כל שגיאה יושבת מתחת לשדה שלה. ‏role=status
-           כדי שקורא מסך ישמע את התשובה בלי לאבד את המיקום. -->
-      <p class="form__note" id="form-note" data-note role="status" aria-live="polite"></p>
-
-      <div class="form__submit">
-        <button class="btn" type="submit">
-          שליחה
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
-        </button>
-      </div>
-
-    </form>
-
+    </div>
   </div>
+
+  <div class="dealview">
+    <div class="dealview__track" id="dealview-track" style="--i:0">
+      <article class="dealpane" role="tabpanel" id="dealpane-0"
+               aria-labelledby="dealtab-0">
+        <div class="dealpane__body">
+          <p class="dealpane__addr" dir="ltr">206 Mountain Avenue</p>
+          <p class="dealpane__text">נכס מגורים יוקרתי ברחוב Mountain Avenue בבירמינגהם, אלבמה — אחת השכונות המבוקשות והיציבות באזור, עם ביקוש גבוה לבתים משופצים ברמה גבוהה. הפרויקט כולל שיפוץ מקיף שיהפוך את הנכס לנכס פרימיום בשוק, עם יעד מכירה של למעלה ממיליון דולר תוך פחות מחצי שנה. המשקיעים צפויים ליהנות מרווח משמעותי על ההשקעה, עם פוטנציאל השבחה יוצא דופן בטווח זמן קצר ומוגדר.</p>
+        </div>
+      </article>
+      <article class="dealpane" role="tabpanel" id="dealpane-1"
+               aria-labelledby="dealtab-1" aria-hidden="true">
+        <div class="dealpane__body">
+          <p class="dealpane__addr" dir="ltr">1513 Oxmoor Road</p>
+          <p class="dealpane__text">נכס מיושן בשכונת אוקסמור האקסקלוסיבית בבירמינגהם, אלבמה — אחת מהשכונות היוקרתיות והמבוקשות ביותר באזור, עם תשתיות מצוינות וביקוש גבוה לנכסים ברמה גבוהה. הפרויקט כולל הריסה של הנכס הקיים ובניה של נכס חדש וגדול בהרבה. הפרוייקט הכולל הרחבת שטח הנכס משמעותית ושדרוג מספר חדרי השינה, בליווי קבלן מוסמך ומעצבת פנים מקצועית — ויוצר נכס חדש לחלוטין ברמת בנייה גבוהה. המשקיעים צפויים ליהנות מרווח נטו אטרקטיבי ביחס להשקעה הכוללת, בפרק זמן קצר יחסית ועם ניהול מקצועי מלא לאורך כל הדרך.</p>
+        </div>
+      </article>
+      <article class="dealpane" role="tabpanel" id="dealpane-2"
+               aria-labelledby="dealtab-2" aria-hidden="true">
+        <div class="dealpane__body">
+          <p class="dealpane__addr" dir="ltr">3425 Ridge Dell Circle</p>
+          <p class="dealpane__text">נכס מגורים מרשים בן 5 חדרים בוסטביה הילס, אלבמה — שכונה מבוקשת ויוקרתית בפרברי בירמינגהם עם ביקוש גבוה לנכסים משופצים ברמה גבוהה. השיפוץ המקיף כולל שדרוג מלא של יסודות, החלפת 26 חלונות, מטבח חדש, שיפוץ כל חדרי האמבטיה, מערכות חשמל ומיזוג — ומסיים בנכס מחומש חדרים מוכן למכירה ברמה גבוהה. על בסיס ARV של 600,000$, הרווח הנקי הצפוי עומד על כ-60,000$ תוך 4 חודשים, המהווה תשואה אטרקטיבית למשקיעים בשוק הנדל&quot;ן האמריקאי.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
 </section>
 
 </main>
@@ -245,8 +175,9 @@
 
   </div>
 </footer>
-<script src="assets/motion.js?v=48"></script>
 
+<script src="assets/motion.js?v=48"></script>
+<script src="assets/deals.js?v=20"></script>
 
 <!-- ══════════════════════════════════════════════════
      כפתור ההצטרפות הצף + חלון שתי האפשרויות

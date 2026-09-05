@@ -1,229 +1,313 @@
-<!DOCTYPE html>
-
-<html dir="rtl" lang="he"><head>
-<meta charset="utf-8"/>
-<link rel="icon" type="image/png" href="images/logo-icon.png"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Safe Capital | תנאי שימוש</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="css/shared.css?v=15" rel="stylesheet"/>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            font-family: 'Heebo', sans-serif;
-            scroll-behavior: smooth;
-        }
-        .editorial-shadow {
-            box-shadow: 0 8px 24px -4px rgba(27, 28, 26, 0.04);
-        }
-        .glass-nav {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .signature-gradient {
-            background: linear-gradient(135deg, #022445 0%, #1e3a5c 100%);
-        }
-    </style>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-secondary-container": "#792b31",
-                        "background": "#fbf9f6",
-                        "on-primary-fixed-variant": "#2d486b",
-                        "on-tertiary-fixed": "#1c1b1b",
-                        "on-secondary-fixed": "#40010b",
-                        "surface": "#fbf9f6",
-                        "on-primary-container": "#8aa4cc",
-                        "surface-container-highest": "#e4e2df",
-                        "tertiary": "#242423",
-                        "surface-container-high": "#eae8e5",
-                        "primary-fixed": "#d3e3ff",
-                        "surface-variant": "#e4e2df",
-                        "primary-fixed-dim": "#adc8f2",
-                        "inverse-on-surface": "#f2f0ed",
-                        "on-background": "#1b1b1f",
-                        "outline-variant": "#c4c6cf",
-                        "on-secondary": "#ffffff",
-                        "surface-bright": "#fbf9f6",
-                        "primary": "#022445",
-                        "on-primary-fixed": "#001c39",
-                        "surface-tint": "#456084",
-                        "secondary": "#984349",
-                        "tertiary-fixed-dim": "#c8c6c5",
-                        "on-tertiary-container": "#a4a2a2",
-                        "surface-container-low": "#f5f3f0",
-                        "secondary-container": "#ff9599",
-                        "primary-container": "#1e3a5c",
-                        "inverse-primary": "#adc8f2",
-                        "on-tertiary-fixed-variant": "#474746",
-                        "on-error-container": "#93000a",
-                        "surface-container-lowest": "#ffffff",
-                        "on-surface-variant": "#43474e",
-                        "secondary-fixed-dim": "#ffb3b4",
-                        "error": "#ba1a1a",
-                        "on-error": "#ffffff",
-                        "tertiary-fixed": "#e5e2e1",
-                        "surface-dim": "#dbdad7",
-                        "on-surface": "#1b1b1f",
-                        "tertiary-container": "#393939",
-                        "error-container": "#ffdad6",
-                        "on-primary": "#ffffff",
-                        "on-secondary-fixed-variant": "#7a2d33",
-                        "on-tertiary": "#ffffff",
-                        "secondary-fixed": "#ffdada",
-                        "outline": "#74777f",
-                        "surface-container": "#efeeeb",
-                        "inverse-surface": "#30312f",
-                        "whatsapp": "#25D366"
-                    },
-                    fontFamily: {
-                        "headline": ["Heebo"],
-                        "body": ["Heebo"],
-                        "label": ["Inter"]
-                    },
-                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תקנון האתר — סייף קפיטל</title>
+<meta name="description" content="תקנון האתר ותנאי השימוש של סייף קפיטל.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=122">
 </head>
-<body class="bg-background text-on-surface">
-<!-- TopNavBar -->
-<nav class="site-nav">
-<div class="nav-inner">
-<a href="/" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
-<div class="nav-links">
-<a href="/">עמוד הבית</a>
-<a href="properties">עסקאות</a>
-<a href="contact">צור קשר</a>
-</div>
-<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
-<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="nav-cta">הצטרפו עכשיו</a>
-</div>
-<div class="mobile-nav">
-<a href="/">עמוד הבית</a>
-<a href="properties">עסקאות</a>
-<a href="contact">צור קשר</a>
-<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="mobile-cta">הצטרפו עכשיו</a>
-</div>
-</nav>
-<main class="pt-32 pb-24 px-6">
-<div class="max-w-[780px] mx-auto">
-<!-- Header Section -->
-<header class="mb-12">
-<div class="inline-block bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full text-xs font-label uppercase tracking-widest mb-4">
-                    <span data-setting="last_updated_en">Last Updated: March 15, 2026</span>
-                </div>
-<h1 class="text-4xl md:text-5xl font-extrabold font-headline text-primary mb-6">תקנון אתר, תנאי שימוש</h1>
-<p class="text-xl text-on-surface-variant font-normal leading-relaxed">
-                    השימוש באתר כפוף לתנאים המפורטים להלן. אנא קרא את התנאים בקפידה, שכן השימוש באתר ובתכנים המוצגים בו מהווה הסכמה מצדך לתנאים אלו.
-                </p>
+<!-- is-ready כבר כאן: אין לואדר בעמוד פנימי, והתוכן נכנס
+     ב-fade מיד במקום לחכות 1300ms למסך ריק. -->
+<body class="is-ready">
+
+<a class="skip" href="#main">דלג לתוכן</a>
+
+<header class="site-header" id="site-header">
+  <div class="header-shell">
+    <div class="header-bar">
+
+      <!-- הלוגו. במנוחה — הנעילה המלאה. בגלילה — האותיות afe
+           נגררות שמאלה, מתכווצות ונבלעות מאחורי המגן.
+           ה-span חותך את מה שיוצא מהמסגרת; ה-svg עצמו לא משנה מידה,
+           כך שהמגן נשאר בדיוק באותו גודל לאורך כל המעבר. -->
+      <a class="brand" href="index.html" aria-label="סייף קפיטל — לעמוד הבית">
+        <span class="brand__logo">
+          <svg class="logo" viewBox="0 0 459.98 129.02" role="img" aria-label="Safe Capital">
+            <!-- afe — מצויר ראשון, ולכן המגן נצבע מעליו -->
+            <g class="logo__word"><g transform="translate(-19.912 -185.379)">
+              <path d="M 198.683 214.291 L 218.778 262.478 L 176.946 262.425 L 196.978 214.242 Z M 129.263 308.326 C 129.263 308.326 157.569 308.353 157.59 308.353 C 157.611 308.353 168.159 283.309 168.159 283.309 L 227.695 283.626 L 237.827 308.357 L 266.371 308.42 L 211.882 187.799 L 184.012 187.638 Z"/>
+              <path d="M 286.812 187.8 L 370.763 187.983 L 370.721 210.218 L 313.432 209.881 L 313.484 240.734 L 363.893 240.688 L 363.874 263.08 L 313.225 262.659 L 313.355 308.488 L 286.678 308.506 L 286.812 187.8 Z"/>
+              <path d="M 395.1 187.8 L 478.272 187.865 L 478.242 210.025 L 422.125 210.019 L 422.083 236.731 L 471.073 236.511 L 471.072 258.684 L 421.906 258.407 L 421.936 286.947 L 479.781 286.573 L 479.888 308.523 L 394.823 308.313 L 395.1 187.8 Z"/>
+            </g></g>
+            <!-- המגן עם ה-S וקו הבתים -->
+            <g class="logo__s"><g transform="translate(-19.912 -185.379) matrix(0.286374 0 0 0.286374 -1.55448 179.333313)">
+              <path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/>
+              <path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/>
+              <path class="logo__towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/>
+            </g></g>
+          </svg>
+        </span>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="menu">
+        <span class="nav-toggle__box" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="sr-only">תפריט</span>
+      </button>
+
+      <nav id="menu" class="menu" aria-label="Primary">
+        <ul class="menu__list">
+          <li><a href="index.html">איך זה עובד</a></li>
+          <li><a href="deals.html">עסקאות</a></li>
+          <li><a href="about.html">עלינו</a></li>
+          <li><a href="contact.html">צור קשר</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </div>
 </header>
-<!-- Content Block -->
-<div class="bg-surface-container-lowest rounded-xl p-8 md:p-12 shadow-[0_8px_24px_rgba(27,28,26,0.04)]">
-<article class="prose prose-slate max-w-none text-on-surface-variant space-y-8 text-right">
-<section>
-<h2 class="text-2xl font-extrabold text-primary mb-4">1. כללי</h2>
-<p class="leading-relaxed">
-                            האתר מופעל על ידי Safe Capital (להלן: "החברה"). התקנון מנוסח בלשון זכר מטעמי נוחות בלבד אך פונה לכל המינים. התנאים חלים על השימוש באתר ובשירותים הכלולים בו באמצעות כל מחשב או מכשיר תקשורת אחר.
-                        </p>
+
+<button class="menu-scrim" id="menu-scrim" tabindex="-1" aria-hidden="true"></button>
+
+<main id="main">
+
+<section class="page-head">
+  <h1 class="page-head__title"><span data-typed>תקנון האתר</span><span class="caret" aria-hidden="true"></span></h1>
 </section>
-<section>
-<h2 class="text-2xl font-extrabold text-primary mb-4">2. קניין רוחני</h2>
-<p class="leading-relaxed">
-                            כל הזכויות באתר, לרבות העיצוב הגרפי, סימני המסחר, והתכנים המפורטים בו, הן רכושה הבלעדי של החברה. אין להעתיק, להפיץ, להציג בפומבי או למסור לצד שלישי כל חלק מן הנ"ל ללא קבלת הסכמתה של החברה בכתב ומראש.
-                        </p>
+
+<!-- ══════════════════════════════════════════════════
+     הטקסט המשפטי הועבר **כלשונו** מהאתר הקיים
+     ‏(safecapital.co.il/terms.html). הצלבתי מול הקובץ
+     המקומי ומול האתר החי — 1,510 תווים, זהים תו-לתו.
+     אין לשנות ניסוח בלי אישור משפטי.
+     ══════════════════════════════════════════════════ -->
+<section class="legal">
+  <div class="legal__inner">
+
+    <p class="legal__updated">עודכן לאחרונה: 2025</p>
+
+    <p class="legal__lead">
+      השימוש באתר כפוף לתנאים המפורטים להלן. אנא קרא את התנאים בקפידה,
+      שכן השימוש באתר ובתכנים המוצגים בו מהווה הסכמה מצדך לתנאים אלו.
+    </p>
+
+    <section class="legal__section">
+      <h2 class="legal__title">כללי</h2>
+      <p>האתר מופעל על ידי סייף קפיטל (להלן: ״החברה״). התקנון מנוסח בלשון זכר מטעמי נוחות בלבד אך פונה לכל המינים. התנאים חלים על השימוש באתר ובשירותים הכלולים בו באמצעות כל מחשב או מכשיר תקשורת אחר.</p>
+    </section>
+
+    <section class="legal__section">
+      <h2 class="legal__title">קניין רוחני</h2>
+      <p>כל הזכויות באתר, לרבות העיצוב הגרפי, סימני המסחר, והתכנים המפורטים בו, הן רכושה הבלעדי של החברה. אין להעתיק, להפיץ, להציג בפומבי או למסור לצד שלישי כל חלק מן הנ״ל ללא קבלת הסכמתה של החברה בכתב ומראש.</p>
+    </section>
+
+    <div class="legal__callout">
+      <h2 class="legal__title">הגבלת אחריות</h2>
+      <p>התכנים המופיעים באתר אינם מהווים ייעוץ השקעות, ייעוץ משפטי או תחליף לייעוץ מקצועי המותאם לנתוניו האישיים של כל אדם. החברה אינה אחראית לכל נזק, ישיר או עקיף, שייגרם למשתמש כתוצאה מהסתמכות על המידע המופיע באתר. השקעות בנדל״ן כרוכות בסיכון ומומלץ להיוועץ עם מומחים לפני קבלת החלטה.</p>
+    </div>
+
+    <section class="legal__section">
+      <h2 class="legal__title">פרטיות</h2>
+      <p>החברה מכבדת את פרטיות המשתמשים. השימוש במידע שנאסף במהלך הגלישה באתר יתבצע בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a> של החברה ועל פי הוראות הדין. המידע ישמש לשיפור חווית המשתמש ולצורך עדכונים שוטפים בלבד.</p>
+    </section>
+
+    <section class="legal__section">
+      <h2 class="legal__title">קישורים חיצוניים</h2>
+      <p>באתר עשויים להופיע קישורים לאתרים חיצוניים. החברה אינה אחראית לתוכן האתרים הללו או למדיניות הפרטיות שלהם. לחיצה על קישור חיצוני הינה על אחריות המשתמש בלבד.</p>
+    </section>
+
+    <section class="legal__section">
+      <h2 class="legal__title">סמכות שיפוט</h2>
+      <p>על הסכם זה יחולו אך ורק דיני מדינת ישראל. מקום השיפוט הבלעדי לכל עניין הנוגע להסכם זה ולשימוש באתר הינו בבתי המשפט המוסמכים בעיר תל-אביב-יפו.</p>
+    </section>
+
+    <p class="legal__note">
+      יש לך שאלות בנוגע לתקנון? <a href="contact.html">צור קשר</a> ונשמח להבהיר.
+    </p>
+
+  </div>
 </section>
-<!-- Special Highlighted Box: הגבלת אחריות -->
-<section class="bg-secondary/5 border-r-4 border-secondary p-6 md:p-8 rounded-lg my-10">
-<div class="flex items-start gap-4">
-<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">warning</span>
-<div>
-<h2 class="text-2xl font-extrabold text-secondary mb-3">הגבלת אחריות</h2>
-<p class="text-on-surface-variant leading-relaxed font-medium">
-                                    התכנים המופיעים באתר אינם מהווים ייעוץ השקעות, ייעוץ משפטי או תחליף לייעוץ מקצועי המותאם לנתוניו האישיים של כל אדם. החברה אינה אחראית לכל נזק, ישיר או עקיף, שייגרם למשתמש כתוצאה מהסתמכות על המידע המופיע באתר. השקעות בנדל"ן כרוכות בסיכון ומומלץ להיוועץ עם מומחים לפני קבלת החלטה.
-                                </p>
-</div>
-</div>
-</section>
-<section>
-<h2 class="text-2xl font-extrabold text-primary mb-4">3. פרטיות</h2>
-<p class="leading-relaxed">
-                            החברה מכבדת את פרטיות המשתמשים. השימוש במידע שנאסף במהלך הגלישה באתר יתבצע בהתאם למדיניות הפרטיות של החברה ועל פי הוראות הדין. המידע ישמש לשיפור חווית המשתמש ולצורך עדכונים שוטפים בלבד.
-                        </p>
-</section>
-<section>
-<h2 class="text-2xl font-extrabold text-primary mb-4">4. קישורים חיצוניים</h2>
-<p class="leading-relaxed">
-                            באתר עשויים להופיע קישורים לאתרים חיצוניים. החברה אינה אחראית לתוכן האתרים הללו או למדיניות הפרטיות שלהם. לחיצה על קישור חיצוני הינה על אחריות המשתמש בלבד.
-                        </p>
-</section>
-<section>
-<h2 class="text-2xl font-extrabold text-primary mb-4">5. סמכות שיפוט</h2>
-<p class="leading-relaxed">
-                            על הסכם זה יחולו אך ורק דיני מדינת ישראל. מקום השיפוט הבלעדי לכל עניין הנוגע להסכם זה ולשימוש באתר הינו בבתי המשפט המוסמכים בעיר תל-אביב-יפו.
-                        </p>
-</section>
-</article>
-<div class="mt-12 pt-8 border-t border-surface-variant/30 text-left">
-<p class="text-xs font-label text-on-surface-variant/60 uppercase tracking-widest">
-                        <span data-setting="last_updated_en">Last Updated: March 15, 2026</span>
-                    </p>
-</div>
-</div>
-<!-- Contact Prompt -->
-<div class="mt-12 text-center">
-<p class="text-on-surface-variant mb-4">יש לך שאלות בנוגע לתקנון?</p>
-<a class="text-secondary font-bold hover:underline underline-offset-4 flex items-center justify-center gap-2" href="mailto:legal@safecapital.co.il" data-setting-href="email_legal">
-<span class="material-symbols-outlined text-sm">mail</span>
-                    צרו קשר עם המחלקה המשפטית
-                </a>
-</div>
-</div>
+
 </main>
-<!-- Footer -->
-<footer class="site-footer">
-<div class="footer-inner">
-<div class="footer-links"><h4>ניווט מהיר</h4>
-<a href="/">עמוד הבית</a><a href="properties">עסקאות</a><a href="contact">צור קשר</a>
-</div>
-<div class="footer-links"><h4>מידע נוסף</h4>
-<a href="privacy">מדיניות פרטיות</a><a href="terms">תקנון אתר</a><a href="#">שאלות נפוצות</a>
-</div>
-<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
-<div class="footer-brand">
-<p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
-<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
-</div></div>
-<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות</span><span class="footer-bottom-contact"><span data-setting="email_info">safecapital2024@gmail.com</span> | <span data-setting="phone_footer">054-7828550</span></span></div>
+
+<footer class="colophon" id="colophon">
+  <div class="colophon__inner">
+
+    <!-- ערימה ממורכזת אחת: לוגו · שורת קישורים · זכויות.
+         אותו מבנה בדסקטופ ובמובייל — רק הגדלים משתנים. -->
+    <a class="colophon__brand" href="index.html" aria-label="סייף קפיטל — לראש העמוד">
+    <svg class="logo colophon__logo" viewBox="21.209 163.578 454.834 186.191" role="img" aria-label="Safe Capital">
+      <g id="object-4" transform="matrix(1, 0, 0, 1, -5.684341886080802e-14, 0)"><g id="object-1" style="" transform="matrix(0.286374, 0, 0, 0.286374, -0.273722, 157.533188)"><path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/><path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/><path class="logo__towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/></g><g style="" transform="matrix(1, 0, 0, 1, 0.332724, -20.075287)"><path style="transform-box: fill-box;transform-origin: 50% 50%" d="M 177.44 262.102 L 197.648 213.497 L 217.939 262.152 L 177.44 262.102 Z M 236.39 306.584 L 236.391 306.584 L 264.038 306.645 L 211.272 189.836 L 211.269 189.836 L 184.276 189.681 L 131.257 306.555 L 131.263 306.555 C 131.267 306.555 158.673 306.581 158.693 306.581 L 158.696 306.581 L 158.696 306.579 C 158.699 306.572 158.704 306.561 158.712 306.545 C 158.713 306.543 158.713 306.542 158.713 306.542 C 158.713 306.542 158.713 306.542 158.713 306.541 C 158.713 306.541 158.714 306.54 158.714 306.539 C 158.715 306.536 158.718 306.53 158.724 306.515 C 158.749 306.454 168.931 282.329 168.931 282.329 L 226.581 282.636 L 236.39 306.584 Z"/><path d="M 368.21 189.859 L 368.173 209.793 L 311.727 209.46 L 311.784 241.834 L 361.443 241.789 L 361.426 261.872 L 311.519 261.457 L 311.647 306.615 L 287.338 306.631 L 287.468 189.683 L 368.21 189.859 Z"/><path d="M 474.137 189.739 L 474.111 209.602 L 418.822 209.597 L 418.778 237.89 L 467.046 237.673 L 467.044 257.539 L 418.602 257.266 L 418.634 287.367 L 475.629 286.998 L 475.725 306.645 L 393.893 306.443 L 394.161 189.677 L 474.137 189.739 Z"/></g><text class="logo__sub" style="font-family: Arial, Heebo, sans-serif;font-size: 32px;letter-spacing: 49px;text-transform: capitalize;word-spacing: 2px;white-space: pre" text-anchor="middle" x="273.126" y="342.639">CAPITAL</text></g>
+    </svg>
+    </a>
+
+    <!-- שורה אחת. המפריד הוא border על כל קישור שאינו הראשון,
+         ולכן הוא נופל בדיוק בין שניים ולא נשאר תלוי בקצה. -->
+    <nav class="colophon__nav" aria-label="מידע משפטי">
+      <a href="privacy.html">פרטיות</a>
+      <a href="accessibility.html">נגישות</a>
+      <a href="terms.html" class="is-current">תקנון</a>
+    </nav>
+
+    <p class="colophon__legal">כל הזכויות שמורות © סייף קפיטל 2026</p>
+
+  </div>
 </footer>
-<script src="js/shared.js?v=2"></script>
-<script src="js/settings.js"></script>
+<script src="assets/motion.js?v=48"></script>
 
-<!-- NagishLi z-index fix -->
-<style>nagishli,nagishli *{z-index:99999!important}#nl-r2m{z-index:99999!important}
-#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:12px;line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
-#nl-dismiss:hover{opacity:1}</style>
-<!-- jQuery for NagishLi -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<!-- NagishLi Accessibility Widget -->
-<script>
-var nl_pos="br";var nl_lang="he";var nl_color="blue";var nl_compact="1";var nl_accordion="0";var nl_dir="nl-files/";
-(function(){var s=document.createElement("script");s.type="text/javascript";s.src="nagishli.js?v=2.3";s.async=true;document.getElementsByTagName("head")[0].appendChild(s)})();
-setTimeout(function(){
-  if(sessionStorage.getItem("nl_hidden")){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";return}
-  var btn=document.createElement("button");
-  btn.id="nl-dismiss";btn.textContent="✕";btn.title="הסתר כפתור נגישות";
-  btn.onclick=function(){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";this.style.display="none";sessionStorage.setItem("nl_hidden","1")};
-  document.body.appendChild(btn);
-},2000);
-</script>
+<!-- ══════════════════════════════════════════════════
+     כפתור ההצטרפות הצף + חלון שתי האפשרויות
 
-</body></html>
+     הכפתור הוא **קישור אמיתי** לטופס ההרשמה, ולכן הוא
+     עובד גם בלי JS. ‏join.js מחליף את ההתנהגות ופותח
+     במקום זה את החלון. ראה ההערה בראש הסקריפט.
+     ══════════════════════════════════════════════════ -->
+<a class="join-fab" id="join-fab" href="contact.html#contact">
+  הצטרפות
+</a>
+
+<dialog class="join" id="join-dialog" aria-labelledby="join-title">
+  <div class="join__panel">
+
+    <!-- ── מסך 1 · הבחירה ── -->
+    <div class="join__screen" data-screen="choose">
+      <h2 class="join__title" id="join-title">אנחנו שמחים שבחרתם להצטרף אלינו!</h2>
+      <!-- כל אפשרות היא כפתור + הסבר קצר מתחתיו. ההסבר אינו
+           קישוט: שתי האפשרויות נשמעות דומות למי שלא מכיר, וההבדל
+           ביניהן — מי פונה למי, ומתי — הוא מה שמאפשר לבחור. -->
+      <div class="join__options">
+
+        <div class="join__choice">
+          <button class="join__option join__option--primary" type="button" id="join-to-form">הרשמה לרשימת ההמתנה לעסקה הבאה</button>
+          <p class="join__desc">רשימה של משקיעים עם הון זמין שרוצים לקבל עדכון כשהעסקה הבאה שלנו תפורסם</p>
+          <p class="join__desc">עדיפות תינתן לראשונים ברשימה</p>
+        </div>
+
+        <div class="join__choice">
+          <a class="join__option" href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t"
+             target="_blank" rel="noopener noreferrer">הצטרפות לקבוצת העדכונים בוואטסאפ</a>
+          <p class="join__desc">קבוצה שקטה שבה אנחנו מראים בעיקר את הפעילות שלנו ומעדכנים כשיש נכסים חדשים</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         מסך 2 · טופס רשימת ההמתנה
+
+         **זהו הטופס שבשאלון בדיקת ההתאמה** (‏safe_capital/
+         website/fitcheck-preview.html, שורות 1114–1156):
+         אותם שבעה שדות, אותן אפשרויות, אותו ניסוח אישור.
+
+         שמות השדות זהים לשמות שם — first · last · mail ·
+         phone · capital · liquid · contact · ok — כי שני
+         הטפסים אמורים להזין את **אותה טבלה**. שינוי שם כאן
+         בלי שינוי מקביל שם ישבור את התאימות בלי להשמיע קול.
+         גם ערכי הבוררים הם הטקסט העברי, כמו בשאלון.
+
+         זה **אינו** הטופס שבעמוד צור קשר — שם יושבת פנייה
+         כללית, עם שדות ושמות משלה.
+         ══════════════════════════════════════════════════ -->
+    <div class="join__screen" data-screen="form" hidden>
+
+      <button class="join__back" type="button" id="join-back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        חזרה
+      </button>
+
+      <h2 class="join__title">הרשמה לרשימת ההמתנה</h2>
+
+      <form class="form join__form" id="waitlist-form" data-validate novalidate
+            data-done="נרשמת. נעדכן אותך ראשון כשתיפתח עסקה חדשה.">
+
+        <div class="form__grid">
+
+          <p class="field">
+            <input class="field__input" id="wl-first" aria-describedby="err-wl-first" name="first"
+                   type="text" placeholder=" " required data-rule="name"
+                   autocomplete="given-name" autocapitalize="words" spellcheck="false" maxlength="40">
+            <label class="field__label" for="wl-first">שם<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-first"></span>
+          </p>
+
+          <p class="field">
+            <input class="field__input" id="wl-last" aria-describedby="err-wl-last" name="last"
+                   type="text" placeholder=" " required data-rule="name"
+                   autocomplete="family-name" autocapitalize="words" spellcheck="false" maxlength="40">
+            <label class="field__label" for="wl-last">שם משפחה<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-last"></span>
+          </p>
+
+          <p class="field field--wide">
+            <input class="field__input field__input--ltr" id="wl-mail" aria-describedby="err-wl-mail" name="mail"
+                   type="email" placeholder=" " required data-rule="email"
+                   autocomplete="email" inputmode="email" dir="ltr"
+                   spellcheck="false" autocapitalize="off" maxlength="254">
+            <label class="field__label" for="wl-mail">אימייל<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-mail"></span>
+          </p>
+
+          <p class="field field--wide">
+            <input class="field__input field__input--ltr" id="wl-phone" aria-describedby="err-wl-phone" name="phone"
+                   type="tel" placeholder=" " required data-rule="phone"
+                   autocomplete="tel" inputmode="tel" dir="ltr" maxlength="20">
+            <label class="field__label" for="wl-phone">טלפון<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-phone"></span>
+          </p>
+
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-capital" aria-describedby="err-wl-capital" name="capital" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>עד 50 אלף דולר</option>
+              <option>50 עד 100 אלף דולר</option>
+              <option>100 עד 250 אלף דולר</option>
+              <option>מעל 250 אלף דולר</option>
+            </select>
+            <label class="field__label" for="wl-capital">הון משוער<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-capital"></span>
+          </p>
+
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-liquid" aria-describedby="err-wl-liquid" name="liquid" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>כן</option>
+              <option>חלקית</option>
+              <option>לא</option>
+            </select>
+            <label class="field__label" for="wl-liquid">האם ההון נזיל כרגע?<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-liquid"></span>
+          </p>
+
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-contact" aria-describedby="err-wl-contact" name="contact" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>כן</option>
+              <option>לא כרגע</option>
+            </select>
+            <label class="field__label" for="wl-contact">האם תרצה שניצור איתך קשר?<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-contact"></span>
+          </p>
+
+        </div>
+
+        <p class="consent">
+          <input class="consent__box" id="wl-ok" name="ok" type="checkbox" required aria-describedby="err-wl-ok">
+          <label class="consent__text" for="wl-ok">אני מאשר שהפרטים שלי יישמרו אצלכם ושתיצרו איתי קשר, בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a>.</label>
+          <span class="field__error" id="err-wl-ok"></span>
+        </p>
+
+        <p class="form__note" data-note role="status" aria-live="polite"></p>
+
+        <div class="form__submit">
+          <button class="btn" type="submit">
+            הצטרפות לרשימה
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</dialog>
+
+<script src="assets/a11y.js?v=2"></script>
+<script src="assets/forms.js?v=1"></script>
+<script src="assets/join.js?v=4"></script>
+</body>
+</html>

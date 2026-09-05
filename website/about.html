@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>צור קשר — סייף קפיטל</title>
-<meta name="description" content="השאירו פרטים וניצור קשר. סייף קפיטל — השקעות נדל״ן בבירמינגהם, אלבמה.">
+<title>עלינו — סייף קפיטל</title>
+<meta name="description" content="הצוות שמאחורי סייף קפיטל. השקעות נדל״ן בבירמינגהם, אלבמה.">
 <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,8 +53,8 @@
         <ul class="menu__list">
           <li><a href="index.html">איך זה עובד</a></li>
           <li><a href="deals.html">עסקאות</a></li>
-          <li><a href="about.html">עלינו</a></li>
-          <li><a href="contact.html" class="is-current">צור קשר</a></li>
+          <li><a class="is-current">עלינו</a></li>
+          <li><a href="contact.html">צור קשר</a></li>
         </ul>
       </nav>
 
@@ -67,156 +67,100 @@
 <main id="main">
 
 <!-- ══════════════════════════════════════════════════
-     01 · כותרת העמוד — מוקלדת, בדיוק כמו בעמוד העסקאות
-     ובהירו. data-typed הוא החוזה: motion.js מאתר דרכו את
-     הכותרת ומריץ עליה את ההקלדה. הטקסט המלא יושב כאן
-     מלכתחילה, ולכן בלי JS או ב-reduced-motion הוא נקרא
-     כמות שהוא.
+     01 · כותרת העמוד — מוקלדת, בדיוק כמו בעסקאות ובצור קשר.
+     data-typed הוא החוזה: motion.js מאתר דרכו את הכותרת
+     ומריץ עליה את ההקלדה. הטקסט המלא יושב כאן מלכתחילה,
+     ולכן בלי JS או ב-reduced-motion הוא נקרא כמות שהוא.
      ══════════════════════════════════════════════════ -->
 <section class="page-head">
-  <h1 class="page-head__title"><span data-typed>בואו נדבר</span><span class="caret" aria-hidden="true"></span></h1>
+  <h1 class="page-head__title"><span data-typed>בואו נכיר</span><span class="caret" aria-hidden="true"></span></h1>
 </section>
 
 <!-- ══════════════════════════════════════════════════
-     02 · הטופס
+     02 · הצוות — פסקת פתיחה ואז ארבעה עיגולים בקשת
 
-     המבנה נמדד מעמוד הרפרנס בדפדפן ב-1440 וב-375:
+     ⚠ התוכן כאן placeholder. השמות, הגילים, המשפטים
+     והתמונות מחכים לחומר האמיתי. ההחלפה היא טקסט ותמונה
+     בלבד — המבנה, הקשת והטיפוגרפיה לא זזים.
 
-       • עמודת תוכן 677 מתוך 1440 = 47vw, ממורכזת
-       • רשת של שתי עמודות, מרזב 30px, פסיעת שורה 90px
-         (שדה 40 + 50 מרווח)
-       • שדה = קו תחתון בלבד. בלי מסגרת, בלי מילוי, בלי
-         פינות. הטקסט הנראה הוא ה-placeholder; ה-label
-         קיים ל-sr-only בלבד
-       • שורת ההסכמה ושורת הכפתור על רוחב מלא
-       • כפתור pill ממורכז עם חץ
-
-     מה שונה אצלנו: מצע Paper במקום #1E1E1E (ההאדר שלנו
-     יושב על בהיר — נייבי מתחתיו היה מבליע את הלוגו),
-     והצבעים והסולם הטיפוגרפי מגיעים מהטוקנים שלנו.
-
-     השדות הם placeholder — "שדה 1..6". החלפת התוויות היא
-     שינוי טקסט בלבד; ה-type, ה-name וה-autocomplete
-     מסומנים בכל שדה ומחכים לתוכן האמיתי.
+     הקשת ("קערה") נבנית ב-CSS על פרבולה, לא במספרים
+     מוקלדים לכל עיגול. ראה .team__arc ב-styles.css.
      ══════════════════════════════════════════════════ -->
-<section class="contact" id="contact">
-  <div class="contact__inner">
+<section class="team" id="team">
+  <div class="team__inner">
 
-    <!-- novalidate — הוולידציה מנוהלת ב-contact.js כדי
-         שההודעות יהיו בעברית ובעיצוב שלנו, ולא בבועה של
-         הדפדפן. השדות עדיין נושאים required, ולכן בלי JS
-         הדפדפן חוזר לוולידציה שלו. -->
-    <form class="form" id="contact-form" data-validate novalidate>
-
-      <!-- ── השדות ─────────────────────────────────────────────
-           שלוש שורות, שתי עמודות, הכל חובה. לכל שדה יש שלושה
-           דברים שנקבעים לפי **התווים שאמורים להיכנס בו**:
-
-             type          מה הדפדפן מוכן לקבל
-             inputmode     איזו מקלדת נפתחת בנייד
-             autocomplete  מאיפה הדפדפן ממלא לבד
-
-           ── למה label ולא placeholder ──
-           הטקסט שרואים בשדה ריק הוא **תווית אמיתית** שמרחפת
-           מעליו. הסיבה: הכוכבית צריכה להיצבע בבורדו כששדה
-           חסר, ו-placeholder הוא מחרוזת אחת שאי אפשר לצבוע
-           חצי ממנה. כתווית, הכוכבית היא <i> נפרד.
-
-           ‏dir נקבע לפי כיוון הכתב של התוכן, לא של העמוד:
-           אימייל וטלפון נכתבים משמאל לימין גם בעמוד עברי.
-
-           ── זה לא הטופס של רשימת ההמתנה ──
-           הטופס הזה הוא **פנייה כללית**. טופס ההרשמה לרשימה
-           הוא אחר, הוא יושב בחלון הצף (ראה #join-dialog),
-           והוא זה שתואם לשאלון בדיקת ההתאמה.
-           ═══════════════════════════════════════════════════ -->
-      <div class="form__grid">
-
-        <p class="field">
-          <input class="field__input" id="first-name" aria-describedby="err-first-name" name="first_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="given-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="first-name">שם<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-first-name"></span>
-        </p>
-
-        <p class="field">
-          <input class="field__input" id="last-name" aria-describedby="err-last-name" name="last_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="family-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="last-name">שם משפחה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-last-name"></span>
-        </p>
-
-        <p class="field">
-          <input class="field__input field__input--ltr" id="email" aria-describedby="err-email" name="email"
-                 type="email" placeholder=" " required data-rule="email"
-                 autocomplete="email" inputmode="email" dir="ltr"
-                 spellcheck="false" autocapitalize="off" maxlength="254">
-          <label class="field__label" for="email">אימייל<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-email"></span>
-        </p>
-
-        <!-- לא type=number: מספר טלפון אינו כמות. אסור לו לאבד
-             אפס מוביל, ואסור שגלגלת העכבר תשנה אותו. -->
-        <p class="field">
-          <input class="field__input field__input--ltr" id="phone" aria-describedby="err-phone" name="phone"
-                 type="tel" placeholder=" " required data-rule="phone"
-                 autocomplete="tel" inputmode="tel" dir="ltr"
-                 maxlength="20">
-          <label class="field__label" for="phone">מספר טלפון<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-phone"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="capital" aria-describedby="err-capital" name="capital" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="under-50k">עד 50 אלף דולר</option>
-            <option value="50k-100k">50 עד 100 אלף דולר</option>
-            <option value="100k-250k">100 עד 250 אלף דולר</option>
-            <option value="over-250k">מעל 250 אלף דולר</option>
-          </select>
-          <label class="field__label" for="capital">הון משוער להשקעה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-capital"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="liquid" aria-describedby="err-liquid" name="liquid" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="yes">כן, נזיל כרגע</option>
-            <option value="partial">חלקית</option>
-            <option value="no">לא נזיל כרגע</option>
-          </select>
-          <label class="field__label" for="liquid">האם ההון נזיל כרגע?<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-liquid"></span>
-        </p>
-
-      </div>
-
-      <!-- ההסכמה — שורה שלמה, כמו במקור -->
-      <p class="consent">
-        <input class="consent__box" id="consent" name="consent" type="checkbox" required
-               aria-describedby="err-consent">
-        <label class="consent__text" for="consent">אני מאשר שהפרטים שלי ישמשו ליצירת קשר ויישמרו במאגר המידע של העסק, בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a>.</label>
-        <span class="field__error" id="err-consent"></span>
+    <!-- שלוש פסקאות ולא אחת: NN/G מצאה שקיר טקסט בעמוד אודות
+         הוא מהגורמים שהכי פוגעים בשביעות הרצון, ושתי-שלוש פסקאות
+         קצרות בראש העמוד הן המבנה שעבד. -->
+    <div class="team__lead">
+      <p>
+        לפני כמה שנים ישבנו ארבעתנו וניסינו להבין מה לעשות עם הכסף
+        שלנו. חוטר ואיתן הגיעו מעולם הנדל"ן, שלומי ועדי מעולם היזמות,
+        ומה שהיה משותף לכולנו זה שלא מצאנו בישראל שום דבר ששווה את
+        הכסף הזה. הפיקדון בבנק החזיר כמעט כלום, ומי שכן הבטיח יותר
+        ביקש שנסמוך עליו בעיניים עצומות ולא נשאל יותר מדי. אז החלטנו
+        לחפש לבד.
       </p>
+      <p>
+        לקח לזה זמן ופסלנו בדרך לא מעט, עד שאיתן הגיע עם עיר אחת
+        באלבמה בשם בירמינגהם, ובפעם הראשונה לא מצאנו מה לא בסדר.
+      </p>
+      <p>
+        את העסקה הראשונה שם עשינו עם הכסף שלנו, לפני שדיברנו עם מישהו
+        מבחוץ. כשהיא הצליחה עשינו עוד אחת, ורק אז פתחנו את זה לאנשים
+        שמעבר למעגל שלנו. גם היום אנחנו קונים בתים בבירמינגהם, משפצים
+        ומוכרים, ובכל עסקה הכסף שלנו נכנס לצד שלכם.
+      </p>
+    </div>
 
-      <!-- שורת האישור שאחרי שליחה מוצלחת. **שגיאות לא מגיעות
-           לכאן** — כל שגיאה יושבת מתחת לשדה שלה. ‏role=status
-           כדי שקורא מסך ישמע את התשובה בלי לאבד את המיקום. -->
-      <p class="form__note" id="form-note" data-note role="status" aria-live="polite"></p>
+    <!-- ol ולא ul: לקשת יש סדר ויזואלי מימין לשמאל, והוא
+         גם סדר הקריאה. -->
+    <!-- התפקידים נמסרו על ידי הלקוח. מתחתיהם עוד ייכנס משפט
+         אישי קצר לכל אחד, כשיגיע החומר על העסק. -->
 
-      <div class="form__submit">
-        <button class="btn" type="submit">
-          שליחה
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
-        </button>
-      </div>
+    <ol class="team__arc">
 
-    </form>
+      <li class="team__member">
+        <!-- PNG שקוף: הדמות גזורה, המצע והטבעת מגיעים מ-CSS
+             (‎--photo-disc / --photo-ring שב-‎.team). -->
+        <img class="team__photo" src="assets/team/shlomi.png?v=5" alt="דיוקן של שלומי"
+             width="440" height="440" loading="lazy" decoding="async">
+        <h2 class="team__name">שלומי</h2>
+        <p class="team__age">28</p>
+        <p class="team__bio">מנהל שיווק</p>
+      </li>
 
+      <li class="team__member">
+        <!-- PNG שקוף: הדמות גזורה, המצע והטבעת מגיעים מ-CSS
+             (‎--photo-disc / --photo-ring שב-‎.team). -->
+        <img class="team__photo" src="assets/team/adi.png?v=5" alt="דיוקן של עדי"
+             width="440" height="440" loading="lazy" decoding="async">
+        <h2 class="team__name">עדי</h2>
+        <p class="team__age">27</p>
+        <p class="team__bio">מנהל שירות לקוחות</p>
+      </li>
+
+      <li class="team__member">
+        <!-- PNG שקוף: הדמות גזורה, המצע והטבעת מגיעים מ-CSS
+             (‎--photo-disc / --photo-ring שב-‎.team). -->
+        <img class="team__photo" src="assets/team/hoter.png?v=5" alt="דיוקן של חוטר"
+             width="440" height="440" loading="lazy" decoding="async">
+        <h2 class="team__name">חוטר</h2>
+        <p class="team__age">39</p>
+        <p class="team__bio">מנהל מכירות</p>
+      </li>
+
+      <li class="team__member">
+        <!-- PNG שקוף: הדמות גזורה, המצע והטבעת מגיעים מ-CSS
+             (‎--photo-disc / --photo-ring שב-‎.team). -->
+        <img class="team__photo" src="assets/team/eitan.png?v=5" alt="דיוקן של איתן"
+             width="440" height="440" loading="lazy" decoding="async">
+        <h2 class="team__name">איתן</h2>
+        <p class="team__age">49</p>
+        <p class="team__bio">ניהול עסקאות</p>
+      </li>
+
+    </ol>
   </div>
 </section>
 
@@ -246,7 +190,6 @@
   </div>
 </footer>
 <script src="assets/motion.js?v=48"></script>
-
 
 <!-- ══════════════════════════════════════════════════
      כפתור ההצטרפות הצף + חלון שתי האפשרויות

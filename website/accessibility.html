@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>צור קשר — סייף קפיטל</title>
-<meta name="description" content="השאירו פרטים וניצור קשר. סייף קפיטל — השקעות נדל״ן בבירמינגהם, אלבמה.">
+<title>הצהרת נגישות — סייף קפיטל</title>
+<meta name="description" content="הצהרת הנגישות של אתר סייף קפיטל — התקן, ההתאמות שבוצעו, כלי הנגישות ומגבלות ידועות.">
 <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
           <li><a href="index.html">איך זה עובד</a></li>
           <li><a href="deals.html">עסקאות</a></li>
           <li><a href="about.html">עלינו</a></li>
-          <li><a href="contact.html" class="is-current">צור קשר</a></li>
+          <li><a href="contact.html">צור קשר</a></li>
         </ul>
       </nav>
 
@@ -66,156 +66,93 @@
 
 <main id="main">
 
-<!-- ══════════════════════════════════════════════════
-     01 · כותרת העמוד — מוקלדת, בדיוק כמו בעמוד העסקאות
-     ובהירו. data-typed הוא החוזה: motion.js מאתר דרכו את
-     הכותרת ומריץ עליה את ההקלדה. הטקסט המלא יושב כאן
-     מלכתחילה, ולכן בלי JS או ב-reduced-motion הוא נקרא
-     כמות שהוא.
-     ══════════════════════════════════════════════════ -->
 <section class="page-head">
-  <h1 class="page-head__title"><span data-typed>בואו נדבר</span><span class="caret" aria-hidden="true"></span></h1>
+  <h1 class="page-head__title"><span data-typed>הצהרת נגישות</span><span class="caret" aria-hidden="true"></span></h1>
 </section>
 
 <!-- ══════════════════════════════════════════════════
-     02 · הטופס
+     הצהרת נגישות — נכתבה לפי:
 
-     המבנה נמדד מעמוד הרפרנס בדפדפן ב-1440 וב-375:
+       · תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות
+         נגישות לשירות), תשע״ג-2013 — **תקנה 35**, שהיא
+         הסעיף שחל על שירותי אינטרנט
+       · תקן ישראלי **ת״י 5568 חלק 1**, ברמה **AA**
+         (אימוץ של WCAG 2.0)
 
-       • עמודת תוכן 677 מתוך 1440 = 47vw, ממורכזת
-       • רשת של שתי עמודות, מרזב 30px, פסיעת שורה 90px
-         (שדה 40 + 50 מרווח)
-       • שדה = קו תחתון בלבד. בלי מסגרת, בלי מילוי, בלי
-         פינות. הטקסט הנראה הוא ה-placeholder; ה-label
-         קיים ל-sr-only בלבד
-       • שורת ההסכמה ושורת הכפתור על רוחב מלא
-       • כפתור pill ממורכז עם חץ
-
-     מה שונה אצלנו: מצע Paper במקום #1E1E1E (ההאדר שלנו
-     יושב על בהיר — נייבי מתחתיו היה מבליע את הלוגו),
-     והצבעים והסולם הטיפוגרפי מגיעים מהטוקנים שלנו.
-
-     השדות הם placeholder — "שדה 1..6". החלפת התוויות היא
-     שינוי טקסט בלבד; ה-type, ה-name וה-autocomplete
-     מסומנים בכל שדה ומחכים לתוכן האמיתי.
+     ── רכז נגישות ──
+     ההצהרה **אינה** כוללת פרטי רכז נגישות; הוסר לבקשת
+     הלקוח. התקנה דורשת שתהיה דרך פנייה בנושא נגישות,
+     ולכן הדרך שנשארה היא עמוד צור קשר — מקושר מסעיף
+     "מגבלות ידועות". אם יוחלט להחזיר רכז, מקומו כאן
+     ‏(שם · טלפון · דוא״ל · זמן מענה).
      ══════════════════════════════════════════════════ -->
-<section class="contact" id="contact">
-  <div class="contact__inner">
+<section class="legal">
+  <div class="legal__inner">
 
-    <!-- novalidate — הוולידציה מנוהלת ב-contact.js כדי
-         שההודעות יהיו בעברית ובעיצוב שלנו, ולא בבועה של
-         הדפדפן. השדות עדיין נושאים required, ולכן בלי JS
-         הדפדפן חוזר לוולידציה שלו. -->
-    <form class="form" id="contact-form" data-validate novalidate>
+    <p class="legal__updated">עודכן לאחרונה: 2025</p>
 
-      <!-- ── השדות ─────────────────────────────────────────────
-           שלוש שורות, שתי עמודות, הכל חובה. לכל שדה יש שלושה
-           דברים שנקבעים לפי **התווים שאמורים להיכנס בו**:
+    <p class="legal__lead">
+      סייף קפיטל רואה בנגישות האתר חלק מהשירות עצמו, ופועלת כדי שכל אדם —
+      לרבות אנשים עם מוגבלות — יוכל לקבל את אותו מידע ולבצע את אותן פעולות,
+      באופן עצמאי ובאותה רמת נוחות.
+    </p>
 
-             type          מה הדפדפן מוכן לקבל
-             inputmode     איזו מקלדת נפתחת בנייד
-             autocomplete  מאיפה הדפדפן ממלא לבד
+    <section class="legal__section">
+      <h2 class="legal__title">התקן שלפיו הונגש האתר</h2>
+      <p>ההנגשה בוצעה בהתאם ל<strong>תקנה 35</strong> לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע״ג-2013, ובהתאם ל<strong>תקן הישראלי ת״י 5568 חלק 1</strong> — קווים מנחים לנגישות תכנים באינטרנט — ברמת התאמה <strong>AA</strong>. התקן הישראלי הוא אימוץ של הנחיות WCAG הבינלאומיות.</p>
+    </section>
 
-           ── למה label ולא placeholder ──
-           הטקסט שרואים בשדה ריק הוא **תווית אמיתית** שמרחפת
-           מעליו. הסיבה: הכוכבית צריכה להיצבע בבורדו כששדה
-           חסר, ו-placeholder הוא מחרוזת אחת שאי אפשר לצבוע
-           חצי ממנה. כתווית, הכוכבית היא <i> נפרד.
+    <section class="legal__section">
+      <h2 class="legal__title">ההתאמות שבוצעו באתר</h2>
+      <p>אלה ההתאמות שקיימות באתר בפועל:</p>
+      <ul class="legal__list">
+        <li><strong>ניווט מלא במקלדת:</strong> כל קישור, כפתור ושדה נגישים באמצעות מקש Tab, ולכל רכיב יש סימון פוקוס נראה לעין — קו, מסגרת או היפוך צבע, לפי סוג הרכיב.</li>
+        <li><strong>קישור דילוג לתוכן:</strong> בראש כל עמוד, לפני הניווט, קיים קישור ״דלג לתוכן״ שנחשף במקלדת.</li>
+        <li><strong>מבנה סמנטי:</strong> האתר בנוי מאזורי נחיתה תקניים (header · nav · main · footer) ומהיררכיית כותרות רציפה, כך שקורא מסך יכול לנווט לפי מבנה.</li>
+        <li><strong>כיוון ושפה:</strong> כל עמוד מוגדר במפורש כעברי וכ-RTL, וקורא מסך מבטא אותו בשפה הנכונה.</li>
+        <li><strong>ניגודיות צבעים:</strong> יחסי הניגודיות נמדדו ולא הוערכו. הטקסט הראשי עומד על 15.5:1, תוויות שדות על 6:1 ורכיבי ממשק על 3.7:1 — מעל הסף של התקן.</li>
+        <li><strong>טפסים:</strong> לכל שדה יש תווית מקושרת, שדות חובה מסומנים, והודעת שגיאה מנוסחת במילים ומקושרת לשדה שלה — לא רק בצבע.</li>
+        <li><strong>הפחתת תנועה:</strong> משתמש שהגדיר במערכת ההפעלה העדפה לצמצום אנימציות מקבל את האתר ללא התנועה שבו.</li>
+        <li><strong>התאמה לגודל מסך ולזום:</strong> הפריסה נשענת על יחסים ולא על מידות קבועות, ונשארת קריאה גם בהגדלה משמעותית של הדפדפן.</li>
+        <li><strong>כלי נגישות ייעודי:</strong> ראה הסעיף הבא.</li>
+      </ul>
+    </section>
 
-           ‏dir נקבע לפי כיוון הכתב של התוכן, לא של העמוד:
-           אימייל וטלפון נכתבים משמאל לימין גם בעמוד עברי.
+    <section class="legal__section">
+      <h2 class="legal__title">כלי הנגישות באתר</h2>
+      <p>בכל עמוד באתר פועל כלי הנגישות <strong>״נגיש לי״</strong>. הכפתור שלו מופיע בפינה השמאלית התחתונה של המסך, ולחיצה עליו פותחת תפריט התאמות אישיות:</p>
+      <ul class="legal__list">
+        <li>הגדלה והקטנה של גודל הטקסט</li>
+        <li>ניגודיות גבוהה, מצב מונוכרום והיפוך צבעים</li>
+        <li>הדגשת קישורים וכותרות</li>
+        <li>גופן קריא וריווח שורות מוגדל</li>
+        <li>עצירת אנימציות ותנועה</li>
+        <li>סמן עכבר מוגדל ומדריך קריאה</li>
+      </ul>
+      <p>הכלי פועל גם באמצעות מקלדת: יש להגיע אליו ב-Tab ולפתוח אותו ב-Enter.</p>
+    </section>
 
-           ── זה לא הטופס של רשימת ההמתנה ──
-           הטופס הזה הוא **פנייה כללית**. טופס ההרשמה לרשימה
-           הוא אחר, הוא יושב בחלון הצף (ראה #join-dialog),
-           והוא זה שתואם לשאלון בדיקת ההתאמה.
-           ═══════════════════════════════════════════════════ -->
-      <div class="form__grid">
+    <section class="legal__section">
+      <h2 class="legal__title">תאימות</h2>
+      <p>האתר נבדק ותוכנן לעבוד עם הגרסאות העדכניות של הדפדפנים הנפוצים — Chrome, Safari, Firefox ו-Edge — במחשב ובנייד, ועם קוראי המסך המובנים במערכות ההפעלה (VoiceOver ב-macOS וב-iOS, ‏TalkBack ב-Android). מומלץ להשתמש בגרסה עדכנית: דפדפנים ישנים אינם תומכים בחלק מתקני הנגישות.</p>
+    </section>
 
-        <p class="field">
-          <input class="field__input" id="first-name" aria-describedby="err-first-name" name="first_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="given-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="first-name">שם<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-first-name"></span>
-        </p>
+    <section class="legal__section">
+      <h2 class="legal__title">מגבלות ידועות</h2>
+      <p>למרות מאמצינו, ייתכנו באתר חלקים שטרם הונגשו במלואם:</p>
+      <ul class="legal__list">
+        <li><strong>תכנים של צד שלישי:</strong> קישורים לאתרים חיצוניים, לרבות אזור המשקיעים האישי, כפופים לנגישות של אותם שירותים ואינם בשליטתנו.</li>
+        <li><strong>מסמכים וקבצים:</strong> קבצים להורדה שהופקו על ידי גורמים חיצוניים עשויים שלא לעמוד בתקן.</li>
+        <li><strong>תמונות נכסים:</strong> תמונות העסקאות נמשכות ממערכת הניהול, ולעיתים מגיעות ללא תיאור חלופי מלא.</li>
+      </ul>
+      <p><strong>דרך חלופית לקבלת המידע:</strong> אם נתקלת בתוכן שאינו נגיש עבורך, נשמח להעביר אותו אליך בדרך אחרת — בשיחה טלפונית, בדוא״ל או בפורמט חלופי. פנה אלינו דרך <a href="contact.html">עמוד צור קשר</a> ונדאג לכך.</p>
+    </section>
 
-        <p class="field">
-          <input class="field__input" id="last-name" aria-describedby="err-last-name" name="last_name"
-                 type="text" placeholder=" " required data-rule="name"
-                 autocomplete="family-name" autocapitalize="words"
-                 spellcheck="false" maxlength="40">
-          <label class="field__label" for="last-name">שם משפחה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-last-name"></span>
-        </p>
 
-        <p class="field">
-          <input class="field__input field__input--ltr" id="email" aria-describedby="err-email" name="email"
-                 type="email" placeholder=" " required data-rule="email"
-                 autocomplete="email" inputmode="email" dir="ltr"
-                 spellcheck="false" autocapitalize="off" maxlength="254">
-          <label class="field__label" for="email">אימייל<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-email"></span>
-        </p>
-
-        <!-- לא type=number: מספר טלפון אינו כמות. אסור לו לאבד
-             אפס מוביל, ואסור שגלגלת העכבר תשנה אותו. -->
-        <p class="field">
-          <input class="field__input field__input--ltr" id="phone" aria-describedby="err-phone" name="phone"
-                 type="tel" placeholder=" " required data-rule="phone"
-                 autocomplete="tel" inputmode="tel" dir="ltr"
-                 maxlength="20">
-          <label class="field__label" for="phone">מספר טלפון<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-phone"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="capital" aria-describedby="err-capital" name="capital" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="under-50k">עד 50 אלף דולר</option>
-            <option value="50k-100k">50 עד 100 אלף דולר</option>
-            <option value="100k-250k">100 עד 250 אלף דולר</option>
-            <option value="over-250k">מעל 250 אלף דולר</option>
-          </select>
-          <label class="field__label" for="capital">הון משוער להשקעה<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-capital"></span>
-        </p>
-
-        <p class="field">
-          <select class="field__input field__select" id="liquid" aria-describedby="err-liquid" name="liquid" required data-rule="choice">
-            <option value="" disabled selected></option>
-            <option value="yes">כן, נזיל כרגע</option>
-            <option value="partial">חלקית</option>
-            <option value="no">לא נזיל כרגע</option>
-          </select>
-          <label class="field__label" for="liquid">האם ההון נזיל כרגע?<i class="field__req" aria-hidden="true">*</i></label>
-          <span class="field__error" id="err-liquid"></span>
-        </p>
-
-      </div>
-
-      <!-- ההסכמה — שורה שלמה, כמו במקור -->
-      <p class="consent">
-        <input class="consent__box" id="consent" name="consent" type="checkbox" required
-               aria-describedby="err-consent">
-        <label class="consent__text" for="consent">אני מאשר שהפרטים שלי ישמשו ליצירת קשר ויישמרו במאגר המידע של העסק, בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a>.</label>
-        <span class="field__error" id="err-consent"></span>
-      </p>
-
-      <!-- שורת האישור שאחרי שליחה מוצלחת. **שגיאות לא מגיעות
-           לכאן** — כל שגיאה יושבת מתחת לשדה שלה. ‏role=status
-           כדי שקורא מסך ישמע את התשובה בלי לאבד את המיקום. -->
-      <p class="form__note" id="form-note" data-note role="status" aria-live="polite"></p>
-
-      <div class="form__submit">
-        <button class="btn" type="submit">
-          שליחה
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
-        </button>
-      </div>
-
-    </form>
+    <section class="legal__section">
+      <h2 class="legal__title">אם הפנייה לא נענתה</h2>
+      <p>אם פנית אלינו ולא קיבלת מענה מספק, באפשרותך לפנות לנציבות שוויון זכויות לאנשים עם מוגבלות במשרד המשפטים, שהיא הגורם המוסמך לטפל בתלונות בנושא נגישות.</p>
+    </section>
 
   </div>
 </section>
@@ -237,7 +174,7 @@
          ולכן הוא נופל בדיוק בין שניים ולא נשאר תלוי בקצה. -->
     <nav class="colophon__nav" aria-label="מידע משפטי">
       <a href="privacy.html">פרטיות</a>
-      <a href="accessibility.html">נגישות</a>
+      <a href="accessibility.html" class="is-current">נגישות</a>
       <a href="terms.html">תקנון</a>
     </nav>
 
@@ -246,7 +183,6 @@
   </div>
 </footer>
 <script src="assets/motion.js?v=48"></script>
-
 
 <!-- ══════════════════════════════════════════════════
      כפתור ההצטרפות הצף + חלון שתי האפשרויות

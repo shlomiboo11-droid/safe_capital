@@ -1,0 +1,3006 @@
+/* ═══════════════════════════════════════════════════════════════
+   שלד עמוד בית — שחזור מכניקת הפריסה והתנועה
+   כל הערכים נמדדו מהמקור. תוכן = placeholder בלבד.
+
+   מפת הקובץ
+   00 · Tokens
+   01 · Reset & base
+   02 · Header + nav + mobile overlay
+   03 · Loader
+   04 · Hero
+   05 · Reveal (נייבי + המשפט הנעוץ)
+   06 · Process (horizontal rail + map + values)
+   07 · Deep (הכותרת שנוסעת לצד + הטקסטים שמתחלפים)
+   08 · Work grid + cards
+   09 · Button
+   09א · Contact form
+   09ב · Legal pages
+   09ג · Join FAB + dialog
+   10 · Footer
+   11 · מסלול ה-Hero + הגבעה  ← כאן נקבע גובה ה-hero
+   12 · Breakpoints
+   13 · Reduced motion
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 00 · TOKENS ───────────────────────────────────────────── */
+:root{
+  /* ── Color · פלטת סייף קפיטל ─────────────────────────────
+     ink    · נייבי — כל המבנה: מצע כהה, טקסט על בהיר, הקשת
+     bone   · off-white — מצע העמוד
+     chalk  · טקסט על מצע כהה + מילוי פקדים
+     accent · בורדו — מצע בהיר בלבד
+     accent-dark · ורוד־עתיק — מצע כהה בלבד
+
+     האילוץ הקשיח: accent על ink הוא 1.5:1.
+     הבורדו לא נוגע בשום דבר שיושב על הנייבי — לא טקסט,
+     לא אייקון, לא מסגרת. משם והלאה accent-dark. */
+  --ink:#0E1E2E;
+  --bone:#F7F5F1;
+  --chalk:#E8E5DF;
+  --white:#FFFFFF;
+  --pill:#E8E5DF;
+  --accent:#5D1819;        /* זהה לבורדו שבתוך המגן שבלוגו */
+  --accent-dark:#A47E7E;
+
+  /* גוונים שקופים נגזרים מהנייבי, לא משחור נייטרלי */
+  --ink-rgb:14,30,46;
+  --chalk-rgb:232,229,223;
+
+  /* ── Logo ─────────────────────────────────────────────────
+     שני צבעים בלבד. על מצע כהה שניהם מוחלפים (ראה .colophon). */
+  --logo-ink:var(--ink);
+  --logo-towers:var(--accent);
+  /* רוחב הנעילה המלאה. יחס הלוגו 459.98:129.02 = 3.565:1 */
+  --logo-w:clamp(95px,8.85vw,151px);
+  /* המגן לבדו הוא 98.49 מתוך 459.98 → 21.41% מהרוחב */
+  --logo-w-mark:calc(var(--logo-w) * .2141);
+  /* הבית שעל הגבעה. viewBox 130×108, ולכן הגובה נגזר לבד. */
+  --house-w:clamp(76px,9vw,150px);
+  /* האחוזה שסוגרת את הנייבי. viewBox 340×200 — בו יש חלונות,
+     ולכן הוא צריך רוחב גדול יותר מהבית הקטן שבהירו כדי שהם
+     יישארו קריאים. נבדק ב-150px ומעלה. */
+  --house-lg:clamp(238px,29.4vw,476px);
+  /* כמה מהגבעה נראה מתחת לבית לפני שהמשתמש גולל */
+  --hill-peek:clamp(30px,5vh,60px);
+
+  --font:'Heebo',system-ui,-apple-system,'Segoe UI',sans-serif;
+
+  /* Type — vw כמו במקור, עטוף ב-clamp כדי שלא ייקרס בקצוות.
+     בטווח 1000–1900px הערכים זהים למקור לחלוטין. */
+  --fs-h1:        clamp(30px, 3.3vw, 62px);
+  --fs-eyebrow:   clamp(15px, 1.5vw, 28px);
+  --fs-statement: clamp(30px, 3.3vw, 62px);
+  --fs-process:   clamp(40px, 4.9vw, 92px);
+  --fs-value:     clamp(20px, 2vw, 38px);
+  --fs-card:      clamp(22px, 2.5vw, 47px);
+  --fs-meta:      clamp(13px, 1.2vw, 22px);
+  /* דרגת "גוף מוביל" בסעיף 4ב — 1.2vw בדסקטופ, 16px במובייל.
+     היא הוגדרה בטבלה אבל לא היה לה טוקן. ‏--fs-meta נותן את
+     אותו 1.2vw בדסקטופ אבל נופל ל-14px במובייל, ושלושה
+     רכיבים אחרים כבר תלויים בו — ולכן דרגה נפרדת ולא שינוי שלו. */
+  --fs-lead:      clamp(16px, 1.2vw, 22px);
+  --fs-nav:       clamp(13px, 1.1vw, 20px);
+  --fs-btn:       clamp(15px, 1.5vw, 28px);
+  --fs-body:      clamp(14px, 1vw, 19px);
+  /* דרגת "משפטי" בסעיף 4ב: 13px גם בדסקטופ וגם במובייל.
+     הרצפה הייתה 12px ולכן במובייל יצא גודל שלא קיים בסולם. */
+  --fs-legal:     clamp(13px, .9vw, 17px);
+
+  /* Line height */
+  --lh-tight:1em;
+  --lh-h1:1.2em;
+  --lh-statement:1.3em;
+  --lh-title:1.4em;
+  --lh-body:1.8em;
+
+  /* Space */
+  --s-2:2vw; --s-3:3vw; --s-4:4vw; --s-5:5vw;
+
+  /* Container */
+  --w-hero:53vw;
+  --w-reveal:70vw;
+  --w-grid:90vw;
+  --w-sticky:69vw;   /* 60 → 69 = רחב ב-15% במצב מצומצם */
+
+  /* מרווח בין קצה המסך לגלולת ה-header */
+  --header-gap:clamp(22px,2vw,38px);
+
+  /* Geometry */
+  --r-pill:100px;
+
+  /* Motion */
+  --t-fast:.2s;
+  --t-base:.3s;
+  --t-slow:.5s;
+  --ease:ease-in-out;
+  --ease-out:ease-out;
+
+  /* Rail — נקרא גם מ-JS */
+  --panel:50vw;
+  /* רוחב המפה בפאנל האמצעי של הרכבת */
+  --map-w:34vw;
+  /* כמה הבורר נכנס פנימה לתוך תצלום הרצועה בעמוד העסקאות */
+  --bar-inset:clamp(74px,8vw,108px);
+}
+
+/* ── 01 · RESET & BASE ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bone);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  /* clip ולא hidden — overflow:hidden היה יוצר scroll container
+     ושובר את ה-position:sticky של במת הפרוצס */
+  overflow-x:clip;
+}
+html{overflow-x:clip}
+h1,h2,h3,p,ul,ol{margin:0;padding:0}
+ul,ol{list-style:none}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--ink);color:var(--chalk)}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.skip{
+  position:absolute;top:-100px;inset-inline-start:16px;z-index:200;
+  background:var(--ink);color:var(--chalk);
+  padding:12px 20px;border-radius:var(--r-pill);
+  font-size:14px;font-weight:600;
+  transition:top var(--t-base) var(--ease);
+}
+.skip:focus{top:16px}
+
+/* ── פוקוס — בלי טבעת ────────────────────────────────────────
+   היה כאן outline של 2px עם offset — מלבן מסביב לרכיב. הוא
+   נמחק בכוונה: על שדה שכל הקיום הוויזואלי שלו הוא קו תחתון,
+   מלבן פתאומי נראה כמו רכיב זר שנחת על העמוד.
+
+   **אבל סימון פוקוס לא נעלם — הוא רק מחליף צורה.** בלי שום
+   סימון, מי שמנווט במקלדת לא יודע איפה הוא עומד, וזה כשל
+   נגישות של ממש (WCAG 2.4.7). לכן לכל משפחת רכיבים יש כאן
+   סימון שנגזר מהצורה שלה: קישור מקבל קו תחתון, שדה מעבה את
+   הקו שכבר יש לו, כפתור מתהפך, כרטיס נדלק כמו ב-hover.
+
+   הצבע נשאר לפי סעיף 4 במערכת העיצוב: בורדו על מצע בהיר,
+   ורוד־עתיק על מצע כהה. */
+:focus-visible{outline:none}
+
+/* קישורי טקסט — קו תחתון, לא מלבן */
+.menu__list a:focus-visible,
+.colophon__nav a:focus-visible,
+.colophon__col a:focus-visible,
+.consent__text a:focus-visible{
+  color:var(--accent);
+  text-decoration:underline;
+  text-decoration-thickness:2px;
+  text-underline-offset:.28em;
+}
+/* הפוטר הוא נייבי, ושם בורדו הוא 1.3:1 — ורוד־עתיק במקומו */
+.colophon a:focus-visible,
+.process a:focus-visible{color:var(--accent-dark)}
+
+/* הלוגו וההמבורגר — אין להם טקסט לקו תחתון */
+.brand:focus-visible{opacity:.55}
+.nav-toggle:focus-visible .nav-toggle__box i{background:var(--accent)}
+
+/* ── 02 · HEADER ───────────────────────────────────────────── */
+.site-header{
+  position:fixed;inset:0 0 auto 0;z-index:99;
+  padding-top:var(--header-gap);
+  pointer-events:none;
+}
+/* 100vw ולא 100% — שני קצות המעבר באותה יחידה.
+   מעבר מ-% ל-vw לא תמיד מתאנפש, וזו הסיבה שבמובייל
+   רק הרקע השתנה בלי שהרוחב יזוז. */
+/* התזמון כאן הוא כל ההבדל בין "מצטמצם" ל"נהיה אפור".
+   במנוחה אין לסרגל רקע בכלל, ולכן אם הרוחב והרקע נכנסים יחד
+   הגלולה פשוט מופיעה כשהיא כבר צרה — ואין מה לראות מצטמצם.
+   לכן: הרקע נכנס מהר (.16s), הרוחב מתכווץ לאט אחריו (.5s).
+   קודם נוצרת גלולה רחבה, ואז רואים אותה נסגרת. */
+.header-shell{
+  max-width:100vw;
+  margin-inline:auto;
+  padding-inline:clamp(16px,4vw,60px);
+  transition:max-width .5s cubic-bezier(.22,1,.36,1) .06s;
+}
+.header-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  /* row-reverse ב-RTL = הלוגו בצד השמאלי, הניווט בימני */
+  flex-direction:row-reverse;
+  padding-block:.8vw;padding-inline:2vw 1vw;
+  border-radius:var(--r-pill);
+  background:transparent;
+  transition:background .16s var(--ease-out),
+             padding .5s cubic-bezier(.22,1,.36,1) .06s;
+  pointer-events:auto;
+}
+
+/* מצב נדבק — 100vw → 60vw + גלולה */
+.site-header.is-stuck .header-shell{max-width:var(--w-sticky)}
+.site-header.is-stuck .header-bar{background:var(--pill)}
+
+.brand{display:flex;align-items:center;flex:none}
+
+/* ── הלוגו ומעבר הכיווץ ─────────────────────────────────────
+   ה-svg שומר על רוחב קבוע תמיד; רק ה-span שמסביבו מצטמצם.
+   כך המגן לא משנה מידה — רק ה-afe יוצא מהמסגרת.
+   במקביל ה-afe נגרר שמאלה ומתכווץ לנקודה שבתוך המגן,
+   והמגן מצויר אחריו ב-DOM ולכן בולע אותו. */
+/* direction:ltr חובה — העמוד הוא dir="rtl", וב-SVG זה הופך
+   את text-anchor:start לקצה הימני. בלי זה המילה CAPITAL רצה
+   שמאלה מנקודת העיגון ונוחתת מחוץ ל-viewBox לגמרי. */
+.logo{display:block;fill:var(--logo-ink);direction:ltr}
+.logo .logo__towers{fill:var(--logo-towers)}
+/* המילה CAPITAL שבנעילה. הגודל והריווח (32px / 49px) מגיעים
+   מה-style שבתוך ה-SVG — כלומר מקובץ המקור שיוצא מהעורך —
+   ולכן אין כאן מספר שני שיכול לצאת מסנכרון. הצבע יורש
+   מ---logo-ink כמו שאר הלוגו. */
+.logo__word{
+  transform-box:view-box;
+  transform-origin:109.35px 64.51px;   /* הקצה השמאלי של ה-a, בגובה המרכז */
+  /* אותה עקומה ואותו משך כמו הגלולה — גרירה אחת, לא שתי תנועות */
+  transition:transform .5s cubic-bezier(.22,1,.36,1) .06s,
+             opacity .28s var(--ease) .2s;
+}
+
+.brand__logo{
+  display:block;flex:none;overflow:hidden;
+  direction:ltr;   /* גאומטריית ה-SVG לא מתהפכת — החיתוך חייב להיצמד שמאלה */
+  width:var(--logo-w);
+  transition:width .5s cubic-bezier(.22,1,.36,1) .06s;
+}
+/* max-width:none חובה — ה-reset הגלובלי (svg{max-width:100%}) היה
+   מכווץ את ה-svg יחד עם המסגרת, וכך המגן היה מקטין את עצמו
+   במקום שה-afe ייחתך. זה כל ההבדל בין כיווץ לגרירה. */
+.brand__logo .logo{width:var(--logo-w);max-width:none;height:auto}
+
+.site-header.is-stuck .brand__logo{width:var(--logo-w-mark)}
+.site-header.is-stuck .logo__word{
+  /* 109.35 → 49.2 = מרכז המגן. משם scale(.08) מכבה אותו לגמרי. */
+  transform:translateX(-60px) scale(.08);
+  opacity:0;
+}
+
+/* ניווט דסקטופ */
+.menu__list{display:flex;align-items:center;gap:var(--s-3)}
+.menu__list a{
+  position:relative;display:inline-block;
+  font-size:var(--fs-nav);font-weight:600;color:var(--ink);
+  padding:4px 0;
+  transition:opacity var(--t-base) var(--ease);
+}
+/* קו חוצה — עובר דרך אמצע הטקסט, נפתח מהמרכז */
+/* ללא קו חוצה — הסימון הוא עמעום וצבע בלבד */
+/* העמוד הנוכחי — בורדו, בלי קו */
+.menu__list a.is-current{color:var(--accent)}
+/* עמעום קבוצתי — הפוקוס עובר לפריט שמתחת לעכבר */
+.menu__list:hover a:not(:hover){opacity:.4}
+
+/* המבורגר · שלושה קווים → X */
+.nav-toggle{
+  display:none;
+  background:none;border:0;padding:8px;cursor:pointer;color:inherit;
+}
+.nav-toggle__box{display:flex;flex-direction:column;gap:6px;width:30px}
+.nav-toggle__box i{
+  display:block;height:2px;background:currentColor;border-radius:2px;
+  transition:transform var(--t-base) var(--ease),opacity var(--t-base) var(--ease);
+}
+.nav-toggle[aria-expanded="true"] i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] i:nth-child(2){opacity:0;transform:scaleX(.4)}
+.nav-toggle[aria-expanded="true"] i:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+/* ── 03 · LOADER ───────────────────────────────────────────── */
+.loader{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  background:var(--bone);
+  transition:opacity var(--t-slow) var(--ease),visibility var(--t-slow) var(--ease);
+}
+/* ‏pointer-events:none — לא קישוט. הלואדר הוא שכבה על כל המסך
+   ב-z-200, וההיעלמות שלו נשענת על **מעבר** CSS. דפדפן לא מריץ
+   מעברים בטאב מוסתר (document.visibilityState === 'hidden'),
+   ולכן טאב שנפתח ברקע נשאר עם visibility:visible — שכבה שקופה
+   ומלאה שבולעת כל לחיצה בעמוד. מדדתי את זה בדיוק: הלואדר נשא
+   is-done ועדיין החזיר opacity 1, ו-elementFromPoint על קישורי
+   התפריט החזיר אותו במקום את הקישור.
+   ‏pointer-events לא תלוי במעבר ולכן הוא נכנס לתוקף מיד. */
+.loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+/* המגן לבדו, קטן ובמרכז. מהבהב עד שהעמוד נטען ואז נעלם. */
+.loader__mark{
+  block-size:clamp(38px,4.4vw,56px);
+  inline-size:auto;
+  fill:var(--logo-ink);
+  /* דעיכה בלבד — בלי scale. pulse כולל תנועה ולכן לא מתאים כאן. */
+  animation:markFade 2.4s var(--ease) infinite;
+}
+.loader__towers{fill:var(--logo-towers)}
+@keyframes markFade{0%,100%{opacity:1}50%{opacity:.62}}
+
+/* התוכן נכנס אחרי הלואדר */
+body.is-ready main,
+body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── 04 · HERO ─────────────────────────────────────────────── */
+/* גובה ה-hero לא נקבע כאן אלא בסקשן 10 (מסלול הגלילה),
+   כי הוא המסלול של טיפוס הגבעה ולא סתם גובה מסך. */
+.hero{
+  background:var(--bone);
+  display:flex;align-items:center;justify-content:center;
+  padding-inline:10px;
+}
+.hero__inner{width:var(--w-hero);max-width:100%}
+.hero__title{
+  max-width:52vw;margin-inline:auto;padding:var(--s-5);
+  font-size:var(--fs-h1);font-weight:700;line-height:var(--lh-h1);
+  text-align:center;color:var(--ink);
+}
+/* סמן הקלדה — קו אנכי, לא תו קו-תחתון.
+   נבנה מ-CSS ולא מתו טקסט, כדי לשלוט בעובי ובגובה. */
+.caret{
+  display:inline-block;
+  width:.055em;min-width:2px;
+  height:.74em;
+  margin-inline-start:.1em;
+  background:var(--accent);   /* הדבר היחיד שזז בעמוד — ולכן הוא נושא את המבטא */
+  vertical-align:-.04em;
+  animation:blink 1s steps(1,end) infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* הכותרת שומרת על הגובה שלה כדי שלא תהיה קפיצת פריסה בזמן ההקלדה.
+   חל על כל כותרת מוקלדת, לא רק על ההירו — ה-JS מוסיף is-typing
+   לכל אלמנט שמחזיק [data-typed]. */
+.hero__title.is-typing,
+.page-head__title.is-typing{min-height:var(--title-h,auto)}
+/* בדסקטופ שוברי השורה שבמקור מתכווצים לרווח והטקסט נשבר
+   לבד לפי הרוחב; במובייל (סקשן 11) pre-line אוכף אותם. */
+.hero__typed{white-space:normal}
+
+/* ── 05 · REVEAL ───────────────────────────────────────────── */
+.reveal{
+  position:relative;
+  /* המרחק בין המשפט הנעוץ לסקשן התהליך. קוצר פעמיים —
+     כל מה שמעבר לרמפת היציאה הוא נייבי ריק. */
+  min-height:70px;   /* מובייל. הדסקטופ נדרס מיד מתחת. */
+  /* נייבי מלא — הגבעה בהירו כבר עשתה את המעבר מבהיר לכהה */
+  background:var(--ink);
+  overflow:hidden;
+}
+/* גוש הנייבי. הקצה העליון שלו הוא קו האופק — גבעה סימטרית ורדודה.
+   נוצר מ-border-radius אליפטי ולא מ-SVG, ולכן חד בכל רוחב מסך ובכל DPI.
+   הרדיוס האופקי 50% פורש את הכיפה על כל הרוחב; האנכי הקטן משטח אותה.
+   הפסגה יושבת בדיוק במרכז — שם עומד הבית. */
+.reveal__city{
+  position:absolute;inset:0;
+  background:var(--ink);
+  /* הרדיוס האנכי הוא כל השליטה בשיפוע: קטן = גבעה שטוחה.
+     ~4vw על גוש של 22% נותן מדרון עדין, לא כיפה. */
+  border-radius:50% 50% 0 0 / clamp(22px,4vw,64px) clamp(22px,4vw,64px) 0 0;
+}
+@media (min-width:768px){
+  /* בדסקטופ סקשן החשיפה מתאפס לגמרי — הוא כבר לא שלב,
+     רק התפר שבו המשפט מסיים לדהות. הגובה מגיע מהגבעה
+     שממילא absolute, ולכן 0 לא משאיר חור. */
+  .reveal{min-height:0}
+}
+
+/* המשפט הנעוץ — fixed, ה-opacity מנוהל ב-JS */
+/* ממורכז אנכית במסך.
+   z-index 4 — מעל .process (3), כדי שהרקע של הסקשן הבא
+   יחליק מתחת למשפט במקום לדרוס אותו. מתחת לתפריט (10/11)
+   ולהאדר (99), כך ששניהם עדיין מכסים אותו כשצריך. */
+.pinned{
+  position:fixed;top:50%;inset-inline:0;z-index:4;
+  transform:translateY(-50%);
+  width:var(--w-reveal);max-width:92vw;margin-inline:auto;
+  text-align:center;color:var(--chalk);
+  opacity:0;pointer-events:none;
+}
+.pinned__eyebrow{
+  /* דרגת Eyebrow מהקובץ, סעיף 4ב: 1.5vw דסקטופ · 4.8vw מובייל */
+  font-size:var(--fs-eyebrow);
+  font-weight:500;line-height:var(--lh-tight);
+  margin-bottom:var(--s-2);
+  /* נייטרלי, לא בורדו — chalk מעומעם על הנייבי */
+  color:rgba(var(--chalk-rgb),.62);
+}
+.pinned__line{
+  font-size:var(--fs-statement);font-weight:700;line-height:var(--lh-statement);
+}
+
+/* ── 06 · PROCESS ──────────────────────────────────────────── */
+.process{
+  position:relative;z-index:3;
+  /* המסלול מחזיק שתי פעימות: נסיעת הרכבת (1.00) והפייד אאוט
+     של הבמה (0.45). שתיהן בתוך טווח הנעיצה, כי הפייד חייב
+     לקרות כשהמפה עומדת במקום ולא בזמן שהיא נגללת מעלה.
+     היחידה svh ולא vw — שתיהן נמדדות במסכים ב-JS.
+     הסכום חייב להתאים ל-PHASE ב-motion.js: 1.45 + מסך לבמה. */
+  min-height:245svh;
+  background:var(--ink);
+  color:var(--chalk);
+  /* התפר בין שני סקשנים כהים נפתח לפעמים לפיקסל של נייר
+     בגלל עיגול תת־פיקסלי בגובה הסקשן. חפיפה של 1px סוגרת אותו. */
+  margin-top:-1px;
+}
+/* הבמה נדבקת למסך בזמן שהמסלול רץ */
+.process__stage{
+  position:sticky;top:0;
+  height:100vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+.rail{
+  display:flex;align-items:center;
+  width:max-content;
+  transform:translateX(0);
+  will-change:transform;
+}
+/* 10% נמדדים מול **הרכבת** (3 פאנלים) ולא מול הפאנל עצמו,
+   ולכן זה 15vw בפועל — 192px מכל צד ב-1280. */
+.rail__panel{
+  width:var(--panel);flex:none;
+  padding-inline:10%;
+  display:flex;align-items:center;
+}
+.rail__panel--center{justify-content:center;padding-inline:0}
+/* רק פאנל הערכים מתרחב, כי שם הכותרות נשברו.
+   ה-start נשאר 15vw — כלומר בדיוק 10%, אותה נקודת התחלה —
+   ורק ה-end מצטמצם, ולכן העמודה גדלה פנימה לעבר מרכז המסך.
+   פאנל הכותרת לא מושפע ושומר על שבירת השורות המקורית שלו. */
+/* פאנל הכותרת מוזז ימינה ב-4vw. שני הצדדים משתנים בסכום אפס
+   (15/15 → 11/19), ולכן רוחב העמודה נשאר 20vw ושבירת השורות
+   של "איך אנחנו עושים את זה?" לא זזה. */
+.rail__panel--title{padding-inline:11vw 19vw}
+.rail__panel--values{padding-inline:15vw 5vw}
+.process__title{
+  font-size:var(--fs-process);font-weight:700;line-height:var(--lh-tight);
+  color:var(--chalk);
+}
+
+/* הדיסקים המסתובבים.
+   האישון יושב בקצה השמאלי — לכן סיבוב הדיסק מזיז אותו במעגל. */
+/* ── המפה ──────────────────────────────────────────────────
+   נעה שמאלה עם הרכבת בלבד — אין לה תנועה משלה.
+   הכיתוב באותה דרגה טיפוגרפית כמו .process__title, כדי ששני
+   הפאנלים ייקראו כשתי אמירות באותו משקל ולא ככותרת ותווית. */
+.mapfig{
+  margin:0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(14px,1.6vw,30px);
+  /* רחב מהמפה, כדי שהמשפט ייפרש ולא ייערם */
+  width:var(--panel);
+}
+.mapfig__svg{
+  width:var(--map-w);height:auto;flex:none;
+  /* הרסטר של המדינות שקוף ברקע, אז אין צורך בשום מצע */
+  overflow:visible;
+}
+.mapfig__svg image{
+  /* בלי זה הדפדפן מחליק את הרסטר ומטשטש את קווי המדינות */
+  image-rendering:auto;
+}
+/* הצבע מ-Untitled 4.svg — rgb(93,24,25) = #5D1819, הבורדו של המותג. */
+.mapfig__al{fill:#5D1819;stroke:#5D1819;stroke-width:.5}
+/* ערימה צמודה: השורה הקטנה יושבת ממש מעל שם המקום.
+   ה-gap קטן בכוונה — שתי השורות אמורות להיקרא כיחידה אחת. */
+.mapfig__cap{
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(2px,.35vw,7px);
+  text-align:center;
+}
+.mapfig__place{
+  font-size:var(--fs-process);font-weight:700;line-height:var(--lh-tight);
+  color:var(--chalk);
+}
+/* דרגה אחת מתחת ל-Eyebrow — דרגת הגוף מהסולם שבסעיף 4ב.
+   כלל 1 שם: לא ממציאים דרגת ביניים, יורדים דרגה שלמה.
+   משקל 500 וצבע מעומעם, כמו כל eyebrow באתר. */
+.mapfig__eyebrow{
+  font-size:var(--fs-body);
+  font-weight:500;line-height:var(--lh-tight);
+  color:rgba(var(--chalk-rgb),.62);
+}
+
+/* ── רשימת הערכים ──────────────────────────────────────────
+   קו אנכי אחד רץ לאורך כל הרשימה, בצד ההתחלה (ימין ב-RTL) —
+   בדיוק במקום שבו ישבו האותיות א/ב/ג. inset-block:0 מותח אותו
+   מראש הסעיף הראשון עד תחתית האחרון. */
+.values{position:relative;padding-inline-start:0}
+.values::before{
+  content:'';position:absolute;
+  inset-block:5%;              /* מתקצר מעט משני הקצוות */
+  inset-inline-start:-2vw;
+  width:2px;
+  background:var(--chalk);
+  pointer-events:none;
+}
+.values li{margin-bottom:var(--s-4)}
+.values li:last-child{margin-bottom:0}
+.values h3{
+  display:block;
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  color:var(--chalk);
+}
+.values p{
+  font-size:var(--fs-body);font-weight:400;line-height:var(--lh-body);
+  color:var(--chalk);
+}
+
+/* ── 07 · DEEP · "איך עסקה מייצרת רווח" ──────────────────────
+   במה נעוצה אחת. המסלול מתחיל עוד לפני הסקשן — ברגע שהרכבת
+   שמעליו עוצרת — ולכן הבמה צריכה להישאר נעוצה רק 2.70 מסכים
+   אחרי שהיא נתפסת, ועוד מסך אחד לבמה עצמה = 425svh.
+   ראה החישוב המלא ליד DEEP_VH ב-motion.js. */
+.deep{
+  position:relative;z-index:3;
+  /* הגובה נגזר מהמסלול ולא להפך. היציאות התקצרו לחלון חפיפה
+     קצר, והעודף היה נערם בסוף כגלילה שבה כלום לא קורה. נמדד:
+     הזנב על השקף האחרון שווה עכשיו ל-hold של השניים שלפניו,
+     כלומר לכל אינפוגרפיקה אותו זמן קריאה בדיוק. */
+  min-height:390svh;
+  background:var(--ink);
+  color:var(--chalk);
+  margin-top:-1px;   /* סוגר תפר תת־פיקסלי בין שני סקשנים כהים */
+}
+.deep__stage{
+  position:sticky;top:0;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ── הכותרת ────────────────────────────────────────────────
+   מה שכתוב כאן הוא **התנוחה הסופית** — אחרי שהיא כבר נחתה
+   בעמודה הימנית, באותו 11vw של .rail__panel--title ובאותה
+   דרגת גודל. הפוזה הממורכזת נגזרת מזה ב-JS בתור translate,
+   ולכן אין כאן שתי גיאומטריות שיכולות לצאת מסנכרון. */
+/* fixed ולא absolute — היא צריכה להופיע כבר בזמן שסקשן
+   הפרוצס עדיין על המסך, לפני שהבמה של deep קיימת בפריים.
+   הערכים זהים לחלוטין למה שהיו ב-absolute בתוך הבמה, כי
+   הבמה נעוצה ב-top:0 ותופסת מסך מלא — ולכן התנוחה הסופית
+   לא זזה בפיקסל. z-index 4 כמו .pinned: מעל .process (3),
+   מתחת לתפריט ולהאדר. */
+.deep__lead{
+  position:fixed;z-index:4;
+  pointer-events:none;
+  /* ממורכזת אנכית, וזה גם הגובה שבו היא נוחתת אחרי העלייה
+     וגם זה שבו היא נחה בסוף — ולכן הנסיעה לצד היא אופקית
+     טהורה. המרכוז נעשה ב-inset+margin ולא ב-transform, כי
+     ה-transform שמור ל-JS ואסור שיתנגשו. */
+  inset-block:0;
+  height:max-content;
+  margin-block:auto;
+  inset-inline-start:11vw;
+  /* חובק את השורה הארוכה ביותר, ראה ההערה ב-HTML */
+  width:max-content;max-width:42vw;
+  font-size:var(--fs-process);font-weight:700;line-height:var(--lh-tight);
+  color:var(--chalk);
+  /* כמו .pinned — ה-JS הוא שמרים את זה. ראה updateDeep. */
+  opacity:0;
+  will-change:transform,opacity;
+}
+
+/* ── הטקסטים ───────────────────────────────────────────────
+   כולם absolute באותה נקודה, ערומים זה על זה. ההחלפה היא
+   opacity + translateX בלבד, ולכן אין reflow בשום פריים. */
+/* אותה עמודה בדיוק כמו רשימת הערכים: שם היא יוצאת מ-50vw
+   פאנל פחות padding של 15vw ו-5vw, כלומר 30vw נטו. הרוחב
+   הוא מה שקובע איך הפסקה נשברת, ולכן בלעדיו הטיפוגרפיה
+   נראית אחרת גם כשכל הגדלים זהים. */
+/* fixed כמו הכותרת, ומאותה סיבה: הטקסט הראשון נכנס בזמן
+   שהכותרת עוד נוסעת, והבמה של deep עדיין לא נתפסה אז. כל עוד
+   הם absolute בתוכה הם היו נכנסים מתחת לקצה התחתון של המסך.
+   כשהבמה כן נעוצה ב-top:0 שתי השיטות זהות לחלוטין. */
+/* בצד השמאלי — הצד הנגדי לכותרת. ב-RTL זה inset-inline-end.
+   ה-top נכתב מ-JS (הוא תלוי ברזולוציה), והערך כאן הוא רק
+   הנפילה־לאחור אם ה-JS לא רץ. */
+.deep__slides{
+  position:fixed;z-index:4;
+  pointer-events:none;
+  top:18vh;
+  /* גבול תחתון, ולא רק top: זה מה שנותן למיכל גובה מוגדר,
+     וזה מה שמאפשר לאינפוגרפיקה שמתחת לטקסט להתמרכז בשארית
+     המקום במקום להיצמד לתחתית הפסקה. */
+  bottom:clamp(24px,6vh,70px);
+  inset-inline-start:auto;
+  inset-inline-end:11vw;
+  /* 36vw ולא 30vw כמו רשימת הערכים: ב-30 המשפט הראשון נשבר
+     באמצע "מ-12 חודשים". נמדד — 36vw הוא הרוחב הראשון שבו
+     כל המשפט נכנס לשורה אחת, ואז אין שבירה בכלל בתוכו. */
+  width:36vw;
+}
+/* ממלא את המיכל ומחלק אותו לשניים: הטקסט בגובהו הטבעי
+   למעלה, והאינפוגרפיקה לוקחת את כל השאר. */
+.deep__slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;
+  will-change:transform,opacity;
+}
+/* אותו קו אנכי של רשימת הערכים, אותה גיאומטריה בדיוק.
+   הוא על .deep__text ולא על כל השקופית, כדי שיסמן את הפסקה
+   בלבד ולא יימתח גם לאורך האינפוגרפיקה שמתחתיה. */
+.deep__text{position:relative}
+.deep__text::before{
+  content:'';position:absolute;
+  inset-block:5%;              /* מתקצר מעט משני הקצוות */
+  inset-inline-start:-2vw;
+  width:2px;
+  background:var(--chalk);
+  pointer-events:none;
+}
+/* זהה ל-.values h3 / .values p — אותו גודל, משקל, גובה שורה
+   וצבע. גם בלי margin בין הכותרת לפסקה: ה-line-height של
+   הגוף (1.8) הוא כל הנשימה שיש שם, בדיוק כמו ברשימת הערכים. */
+.deep__slide h3{
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  color:var(--chalk);
+}
+.deep__slide p{
+  font-size:var(--fs-body);font-weight:400;line-height:var(--lh-body);
+  color:var(--chalk);
+}
+
+/* ── האינפוגרפיקה שמתחת לטקסט ───────────────────────────────
+   מכל בלי מסגרת נראית: על הנייבי אין באתר הזה אף קופסה,
+   והקווים של הגרפיקה עצמה הם כל הגבול שהיא צריכה. לשאר
+   הטקסטים אין עדיין גרפיקה, ומכל ריק פשוט לא מרנדר כלום. */
+/* flex:1 — לוקח את כל המקום שנשאר מתחת לטקסט, ומרכז בתוכו
+   את הגרפיקה לגובה ולרוחב. ה-margin הוא רק רצפה: הוא מבטיח
+   מרווח מינימלי מהפסקה גם כשהמקום שנשאר קטן. */
+.deep__fig{
+  flex:1;
+  display:flex;flex-direction:column;justify-content:center;
+  margin:clamp(20px,2.4vw,40px) 0 0;
+}
+/* הציר עצמו לא נמתח לגובה — רק מתמרכז */
+.deep__fig > *{flex:none}
+
+/* קו מידה. טיק בכל קצה ו-"12 חודשים" מעליו — כמו בשרטוט,
+   ולכן הוא נקרא כמדידה של הרוחב שמתחתיו ולא ככותרת. */
+.tl__dim{
+  position:relative;
+  height:clamp(22px,2.2vw,32px);
+  margin-bottom:clamp(8px,.9vw,14px);
+}
+.tl__val{
+  position:absolute;inset-inline:0;inset-block-start:0;
+  text-align:center;
+  font-size:var(--fs-meta);font-weight:600;line-height:1.2;
+  color:var(--chalk);
+  font-variant-numeric:tabular-nums;
+}
+.tl__rule{
+  position:absolute;inset-block-end:0;inset-inline:0;
+  height:1.5px;background:var(--chalk);
+}
+.tl__rule::before,
+.tl__rule::after{
+  content:'';position:absolute;inset-block-end:0;
+  width:1.5px;height:clamp(7px,.8vw,12px);
+  background:var(--chalk);
+}
+.tl__rule::before{inset-inline-start:0}
+.tl__rule::after{inset-inline-end:0}
+
+/* הרצועה. --span הוא מספר החודשים, ולכן רוחב המקטע הוא הנתון
+   עצמו: שיפוץ באמת רחב פי שלושה וחצי מרכישה.
+
+   מקטעים מלאים עם מסגרת chalk ורווח נייבי ביניהם — אותה מסגרת
+   בדיוק של רצועות המשפך, מסובבת ב-90°, כדי ששלושת התרשימים
+   בסקשן ידברו שפה אחת. */
+.tl{display:flex;gap:5px}
+.tl__seg{
+  flex:var(--span);min-width:0;
+  height:clamp(40px,4.4vw,62px);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--chalk);
+  box-shadow:inset 0 0 0 1.5px var(--chalk);
+  font-size:var(--fs-body);font-weight:600;line-height:1.2;
+  color:var(--ink);
+}
+/* הריפוד יושב על ה-span ולא על ה-li. ב-border-box ריפוד על
+   פריט flex עם basis:0 מרצפה את הבסיס שלו, והרוחבים יוצאים
+   2.16/6.76/3.09 במקום 2/7/3 — כלומר הנתון מזדייף. */
+.tl__seg > span{padding-inline:6px;white-space:nowrap}
+/* הסולם רץ עם הזמן, כמו במשפך מלמעלה למטה: chalk ← ורוד ← בורדו.
+   הבורדו כאן לגיטימי כי הוא מקטע מלא שחסום בין הוורוד לבין
+   מסגרת ה-chalk ואינו נוגע בנייבי — מה שקו של 2px לא יכול היה
+   לעשות. טקסט chalk עליו הוא 10.46:1, נייבי על הוורוד 4.71:1. */
+.tl__seg--mid{background:var(--accent-dark)}
+.tl__seg--key{background:var(--accent);color:var(--chalk)}
+
+/* ── תרשים העוגה · "איך מורכב ההון" ─────────────────────────
+   conic-gradient ולא stroke עבה על מעגל: שם הדפדפן מקרב מעגל
+   בארבע עקומות בזייה, וקצה המקטע נחתך בניצב למשיק המקורב.
+   כשה-stroke רחב פי שניים מהרדיוס, סטייה זעירה בזווית הופכת
+   לסטייה גדולה במרכז — הגבולות לא נפגשים בנקודה אחת.
+   ב-conic-gradient הגבול רדיאלי בהגדרה.
+
+   שלושת האחוזים ב-HTML הם הנתון היחיד; הזוויות נגזרות מהם.
+   אין רווחים בין הפרוסות, ולכן כל אחת היא בדיוק האחוז שלה. */
+.deep__fig--pie{
+  flex-direction:row;align-items:center;
+  gap:clamp(20px,2.6vw,44px);
+}
+.pie{
+  flex:none;
+  width:clamp(132px,15vw,196px);
+  aspect-ratio:1;border-radius:50%;
+  /* אחוז אחד = 3.6deg. conic מתחיל ב-12 ורץ עם כיוון השעון. */
+  --a1:calc(var(--p1) * 3.6deg);
+  --a2:calc((var(--p1) + var(--p2)) * 3.6deg);
+  background:conic-gradient(
+    var(--accent)      0        var(--a1),
+    var(--accent-dark) var(--a1) var(--a2),
+    var(--chalk)       var(--a2) 360deg
+  );
+  /* טבעת חיצונית. הבורדו הוא 1.29:1 מול הנייבי, ובלעדיה הקשת
+     של הפרוסה שלו נמוגה לרקע והעוגה נראית נגוסה. מול השכנות
+     שלה בתוך העוגה היא דווקא ברורה — 3.64 ו-10.37. */
+  box-shadow:inset 0 0 0 1.5px var(--chalk);
+}
+
+/* המקרא. הוא שנושא את הנתונים כטקסט, ולכן ה-div aria-hidden. */
+.pie__key{
+  display:flex;flex-direction:column;
+  gap:clamp(9px,1.1vw,18px);
+}
+.pie__row{
+  display:flex;align-items:baseline;
+  gap:clamp(7px,.8vw,13px);
+  line-height:1.2;
+}
+/* ריבוע הצבע. קו chalk סביבו מאותה סיבה כמו הטבעת — בלעדיו
+   הריבוע הבורדו פשוט לא נראה על הנייבי. */
+.pie__row::before{
+  content:'';flex:none;
+  width:clamp(9px,.95vw,14px);aspect-ratio:1;
+  background:var(--chalk);
+  box-shadow:0 0 0 1px var(--chalk);
+  transform:translateY(.06em);
+}
+.pie__row--mid::before{background:var(--accent-dark)}
+.pie__row--key::before{background:var(--accent)}
+
+/* המספרים תמיד chalk: בורדו כטקסט על נייבי הוא 1.29:1.
+   קידוד הצבע חי בריבוע, לא בספרות. */
+.pie__row b{
+  font-size:var(--fs-meta);font-weight:700;
+  color:var(--chalk);
+  font-variant-numeric:tabular-nums;   /* הספרות מיושרות בטור */
+}
+.pie__row span{
+  font-size:var(--fs-body);font-weight:400;
+  color:var(--chalk);
+}
+
+/* ── משפך הסינון · "פסלנו עשרות" ────────────────────────────
+   שלושה טרפזים מלאים, chalk ← ורוד־עתיק ← בורדו, וקו chalk
+   סביב שלושתם. המסגרת היא חוק של התרשים ולא טלאי על הרצועה
+   הבורדו: הבורדו על נייבי הוא 1.29:1, ובלי מצע בהיר מתחתיו
+   הוא נמוג. כשכל השלוש ממוסגרות, ה-chalk הוא המבנה.
+
+   הצורה ב-SVG והטקסט ב-HTML מעליה. preserveAspectRatio="none"
+   מותח את ה-viewBox לרוחב התיבה, ולכן שיעורי הגובה שבהם יושבות
+   השורות (17/50/83%) נכונים בכל רוחב. non-scaling-stroke שומר
+   על עובי הקו קבוע למרות המתיחה. */
+/* בלי display:block כאן — .deep__fig הוא flex ממורכז,
+   וזה מה שממרכז את המשפך אנכית בשטח הפנוי. */
+.fun{position:relative;width:100%}
+.fun__shape{display:block;width:100%;height:auto}
+.fun__shape--narrow{display:none}
+/* גרסת המלל למובייל — משפט אחד קצר במקום שניים. display:none
+   ולא visibility, כדי שקורא מסך ישמע גרסה אחת בלבד ולא את שתיהן. */
+.fun__shape--mob{display:none}
+/* ‏.fun__row i היא (0,1,1) ומצהירה display:block, ולכן מחלקה
+   לבדה (0,1,0) לא הייתה מכבה אותה — הצירוף כאן הוא (0,2,1). */
+.fun__row i.fun__i--mob{display:none}
+.fun__shape path{
+  stroke:var(--chalk);stroke-width:1.5;
+  vector-effect:non-scaling-stroke;
+}
+.fun__a{fill:var(--chalk)}
+.fun__b{fill:var(--accent-dark)}
+.fun__c{fill:var(--accent)}
+
+.fun__rows{position:absolute;inset:0}
+/* מרכז הרצועה כאחוז מגובה ה-viewBox. שתי הצורות מחזיקות את
+   אותם שלושה אחוזים, ולכן שורה אחת משרתת את שתיהן. */
+/* max-width = רוחב הקצה התחתון של הרצועה. הרצועה רק מצטמצמת
+   כלפי מטה, ולכן טקסט שנכנס בקצה התחתון נכנס בכל גובה בתוכה.
+   בלי זה השורה יורשת את רוחב ה-SVG המלא וגולשת מהטרפז החוצה. */
+.fun__row{
+  position:absolute;inset-inline:0;
+  margin-inline:auto;
+  transform:translateY(-50%);
+  padding-inline:clamp(10px,1.2vw,20px);
+  text-align:center;
+  color:var(--ink);
+}
+/* שלוש הרצועות באותו עובי אנכי בדיוק: 146 יחידות כל אחת.
+   הגובה נקבע לפי הרצועה התובענית ביותר — השלישית, שהיא גם
+   הצרה וגם בעלת המלל הארוך. */
+.fun__row:nth-child(1){top:16%;max-width:90%}
+.fun__row:nth-child(2){top:50%;max-width:80%}
+.fun__row:nth-child(3){top:84%;max-width:71%}
+/* על הבורדו הטקסט הוא chalk — 10.46:1. נייבי עליו היה 2.5:1. */
+.fun__row--key{color:var(--chalk)}
+
+/* ההיררכיה בין הכותרת לגוף מגיעה מגודל וממשקל בלבד, בלי
+   שקיפות: נייבי מעומעם על הוורוד היה יורד ל-3.18:1 ונופל מ-AA. */
+.fun__row b{
+  display:block;
+  font-size:var(--fs-body);font-weight:600;line-height:1.3;
+  color:inherit;
+}
+.fun__row i{
+  display:block;margin-top:.4em;
+  font-style:normal;
+  font-size:var(--fs-legal);font-weight:400;line-height:1.5;
+  color:inherit;
+}
+/* בין שני משפטים אין מרווח נוסף — הם נקראים כשורות רצופות,
+   בדיוק כמו שורה שנשברה מחוסר מקום. המרווח נשאר רק אחרי
+   הכותרת, שהיא דרגה אחרת. */
+.fun__row i + i{margin-top:0}
+
+/* מתחת ל-1200 אין עמודה ימנית להיצמד אליה, ולכן הכותרת
+   נוחתת גבוה על המסך במקום בצד. הכל נשאר inset+width ולא
+   padding: ‏.deep__slide הוא absolute, ואחוזים שלו נמדדים
+   מול תיבת ה-padding של ההורה — כלומר padding על ההורה
+   פשוט נעקף, והטקסט גולש מעבר לקצה. */
+@media (max-width:1199px){
+  /* המסלול כאן מתחיל רק כשהבמה נתפסת, ולא מסך אחד קודם כמו
+     בדסקטופ (ראה M.deepTop ב-motion.js), ולכן צריך מסך שלם
+     יותר: 4.70 מסכי מסלול + מסך לבמה = 570svh. */
+  /* במובייל הזנב היה שני מסכים שלמים של גלילה אחרי שהשקף
+     האחרון התייצב. נמדד — עכשיו הוא שווה ל-hold של השניים
+     שלפניו, כלומר אותו זמן קריאה לשלושתם. */
+  .deep{min-height:372svh}
+  /* הכותרת חוזרת לשתי שורות. display:none על br מבטל את
+     השבירה, והרווח שלפניו ב-HTML הוא שמחליף אותה. */
+  .deep__lead br.wide{display:none}
+  /* כאן דווקא כן יש נסיעה אנכית (מרכז → ראש המסך) ואין
+     אופקית, ולכן המנוחה היא top ולא מרכוז. */
+  .deep__lead{
+    inset-block:14vh auto;
+    height:auto;
+    margin-block:0;
+    inset-inline-start:8vw;
+    max-width:84vw;
+  }
+  /* המקטע של רכישה הוא 2/12 מהציר, ובעמודה צרה זה 45px בלבד.
+     דרגה אחת למטה בגופן נותנת לשם מקום להיכנס בו. */
+  /* המקטע הצר ביותר הוא 2/12 מ-84vw. השם חייב להיכנס בתוכו. */
+  /* המקטע הצר ביותר הוא 2/12 מ-84vw — 43px ב-320. "רכישה"
+     ב-13px הוא 37, ולכן הריפוד הוא כל מה שיש לשחק איתו. */
+  .tl__seg{font-size:var(--fs-legal)}
+  .tl__seg > span{padding-inline:1px}
+  .tl{gap:4px}
+  /* העמודה צרה מכדי להעמיד עוגה ומקרא זה לצד זה */
+  .deep__fig--pie{flex-direction:column;align-items:center}
+  /* הטרפז מצטמצם ברוחב אמיתי, לא באחוזים, ולכן ברוחב מסך
+     קטן הריפוד הוא מה שדוחק את השורה הצרה ביותר. */
+  .fun__row{padding-inline:4px}
+  /* מרכזי הרצועות בצורה הצרה — viewBox אחר, ולכן אחוזים אחרים */
+  .fun__row:nth-child(1){top:16.3%;max-width:91%}
+  .fun__row:nth-child(2){top:50%;max-width:82%}
+  .fun__row:nth-child(3){top:83.7%;max-width:73%}
+  .fun__shape--wide{display:none}
+  .fun__shape--narrow{display:block}
+  /* במובייל אין צדדים — הטקסטים חוזרים לרוחב מלא מתחת
+     לכותרת, וה-top נכתב מ-JS. */
+  .deep__slides{
+    inset-inline-start:8vw;
+    inset-inline-end:auto;
+    width:84vw;
+  }
+}
+
+/* ── 07ב · AFTER · "מה קורה אחרי שסיימנו את השיפוץ?" ─────────
+   אותה מכניקה של .deep: במה נעוצה, כותרת שעולה מלמטה ונעצרת,
+   ואחריה ארבעה שלבים שעולים אחד־אחד. ההבדל — כאן הם נערמים
+   ונשארים, ולא מתחלפים.
+
+   בדסקטופ הם שורה אחת. ב-RTL הפריט הראשון ב-DOM יושב מימין,
+   ולכן סדר ה-DOM הוא גם סדר הזמן וגם סדר הקריאה. */
+.after{
+  position:relative;z-index:3;
+  /* נגזר מהמסלול: העלייה של הכותרת + ארבעת השלבים + זנב קריאה
+     של ~0.55 מסך, כמו ב-.deep. נמדד, לא הוקלד. */
+  /* כולל את טיפוס הגבעה בסוף: מסך מלא ועוד רדיוס הקימור,
+     בקצב 1:1 — ולכן הסקשן ארוך במסך שלם מכפי שהיה. */
+  min-height:388svh;
+  background:var(--ink);color:var(--chalk);
+  margin-top:-1px;
+}
+.after__stage{position:sticky;top:0;height:100vh;overflow:hidden}
+
+.after__lead{
+  position:absolute;z-index:2;
+  inset-inline:0;
+  top:16vh;
+  text-align:center;
+  font-size:var(--fs-statement);font-weight:700;line-height:var(--lh-h1);
+  color:var(--chalk);
+  /* בלי אנימציה. היא absolute בתוך במה נעוצה, ולכן היא פשוט
+     נגללת מלמטה יחד עם הסקשן עד שהבמה נתפסת — וזה כל האפקט. */
+  pointer-events:none;
+}
+
+.after__steps{
+  position:absolute;z-index:2;
+  inset-inline:5vw;
+  top:50%;transform:translateY(-50%);
+  display:flex;align-items:flex-start;
+  gap:clamp(20px,2.6vw,46px);
+  pointer-events:none;
+}
+/* בדסקטופ אין קו — ארבע עמודות ממורכזות, כל אחת במקומה.
+   הקו חוזר רק בערימה המוביילית, שם הוא מה שקושר את השורות. */
+.after__step{
+  flex:1 1 0;min-width:0;
+  position:relative;
+  text-align:center;
+  opacity:0;will-change:transform,opacity;
+}
+.after__step h3{
+  font-size:var(--fs-meta);font-weight:600;line-height:var(--lh-title);
+  color:var(--chalk);
+}
+.after__step p{
+  margin-top:.5em;
+  font-size:var(--fs-legal);font-weight:400;line-height:1.6;
+  color:var(--chalk);
+}
+
+@media (max-width:1199px){
+  /* במובייל השלב נכנס משמאל ולא מלמטה, והמרחק גדול בהרבה
+     (רוחב הערימה במקום גובה השלב) — ולכן המסלול ארוך יותר. */
+  /* ארוך מהדסקטופ: הטיפוס הוא מסך מלא, והמסך כאן גבוה יותר
+     ביחס לרוחבו — ולכן גם המרחק שהשלבים נוסעים גדול יותר. */
+  .after{min-height:483svh}
+  .after__lead{top:12vh;font-size:var(--fs-h1)}
+  /* אין שורה — ערימה. הקו האנכי נשאר בקצה הקריאה של כל שלב. */
+  .after__steps{
+    inset-inline:8vw;
+    flex-direction:column;align-items:stretch;
+    gap:clamp(18px,3.4vw,34px);
+  }
+  /* קו אנכי בקצה הקריאה של כל שלב — אותה מחווה של
+     .values::before ושל .deep__text::before, בגרסה מוקטנת. */
+  .after__step{
+    flex:none;
+    text-align:start;
+    padding-inline-start:clamp(14px,3.2vw,24px);
+  }
+  .after__step::before{
+    content:'';position:absolute;
+    inset-block:2px auto;height:calc(100% - 4px);
+    inset-inline-end:0;
+    width:2px;background:var(--chalk);
+  }
+  .after__step h3{font-size:var(--fs-body)}
+}
+
+/* ── מובייל · הפס של השלב עובר לצד ימין ──────────────────────
+   ב-RTL‏ inset-inline-end הוא שמאל, ולכן הפס צויר בצד המנוגד
+   ל-padding-inline-start ששמור לו — ובצד המנוגד לשתי האחיות
+   שלו, .values::before ו-.deep__text::before, שיושבות בצד
+   תחילת הקריאה. כאן הוא חוזר לשם.
+   ‏inset-inline-end:auto חובה: בלעדיו שני הקצוות מוגדרים יחד
+   עם width והדפדפן מתעלם מאחד מהם לפי כיוון הכתיבה. */
+@media (max-width:767px){
+  .after__step::before{inset-inline-start:0;inset-inline-end:auto}
+}
+
+/* ── הגבעה שסוגרת את הנייבי ──────────────────────────────────
+   אותו רדיוס בדיוק של .hero__hill, רק שכאן ה-bone הוא שעולה
+   לתוך הנייבי ולא להפך. הגובה = הרדיוס עצמו, כי כל מה שמתחת
+   לקימור ממילא bone — זה כבר סקשן העסקאות. */
+/* מתחילה בדיוק מתחת לקצה התחתון של הבמה, ומטפסת מעלה ב-JS עד
+   שהיא מכסה את המסך. הגובה נדיב כדי שלא ייחשף שוליים בטיפוס.
+   z-index גבוה מהמלל — היא מכסה אותו במקום שהוא ידהה. */
+.after__hill{
+  position:absolute;z-index:5;
+  inset-inline:-8vw;
+  top:100%;
+  height:200svh;
+  background:var(--bone);
+  border-radius:50% 50% 0 0 / clamp(60px,11vw,180px) clamp(60px,11vw,180px) 0 0;
+  will-change:transform;
+  pointer-events:none;
+}
+/* הבית יושב על הפסגה. גדול פי שניים מזה שבהירו — יחס 260:124
+   מול 130:108, כלומר גם רחב יותר וגם נמוך יותר: אחוזה ולא בית. */
+.after__house{
+  position:absolute;left:50%;bottom:100%;
+  width:var(--house-lg);height:auto;
+  transform:translateX(-50%);
+  fill:var(--bone);
+  /* תחתית הבית ישרה והגבעה מעוגלת, ולכן ככל שמתרחקים מהמרכז
+     נפער מתחתיו חריץ נייבי. הפער גדל ככל שהבית רחב יותר ביחס
+     לגבעה — נמדד 4.6px ב-1280, 9.8 ב-375 ו-14 ב-320. 16 מכסה
+     את כולם, והשקיעה עצמה בלתי נראית: אותו צבע בדיוק. */
+  margin-bottom:-16px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .after{min-height:0;padding:14% 8% 80px}
+  .after__stage{position:static;height:auto;overflow:visible}
+  .after__lead{position:static;opacity:1!important;transform:none!important;
+               margin-bottom:var(--s-5);text-align:start}
+  .after__steps{position:static;transform:none;flex-direction:column;align-items:stretch}
+  .after__step{opacity:1!important;transform:none!important}
+}
+
+/* ── 08 · WORK ─────────────────────────────────────────────── */
+/* מצע Paper — הנייר של האתר. לפי סעיף הצבעים בקובץ העיצוב
+   --bone הוא "מצע העמוד", ואילו --white שמור לטקסט על מדיה
+   בלבד (וזה בדיוק מה ש-.card__addr משתמש בו).
+   על Paper כל ברירות המחדל נכונות מעצמן: הכפתור ink על שקוף,
+   ה-focus בורדו. לכן אין כאן שום override — הם נמחקו. */
+/* הריפוד העליון קטן מהתחתון: מעליו יושבת הגבעה, שכבר נותנת
+   את כל האוויר שצריך. ריפוד סימטרי כאן היה מוסיף עוד רצועה
+   לבנה ריקה בין הבית לעסקה הראשונה. */
+/* margin-top שלילי: הבמה של הסקשן שמעל היא מסך שלם של bone
+   שצריך להיגלל החוצה, וכל אותו מסך הוא לבן ריק. מושכים את
+   סקשן העסקאות פנימה כדי שהכותרת תופיע כבר בזמן שהבמה
+   מתפנה, במקום להמתין שהיא תסתיים.
+
+   z-index גבוה מ-.after (שהוא 3) — אחרת הבמה מציירת מעליו.
+   האזור שבו הם חופפים הוא bone על bone, ולכן החפיפה עצמה
+   בלתי נראית; מה שנראה הוא רק שהכותרת מגיעה מוקדם יותר. */
+.work{background:var(--bone);color:var(--ink);
+      position:relative;z-index:4;
+      /* מוטיב מיקום הכותרות באתר: .after__lead ב-16vh מראש הבמה,
+         .deep__slides ב-18vh. -86vh מנחית את "העסקאות שלנו" על
+         ~21vh — מעט מתחת למוטיב, לבקשת ריווח גדול יותר מהבית
+         שמעליה. נמדד, לא הוקלד. */
+      margin-top:-86vh;
+      padding-block:clamp(12px,1.4vw,24px) clamp(60px,8vw,140px)}
+.work__inner{width:var(--w-grid);max-width:100%;margin-inline:auto}
+
+/* דרגת Display מסעיף 4ב בקובץ העיצוב: --fs-process, משקל 700,
+   גובה שורה 1.0 — הדרגה היחידה בסולם עם lh כזה. זהה בדיוק
+   ל-.page-head__title שבעמוד העסקאות. */
+.work__title{
+  font-size:var(--fs-process);font-weight:700;line-height:var(--lh-tight);
+  color:var(--ink);
+  text-align:center;
+  margin-bottom:clamp(46px,5.6vw,98px);
+}
+
+/* רשת אחידה: שני כרטיסים בשורה, כולם באותה מידה.
+   קודם כל פריט 5n+1 נפרש לרוחב מלא ושבר את המקצב — עכשיו
+   אין חריגים, ולכן גם אין כלל nth-child בשום מקום בסקשן. */
+.grid{display:flex;flex-wrap:wrap;gap:3.2%}
+.card{width:48.4%;margin-bottom:3.2%}
+
+.card__link{
+  position:relative;display:block;overflow:hidden;
+  isolation:isolate;
+}
+/* התמונה מגיעה מאדמין הפאנל (thumbnail_url). היא **לא זזה**
+   בריחוף — אין עליה transform בשום מצב; כל מה שקורה בריחוף
+   הוא הפייד של הכהות והכתובת. */
+.card__media{
+  display:block;width:100%;height:23vw;
+  object-fit:cover;object-position:center;
+  /* מצע לרגע שלפני שהתמונה נטענת. chalk ולא אפור כהה —
+     הסקשן עומד על Paper, ומלבן כהה היה בולט יותר מהתמונה
+     שהוא אמור להחזיק במקומה. */
+  background:var(--chalk);
+}
+
+/* שכבת הקריאות — בלעדיה הכתובת הלבנה יושבת על תמונה שרירותית */
+.card__scrim{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(var(--ink-rgb),.78),rgba(var(--ink-rgb),0) 62%);
+  opacity:0;transition:opacity var(--t-slow) var(--ease);
+}
+.card__link:hover .card__scrim,
+.card__link:focus-visible .card__scrim{opacity:1}
+
+/* כתובת הנכס — בפינה השמאלית התחתונה, בדיוק במקום שבו ישב
+   כפתור "לצפייה". טקסט חשוף: בלי גלולה, בלי רקע, בלי מסגרת.
+   בצד ימין לא יושב כלום. */
+/* left ולא inset-inline-end: על האלמנט הזה יש dir="ltr" (הכתובת
+   באנגלית), ותכונות לוגיות נגזרות מכיוון האלמנט **עצמו** — כך
+   שה-inline-end שלו הוא ימין ולא שמאל. כאן הדרישה פיזית. */
+.card__addr{
+  position:absolute;z-index:2;
+  bottom:1.7vw;left:1.7vw;
+  max-width:70%;
+  color:var(--white);
+  font-size:var(--fs-meta);font-weight:500;line-height:var(--lh-title);
+  letter-spacing:.01em;
+  text-align:left;          /* הכתובת אנגלית — LTR גם בתוך דף RTL */
+  opacity:0;transition:opacity var(--t-fast) var(--ease);
+  pointer-events:none;
+}
+.card__link:hover .card__addr,
+.card__link:focus-visible .card__addr{opacity:1;transition-delay:66.7ms}
+
+.work__cta{display:flex;justify-content:center;padding-top:5%}
+
+/* ── כותרת עמוד פנימי ──────────────────────────────────────
+   מצע Paper כמו כל העמוד — הרצועה האדומה ירדה, ולכן ההאדר
+   שוב יושב על בהיר וצבעי ברירת המחדל שלו נכונים מעצמם
+   (בגלל זה גם כללי head-on-accent נמחקו: אין להם צרכן).
+   ה-padding העליון מפנה מקום לגלולת ה-header שצפה מעליה. */
+/* כל הגיאומטריה כאן, ולא ב-.has-bg. הסיבה: התצלום מגיע רק
+   אחרי המשיכה מהאדמין, ואם הגובה, הריפוד והמשיכה של הבורר
+   תלויים בו — העמוד נבנה פעם אחת, ואז קופץ למידות אחרות
+   כשהתמונה נוחתת. עכשיו המידות סופיות כבר בציור הראשון,
+   ומה שמשתנה אחר כך הוא צבע ותמונה בלבד. */
+.page-head{
+  position:relative;overflow:hidden;isolation:isolate;
+  background:var(--bone);color:var(--ink);
+  text-align:center;
+  /* הרצועה הייתה 2.22:1 — רחבה יותר מכל אחת מ-148 התמונות
+     שבאדמין (הרחבה ביותר היא 1.50). כל תמונה נחתכה קשה.
+     הגובה נגזר עכשיו מהרוחב ולכן היחס מתון יותר (~1.9:1),
+     ומוגבל ב-82vh כדי שהוא לא יבלע מסך נמוך. */
+  min-height:min(clamp(460px,52vw,720px), 82vh);
+  display:flex;align-items:center;justify-content:center;
+  padding-block:clamp(150px,17vw,270px)
+               calc(clamp(50px,6vw,110px) + var(--bar-inset));
+}
+/* הבורר נשאר אח של הרצועה ולא ילד שלה — .page-head הוא
+   overflow:hidden, וילד sticky בתוכו לא היה יכול להיצמד
+   להאדר בגלילה. במקום זה הוא נמשך מעלה לתוך התצלום, וכל
+   מה שאחריו זז איתו — ולכן הריפוד למעלה מבטל את ההזזה. */
+.page-head + .deals{margin-top:calc(var(--bar-inset) * -1)}
+/* עם תצלום מאחור הרצועה צריכה גובה אמיתי, אחרת התמונה
+   נחתכת לפס. בלי תצלום היא נשארת בדיוק כפי שהייתה. */
+.page-head__title{
+  position:relative;z-index:2;
+  font-size:var(--fs-process);font-weight:700;line-height:var(--lh-tight);
+  color:var(--ink);
+  width:var(--w-grid);max-width:100%;margin-inline:auto;
+}
+
+/* ── תצלום הנכס ברקע ──────────────────────────────────────
+   שכבה לכל עסקה, מוערמות. רק ה-opacity מתחלף, ולכן ההחלפה
+   מצליבה. אותה עקומה ואותו משך של מסילת הפאנלים, כדי ששתי
+   התנועות ייקראו כתנועה אחת. */
+.page-head__media{position:absolute;inset:0;z-index:0}
+.page-head__bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  opacity:0;
+  transition:opacity .6s cubic-bezier(.65,0,.35,1);
+}
+.page-head__bg.is-current{opacity:1}
+/* שכבת הקריאות. נגזרת מ---ink-rgb ולא משחור נייטרלי (סעיף 5,
+   כלל 4).
+
+   העוצמה נקבעה ממדידה של התצלומים עצמם ולא בהערכה. דגמתי את
+   הפיקסלים של שלושתם באזור הכותרת: הבהירות הממוצעת שם היא
+   0.12–0.18, כלומר הם כהים מלכתחילה. שטיפה של ‎.68 נדרשה רק
+   כדי לעמוד מול הפיקסל **הבהיר ביותר** בפריים — וזה מה שהשטיח
+   את התמונה לגמרי.
+
+   לכן: גרדיאנט מתון שנפתח באמצע, מתחזק בקצה העליון (הניווט)
+   ובתחתון (הבורר), ועל הכותרת עצמה הילה. מול הממוצע שנמדד
+   ‎chalk יוצא 6.7:1 באמצע ו-8.4:1 בקצה. */
+.page-head::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  opacity:0;transition:opacity .6s var(--ease);
+
+  background:linear-gradient(to bottom,
+    rgba(var(--ink-rgb),.62) 0%,
+    rgba(var(--ink-rgb),.42) 26%,
+    rgba(var(--ink-rgb),.42) 66%,
+    rgba(var(--ink-rgb),.66) 100%);
+}
+/* ההילה היא מה שמחזיק את הכותרת גם כשגליף בודד נופל על חלון
+   או על שמיים — הנקודות הבהירות שהשטיפה המתונה לא מכסה. */
+.page-head.has-bg::before{opacity:1}
+.page-head__title{transition:color .6s var(--ease)}
+.page-head.has-bg .page-head__title{
+  color:var(--chalk);
+  text-shadow:0 1px 2px rgba(var(--ink-rgb),.55),
+              0 2px 22px rgba(var(--ink-rgb),.75);
+}
+/* בורדו על מצע כהה הוא 1.3:1 — אסור. הסמן עובר לוורוד־עתיק. */
+.page-head.has-bg .caret{background:var(--accent-dark)}
+
+/* ── ההאדר כשהוא צף מעל התצלום ─────────────────────────────
+   אותו פתרון של הפוטר: על מצע כהה צמד הלוגו מוחלף והטקסט
+   עובר ל-chalk. רק ב-:not(.is-stuck) — כשהוא נדבק הוא מקבל
+   גלולת chalk וצבעי המקור נכונים מעצמם. ורק ב-:not(.menu-open),
+   כי התפריט הפתוח בהיר. */
+body.head-on-media:not(.menu-open) .site-header:not(.is-stuck){
+  /* גוף המגן עובר ל-chalk — הוא הצורה הגדולה וחייב להיקרא.
+     קו הבתים **נשאר בורדו**: סעיף 5 כלל 2 נותן ללוגו חריג
+     מפורש, כי WCAG פוטר לוגוטייפ מניגודיות (1.4.3, 1.4.11)
+     ו-1.3:1 מודד בהירות בלבד — אדום מול כחול נבדלים בגוון,
+     ולכן הקו נקרא בפועל.
+     (שים לב: סעיף 2 בקובץ אומר את ההפך. ראה ההערה למשתמש.) */
+  --logo-ink:var(--chalk);
+}
+body.head-on-media:not(.menu-open) .site-header:not(.is-stuck) .menu__list a{
+  color:rgba(var(--chalk-rgb),.7);
+}
+body.head-on-media:not(.menu-open) .site-header:not(.is-stuck) .menu__list a.is-current{
+  color:var(--chalk);
+}
+body.head-on-media:not(.menu-open) .site-header:not(.is-stuck) .nav-toggle{
+  color:var(--chalk);
+}
+
+/* ── בורר העסקאות + התצוגה ─────────────────────────────────
+   ── הבר ──
+   נצמד מתחת ל-header. ה-top לא מוקלד: motion.js מודד את גובה
+   גלולת ה-header בפועל ומזין --bar-top, ולכן "מרווח קל" נשאר
+   קל גם כשגודל הלוגו או ה-padding משתנים עם רוחב המסך.
+
+   הרוחב והרקע מקבלים **בדיוק** את הערכים והתזמונים של ההאדר
+   (‏.header-shell / .header-bar). is-stuck מוחל על שניהם מאותו
+   סף גלילה ב-updateHeader, ולכן הם מתכווצים כגוף אחד. */
+.dealbar{
+  position:sticky;
+  top:var(--bar-top,96px);
+  z-index:50;              /* מתחת להאדר (99), מעל התוכן */
+  pointer-events:none;     /* רק הגלולה עצמה לחיצה */
+}
+/* ה-shell רק מונע מהגלולה לגעת בקצה המסך. הרוחב שלה נקבע
+   ע"י התוכן ולא על ידו. */
+.dealbar__shell{
+  padding-inline:clamp(16px,4vw,60px);
+}
+/* max-content — הגלולה בדיוק ברוחב הכפתורים, בלי שטח מת
+   בצדדים. היא יוצאת קצרה מגלולת ה-header, וזה בסדר.
+   wrap כדי שבמסך צר היא תישבר לשתי שורות במקום לגלוש. */
+.dealbar__bar{
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+  width:max-content;max-width:100%;margin-inline:auto;
+  gap:clamp(4px,.5vw,10px);
+  padding:clamp(5px,.5vw,9px);
+  border-radius:var(--r-pill);
+  background:transparent;
+  transition:background .16s var(--ease-out),
+             padding .5s cubic-bezier(.22,1,.36,1) .06s;
+  pointer-events:auto;
+}
+/* רק הרקע מגיע עם ההצמדה. הרוחב כבר לא מונפש — הגלולה
+   נמדדת לפי הכפתורים בכל מצב. */
+.dealbar.is-stuck .dealbar__bar{background:var(--pill)}
+
+.dealbar__btn{
+  flex:0 1 auto;min-width:0;
+  border:0;border-radius:var(--r-pill);
+  background:transparent;color:var(--ink);
+  font-family:inherit;font-size:var(--fs-nav);font-weight:600;
+  line-height:var(--lh-tight);
+  padding:.85em 1.5em;
+  cursor:pointer;
+  white-space:nowrap;
+  /* הכתובות באנגלית — בלי זה הספרה שבתחילת השם קופצת לסוף */
+  direction:ltr;
+  transition:background var(--t-base) var(--ease),
+             color var(--t-base) var(--ease);
+}
+/* בדסקטופ השם המלא; במובייל מספר הבית בלבד, כדי שהגלולה
+   תישאר שורה אחת. ראה tabButton ב-deals.js. */
+.dealbar__num{display:none}
+.dealbar__btn:hover{background:rgba(var(--ink-rgb),.07)}
+/* הנבחר — מילוי מלא. chalk על ink הוא 13.4:1. */
+.dealbar__btn.is-current{background:var(--ink);color:var(--chalk)}
+
+/* הבורר יושב עכשיו על התצלום כשהעמוד בראשו. ink על מצע כהה
+   לא נקרא, ולכן הטקסט עובר ל-chalk והנבחר מתהפך למילוי chalk
+   עם טקסט ink — 15.5:1, ובולט על מצע כהה הרבה יותר ממילוי ink.
+   רק ב-:not(.is-stuck): ברגע שהוא נדבק הוא מקבל גלולת chalk
+   ואז צבעי המקור נכונים מעצמם. */
+body.head-on-media .dealbar:not(.is-stuck) .dealbar__btn{color:var(--chalk)}
+body.head-on-media .dealbar:not(.is-stuck) .dealbar__btn:hover{
+  background:rgba(var(--chalk-rgb),.16);
+}
+body.head-on-media .dealbar:not(.is-stuck) .dealbar__btn.is-current{
+  background:var(--chalk);color:var(--ink);
+}
+
+/* ── התצוגה ──
+   מסילה אופקית אחת. התמונה והמלל יושבים באותו pane, ולכן הם
+   נעים כמקשה אחת — אין כאן שתי אנימציות שצריך לסנכרן. */
+.dealview{overflow:hidden}
+.dealview__track{
+  display:flex;
+  /* --i הוא האינדקס הנבחר; ה-JS כותב רק אותו.
+     חיובי ולא שלילי כי המסילה RTL — הפאנל הבא יושב משמאל. */
+  transform:translate3d(calc(var(--i,0) * 100%),0,0);
+  /* עקומה סימטרית ולא ה-ease-out של ההאדר. שם היא נכונה —
+     מרחק קצר, ותחושת "נסגר מהר". כאן המרחק הוא מסך שלם,
+     ועם (.22,1,.36,1) שיא המהירות הוא ~9600px/s **בפריים
+     הראשון**: התוכן קופץ ~160px בין פריים לפריים ומריחה.
+     (.65,0,.35,1) יוצא מהמנוחה, שיא ~6700px/s באמצע. */
+  transition:transform .6s cubic-bezier(.65,0,.35,1);
+  will-change:transform;
+}
+.dealpane{
+  width:100%;flex:none;
+  padding-block:clamp(28px,4vw,64px) clamp(50px,7vw,120px);
+}
+.dealpane__img{
+  display:block;
+  width:var(--w-grid);max-width:100%;margin-inline:auto;
+  aspect-ratio:16/9;object-fit:cover;object-position:center;
+  background:var(--chalk);
+}
+.dealpane__body{
+  width:var(--w-grid);max-width:100%;margin-inline:auto;
+  padding-top:clamp(20px,2.4vw,44px);
+}
+/* dir="ltr" נחוץ כדי שהמספר שבתחילת הכתובת לא יקפוץ לסוף,
+   אבל הוא גם הופך את text-align:start לשמאל — והכתובת הייתה
+   נוחתת בצד ההפוך מהפסקה שהיא כותרת שלה. right פיזי מיישר
+   את שתיהן לאותו קו. */
+.dealpane__addr{
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  color:var(--ink);
+  text-align:right;
+  margin-bottom:var(--s-2);
+}
+.dealpane__text{
+  font-size:var(--fs-body);font-weight:400;line-height:var(--lh-body);
+  color:var(--ink);
+  max-width:70ch;
+}
+
+@media (max-width:767px){
+  .dealbar__bar{gap:2px;padding:4px}
+  .dealbar__btn{font-size:13px;padding:.8em 1em}
+  .dealpane__img{aspect-ratio:4/3}
+}
+
+/* ── נתוני העסקה ───────────────────────────────────────────
+   דסקטופ־פירסט: הבסיס הוא שלוש עמודות, והברייקפוינט מצמצם
+   משם — ולא להפך.
+
+   ארבעה מוטיבים נלקחו מהאתר עצמו, כדי שהבלוק ידבר באותה שפה:
+     • המפריד הוא הקו של .values — 2px, ומתקצר משני הקצוות
+     • התווית והערך נצמדים, כמו .mapfig__eyebrow ו-.mapfig__place
+     • רצועת ההון בקצוות גלולה, כמו ההאדר והבורר
+     • סמני המקרא הם מקפים אנכיים ולא ריבועים — משפחת ה-.caret
+
+   הגדלים מוצמדים לטוקנים בלבד. אין כאן דרגת ביניים מומצאת. */
+.dealfacts{margin-top:clamp(34px,4vw,64px)}
+.dealfacts__title{
+  /* דרגת "כותרת משנה", כמו .values h3 ו-.deep__slide h3.
+     במובייל היא יורדת לדרגת eyebrow ומתעמעמת — ראו הבלוק
+     שב-max-width:767px. */
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  color:var(--ink);
+  margin-bottom:clamp(16px,1.8vw,26px);
+}
+
+.factrow{display:grid;grid-template-columns:repeat(3,1fr)}
+.fact{position:relative;padding-inline:clamp(20px,2.6vw,38px)}
+.fact:first-child{padding-inline-start:0}
+.fact:last-child{padding-inline-end:0}
+/* אותה מחווה של .values::before — הקו לא נוגע בקצוות */
+.fact + .fact::before{
+  content:'';position:absolute;
+  inset-block:5%;
+  inset-inline-start:0;
+  width:2px;background:rgba(var(--ink-rgb),.15);
+}
+
+.fact__label{
+  font-size:var(--fs-body);font-weight:500;line-height:var(--lh-tight);
+  color:rgba(var(--ink-rgb),.62);
+  margin-bottom:clamp(2px,.35vw,7px);
+}
+.fact__body{display:flex;align-items:baseline;gap:.45em;flex-wrap:wrap}
+.fact__val{
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  font-variant-numeric:tabular-nums;
+}
+/* המבטא היחיד בבלוק. בורדו על Paper — 12:1. */
+.fact__val--hero{color:var(--accent)}
+/* דרגה שלמה מתחת לערך, לא שבר ממנו. --fs-value הוא "כותרת
+   משנה" ו---fs-eyebrow הוא הדרגה שמתחתיה בסולם; היחס ביניהן
+   1.33 ונופל בטווח 1.3–1.5 שהסולם מגדיר. calc(.58×) שהיה כאן
+   ייצר גודל שלא קיים בסולם, וזה בדיוק מה שכלל 1 בסעיף 4ב אוסר. */
+.fact__was{
+  font-size:var(--fs-eyebrow);
+  color:rgba(var(--ink-rgb),.4);
+  text-decoration:line-through;text-decoration-thickness:1px;
+}
+.fact__arrow{font-size:var(--fs-eyebrow);color:rgba(var(--ink-rgb),.4)}
+.fact__flat{font-size:var(--fs-legal);color:rgba(var(--ink-rgb),.45)}
+.fact__sub{
+  flex-basis:100%;
+  font-size:var(--fs-legal);line-height:var(--lh-body);
+  color:rgba(var(--ink-rgb),.5);
+}
+
+.cap{margin-top:clamp(24px,2.6vw,40px)}
+.cap__bar{
+  height:6px;border-radius:var(--r-pill);
+  background:rgba(var(--ink-rgb),.14);
+  display:flex;overflow:hidden;
+}
+.cap__bar span{background:var(--accent);border-radius:var(--r-pill)}
+/* שורה אחת: סימן · שם · סכום · אחוז. הריווח במרווחים מפורשים
+   ולא ב-gap אחיד, כי בין השם לסכום יושב מפריד ולא רווח שלם.
+   במובייל זה נהיה שלוש שורות עם האחוז מוביל — ראו את הבלוק
+   שב-max-width:767px. */
+.cap__legend{display:flex;flex-wrap:wrap;gap:8px clamp(20px,2.5vw,40px);margin-top:12px}
+.cap__item{
+  display:flex;align-items:center;
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  color:rgba(var(--ink-rgb),.72);
+  font-variant-numeric:tabular-nums;
+}
+.cap__item p{margin:0}
+.cap__name::after{content:'\00a0\00b7\00a0'}
+.cap__sum{margin-inline-end:9px}
+.cap__pct{font-weight:600;color:var(--ink)}
+.cap__mark{width:2px;height:14px;flex:none;margin-inline-end:9px}
+.cap__mark--inv{background:var(--accent)}
+.cap__mark--firm{background:rgba(var(--ink-rgb),.16)}
+
+/* ── 08ב · TEAM · "בואו נכיר" ──────────────────────────────── */
+.team{
+  background:var(--bone);color:var(--ink);padding-block:0 clamp(70px,9vw,150px);
+
+  /* ── המצע והטבעת של הפורטרטים ────────────────────────────
+     התמונות הן PNG שקוף — הדמות גזורה, בלי רקע משלה. לכן
+     המצע והטבעת הם CSS ולא פיקסלים: הם נשארים חדים בכל DPR,
+     ומעבר בין הסכמות הוא שינוי של שתי שורות כאן ותו לא.
+
+     המצע הוא Chalk עם טבעת Ink, והתמונות הן שחור־לבן מלא
+     בלי שום עיבוד טונלי — השחור נשאר על 1-3.
+
+     ── למה לא נייבי ────────────────────────────────────────
+     מצע כהה מחייב להרים את השחורים, אחרת בגד שחור נבלע בו
+     (הרצפה שם הייתה 1.00:1 — זהה למצע). אבל הרמה כזו היא
+     גלובלית: היא מרימה גם את האישונים, הגבות והשיער, שהם
+     מה שנותן לפורטרט את החוד. נמדד באזור הפנים: הפיקסל
+     הכהה ביותר קפץ מ-2 ל-67, והממוצע עלה ב-35 בכל ארבע
+     התמונות. זו "שכבה אפורה" על הפנים, וזו הסיבה שירדנו
+     מהנייבי.
+
+     (סטיית תקן טונלית לא תופסת את זה — הזזה אחידה לא
+     משנה אותה. צריך למדוד רצפה וממוצע, לא רק רוחב טווח.)
+
+     ── למה הטבעת חיצונית כאן ───────────────────────────────
+     Chalk ‎#E8E5DF מול Bone ‎#F7F5F1 הוא 1.07:1 — העיגול
+     כמעט מתמזג עם הדף. הטבעת היא מה שמפריד אותו, ולכן היא
+     חייבת לשבת על השפה. על מצע כהה זה היה הפוך: שם טבעת
+     בהירה על השפה בלתי נראית וחייבת להיכנס פנימה. */
+  --photo-disc:var(--chalk);
+  --photo-ring:var(--ink);
+  --photo-ring-w:1px;
+}
+.team__inner{width:var(--w-grid);max-width:100%;margin-inline:auto}
+
+/* דרגת "גוף מוביל" מסעיף 4ב. המידה מוגבלת בתווים ולא ב-vw —
+   פסקה ממורכזת שנמתחת על 90vw מפסיקה להיות קריאה. */
+.team__lead{
+  font-size:var(--fs-lead);font-weight:400;line-height:var(--lh-body);
+  max-width:58ch;margin-inline:auto;
+  text-align:center;
+  /* הפסקה יורדת — מרווח נשימה בינה לבין הכותרת המוקלדת.
+     יושב כאן ולא ב-.page-head, שהוא רכיב משותף לכל התתי-עמודים. */
+  margin-top:clamp(28px,3.6vw,68px);
+  margin-bottom:clamp(60px,7vw,130px);
+}
+/* הפסקה היא עכשיו מכולה של כמה פסקאות. המרווח ביניהן מוגדר כאן
+   ולא נשען על ברירת המחדל של הדפדפן, כי טקסט ממורכז בלי הזחה
+   צריך הפרדה מפורשת כדי שייקרא כפסקה חדשה. */
+.team__lead > p{margin:0}
+.team__lead > p + p{margin-top:clamp(16px,1.5vw,26px)}
+
+/* ── הקשת ──────────────────────────────────────────────────
+   "קערה": העיגולים החיצוניים גבוהים והפנימיים יורדים.
+   העומק לא מוקלד לכל אחד — הוא נגזר מפרבולה
+   ‏y = A·(1−(2x−1)²) על ארבע נקודות ב-0, ⅓, ⅔, 1:
+
+     x=0    → 0        x=⅓ → 0.889A
+     x=1    → 0        x=⅔ → 0.889A
+
+   עם ארבעה פריטים שני האמצעיים יוצאים באותו עומק. זו
+   הגיאומטריה של פרבולה סימטרית, לא קיצור דרך. */
+.team__arc{
+  /* הועמק כדי שהקערה תיקרא כקערה ולא כשורה עם סטייה קלה.
+     56px → 100px של ירידה בפועל (העומק × 0.889). */
+  --arc-depth:clamp(46px,7.8vw,146px);
+  display:flex;justify-content:center;align-items:flex-start;
+  gap:clamp(18px,2.6vw,52px);
+}
+.team__member{
+  flex:1 1 0;min-width:0;
+  max-width:clamp(150px,17vw,268px);
+  text-align:center;
+}
+/* העומק עובר דרך --drop ולא דרך transform ישיר. הסיבה
+   מעשית: ‏.team__member:nth-child(2) הוא (0,2,0) ואילו
+   ‏.team__member הוא (0,1,0), ולכן איפוס במדיה קווארי לא
+   היה גובר עליו — הפריט השני נשאר תלוי גם במובייל.
+   עם משתנה, כל הכללים באותה סגוליות והמאוחר פשוט מנצח.
+   0.889 = 1 − (⅓)², המקדם של הנקודות הפנימיות על הפרבולה. */
+.team__member{transform:translateY(var(--drop,0px))}
+.team__member:nth-child(2){--drop:calc(var(--arc-depth) * .889)}
+.team__member:nth-child(3){--drop:calc(var(--arc-depth) * .889)}
+
+/* חצי מרוחב העמודה. העמודה נשארת ברוחבה כדי שהמלל שמתחת
+   יישמר במידה קריאה — רק העיגול מתכווץ, וממורכז בתוכה. */
+.team__photo{
+  display:block;width:50%;height:auto;margin-inline:auto;
+  aspect-ratio:1;border-radius:50%;
+  object-fit:cover;object-position:center;
+  /* border ולא box-shadow: הטבעת חיצונית ויושבת על השפה.
+     box-sizing מוודא שהיא נחתכת מתוך המידה ולא נוספת לה —
+     אחרת העיגול גדל ב-2px והקשת מאבדת יישור מול שאר הפריטים. */
+  box-sizing:border-box;
+  background:var(--photo-disc);
+  border:var(--photo-ring-w) solid var(--photo-ring);
+  margin-bottom:clamp(14px,1.5vw,26px);
+}
+
+/* ── המלל שמתחת לעיגול ─────────────────────────────────────
+   מינימלי בכוונה. שלוש הדרגות יורדות, כל אחת לתפקיד שלה
+   בטבלה שבסעיף 4ב, בלי להמציא גדלים באמצע (כלל 1):
+
+     שם   2.0vw ("כותרת משנה")  →  1.25vw ("כותרת כרטיס")
+     גיל  1.0vw ("גוף")         →  0.9vw ("משפטי")
+     משפט 1.0vw ("גוף")         →  נשאר, אבל מעומעם יותר
+
+   ההיררכיה מגיעה מגודל, ממשקל ומצבע בלבד — לא מריווח
+   אותיות ולא מ-uppercase, שאסורים בכל דרגה (כלל 3). */
+
+/* "כותרת כרטיס": 18px בדסקטופ ובמובייל כאחד — 1.25vw נותן
+   18 ב-1440 ו-4.8vw נותן 18 ב-375, ולכן clamp אחד מכסה את
+   כל הטווח. ‏--fs-card הקיים הוא 2.5vw ואינו מממש את השורה
+   הזו, ושלושה רכיבים אחרים תלויים בו — לכן מוצהר כאן. */
+.team__name{
+  font-size:clamp(18px,1.25vw,24px);font-weight:600;line-height:var(--lh-title);
+  color:var(--ink);
+}
+.team__age{
+  font-size:var(--fs-legal);font-weight:400;line-height:var(--lh-tight);
+  /* .62 ולא פחות: ב-.5 זה יוצא 3.23:1 על Paper ונופל מ-AA.
+     זו הרצפה של "שקט" כאן, לא בחירה אסתטית. */
+  color:rgba(var(--ink-rgb),.62);
+  margin-top:clamp(3px,.4vw,7px);
+  font-variant-numeric:tabular-nums;
+}
+.team__bio{
+  font-size:var(--fs-body);font-weight:400;line-height:var(--lh-body);
+  color:rgba(var(--ink-rgb),.62);
+  margin-top:clamp(8px,.9vw,16px);
+  /* מידה צרה יותר — משפט קצר לא צריך את כל רוחב העמודה */
+  max-width:26ch;margin-inline:auto;
+}
+
+/* מובייל: 2×2 שטוח. ארבעה עיגולים בשורה לא נכנסים ב-375,
+   והקשת היא מחווה של דסקטופ — לזייף אותה בשתי שורות רק
+   מוסיף רעש, כי הפריטים ממילא כבר לא על ציר אחד.
+   כל --drop מתאפס במפורש, כל אחד בסגוליות של אחיו. */
+@media (max-width:767px){
+  .team__arc{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:clamp(34px,8vw,60px) clamp(16px,4vw,30px);
+    align-items:start;
+  }
+  .team__member{max-width:none}
+  .team__member:nth-child(2){--drop:0px}
+  .team__member:nth-child(3){--drop:0px}
+  /* דרגת "גוף" במובייל היא 14px לפי הטבלה בסעיף 4ב, אבל
+     ‏--fs-body הגלובלי הוא 16px — אותו פער שכבר תיקנתי
+     מקומית בפוטר. מצהירים כאן במפורש ולא נוגעים בטוקן,
+     כי ההירו, הערכים והכרטיסים תלויים בו.
+     ⚠ זה המקום השני. אם זה יחזור — כדאי ליישר את הטוקן
+     עצמו לסולם, כמהלך נפרד ומדוד. */
+  .team__bio{font-size:14px}
+  /* העיגול מתרחב מעט ביחס לעמודה — 50% על טור צר במובייל
+     היה יורד מתחת ל-80px והתמונה הייתה נהיית אילוסטרציה. */
+  .team__photo{width:68%}
+}
+
+/* ── 09 · BUTTON ───────────────────────────────────────────── */
+.btn{
+  /* ── למה המרווח יושב ב-gap ולא בריפוד ─────────────────────
+     במקור (סעיף 6.1 ב-liron-david-brand-teardown.md) הריפוד
+     הוא ‎.5em 3em .5em 1.1em, ושם 3em הוא **הצד של החץ**:
+     האתר ההוא מצייר את החץ כ-background-position בקצה, ולכן
+     הריפוד רק שומר לו מקום שהטקסט לא ידרוס.
+
+     אצלנו החץ הוא SVG ממשי בתוך ה-flex, ולכן ריפוד לא שומר
+     לו מקום — הוא דוחף את כל התוכן. העתקה מילולית של אותם
+     3em דחסה את החץ לקצה והשאירה חור ריק לפני המילה.
+
+     ולכן: ריפוד סימטרי משני הצדדים, וכל המרווח עובר ל-gap.
+     המילה נצמדת לתחילת השורה (ימין ב-RTL), החץ לסופה (שמאל),
+     ולשניהם אותו מרחק מהקצה המעוגל. הרוחב הכולל לא זז:
+     ‏3em + .9em של קודם = 1.1em + 2.8em של עכשיו. */
+  display:inline-flex;align-items:center;gap:2.8em;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--ink);border-radius:var(--r-pill);
+  /* ‏font-family מפורש ולא בירושה: פקדי טופס לא יורשים גופן.
+     גיליון ברירת המחדל של הדפדפן קובע להם Arial, ולכן <button>
+     נשר ל-Arial בזמן ש-<a> עם אותה מחלקה בדיוק נשאר ב-Heebo.
+     אותו סייג בדיוק יושב על .dealbar__btn ועל .field__input. */
+  font-family:var(--font);
+  font-size:var(--fs-btn);font-weight:500;line-height:var(--lh-tight);
+  /* בלי text-transform. במקור הכפתור הוא uppercase, אבל בעברית
+     אין uppercase — סעיף 4ב, כלל 3. השורה נשארה מהרפרנס ולא
+     עשתה כלום חוץ מלסתור את המסמך, ואם ייכנס אי־פעם טקסט
+     לועזי לכפתור היא הייתה מקפיצה אותו לרישיות בלי שביקשנו. */
+  padding:.5em 1.1em;
+  transition:background var(--t-base) var(--ease),
+             color var(--t-base) var(--ease),
+             border-color var(--t-base) var(--ease);
+}
+.btn svg{
+  width:1.1em;height:1.1em;flex:none;
+  fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.btn:hover,.btn:focus-visible{
+  background:var(--accent);color:var(--bone);border-color:var(--accent);
+}
+
+/* ── 09א · CONTACT FORM ────────────────────────────────────────
+   המבנה נמדד מעמוד הרפרנס בדפדפן, ב-1440 וב-375:
+
+     עמודת תוכן   677 / 1440 = 47vw, ממורכזת
+     רשת          2 עמודות, מרזב 30px  (= 2.1vw)
+     פסיעת שורה   90px = שדה 40 + מרווח 50  (50px = 3.5vw)
+     שדה          קו תחתון בלבד. בלי מסגרת, מילוי או פינות
+     הסכמה+שליחה  רוחב מלא, הכפתור ממורכז
+     מובייל       עמודה אחת, השדות על מלוא הרוחב
+
+   הערכים למטה הם אותם יחסים ב-clamp, כמו כל שאר הקובץ.
+   ─────────────────────────────────────────────────────────── */
+.contact{
+  background:var(--bone);color:var(--ink);
+  padding-block:0 clamp(80px,9vw,170px);
+}
+.contact__inner{
+  /* 47vw — היחס שנמדד. במובייל (סקשן 12) עובר ל---w-grid. */
+  width:47vw;max-width:100%;margin-inline:auto;
+}
+
+/* שתי עמודות שוות. ‏minmax(0,1fr) ולא 1fr — בלי זה שדה עם
+   placeholder ארוך היה מרחיב את העמודה שלו ושובר את הסימטריה. */
+.form__grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:clamp(18px,2.1vw,40px);
+  row-gap:clamp(26px,3.5vw,66px);
+}
+
+.field{margin:0}
+/* שדה על רוחב מלא. הפריסה נלקחה מהטופס שבשאלון: שורת השם
+   בשתי עמודות, וכל השאר שורה שלמה — שבעה שדות לא מתחלקים
+   לזוגות בלי שאחד יישאר יתום. */
+.field--wide{grid-column:1 / -1}
+.field__input{
+  display:block;width:100%;
+  min-height:clamp(40px,2.8vw,54px);
+  background:transparent;color:var(--ink);
+  font-family:var(--font);font-size:var(--fs-body);font-weight:400;
+  /* דרגת גוף = 1.8, לפי הסולם בסעיף 4ב. היה כאן --lh-title
+     (1.4), שזו דרגת כותרות. בשדה של שורה אחת ההפרש כמעט לא
+     נראה, אבל אין סיבה להחזיק ערך שלא תואם את הטבלה. */
+  line-height:var(--lh-body);
+  /* קו תחתון בלבד. שאר הצדדים מפורשים ולא none, כדי
+     שדפדפן שמצייר מסגרת ברירת מחדל לא ידחוף את הטקסט. */
+  /* ‏.55 ולא .35 — הקו התחתון הוא הגבול היחיד של השדה, כלומר
+     רכיב ממשק, ו-WCAG 1.4.11 דורש לו 3:1. מדדתי: ‏.35 נותן
+     2.16:1 ונופל, ‏.55 נותן 3.75:1. זה גם אותו ערך בדיוק
+     שמקיף את תיבת ההסכמה — גבול אחד, שקיפות אחת. */
+  border:0;border-bottom:1px solid rgba(var(--ink-rgb),.55);
+  border-radius:0;
+  padding:0 2px 6px;
+  transition:border-color var(--t-base) var(--ease);
+}
+/* ── התווית המרחפת ─────────────────────────────────────────
+   הטקסט שרואים בשדה ריק. זו תווית אמיתית (<label for>) ולא
+   placeholder — ראה ההערה ב-contact.html: הכוכבית צריכה
+   להיצבע לבדה, ומחרוזת placeholder אי אפשר לצבוע חלקית.
+
+   ‏.7 שקיפות ולא צבע חדש: ‏ink על bone ב-70% נותן 6.03:1,
+   בעוד 60% נותן 4.37 ונופל מתחת ל-4.5 הנדרשים לטקסט. */
+.field{position:relative}
+.field__label{
+  position:absolute;inset:0;
+  display:flex;align-items:center;
+  padding:0 2px 6px;
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  color:var(--ink);opacity:.7;
+  /* קליק על התווית נופל לשדה שמתחתיה */
+  pointer-events:none;
+  transition:opacity var(--t-fast) var(--ease);
+}
+/* ברגע שיש תוכן היא נעלמת. שדה טקסט נבדק לפי ה-placeholder
+   הריק שלו; בורר — לפי כך שנבחרה אופציה בעלת ערך.
+
+   ה-input בתחילת הסלקטור אינו קישוט: ‏.field__select נושא גם
+   הוא את המחלקה .field__input, ול-<select> אין placeholder
+   לעולם — ולכן `:not(:placeholder-shown)` נכון עליו תמיד,
+   והוא היה מסתיר לבוררים את התווית כבר במצב ריק. */
+input.field__input:not(:placeholder-shown) ~ .field__label,
+.field__select:valid ~ .field__label{opacity:0}
+
+/* ── הכוכבית ───────────────────────────────────────────────
+   במנוחה היא חלק מהתווית. כששדה חובה נשאר ריק בשליחה, היא —
+   ורק היא — נצבעת בבורדו. זה הסימון היחיד על השדה עצמו:
+   הקו התחתון לא משתנה, כדי שהטופס לא יידלק כולו באדום.
+   ההסבר המילולי יושב בשורת ההודעה מתחת, ולכן הסימון אינו
+   מסתמך על צבע בלבד. */
+.field__req{font-style:normal}
+.field__input[aria-invalid="true"] ~ .field__label .field__req{
+  color:var(--accent);
+  opacity:1;
+}
+.field__input[aria-invalid="true"] ~ .field__label{opacity:.85}
+.field__input:hover{border-bottom-color:var(--ink)}
+/* פוקוס בשדה — הקו התחתון נצבע בבורדו ומתעבה ל-2px.
+   העיבוי נעשה ב-box-shadow ולא ב-border-width, כי שינוי
+   עובי גבול מזיז את השדה בפיקסל וכל השורה קופצת. */
+.field__input:focus{
+  border-bottom-color:var(--accent);
+  box-shadow:0 1px 0 0 var(--accent);
+}
+
+/* ── שדות שהתוכן שלהם לטיני ────────────────────────────────
+   אימייל וטלפון נכתבים תמיד משמאל לימין, גם בעמוד עברי, אחרת
+   ה-+ של קידומת בינלאומית קופץ לקצה הלא נכון והנקודות שבמייל
+   מסתדרות הפוך. ה-dir יושב ב-HTML כי הוא תוכן ולא עיצוב;
+   כאן רק היישור — הטקסט נשאר צמוד לימין כמו כל שאר השדות,
+   ולכן הטור נראה אחיד. */
+.field__input--ltr{text-align:right}
+
+/* ── הבורר ────────────────────────────────────────────────
+   יורש הכל מ-.field__input, ומוסיף שלושה דברים:
+   ביטול החץ של המערכת, מקום בקצה לחץ משלנו, והחץ עצמו. */
+.field__select{
+  appearance:none;-webkit-appearance:none;
+  cursor:pointer;
+  /* ה-end ב-RTL הוא שמאל — שם יושב החץ, ולכן שם הריפוד */
+  padding-inline-end:1.6em;
+  /* החץ מצויר ב-SVG מוטבע ולא בגליף: גופן לא מבטיח את הצורה,
+     ו-currentColor לא עובר ל-background-image. הנייבי מקודד
+     כאן ידנית (%230E1E2E) ולכן הוא **חייב** להישאר תואם
+     ל---ink שבטוקנים. */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%230E1E2E' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:left .1em center;
+  background-size:.7em auto;
+}
+.field__select option{color:var(--ink);background:var(--bone)}
+
+/* מבטל את המילוי הצהוב של autofill ב-WebKit. ‏background-color
+   שם אינו ניתן לדריסה, ולכן צל פנימי בעובי השדה עושה את זה. */
+.field__input:-webkit-autofill{
+  -webkit-text-fill-color:var(--ink);
+  box-shadow:0 0 0 100px var(--bone) inset;
+}
+
+/* ── הודעת השגיאה של שדה בודד ───────────────────────────────
+   יושבת מתחת לקו התחתון, בדרגת "משפטי" — הגודל הקטן בסולם
+   (סעיף 4ב). היא **מרחפת** ולא בזרימה: תיבה בזרימה הייתה
+   מגביהה את שורת הרשת ברגע שמופיעה שגיאה, וכל הטופס היה קופץ.
+
+   ‏line-height 1.4 ולא 1.8: המרווח בין שורות הרשת במובייל הוא
+   27px, ושורה ב-1.8 (23.4px) בתוספת המרווח מלמעלה כמעט נוגעת
+   בשדה הבא. ‏1.4 משאיר אוויר. מכאן גם הנוסח הקצר — "שדה חובה"
+   ולא משפט: שתי שורות כאן כן היו נוגעות. */
+.field__error{
+  position:absolute;top:100%;inset-inline-start:0;
+  margin-top:.3em;
+  font-size:var(--fs-legal);line-height:1.4;
+  color:var(--accent);
+  pointer-events:none;
+}
+
+/* ── שורת ההסכמה ────────────────────────────────────────────
+   ‏align-items:flex-start — הטקסט נשבר לשתי שורות ברוחב הזה,
+   והתיבה צריכה להישאר מיושרת לשורה הראשונה ולא למרכז הגוש. */
+.consent{
+  position:relative;
+  display:flex;align-items:flex-start;gap:.7em;
+  /* הרצפה 40 ולא 24: מתחת לשדה האחרון יכולה לשבת הודעת
+     שגיאה בגובה 22px, ובמובייל נשארו ממנה 2px עד שורת
+     ההסכמה — מדדתי. אותו שיקול בדיוק כמו ב-row-gap. */
+  margin:clamp(40px,3vw,56px) 0 0;
+}
+.consent__box{
+  flex:none;
+  /* appearance:none — הריבוע של המערכת מגיע עם צבע משלו
+     ולא ניתן לצביעה. מציירים אותו מכאן. */
+  appearance:none;-webkit-appearance:none;
+  width:clamp(15px,1.1vw,21px);height:clamp(15px,1.1vw,21px);
+  margin:.28em 0 0;
+  background:transparent;
+  border:1px solid rgba(var(--ink-rgb),.55);
+  border-radius:0;
+  cursor:pointer;
+  transition:background var(--t-fast) var(--ease),
+             border-color var(--t-fast) var(--ease);
+}
+.consent__box:hover{border-color:var(--ink)}
+.consent__box:checked{background:var(--accent);border-color:var(--accent)}
+/* הוי — שני קווים ב-::after, מסובבים. בלי גליף ובלי SVG,
+   כדי שהעובי ייגזר מגודל התיבה ולא ייקבע בפיקסלים. */
+.consent__box:checked::after{
+  content:'';display:block;
+  width:32%;height:62%;
+  margin:6% auto 0;
+  border:solid var(--bone);
+  border-width:0 1.5px 1.5px 0;
+  transform:rotate(45deg);
+}
+.consent__box:focus-visible{
+  border-color:var(--accent);
+  box-shadow:inset 0 0 0 1px var(--accent);
+}
+.consent__box[aria-invalid="true"]{border-color:var(--accent)}
+.consent__text{
+  font-size:var(--fs-legal);line-height:var(--lh-body);
+  color:var(--ink);
+}
+.consent__text a{text-decoration:underline;text-underline-offset:.25em}
+.consent__text a:hover{color:var(--accent)}
+
+/* ── ההודעה שאחרי השליחה ────────────────────────────────────
+   ריקה עד שיש מה לומר, ולכן בלי גובה משלה: מרווח נוצר רק
+   כשהיא מתמלאת. */
+.form__note{
+  margin:clamp(14px,1.6vw,30px) 0 0;
+  font-size:var(--fs-body);line-height:var(--lh-body);
+  color:var(--accent);
+}
+.form__note:empty{margin:0}
+.form__note.is-ok{color:var(--ink)}
+
+/* הכפתור ממורכז, כמו במקור.
+   המרווח מעליו זהה ל-row-gap של הרשת — כך הוא יושב "שורה
+   אחת" מתחת לשורת ההסכמה, באותה פסיעה של כל הטופס, במקום
+   להיצמד אליה. */
+.form__submit{
+  display:flex;justify-content:center;
+  /* הרצפה 40 מאותה סיבה — גם להסכמה יש הודעת שגיאה משלה */
+  margin-top:clamp(40px,3.5vw,66px);
+}
+
+/* ── 09ב · LEGAL — פרטיות · תקנון · נגישות ────────────────────
+   שלושה עמודי טקסט רץ. הם לא צריכים רשת, לא כרטיסים ולא
+   תנועה — הם צריכים **עמודת קריאה**.
+
+   ── רוחב העמודה ──
+   ‏58 תווים לשורה הוא הטווח שבו העין לא מאבדת את תחילת השורה
+   הבאה. ‏ch נמדד לפי הגליף "0" של Heebo, ולכן הוא נשאר נכון
+   גם כשגודל הגופן משתנה עם ה-clamp — בניגוד לרוחב בפיקסלים.
+   ‏42vw הוא התקרה: במסך רחב מאוד 58ch היה נמתח לרוחב שכבר
+   קשה לסרוק.
+
+   ── למה לא --w-form ──
+   הטופס מיושר לרפרנס (47vw), והוא רשת של שדות קצרים. טקסט
+   משפטי הוא פסקאות, ומידה שנכונה לשדה אינה נכונה לפסקה. */
+.legal{
+  background:var(--bone);color:var(--ink);
+  padding-block:0 clamp(80px,9vw,170px);
+
+}
+/* ── רוחב התיבה ──────────────────────────────────────────────
+   ‏90vw במובייל, ‏70vw מ-768 ומעלה. ‏70vw הוא אותו רוחב של
+   הסקשן הנעוץ בעמוד הבית (--w-reveal), ולכן עמודי המשפט
+   יושבים באותו קו כמו שאר האתר ולא כרצועה צרה במרכז.
+
+   הערה למי שיגע כאן: הרוחב הזה נבחר **במפורש** ולא מתוך
+   מידת קריאוּת. נמדד: ‏89 תווים לשורה, מעל הטווח המקובל
+   של 45–75. אם מישהו יצמצם אותו בעתיד "כדי לשפר קריאוּת" —
+   זו הייתה החלטה מודעת ולא פספוס.
+
+   ‏90vw במובייל הוא רצפה, לא קישוט: קודם עמד כאן
+   ‏min(58ch,42vw), ו-42vw במסך 375 הוא 158px — 42% מהמסך,
+   שלוש מילים לשורה. מדדתי. */
+.legal__inner{
+  width:var(--w-grid);
+  margin-inline:auto;
+}
+@media (min-width:768px){
+  .legal__inner{width:70vw}
+}
+
+/* התאריך שמעל הכותרת — דרגת eyebrow, בוורוד־עתיק אסור כאן
+   (מצע בהיר), ולכן נייבי מעומעם. */
+.legal__updated{
+  font-size:var(--fs-legal);line-height:var(--lh-body);
+  color:var(--ink);opacity:.7;
+  margin:0 0 clamp(28px,3vw,54px);
+}
+
+/* פסקת הפתיחה — דרגת "גוף מוביל" בסולם (סעיף 4ב), דרגה
+   אחת מעל הגוף. */
+.legal__lead{
+  font-size:var(--fs-meta);line-height:var(--lh-body);
+  margin:0 0 clamp(36px,4vw,72px);
+}
+
+.legal__section{margin-bottom:clamp(36px,4vw,72px)}
+.legal__section:last-child{margin-bottom:0}
+
+/* ── כותרת סעיף ────────────────────────────────────────────
+   המספר יושב ב-::before ולא בטקסט: הוא מספור ולא תוכן, ואין
+   סיבה שקורא מסך יקריא "אחת נקודה" לפני כל כותרת. ‏counter
+   ולא מספרים כתובים — הוספת סעיף באמצע לא דורשת מספור מחדש. */
+.legal__inner{counter-reset:legal}
+.legal__title{
+  counter-increment:legal;
+  display:flex;align-items:baseline;gap:.6em;
+  font-size:var(--fs-value);font-weight:600;line-height:var(--lh-title);
+  margin:0 0 clamp(12px,1.2vw,22px);
+}
+.legal__title::before{
+  content:counter(legal,decimal-leading-zero);
+  flex:none;
+  font-size:var(--fs-legal);font-weight:600;
+  color:var(--accent);
+}
+
+.legal__section p{margin:0 0 1.2em}
+.legal__section p:last-child{margin-bottom:0}
+.legal__section strong{font-weight:600}
+
+/* רשימה — הנקודה היא קו קצר בבורדו ולא תבליט עגול. אותו
+   מוטיב של קו שחוזר בכל האתר, וגם קריא יותר בעברית. */
+.legal__list{margin:0;padding:0}
+.legal__list li{
+  position:relative;
+  padding-inline-start:1.6em;
+  margin-bottom:.8em;
+}
+.legal__list li::before{
+  content:'';
+  position:absolute;inset-inline-start:0;top:.75em;
+  width:.7em;height:1px;
+  background:var(--accent);
+}
+
+/* ── תיבת הדגשה ────────────────────────────────────────────
+   הגבלת אחריות, ומידע שחייב להיקרא. קו בורדו בצד ההתחלה
+   ‏(ימין ב-RTL) ורקע Chalk — בלי מסגרת מלאה, שלא ייראה
+   כהתראה של מערכת. */
+.legal__callout{
+  background:var(--pill);
+  border-inline-start:2px solid var(--accent);
+  padding:clamp(20px,2vw,34px) clamp(22px,2.2vw,38px);
+  margin-bottom:clamp(36px,4vw,72px);
+}
+.legal__callout .legal__title{margin-top:0}
+.legal__callout .legal__title::before{content:none}
+
+/* טבלת פרטי קשר — זוגות תווית/ערך. ‏grid ולא <table> כי אין
+   כאן נתונים דו-ממדיים, רק רשימת הגדרות. */
+.legal__pairs{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:.7em 1.2em;
+  margin:0;
+}
+.legal__pairs dt{font-weight:600}
+.legal__pairs dd{margin:0}
+.legal__pairs a{text-decoration:underline;text-underline-offset:.25em}
+.legal__pairs a:hover{color:var(--accent)}
+
+/* שורת החתימה בתחתית — אותה דרגה של הפוטר */
+.legal__note{
+  margin-top:clamp(40px,4.5vw,80px);
+  padding-top:clamp(20px,2vw,34px);
+  border-top:1px solid rgba(var(--ink-rgb),.2);
+  font-size:var(--fs-legal);line-height:var(--lh-body);
+  opacity:.75;
+}
+
+/* ── 09ג · JOIN — כפתור צף + חלון ההצטרפות ────────────────────
+   ── איפה הוא יושב ──
+   פינה **שמאלית** תחתונה. ווידג'ט הנגישות הועבר בהתאם
+   לפינה הימנית (‏nl_pos='br' ב-a11y.js) — שני כפתורים צפים
+   באותה פינה נלחמים זה בזה. ‏'br' הוא גם המיקום שהיה לו
+   באתר הישן, כך שזו חזרה למקור ולא סטייה ממנו.
+
+   ── הצבע ──
+   בורדו במנוחה. זהו החריג היחיד לכלל "המבטא חי בסימונים
+   ובקווים" (סעיף 5, כלל 1): זו נקודת ההמרה של האתר, והיא
+   היחידה שאמורה למשוך את העין מכל מקום בעמוד. ‏Paper על
+   בורדו הוא 12:1 — מדדתי.
+   ‏hover מהפך לנייבי, ולכן שני מצבי הכפתור נשארים בתוך
+   הפלטה ואף אחד מהם אינו צבע חדש. */
+.join-fab{
+  position:fixed;z-index:90;
+  inset-block-end:clamp(16px,2vw,32px);
+  inset-inline-end:clamp(16px,2vw,32px);
+  display:inline-flex;align-items:center;
+  background:var(--accent);color:var(--bone);
+  border-radius:var(--r-pill);
+  /* ── הגודל, ולמה לא --fs-btn ──
+     ‏1.5vw (=21.6) הוא מה שסעיף 6.1 במחקר מדד — ושם זה
+     **ה-CTA של העמוד**, כפתור שיושב לבדו באמצע סקשן.
+     מערכת העיצוב עצמה, סעיף 4ב, אינה מגדירה דרגת "כפתור"
+     בכלל; 21.6 מופיע שם כדרגת **Eyebrow / ניווט**.
+
+     כפתור צף הוא לא CTA של עמוד: הוא מרחף מעל תוכן ואסור לו
+     להשתלט עליו. ‏--fs-lead הוא דרגת "גוף מוביל" מהטבלה —
+     ‏17.3 בדסקטופ, 16 במובייל. ‏.btn של העמוד נשאר ב-1.5vw. */
+  font-family:var(--font);
+  font-size:var(--fs-lead);font-weight:500;line-height:var(--lh-tight);
+  padding:.7em 1.3em;
+  box-shadow:0 6px 24px rgba(var(--ink-rgb),.18);
+  transition:background var(--t-base) var(--ease),
+             transform var(--t-base) var(--ease);
+}
+.join-fab:hover,
+.join-fab:focus-visible{background:var(--ink);transform:translateY(-2px)}
+
+/* ── החלון ─────────────────────────────────────────────────
+   ‏<dialog> ולא div: הדפדפן נותן בחינם מלכודת פוקוס, סגירה
+   ב-Esc, ושכבת ::backdrop אמיתית. אין סיבה לכתוב את זה ביד
+   ולהחמיץ חצי מזה. */
+.join{
+  border:0;padding:0;
+  background:transparent;
+  color:var(--ink);
+  max-width:100%;max-height:100%;
+  overflow:visible;
+}
+/* ‏allow-discrete הוא מה שמאפשר **אנימציית סגירה**: בלעדיו
+   ‏display קופץ ל-none מיד והחלון נעלם בבת אחת. דפדפן שלא
+   תומך פשוט מציג ומסתיר בלי מעבר — התנהגות תקינה. */
+.join,
+.join::backdrop{
+  transition:opacity var(--t-base) var(--ease),
+             transform var(--t-base) var(--ease),
+             background var(--t-base) var(--ease),
+             overlay var(--t-base) allow-discrete,
+             display var(--t-base) allow-discrete;
+}
+.join{opacity:0;transform:translateY(14px) scale(.985)}
+.join[open]{opacity:1;transform:none}
+@starting-style{
+  .join[open]{opacity:0;transform:translateY(14px) scale(.985)}
+}
+/* הסקרים נגזר מהנייבי ולא משחור נייטרלי — כלל 4, סעיף 5 */
+.join::backdrop{background:rgba(var(--ink-rgb),0)}
+.join[open]::backdrop{background:rgba(var(--ink-rgb),.55)}
+@starting-style{
+  .join[open]::backdrop{background:rgba(var(--ink-rgb),0)}
+}
+
+/* הרוחב נגזר מהכותרת ולא להפך: היא שורה אחת ב-nowrap, ולכן
+   הפאנל חייב להכיל אותה עם אוויר. ‏420 נתן לה 345px מקום
+   מול 345px טקסט — אפס מרווח, וכל הבדל ברינדור היה מגלישה.
+   ‏480 משאיר ~60px. הריפוד הצדדי יורד ל-18 במסך צר מאותה
+   סיבה: שם הפאנל כבול ל-92vw ואי אפשר להרחיב אותו. */
+.join__panel{
+  position:relative;
+  width:min(480px,92vw);
+  background:var(--bone);
+  border-radius:22px;
+  padding:clamp(28px,3vw,46px) clamp(18px,2.6vw,40px) clamp(24px,2.6vw,38px);
+  box-shadow:0 24px 70px rgba(var(--ink-rgb),.28);
+}
+
+/* ── הכותרת ────────────────────────────────────────────────
+   דרגת **Eyebrow** בסולם (סעיף 4ב): 21.6px בדסקטופ, 15
+   במובייל, משקל 500. ירדה מדרגת "כותרת משנה" (28.8) כי שם
+   המשפט נשבר לשתי שורות ברוחב הפאנל — ובשתי דרגות למטה הוא
+   נכנס בשורה אחת בשני הקצוות. אין דרגת ביניים בסולם, ולכן
+   זו הדרגה ולא "28.8 מוקטן קצת".
+
+   ‏nowrap הוא רשת ביטחון: אם מישהו יאריך את הנוסח, השורה
+   לא תישבר בשקט — היא תגלוש והבעיה תהיה גלויה מיד. */
+.join__title{
+  font-size:var(--fs-eyebrow);font-weight:500;line-height:var(--lh-title);
+  text-align:center;
+  white-space:nowrap;
+  margin:0 0 clamp(20px,2vw,32px);
+}
+
+/* הרווח גדל: כל אפשרות היא עכשיו גוש של כפתור + הסבר, ולא
+   כפתור בודד. ‏22px מפריד בין הגושים חזק מספיק כדי שההסבר
+   לא ייקרא כשייך לכפתור שמתחתיו. */
+.join__options{display:grid;gap:clamp(18px,1.8vw,26px)}
+
+/* ── ההסבר שמתחת לכפתור ────────────────────────────────────
+   דרגת "משפטי" (13px) — הקטנה בסולם, וזה הנכון: זה טקסט
+   שנקרא פעם אחת כדי להחליט, ולא תוכן שחוזרים אליו.
+
+   ממורכז מתחת לכפתור הממורכז שמעליו. הריפוד מצר אותו מעט
+   ביחס לכפתור, כך שהשורות לא נוגעות בקצה הפאנל. */
+.join__desc{
+  margin:.55em 1.1em 0;
+  font-size:var(--fs-legal);line-height:1.6;
+  color:var(--ink);opacity:.72;
+  text-align:center;
+}
+.join__desc + .join__desc{margin-top:.35em}
+
+/* שני כפתורים זהים, בשפת הכפתור של האתר: גלולה שקופה עם
+   מסגרת נייבי, ובריחוף היפוך מלא לבורדו עם טקסט Paper —
+   בדיוק כמו .btn (סעיף 4 במערכת העיצוב). מה שנבדל כאן הוא
+   רק הפריסה: רוחב מלא וטקסט ממורכז, כי שתי האפשרויות
+   שוות במשקלן ואף אחת אינה "הפעולה המשנית". */
+.join__option{
+  /* ‏width:100% אינו מיותר: מאז ששתי האפשרויות עטופות ב-
+     ‏.join__choice הן כבר לא ילדות ישירות של הרשת, ולכן היא
+     לא מותחת אותן. ‏<a> ברוחב block נמתח לבד; ‏<button>
+     מצטמצם לרוחב התוכן שלו — ושני כפתורים זהים יצאו בשני
+     רוחבים שונים. */
+  display:block;width:100%;text-align:center;
+  border:1px solid var(--ink);
+  border-radius:var(--r-pill);
+  /* ‏font-family מפורש — לא קישוט. אחת משתי האפשרויות היא
+     ‏<button> והשנייה <a>, ופקדי טופס אינם יורשים גופן:
+     ה-<button> נשר ל-Arial בזמן שה-<a> לידו נשאר ב-Heebo,
+     ושני כפתורים זהים נראו בשני גופנים. אותו סייג בדיוק
+     יושב על .btn, על .field__input ועל .dealbar__btn.
+
+     הגודל: --fs-lead, כמו הכפתור הצף. פקד בתוך חלון של 480px
+     אינו CTA של עמוד — ראה ההערה ב-.join-fab. */
+  font-family:var(--font);
+  font-size:var(--fs-lead);font-weight:500;line-height:var(--lh-title);
+  padding:.75em 1.1em;
+  transition:background var(--t-base) var(--ease),
+             color var(--t-base) var(--ease),
+             border-color var(--t-base) var(--ease);
+}
+.join__option:hover,
+.join__option:focus-visible{
+  background:var(--accent);color:var(--bone);border-color:var(--accent);
+}
+/* הפעולה הראשית — מילוי נייבי מלא. שתי האפשרויות נשארות
+   באותה צורה ובאותו גודל; מה שמבדיל ביניהן הוא המילוי
+   בלבד, ולכן הבחירה ברורה בלי שהאפשרות השנייה תיראה
+   מושבתת. ‏Paper על נייבי הוא 15.5:1. ב-hover שתיהן
+   מתהפכות לבורדו — אותו מצב סופי לשתיהן. */
+.join__option--primary{
+  background:var(--ink);color:var(--bone);border-color:var(--ink);
+}
+
+/* ── הטופס שבתוך החלון ─────────────────────────────────────
+   אותם רכיבי שדה בדיוק כמו בעמוד צור קשר (.field ואחיו),
+   ולכן אין כאן שכפול של עיצוב שדות — רק כיווץ של הקצב:
+   החלון צר מעמוד, והמרווחים שנכונים לעמוד מוציאים אותו
+   מגובה המסך.
+
+   **הכפתור לא נדרס.** הוא .btn כמו כל כפתור אחר באתר —
+   ‏--fs-btn, משקל 500, גלולה, חץ. הייתה כאן דריסה ל---fs-body
+   והיא ירדה: סעיף 6.1 במחקר מגדיר לכפתור הראשי 1.5vw, וזה
+   בדיוק ---fs-btn. אין סיבה שכפתור בחלון יהיה כפתור אחר. */
+/* שתי עמודות תמיד — גם במובייל. בעמוד הרשת קורסת לעמודה
+   אחת מתחת ל-768, אבל שם יש כל הגובה שבעולם; בחלון כל שורה
+   שנחסכת היא 64px, ו"שם" ו"שם משפחה" קצרים מספיק כדי לשבת
+   זה לצד זה גם ב-360px. */
+.join__form .form__grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  column-gap:14px;
+  /* ‏30 ולא 24: ההודעה המרחפת תופסת 18px מתוך המרווח, ועם 24
+     נשארו 4px בינה לבין השדה הבא — היא נראתה שייכת לשדה
+     שמתחתיה. ‏30 משאיר 12. הפאנל עדיין נכנס: 652 מתוך 673
+     שמותרים במסך 765. מדדתי. */
+  row-gap:30px;
+}
+/* גם כפתור השליחה שבחלון — אותו קנה מידה כמו שאר הפקדים
+   שם. ‏.btn בעמוד נשאר ב---fs-btn; זו דריסה מקומית לחלון. */
+.join__form .btn{font-size:var(--fs-lead)}
+.join__form .consent{margin-top:28px}
+.join__form .form__submit{margin-top:28px}
+
+/* ── הודעות השגיאה בחלון — מרחפות, ובקטן ────────────────────
+   הן **חייבות** לרחף: הודעה בזרימה מגביהה את השורה, דוחפת
+   את כל מה שמתחתיה, ומכניסה גלילה לחלון שנכנס בדיוק למסך.
+
+   כדי שירחפו בלי לגעת בשדה הבא הן חייבות להיכנס לתוך המרווח
+   של 24px. לכן הן קטנות מאלה שבעמוד: ‏.8em (=11.5px) וגובה
+   שורה 1.3, כלומר ~15px + 3 מרווח = 18px בתוך 24. נשארים
+   ‏6px אוויר.
+
+   בעמוד צור קשר, שבו יש כל הגובה שבעולם, הן נשארות בגודל
+   "משפטי" המלא. */
+.join__form .field{position:relative}
+.join__form .field__error{
+  position:absolute;
+  top:100%;
+  inset-inline-start:0;
+  margin-top:3px;
+  font-size:.8em;
+  line-height:1.3;
+}
+/* ── ההודעה של שורת ההסכמה ─────────────────────────────────
+   ‏.consent הוא flex, ולכן הודעה בזרימה נכנסה כפריט **לצד**
+   הטקסט וגזלה ממנו רוחב — הטקסט נדחס לשתי שורות וההודעה
+   ישבה משמאלו באוויר. ‏flex-basis:100% מפיל אותה לשורה
+   משלה מתחת, וזה מה שהיא צריכה להיות: הערה, לא עמודה.
+
+   הגודל: קטן מטקסט ההסכמה שמעליו. זו הדרגה היחידה בעמוד
+   שאינה מהסולם — "משפטי" (13px) הוא הקטן ביותר בו, וטקסט
+   ההסכמה כבר יושב עליו, ולכן "קטן ממנו" מחייב לרדת מתחת
+   לסולם. ‏em ולא px: היחס נשמר בכל רוחב מסך.
+
+   ‏.8em ולא .9: ‏.consent יורש 14.4px (דרגת גוף) ולא 13,
+   ולכן .9em נתן 12.96 — הפרש של 0.04px מהטקסט שמעליו,
+   כלומר לא הפרש. מדדתי. */
+/* ‏grid ולא flex-wrap: עם wrap, ברוחב צר הטקסט עצמו ירד
+   לשורה מתחת לתיבת הסימון — התיבה נשארה לבדה בשורה שלמה
+   והשורה תפסה שלוש שורות במקום שתיים. ‏grid קובע במפורש:
+   תיבה וטקסט באותה שורה, ההודעה על שתי העמודות מתחת. */
+.join__form .consent{
+  position:relative;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  align-items:start;
+  column-gap:.7em;
+}
+/* מרחפת מתחת לשורה, ברוחב מלא, ולכן אינה דוחפת את הכפתור.
+   המרווח שמתחת לשורת ההסכמה (22px) מכיל אותה בדיוק כמו
+   שהמרווח בין השדות מכיל את שלהם. */
+.join__form .consent .field__error{
+  position:absolute;
+  top:100%;
+  inset-inline:0;
+  margin-top:3px;
+  font-size:.8em;
+  line-height:1.3;
+}
+
+/* טופס גבוה מהמסך — הפאנל גולל בפנים ולא דוחף את החלון
+   מחוץ לתצוגה. ‏overscroll-contain מונע מהגלילה לדלוף
+   לעמוד שמאחור ברגע שמגיעים לקצה.
+
+   ── למה dvh ולא vh ──
+   ‏vh בנייד נמדד לפי המסך **בלי** סרגל הכתובת של הדפדפן —
+   כלומר לפי שטח גדול ממה שבאמת נראה כשהסרגל פתוח. ‏88vh
+   נראה תקין במדידה ובכל זאת נחתך במכשיר אמיתי, וזה בדיוק
+   מה שקרה כאן. ‏dvh נמדד לפי מה שגלוי **עכשיו** ומתעדכן
+   כשהסרגל נסגר. השורה הראשונה היא רשת ביטחון לדפדפן ישן
+   שאינו מכיר dvh. */
+.join__panel{
+  max-height:88vh;
+  max-height:88dvh;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+
+/* חזרה למסך הבחירה. החץ מצביע ימינה — בכיוון שממנו באנו,
+   שהוא כיוון ה"אחורה" ב-RTL. */
+.join__back{
+  display:inline-flex;align-items:center;gap:.45em;
+  background:none;border:0;padding:0;
+  margin-bottom:clamp(14px,1.4vw,22px);
+  color:var(--ink);opacity:.75;
+  font-family:var(--font);font-size:var(--fs-legal);font-weight:500;
+  cursor:pointer;
+  transition:opacity var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.join__back:hover,.join__back:focus-visible{opacity:1;color:var(--accent)}
+.join__back svg{
+  width:.9em;height:.9em;
+  fill:none;stroke:currentColor;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+/* הכותרת של מסך הטופס יושבת מתחת לכפתור החזרה ולכן שמאלה
+   ממנו — ממורכזת הייתה נראית תלושה. */
+.join__screen[data-screen="form"] .join__title{
+  text-align:start;
+  white-space:normal;
+}
+/* h2 שמקבל פוקוס בתוכנה — בלי טבעת, הוא לא פקד */
+.join__title:focus{outline:none}
+
+/* ── מסך נמוך — שיהיה בלי גלילה ─────────────────────────────
+   מדדתי שלושה מסכים עם הטופס פתוח:
+
+     ‏1440×900  · 705 מתוך 792 — נכנס
+     ‏375×812   · 700 מתוך 715 — נכנס
+     ‏375×667   · 711 מתוך 587 — **גולש ב-124px**
+
+   ‏667 הוא iPhone SE, מכשיר חי ולא קצה תיאורטי. הכלל הזה
+   מכוון אליו לפי **גובה** ולא לפי רוחב — הבעיה היא גובה,
+   ומכשיר רחב ונמוך סובל ממנה בדיוק אותו דבר.
+
+   מה שקוצר, לפי סדר החשיבות: שורת השם חוזרת לשתי עמודות
+   (‏-64px, שורה שלמה), המרווחים מתכווצים, והריפוד יורד.
+   **גובה השדות לא נגע** — 40px הוא כבר על הגבול התחתון
+   של שטח נגיעה נוח, ולקצץ אותו היה לפתור בעיה אחת ולפתוח
+   אחרת. */
+@media (max-height:700px){
+  /* המרווחים חייבים להישאר גדולים מההודעה המרחפת, אחרת היא
+     נוחתת על השדה הבא. ‏18 נתן חפיפה של 2px — מדדתי. ‏24
+     עם הודעה מכווצת (‏1.15 גובה שורה) משאיר 9px אוויר. */
+  .join__form .form__grid{row-gap:24px}
+  .join__form .field__error{line-height:1.15;margin-top:2px}
+  .join__panel{
+    padding:18px 18px 16px;
+    /* ‏92 ולא 88: במסך נמוך הדיאלוג ממילא תופס כמעט הכל,
+       וארבעת האחוזים האלה הם ההבדל בין להיכנס ובין לגלול. */
+    max-height:92dvh;
+  }
+  .join__screen[data-screen="form"] .join__title{margin-bottom:12px}
+  .join__back{margin-bottom:8px}
+  .join__form .consent{margin-top:24px}
+  .join__form .form__submit{margin-top:24px}
+  /* שורת ההסכמה היא שתי שורות טקסט; 1.5 במקום 1.8 חוסך
+     שורה שלמה בלי לרדת בגודל הגופן. */
+  .join__form .consent__text{line-height:1.5}
+}
+
+/* מי שביקש פחות תנועה מקבל הופעה מיידית, בלי החלקה */
+@media (prefers-reduced-motion:reduce){
+  .join,.join::backdrop,.join-fab{transition:none}
+  .join{transform:none}
+  .join-fab:hover{transform:none}
+}
+
+/* ── 10 · FOOTER ───────────────────────────────────────────── */
+.colophon{
+  background:var(--ink);color:var(--chalk);
+  /* למעלה נדיב — זה התפר מהסקשן האדום. למטה קצר: אחרי שורת
+     הזכויות אין יותר עמוד, ולכן ריפוד סימטרי רק מותח את
+     הפוטר בלי להוסיף כלום. */
+  padding-block:clamp(52px,6vw,96px) clamp(22px,2vw,32px);
+  /* גוף המגן והאותיות עוברים ל-chalk — נייבי על נייבי באמת נעלם.
+     אבל קו הבתים **נשאר בבורדו המקורי של המותג**, ולא עובר
+     לוורוד־עתיק כמו קודם.
+
+     כלל 2 בסעיף 5 ("אל תשים בורדו על נייבי, 1.3:1") נכתב
+     לפקדים ולטקסט. WCAG פוטר לוגוטייפ מדרישות ניגודיות
+     (1.4.3 ו-1.4.11), ולכן הוא לא חל על פרט שבתוך הלוגו עצמו.
+     בפועל הקו נקרא: 1.29:1 מודד רק בהירות, ושני הצבעים
+     נבדלים בגוון — אדום מול כחול — וזה מה שמפריד אותם. */
+  --logo-ink:var(--chalk);
+  --logo-towers:var(--accent);
+}
+/* ערימה ממורכזת אחת, זהה בדסקטופ ובמובייל */
+.colophon__inner{
+  width:var(--w-grid);max-width:100%;margin-inline:auto;
+  text-align:center;
+}
+.colophon__brand{display:inline-block}
+.colophon__logo{width:clamp(128px,12vw,190px);height:auto;margin-inline:auto}
+
+/* שורה אחת ממורכזת. ‏flex-wrap הוא רשת ביטחון בלבד — שלוש
+   המילים נכנסות בשורה אחת גם ב-320px. */
+/* העוגן למרכוז הוא הקישור האמצעי, לא הגוש כולו.
+   ‏flex עם justify-content:center ממרכז את הרוחב הכולל, ומכיוון
+   ש"פרטיות" ו"תקנון" לא זהים ברוחבם — האמצעי נחת מוסט.
+   בגריד של 1fr auto 1fr שתי עמודות הקצה שוות בהגדרה, ולכן
+   עמודת ה-auto שבאמצע יושבת בדיוק במרכז, ואיתה "נגישות".
+   שני הקצוות נדחפים פנימה אל האמצעי, כך שהמרווח ביניהם
+   ממשיך להגיע מה-padding של הקישורים עצמם.
+
+   ⚠ תלוי בשלושה קישורים. אם מוסיפים או מורידים אחד — צריך
+   להחליט מחדש מי העוגן ולעדכן את הגריד. */
+.colophon__nav{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  margin-top:clamp(30px,3.4vw,54px);
+}
+.colophon__nav a:first-child{justify-self:end}
+.colophon__nav a:last-child{justify-self:start}
+.colophon__nav a{
+  position:relative;
+  font-size:var(--fs-body);font-weight:400;line-height:var(--lh-body);
+  padding-inline:clamp(14px,1.5vw,26px);
+  transition:opacity var(--t-base) var(--ease);
+}
+/* ── המפריד ────────────────────────────────────────────────
+   יושב על כל קישור שאינו הראשון, ולכן הוא תמיד נופל **בין**
+   שניים ואף פעם לא נשאר תלוי בקצה השורה. ב-RTL ה-inline-start
+   הוא הצד הימני — כלומר הצד שפונה לקודם.
+
+   ── העובי ──
+   0.0958 מגודל הגופן = הגזע של Heebo 400 **כפי שהוא באמת
+   מרונדר בגודל הזה**. מדידה ב-600px נתנה 0.0917, אבל ב-14.4px
+   ה-hinting מעגל את הגזע ל-1.38px ולא ל-1.32px — ולכן הקו
+   לפי המספר התיאורטי יצא דק ב-4% מהאותיות. המספר כאן נמדד
+   על הגודל בפועל, בשלושה ספי אלפא, וכולם החזירו 1.38.
+
+   ── האטימות ──
+   .5 ולא .3. ההפרש הגיאומטרי של 4% כמעט לא נראה; מה שגרם
+   לקו להיראות דק היה שהוא צויר ב-30% אטימות ליד טקסט מלא.
+   עובי זהה בשתי צורות עם אטימות שונה לא נקרא כעובי זהה.
+
+   ── למה ::before ולא border ──
+   ‏border-width נצמד למספר שלם של פיקסלי מכשיר, ולכן 1.32px
+   קרס בחזרה ל-1px גם ב-DPR 2 — מדדתי. רוחב של תיבה רגילה
+   נשאר שברי ונצבע עם החלקה, כמו הגליפים עצמם.
+
+   ── ולמה לא התו | של הגופן ──
+   נראה הפתרון המתבקש, אבל הוא לא מתאים: ה-| של Heebo הוא
+   0.0733 מגודל הגופן — דק ב-20% מגזע האותיות. מדדתי.
+
+   ── ולמה em ולא calc על הטוקן ──
+   ‏em נמדד מול גודל הגופן שבאמת רונדר. ‏calc(var(--fs-body)…)
+   קרא את הטוקן הגלובלי, שהוא 16px במובייל בעוד הקישור עצמו
+   14px — והקו יצא 1.46px במקום 1.28px. ‏em לא יכול לצאת
+   מסנכרון עם הכתב שהוא מפריד. */
+.colophon__nav a + a::before{
+  content:'';
+  position:absolute;
+  inset-inline-start:0;
+  inset-block:0;
+  width:.0958em;
+  background:rgba(var(--chalk-rgb),.5);
+}
+/* עמעום האחיות — אותה מחווה של התפריט העליון */
+.colophon__nav:hover a:not(:hover){opacity:.5}
+
+.colophon__legal{
+  margin-top:clamp(26px,3vw,46px);
+  font-size:var(--fs-legal);line-height:var(--lh-body);
+  color:rgba(var(--chalk-rgb),.6);
+}
+
+/* דרגות הסולם למובייל, סעיף 4ב: גוף 14px · משפטי 13px.
+   ‏--fs-body הגלובלי הוא 16px במובייל, ולכן הפוטר מצהיר
+   במפורש — בלי לגעת בשאר העמוד. */
+@media (max-width:767px){
+  .colophon__nav a{font-size:14px}
+}
+
+/* ── 11 · HERO נעוץ (כל הרוחבים) ────────────────────────────
+   ה-hero הופך למסלול גלילה; הכותרת נדבקת למסך ונשארת במקומה
+   במקום להיגלל למעלה, ודוהה בדיוק כשהסקשן הבא נוגע בתחתית המסך.
+   ה-opacity מנוהל ב-JS (updateHeroPin) כדי שהדעיכה תהיה רציפה
+   ולא מדרגה אחת. הסף ב-JS (HERO_PIN_MAX) חייב להישאר תואם. */
+.hero{
+  display:block;
+  /* אורך מסלול הגלילה. טווח הנעיצה = הערך פחות גובה מסך אחד,
+     וזה בדיוק המרחק שהגבעה מטפסת — יחס 1:1 מול הגלילה. */
+  min-height:200vh;
+  padding-inline:0;
+}
+.hero__inner{
+  position:sticky;top:0;
+  width:100%;height:100svh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding-inline:10px;
+  /* חותך את הגבעה לגבולות המסך בזמן שהיא מטפסת */
+  overflow:hidden;
+}
+
+/* מסלול ההירו בדסקטופ. הוא קובע שני דברים: מרחק הטיפוס של
+   הגבעה (= הגובה פחות מסך אחד), והמרחק שבו המשפט הנעוץ חי
+   (= מסך אחד בדיוק — זה מבני ולא ניתן לקיצור).
+   חייב לשבת אחרי הכלל שמעליו, אחרת הוא נבלע. */
+@media (min-width:768px){
+  .hero{min-height:170vh}
+}
+/* הכותרת מתחת לגבעה בערימה — ככה הגבעה מכסה אותה
+   במקום שהיא תדהה */
+.hero__inner > .hero__title{position:relative;z-index:1}
+
+/* ── הגבעה בתוך ההירו ─────────────────────────────────────────
+   הפסגה יושבת --hill-peek מעל תחתית המסך, כך שהבית וקצת קרקע
+   על המסך כבר בטעינה. ה-JS מרים אותה בגלילה עד שהיא בולעת
+   את הכותרת. גובה נדיב כדי שלא ייחשף שוליים בזמן הטיפוס. */
+.hero__hill{
+  position:absolute;z-index:3;
+  inset-inline:-8vw;
+  top:calc(100% - var(--hill-peek));
+  height:200svh;
+  background:var(--ink);
+  /* הרדיוס האנכי = עוצמת הקימור. גדול יותר = גבעה מעוגלת יותר. */
+  border-radius:50% 50% 0 0 / clamp(60px,11vw,180px) clamp(60px,11vw,180px) 0 0;
+  will-change:transform;
+}
+.hero__house{
+  position:absolute;left:50%;bottom:100%;
+  width:var(--house-w);height:auto;
+  transform:translateX(-50%);
+  fill:var(--ink);
+  margin-bottom:-1px;   /* מכסה תפר תת-פיקסלי בין הבית לגבעה */
+}
+
+/* ── 12 · BREAKPOINTS ──────────────────────────────────────── */
+
+/* Tablet · ≤1024 */
+@media (max-width:1024px){
+  :root{
+    --fs-h1:        clamp(34px, 6.2vw, 66px);
+    --fs-statement: clamp(34px, 6.2vw, 66px);
+    --fs-eyebrow:   clamp(18px, 3.2vw, 34px);
+    --fs-process:   clamp(44px, 7.1vw, 76px);
+    --fs-value:30px;
+    --fs-card:30px;
+    --fs-meta:14px;
+    --fs-body:18px;
+    --map-w:56vw;
+    --w-hero:85vw;
+    /* 88vw היה כמעט רוחב מלא, ולכן הכיווץ לא נקרא כתנועה
+       אלא רק כהחלפת צבע. 76vw הוא הפרש שרואים. */
+    --w-sticky:76vw;
+    --logo-w:clamp(104px,15vw,150px);
+  }
+  .hero__title{max-width:93vw}
+  .card__media{height:51vw}
+}
+
+/* Mobile · ≤767 */
+@media (max-width:767px){
+  :root{
+    --fs-h1:        clamp(24px, 6.9vw, 46px);
+    --fs-statement: clamp(24px, 6.9vw, 46px);   /* זהה ל---fs-h1 — אותה דרגה בסולם */
+    --fs-eyebrow:   clamp(18px, 4.8vw, 24px);
+    --fs-process:   clamp(39px, 10.4vw, 56px);   /* דרגת Display, סעיף 4ב */
+    --fs-value:22px;
+    --fs-card:18px;
+    --fs-body:16px;
+    --map-w:72vw;
+    /* המגן + ההמבורגר תופסים ~150px, אז 64vw עדיין נושם
+       גם ב-320px — וזה מרחק שאי אפשר לפספס */
+    --w-sticky:64vw;
+    /* 70vw = 262px ב-375 — צר מכדי להחזיק שורה שלמה של המשפט
+       הנעוץ, וההון היה נופל לשורה משלו. */
+    --w-reveal:92vw;
+    --header-gap:22px;
+    /* גודל הנעילה המלאה קובע גם את גודל המגן אחרי הכיווץ
+       (ה-svg לא משנה מידה), ולכן הוא נדיב יותר מהנדרש ל-afe */
+    --logo-w:clamp(100px,26vw,120px);
+  }
+  .hero__title{padding:0 14px;max-width:100%}
+  /* pre-line מפעיל את שוברי השורה שב-HTML. בדסקטופ הם
+     מתכווצים לרווח רגיל והטקסט נשבר לבד לפי הרוחב. */
+  .hero__typed{white-space:pre-line}
+
+  /* ה-eyebrow במובייל: משקל אחד למטה (500 → 400) ונשימה
+     גדולה יותר בינו לבין המשפט. */
+  .pinned__eyebrow{
+    font-weight:400;
+    margin-bottom:var(--s-4);
+  }
+  /* מובייל: טור אחד. במקור זה היה full bleed, והתמונות נגעו
+     בשני קצוות המסך; עכשיו הן מקבלות את גאטר העמוד — אותו
+     clamp(16px,4vw,60px) של ההאדר ושל בורר העסקאות, ולכן הן
+     מתיישרות איתם ולא נראות כמו רוחב אחר. */
+  .work__inner{width:100%}
+  .grid{gap:0;padding-inline:clamp(16px,4vw,60px)}
+  .card{width:100%;margin-bottom:8vw}
+  /* אוקסמור: התמונה 2366×1824 בתוך תיבה 358×195, ולכן cover
+     חותך 536px לגובה — 268 מהם מלמעלה, והגג נכנס לחיתוך.
+     ‏25% מזיז את מרכז החיתוך מעלה ומשאיר רק 134 חתוכים למעלה.
+     ⚠ הכלל צמוד ל-id של העסקה באדמין. אם התמונה של deal-16
+     תוחלף, צריך לבדוק אותו מחדש או להסיר אותו. */
+  .card__link[href$="#deal-16"] .card__media{object-position:50% 25%}
+  .card__media{height:50vw}
+  /* הרצועה נמוכה יותר במובייל. ב-48vh החיתוך של cover מותיר
+     שטח גדול של קיר או גג, והתצלום נקרא כמשטח אפור ולא כבית. */
+  /* במובייל הבורר לא נכנס לתצלום — אין שם מספיק גובה, והוא
+     היה מכסה את הבית. חוזרים לרצועה נמוכה ולבורר שמתחתיה. */
+  .dealbar__num{display:inline}
+  .dealbar__full{display:none}
+
+  /* התצלום ממשיך עד הבורר גם כאן. עכשיו כשהגלולה שורה אחת יש
+     לה מקום להיכנס פנימה, ולכן אין יותר פס Paper בין התמונה
+     לבורר. ה-inset קטן יותר מבדסקטופ כי הגלולה נמוכה יותר. */
+  /* הטוקן מוצהר על **שני** הצרכנים ולא על אב משותף: .deals הוא
+     אח של .page-head ולא יורש ממנה, ואילו :root היה דולף חזרה
+     לדסקטופ. שתי ההצהרות חייבות להישאר זהות. */
+  .page-head,
+  .page-head + .deals{--bar-inset:clamp(56px,15vw,78px)}
+  .page-head{
+    min-height:clamp(300px,46vh,440px);
+    padding-block-end:calc(clamp(28px,5vw,54px) + var(--bar-inset));
+  }
+  .page-head + .deals{margin-top:calc(var(--bar-inset) * -1)}
+
+  /* הראשון בכל שורה תופס את שתי העמודות, והשניים שאחריו
+     יושבים בזוג מתחתיו — אותה תבנית בתכנית השיפוץ ובהפרויקט
+     במספרים כאחד. שלושה תאים בטור התארכו ל-224px ול-188px,
+     ורק הראשון באמת צריך את כל הרוחב: או שהוא נושא את הצמד
+     לפני/אחרי ואת שורת המ"ר, או שהוא הסכום הארוך בשורה.
+     ‏כך המפריד נשאר אנכי כמו בדסקטופ במקום להסתובב לאופקי,
+     ואין אף קו לכל רוחב הבלוק. */
+  .factrow{
+    grid-template-columns:1fr 1fr;
+    row-gap:clamp(18px,5vw,26px);
+  }
+  /* ‏flex-end ולא align-items:end על הגריד: התא צריך להמשיך
+     למלא את גובה השורה כדי שהמפריד האנכי יישאר בגובה מלא,
+     ורק התוכן שבתוכו יורד למטה. זה אינרטי כשהתוויות בגובה
+     שווה — כלומר תמיד ב-375 ומעלה — ותופס רק כשאחת מהן
+     נשברת לשתי שורות, כמו "רווח צפוי למשקיעים" ב-320.
+     בלי זה הערך שמתחתיה יורד והזוג יוצא מיישור. */
+  .fact{
+    padding-inline:0;padding-block:0;
+    display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .fact:first-child{grid-column:1 / -1}
+  .fact:nth-child(2){padding-inline:0 clamp(14px,4vw,20px)}
+  .fact:nth-child(3){padding-inline:clamp(14px,4vw,20px) 0}
+  /* המפריד האופקי מבוטל, ומוחזר אנכי רק בין שני התאים שבזוג.
+     ‏שווה-ספציפיות לכלל שמעליו, ולכן חייב לבוא אחריו. */
+  .fact + .fact::before{content:none}
+  .fact:nth-child(3)::before{
+    content:'';
+    inset-block:9%;
+    inset-inline:0 auto;
+    width:2px;height:auto;
+  }
+
+  /* ── סולם הכתב ────────────────────────────────────────
+     בדסקטופ הכתובת, כותרת הסקשן והנתון יושבים כולם על
+     ‏--fs-value/600. כאן הכתובת עולה דרגה והכותרת יורדת
+     לשלט מעומעם, והמספרים נשארים הקול בבלוק.
+     ‏.62 ולא פחות: ב-18px/600 זה עדיין לא "טקסט גדול" לפי
+     ‏WCAG, אז הסף הוא 4.5:1 — ‏.55 נותן 3.75 ו---62 נותן
+     ‏4.65. זה גם בדיוק הגוון של .fact__label. */
+  .dealpane__addr{font-size:var(--fs-statement)}
+  .dealfacts__title{
+    font-size:var(--fs-eyebrow);
+    color:rgba(var(--ink-rgb),.62);
+  }
+
+  /* ── מקראת ההון · האחוז מוביל ──────────────────────────
+     שורה אחת נשברה כאן לשתיים, והאחוז — שהוא מה שמתאר את
+     החלוקה — נבלע בסופה. המיקום בגריד מפורש ולכן סדר ה-DOM
+     נשאר סדר הקריאה בדסקטופ ובקורא מסך. */
+  .cap__legend{display:grid;grid-template-columns:1fr 1fr;margin-top:14px;gap:0}
+  .cap__item{
+    position:relative;
+    display:grid;grid-template-columns:auto 1fr;
+    column-gap:9px;align-items:center;
+  }
+  .cap__item + .cap__item{padding-inline-start:16px}
+  /* אותה מחווה של .fact — קו אנכי שלא נוגע בקצוות */
+  .cap__item + .cap__item::before{
+    content:'';position:absolute;
+    inset-block:6%;inset-inline-start:0;
+    width:2px;background:rgba(var(--ink-rgb),.15);
+  }
+  .cap__mark{grid-area:1/1;height:18px;margin-inline-end:0}
+  .cap__pct{
+    grid-area:1/2;
+    font-size:var(--fs-value);line-height:var(--lh-title);
+  }
+  .cap__name{
+    grid-area:2/2;margin-top:1px;
+    font-size:var(--fs-body);line-height:var(--lh-tight);
+    color:rgba(var(--ink-rgb),.62);
+  }
+  .cap__name::after{content:none}
+  .cap__sum{
+    grid-area:3/2;margin:4px 0 0;
+    font-size:var(--fs-legal);line-height:var(--lh-body);
+    color:rgba(var(--ink-rgb),.62);
+  }
+
+  /* ── גובה הפאנל ────────────────────────────────────────
+     הרצועה היא flex row, ולכן גובהה נקבע לפי הפאנל הגבוה
+     מכולם ותחת כל פאנל קצר יותר נפער ריק עד הפוטר.
+     ‏flex-start מחזיר לכל פאנל את גובהו הטבעי, וה-JS נועל
+     על החלון את גובה הנבחר — באותה עקומה ומשך של ההחלקה. */
+  .dealview{transition:height .6s cubic-bezier(.65,0,.35,1)}
+  .dealview__track{align-items:flex-start}
+
+  /* במובייל אין ריחוף — הכתובת פשוט גלויה תמיד */
+  .card__addr{bottom:16px;left:16px;opacity:1}
+  .card__scrim{opacity:1}
+  .work__cta{padding-inline:20px}
+
+  /* ── הטופס במובייל ────────────────────────────────────────
+     במקור השדות עוברים לעמודה אחת על מלוא הרוחב, והפסיעה
+     בין שורה לשורה מתקצרת מ-90 ל-67 (השדה נשאר 40, המרווח
+     יורד ל-27).
+
+     ‏38 ולא 27: לרפרנס לא היו הודעות שגיאה מתחת לשדות, ולכן
+     המרווח שלו לא נדרש להכיל אחת. הודעה תופסת 22px (18.2
+     שורה + 4 מרווח), ומתוך 27 נשארו 5px עד השדה הבא — מדדתי —
+     כלומר ההודעה נראתה שייכת לשדה שמתחתיה. ‏38 משאיר 16. */
+  .contact__inner{width:var(--w-grid)}
+  .form__grid{grid-template-columns:minmax(0,1fr);row-gap:38px}
+}
+
+/* מתחת ל-1200 המסלול האופקי מתפרק לערימה אנכית —
+   בדיוק כמו במקור, שם אפקטי ה-transform כבויים לגמרי. */
+@media (max-width:1199px){
+  .process{min-height:0;padding:14% 10% 80px}
+  .process__stage{position:static;height:auto;overflow:visible}
+  .rail{flex-direction:column;align-items:flex-start;gap:clamp(48px,9vw,110px);width:100%;transform:none!important}
+  .rail__panel{width:100%;padding-inline:0}
+  .rail__panel--center{justify-content:flex-start}
+}
+
+/* ── מובייל · סקשן התהליך כשורה רצה ──────────────────────────
+   הבלוק הזה חייב לשבת **אחרי** ה-1199 שמעליו: אותה ספציפיות
+   בדיוק, ולכן האחרון הוא שמנצח.
+
+   מתחת ל-768 הסקשן הוא במה נעוצה שבתוכה רצה שורה אחת גדולה:
+   "איך אנחנו עושים את זה?" · "הכל מתחיל ב" · "בירמינגהם, אלבמה".
+   השורה נעה ימינה 1:1 מול האצבע עד ש"בירמינגהם" מגיע למרכז;
+   שם הוא נעצר, המפה נכנסת מתחתיו, ושאר המילים ממשיכות ימינה
+   ויוצאות מהמסך. אחר כך מתחלפים שלושת הערכים מתחת למפה.
+
+   הגובה חייב להתאים ל-PROC_M ב-motion.js: מסך אחד לבמה ועוד
+   4.00 מסכים של מסלול = 500svh. המסלול התארך כשמשך הכניסה
+   של הערכים נגזר מהמרחק במקום להיות מוקלד — ראה PROC_M. */
+@media (max-width:767px){
+  .process{min-height:500svh;padding:0}
+
+  /* ‏.deep מתחיל עכשיו מוקדם ב-843px — נקודת האפס שלו נקשרה
+     לרגע שהבמה של הפרוצס משתחררת (ראה M.deepTop ב-motion.js).
+     בלי לקצר אותו כאן כל העודף היה נערם בזנב: השקף האחרון
+     החזיק 1366px מול ~500 של השניים שלפניו, כלומר מסך וחצי
+     שבו כלום לא קורה. ‏275svh מחזיר אותו ל-547px — באותו קצב
+     כמו 474 ו-570 שביניהם. נמדד ב-390×844.
+     בדסקטופ ובטאבלט הוא נשאר 390svh, כי שם נקודת האפס לא זזה. */
+  .deep{min-height:275svh}
+  .process__stage{
+    position:sticky;top:0;
+    height:100svh;
+    display:block;      /* לא flex — הילדים ממוקמים מוחלט */
+    overflow:hidden;    /* מה שחותך את השורה הרצה בשני הקצוות */
+  }
+  .rail{
+    display:block;position:absolute;inset:0;
+    width:auto;gap:0;
+    transform:none!important;
+    /* ‏.rail הבסיסי מבקש will-change:transform בשביל הרכבת
+       האופקית. במובייל אין רכבת — transform:none!important —
+       ולכן הרמז כאן הוא שכבת קומפוזיטור שנוצרת לחינם. */
+    will-change:auto;
+  }
+
+  /* הפאנלים מפסיקים להיות מכלים. כל חלק בשורה הרצה ממוקם
+     ישירות מול .rail, כי כשהשורה מתפרקת סביב "בירמינגהם"
+     כל אחד מהם צריך תנועה משלו. */
+  .rail__panel--title,.rail__panel--center{position:static;padding:0}
+  .mapfig{position:static;display:block;width:auto;gap:0}
+  .mapfig__cap{display:block}
+
+  /* ── שלושת חלקי השורה ──
+     אותה דרגה ואותו קו עליון, ולכן הם נקראים כמשפט אחד גם
+     שהם שלושה אלמנטים נפרדים. left ולא inset-inline: ה-JS
+     כותב את כל המיקום האופקי בפיקסלים, ותכונה לוגית הייתה
+     הופכת לו את הסימן ב-RTL. */
+  .process__title,.mapfig__eyebrow,.mapfig__place{
+    position:absolute;top:14vh;left:0;right:auto;
+    width:max-content;
+    will-change:transform,opacity;
+  }
+  /* "הכל מתחיל ב" עולה מדרגת גוף לדרגת Display — במובייל הוא
+     חלק מהמשפט הרץ ולא תווית קטנה שמעליו. */
+  .mapfig__eyebrow{
+    font-size:var(--fs-process);font-weight:700;
+    line-height:var(--lh-tight);color:var(--chalk);
+  }
+  /* "אלבמה" יושבת מתחת ל"בירמינגהם," וממורכזת מולה */
+  .mapfig__place{text-align:center}
+
+  /* המפה נכנסת מתחת למילה שנעצרה, ממורכזת. left+margin ולא
+     transform — ה-transform שמור ל-JS ואסור ששניהם יתנגשו. */
+  .mapfig__svg{
+    position:absolute;top:31vh;left:50%;margin-left:-40vw;
+    width:80vw;height:auto;
+    will-change:transform,opacity;
+  }
+
+  /* 62vh — טיפה מעל ה-70vh הקודם, כמו שביקשת. המפה נגמרת
+     ב-438 (80vw ⇒ 300 רוחב ⇒ 186 גובה, מ-31vh), ולכן נשארים
+     65px בין המפה לערכים ו-163 של נשימה עד התחתית. */
+  .rail__panel--values{
+    position:absolute;top:62vh;inset-inline:10vw;
+    width:auto;padding-inline:0;
+    /* display:block חובה — .rail__panel הבסיסי הוא flex, ו-.values
+       שבתוכו כבר לא מחזיק ילדים בזרימה (כולם מוחלטים). כפריט
+       flex הוא היה מתכווץ לרוחב 0, הטקסט היה נשבר אות-אות
+       והבלוק היה מטפס ל-673px במקום 146. */
+    display:block;
+    will-change:transform,opacity;
+  }
+
+  /* ה-JS הוא שמדליק. תלוי ב-is-ready ולא סתם על האלמנט, כדי
+     שאם הסקריפט לא רץ בכלל הסקשן יישאר גלוי במקום להיעלם. */
+  body.is-ready .process__title,
+  body.is-ready .mapfig__eyebrow,
+  body.is-ready .mapfig__place,
+  body.is-ready .mapfig__svg,
+  body.is-ready .rail__panel--values,
+  body.is-ready .values li{opacity:0}
+
+  /* שלושת הערכים ערומים באותה נקודה; ההחלפה היא opacity
+     ו-translateX בלבד, ולכן אין reflow באף פריים.
+     ה-min-height נדרש כי ילדים מוחלטים לא תורמים גובה, ובלעדיו
+     הקו האנכי של ::before היה מתאפס. ה-JS מודד את הגבוה
+     שבשלושה וכותב --value-h; ה-24vh הוא נפילה לאחור. */
+  /* המשפך מקבל את המלל הקצר: משפט אחד לכל שלב במקום שניים,
+     ואיתו צורה נמוכה יותר. ה---narrow נשאר לטאבלט (768–1199),
+     שם המלל הארוך עדיין מוצג. */
+  .fun__row i:not(.fun__i--mob){display:none}
+  /* margin-top חוזר במפורש: השורה הזו היא ה-i השלישי ב-DOM,
+     ולכן `i + i{margin-top:0}` תופס אותה גם כששני הקודמים
+     display:none — והיא הייתה נצמדת לכותרת בלי אוויר. */
+  .fun__row i.fun__i--mob{display:block;margin-top:.4em}
+  .fun__shape--narrow{display:none}
+  .fun__shape--mob{display:block}
+
+  .values{min-height:var(--value-h,24vh)}
+  .values li{
+    position:absolute;inset-inline:0;top:0;
+    margin:0;
+    will-change:transform,opacity;
+  }
+}
+
+/* ── תפריט מובייל · גיליון שעולה מלמטה לשליש המסך ──────────── */
+.menu-scrim{
+  display:none;
+  position:fixed;inset:0;z-index:10;
+  border:0;padding:0;cursor:pointer;
+  background:var(--ink);   /* אטום — הכחול חייב להיות שטוח מתחת לגיליון */
+  opacity:0;visibility:hidden;
+  transition:opacity .35s var(--ease),visibility .35s var(--ease);
+}
+
+@media (max-width:900px){
+  /* ── ההאדר במובייל: שינוי צבע בלבד ─────────────────────────
+     בלי כיווץ רוחב, בלי מורפינג לגלולה, בלי גרירת הלוגו.
+     המעבר היחיד שנשאר הוא ה-background. ─────────────────────── */
+  .header-shell{transition:none}
+  .site-header.is-stuck .header-shell{max-width:none}
+  /* כשהתפריט פתוח הכמוסה האפורה נקראת כרצועה על המסך הבהיר.
+     מבטלים לה את הרקע — ההמבורגר נשאר לחיץ, כי ההאדר (z-99)
+     יושב מעל התפריט (z-11). */
+  body.menu-open .header-bar,
+  body.menu-open .site-header.is-stuck .header-bar{background:transparent}
+
+  /* ה-<nav> יושב בתוך .header-bar, ולכן הוא נצבע מעל האח שלו —
+     הלוגו. הרמה מקומית מחזירה את הלוגו למעלה. */
+  .brand{position:relative;z-index:12}
+
+  /* הצורה נשארת גלולה — רק התנועה בוטלה, לא העיגול */
+  .header-bar{
+    transition:background .16s var(--ease-out);
+    /* ב-RTL ה-end הוא הצד השמאלי — שם יושב הלוגו אחרי row-reverse.
+       1vw הצמיד אותו לקצה המעוגל; 18px מרחיק אותו פנימה. */
+    padding-inline:2vw 18px;
+  }
+  .brand__logo,
+  .site-header.is-stuck .brand__logo{width:var(--logo-w-mark);transition:none}
+  /* מוגבל ל-header במפורש. ‏.logo__word הוא מחלקה גנרית שמופיעה
+     גם בלוגו של הפוטר, וללא הסייג הזה הפוטר היה מאבד את ה-afe
+     במובייל ונשאר עם מגן צף באמצע רוחב ריק. */
+  .site-header .logo__word{display:none}
+
+  /* ההמבורגר — מעט צר יותר */
+  .nav-toggle__box{width:24px}
+
+  .nav-toggle{display:block;position:relative;z-index:12}
+  /* אין סקרים — התפריט הוא שכבת הפייד היחידה */
+  .menu-scrim{display:none}
+
+  /* מסך מלא. נכנס בפייד בלבד — בלי החלקה, בלי גיליון.
+     הפריטים מתקבצים בתחתית המסך. */
+  .menu{
+    position:fixed;inset:0;z-index:11;
+    background:var(--bone);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:flex-end;
+    padding-block-end:12vh;
+    opacity:0;visibility:hidden;
+    transition:opacity .34s var(--ease),visibility .34s var(--ease);
+  }
+  .menu.is-open{opacity:1;visibility:visible}
+
+  /* אין ידית אחיזה — הקצה הנמוג הוא הרמז הוויזואלי */
+  .menu::before{
+    content:none;
+    position:absolute;top:12px;left:50%;
+    width:44px;height:4px;border-radius:99px;
+    background:var(--ink);opacity:.22;
+    transform:translateX(-50%);
+  }
+
+  .menu__list{flex-direction:column;gap:0;text-align:center}
+  .menu__list a{
+    display:block;
+    /* דרגת H1 במובייל — 7.8vw. ראה סעיף 4ב במסמך העיצוב. */
+    font-size:clamp(26px,7.8vw,38px);
+    font-weight:700;line-height:1.3;
+    padding:1.1vh 0;
+  }
+
+  /* פייד + תזוזה קצרה מלמטה — 22px, לא מתחתית המסך */
+  .menu.is-open li{animation:menuItem .5s cubic-bezier(.22,1,.36,1) both}
+  .menu.is-open li:nth-child(1){animation-delay:.10s}
+  .menu.is-open li:nth-child(2){animation-delay:.17s}
+  .menu.is-open li:nth-child(3){animation-delay:.24s}
+  .menu.is-open li:nth-child(4){animation-delay:.31s}
+  .menu.is-open li:nth-child(5){animation-delay:.38s}
+  @keyframes menuItem{
+    from{opacity:0;transform:translateY(22px)}
+    to{opacity:1;transform:none}
+  }
+
+  /* הנעילה נכנסת רק אחרי שהשכבה אטומה. אם היא נכנסת יחד
+     עם הפייד, ה-sticky של ההירו מחושב מחדש והרקע קופץ
+     בזמן שהשכבה עדיין שקופה. */
+  body.menu-locked{overflow:hidden}
+}
+
+/* ── 13 · REDUCED MOTION ───────────────────────────────────────
+   חסר לגמרי במקור. כאן: הפריסה נשמרת, התנועה נכבית. */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+  .rail{transform:none!important}
+  .pinned{opacity:1!important;position:static;transform:none;padding-block:12vw}
+  .process__stage{position:static;height:auto;overflow:visible}
+  /* הבמה הנעוצה של המובייל מתפרקת גם היא. ה-JS יוצא מוקדם
+     ולא כותב inline style, ולכן כל מה ש-@media(max-width:767px)
+     קבע חייב להידרס כאן — אחרת הסקשן פשוט לא נראה. */
+  .process{min-height:0;padding:14% 10% 80px}
+  .rail{display:flex;position:static;inset:auto;width:100%}
+  .rail__panel,body.is-ready .rail__panel{
+    position:static;opacity:1!important;transform:none!important;
+  }
+  /* השורה הרצה מתפרקת בחזרה לכיתוב רגיל מתחת למפה */
+  .process__title,.mapfig__eyebrow,.mapfig__place,.mapfig__svg,
+  body.is-ready .process__title,body.is-ready .mapfig__eyebrow,
+  body.is-ready .mapfig__place,body.is-ready .mapfig__svg{
+    position:static;width:auto;margin-left:0;
+    opacity:1!important;transform:none!important;
+  }
+  .mapfig{display:flex}
+  .mapfig__cap{display:flex}
+  .mapfig__eyebrow{font-size:var(--fs-body);font-weight:500}
+  .mapfig__svg{width:var(--map-w)}
+  .values{min-height:0}
+  .values li,body.is-ready .values li{
+    position:static;opacity:1!important;transform:none!important;
+    margin-bottom:var(--s-4);
+  }
+  /* סקשן ה-deep מתפרק לערימה סטטית: הכותרת למעלה, ואחריה
+     כל שלושת הטקסטים זה מתחת לזה. ה-JS יוצא מוקדם ולא
+     כותב inline style, ולכן ה-!important כאן אינו נדרס. */
+  .deep{min-height:0;padding:14% 8% 80px}
+  .deep__stage{position:static;height:auto;overflow:visible}
+  .deep__lead{
+    position:static;width:auto;max-width:none;height:auto;
+    opacity:1!important;transform:none!important;
+    margin-block:0 var(--s-5);
+  }
+  .deep__slides{position:static;width:auto}
+  .deep__slide{
+    position:static;width:auto;
+    opacity:1!important;transform:none!important;
+    margin-bottom:var(--s-5);
+  }
+  .deep__slide:last-child{margin-bottom:0}
+  /* בלי הנעיצה — ה-hero חוזר להיות מסך אחד */
+  .hero{min-height:102vh;display:flex;padding-inline:10px}
+  .hero__inner{position:static;height:auto;width:var(--w-hero);opacity:1!important}
+  /* הלוגו לא מתכווץ — אחרת ה-afe פשוט נחתך באמצע */
+  .logo__word{transform:none!important;opacity:1!important}
+  .site-header.is-stuck .brand__logo{width:var(--logo-w)}
+  .card__addr{opacity:1}
+  .card__scrim{opacity:1}
+}

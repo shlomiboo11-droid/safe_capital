@@ -1,1458 +1,640 @@
-<!DOCTYPE html>
-<html dir="rtl" lang="he"><head>
-<meta charset="utf-8"/>
-<link rel="icon" type="image/png" href="images/logo-icon.png"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Safe Capital | סייף קפיטל - השקעות נדל"ן בארה"ב למשקיע הישראלי</title>
-<meta name="description" content="עסקאות נדל&quot;ן קצרות טווח בארה&quot;ב עם תשואה של עד 20%. השקעה מינימלית $50,000. שקיפות מלאה, ניהול מקצועי, ללא ניהול עצמי."/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="css/tokens.css?v=3" rel="stylesheet"/>
-<link href="css/shared.css?v=15" rel="stylesheet"/>
-<link href="css/deal-card.css?v=1" rel="stylesheet"/>
-
-<style>
-/* ===== CSS Custom Properties ===== */
-:root {
-  --color-bg: #fbf9f6;
-  --color-surface: #fbf9f6;
-  --color-white: #ffffff;
-  --color-primary: #022445;
-  --color-primary-dark: #1e3a5c;
-  --color-secondary: #984349;
-  --color-text: #1b1c1a;
-  --color-text-muted: #43474e;
-  --color-whatsapp: #25D366;
-  --font-hebrew: 'Heebo', sans-serif;
-  --font-numbers: 'Inter', sans-serif;
-  --shadow-ambient: 0 8px 24px rgba(27,28,26,0.04);
-}
-
-
-/* ===== Reduced Motion ===== */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-delay: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ===== Hero Entrance Animations ===== */
-.hero-text {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-.hero-text.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.hero-subtitle { transition-delay: 0.2s; }
-.hero-ctas { transition-delay: 0.4s; }
-
-/* ===== Hero Full-Screen Video ===== */
-.hero-video-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 0;
-  background: #fbf9f6;
-}
-.scroll-frame {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: left center;
-  background: #fbf9f6;
-  transform: scale(0.88);
-  transform-origin: left center;
-}
-.hero-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    /* Subtle text backdrop — very light wash behind text area */
-    radial-gradient(
-      ellipse 50% 60% at 75% 45%,
-      rgba(251,249,246,0.25) 0%,
-      transparent 100%
-    ),
-    /* Right fade — covers image edge and fades behind text */
-    linear-gradient(
-      to left,
-      #fbf9f6 0%,
-      #fbf9f6 18%,
-      rgba(251,249,246,0.95) 28%,
-      rgba(251,249,246,0.7) 40%,
-      rgba(251,249,246,0.3) 52%,
-      transparent 68%
-    ),
-    /* Bottom fade — solid cream that fully covers the image edge */
-    linear-gradient(
-      to top,
-      #fbf9f6 0%,
-      #fbf9f6 5%,
-      rgba(251,249,246,0.95) 12%,
-      rgba(251,249,246,0.5) 25%,
-      transparent 40%
-    );
-}
-
-/* Bottom fade on hero itself — stays visible during scroll */
-#hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(to top, #fbf9f6, transparent);
-  z-index: 3;
-  pointer-events: none;
-}
-
-/* Sections after hero cover the fixed video */
-#hero ~ * {
-  position: relative;
-  z-index: 2;
-}
-
-.scroll-panel {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-}
-.scroll-panel-inner {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-.scroll-panel-inner.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Progress dots */
-.video-progress {
-  position: fixed;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  display: flex;
-  gap: 10px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.video-progress.visible { opacity: 1; }
-.video-progress-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: rgba(2,36,69,0.2);
-  transition: background 0.3s, transform 0.3s;
-}
-.video-progress-dot.active {
-  background: #984349;
-  transform: scale(1.4);
-}
-
-/* Panel step badge */
-.panel-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  color: #984349;
-  letter-spacing: 0.05em;
-  margin-bottom: 1rem;
-}
-.panel-badge::before {
-  content: '';
-  display: block;
-  width: 24px; height: 2px;
-  background: #984349;
-}
-
-/* ===== Desktop: Sticky Hero Text ===== */
-@media (min-width: 768px) {
-  #hero .scroll-panel[data-panel="0"] {
-    position: sticky;
-    top: 0;
-  }
-  /* Text is visible immediately on desktop — no entrance transitions */
-  .mobile-hero-title,
-  .mobile-hero-lines,
-  .mobile-hero-buttons {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .hero-video-bg { display: none; }
-  .hero-vignette { display: none; }
-  #hero::after { display: none; }
-  .scroll-panel { min-height: auto; padding: 2rem 1.5rem; }
-  .scroll-panel:first-child { min-height: 85vh; padding-top: 6rem; display: flex; align-items: flex-start; }
-  .scroll-panel-inner { opacity: 1; transform: none; }
-  .video-progress { display: none; }
-
-  /* Mobile hero static background image */
-  .hero-mobile-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: visible;
-    z-index: 0;
-  }
-  .hero-mobile-bg .mobile-scroll-frame {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .hero-mobile-overlay {
-    display: none;
-  }
-  /* Top fade */
-  .hero-mobile-bg::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    background: linear-gradient(to bottom, #fbf9f6, transparent);
-    z-index: 1;
-    pointer-events: none;
-  }
-  /* Bottom fade — extends below image to cover gap */
-  .hero-mobile-bg::after {
-    content: '';
-    position: absolute;
-    bottom: -60px;
-    left: 0;
-    right: 0;
-    height: 160px;
-    background: linear-gradient(to top, #fbf9f6 30%, transparent);
-    z-index: 1;
-    pointer-events: none;
-  }
-  #hero { position: relative; margin-bottom: 2rem; }
-  #hero .relative.z-10 {
-    position: relative;
-    z-index: 2;
-  }
-  /* House-flip section: disable scroll animation layout on mobile */
-  #house-flip-section { height: auto !important; }
-  #house-flip-section > div { position: relative !important; height: auto !important; overflow: visible !important; }
-  /* Step cards visible immediately on mobile — no animation */
-  .step-card { opacity: 1 !important; transform: none !important; }
-  .flow-connector-h, .flow-connector-v { opacity: 1 !important; }
-}
-
-/* ===== Scroll Fade-in ===== */
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ===== Before/After Slider ===== */
-.ba-container {
-  position: relative;
-  overflow: hidden;
-  cursor: col-resize;
-  user-select: none;
-  -webkit-user-select: none;
-  border-radius: 0.75rem;
-}
-.ba-before, .ba-after {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.ba-after {
-  clip-path: inset(0 50% 0 0);
-}
-.ba-handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: #fff;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  pointer-events: none;
-  box-shadow: 0 0 8px rgba(0,0,0,0.2);
-}
-.ba-handle-circle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  cursor: col-resize;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  font-size: 0.75rem;
-  color: #43474e;
-  font-family: var(--font-numbers);
-  font-weight: 600;
-  letter-spacing: 2px;
-}
-.ba-label {
-  position: absolute;
-  bottom: 1rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #fff;
-  backdrop-filter: blur(4px);
-  z-index: 5;
-}
-.ba-label-before { right: 1rem; background: rgba(0,0,0,0.5); }
-.ba-label-after { left: 1rem; background: rgba(152,67,73,0.8); }
-
-/* ===== Step Flow Connectors ===== */
-.flow-connector-h {
-  width: 60px;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, #c4c6cf 0, #c4c6cf 6px, transparent 6px, transparent 12px);
-}
-.flow-connector-v {
-  width: 2px;
-  height: 40px;
-  background: repeating-linear-gradient(180deg, #c4c6cf 0, #c4c6cf 6px, transparent 6px, transparent 12px);
-  margin: 0 auto;
-}
-
-/* ===== FAQ Accordion (landing-specific) ===== */
-.landing-faq-answer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease, padding 0.4s ease;
-  padding-top: 0;
-}
-.landing-faq-answer.open {
-  max-height: 600px;
-  padding-top: 1rem;
-}
-.landing-faq-item.open {
-  background: var(--color-surface);
-  border-radius: 0.75rem;
-}
-.landing-faq-chevron {
-  transition: transform 0.3s ease;
-}
-.landing-faq-item.open .landing-faq-chevron {
-  transform: rotate(180deg);
-}
-
-/* ===== WhatsApp Sticky FAB ===== */
-.whatsapp-fab {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  z-index: 40;
-  width: 60px;
-  height: 60px;
-  border-radius: 9999px;
-  background: rgba(37,211,102,0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(37,211,102,0.35);
-  text-decoration: none;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.2s ease;
-}
-@media (max-width: 767px) {
-  .whatsapp-fab {
-    left: auto;
-    right: 24px;
-  }
-}
-.whatsapp-fab.visible {
-  opacity: 1;
-  pointer-events: auto;
-  animation: bounceIn 0.5s ease-out;
-}
-.whatsapp-fab:hover {
-  transform: scale(1.1);
-}
-@keyframes bounceIn {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* ===== WhatsApp CTA glow ===== */
-
-/* ===== Sequential Step Reveal ===== */
-.step-card {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-}
-.step-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.flow-connector-h, .flow-connector-v {
-  opacity: 0;
-  transition: opacity 0.5s ease-out 0.3s;
-}
-.flow-connector-h.visible, .flow-connector-v.visible {
-  opacity: 1;
-}
-</style>
-
-<script id="tailwind-config">
-tailwind.config = {
-  darkMode:"class",
-  theme: {
-    extend: {
-      colors: {
-"background":"#fbf9f6",
-"surface":"#fbf9f6",
-"surface-container-low":"#fbf9f6",
-"surface-container-lowest":"#ffffff",
-"primary":"#022445",
-"primary-container":"#1e3a5c",
-"secondary":"#984349",
-"on-primary":"#ffffff",
-"on-surface":"#1b1b1f",
-"on-surface-variant":"#43474e",
-"outline-variant":"#c4c6cf",
-"whatsapp":"#25D366"
-      },
-      fontFamily: {
-"headline": ["Heebo"],
-"body": ["Heebo"],
-"label": ["Inter"]
-      },
-      borderRadius: {"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},
-    },
-  },
-}
-</script>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>סייף קפיטל — עמוד הבית</title>
+<meta name="description" content="שלד עמוד בית לסייף קפיטל — פריסה, טיפוגרפיה ומכניקת תנועה. הקופי ומדיית הכרטיסים עדיין placeholder.">
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- ?v= מונע מהדפדפן להגיש CSS ישן מה-cache. python -m http.server
+     לא שולח cache-control, ואז קל מאוד לראות HTML חדש עם עיצוב ישן.
+     העלה את המספר בכל שינוי משמעותי. -->
+<link rel="stylesheet" href="assets/styles.css?v=122">
 </head>
-<body class="bg-background text-on-surface">
+<body>
 
-<!-- ============================================================ -->
-<!-- NAV                                                           -->
-<!-- ============================================================ -->
-<nav class="site-nav">
-<div class="nav-inner">
-<a href="/" class="nav-logo"><img src="images/logo-half.png" alt="Safe Capital" class="nav-logo-img"></a>
-<div class="nav-links">
-<a href="/" class="active">עמוד הבית</a>
-<a href="properties">עסקאות</a>
-<a href="contact">צור קשר</a>
-</div>
-<button class="mobile-menu-btn"><span class="material-symbols-outlined">menu</span></button>
-<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="nav-cta">הצטרפו עכשיו</a>
-</div>
-<div class="mobile-nav">
-<a href="/" class="active">עמוד הבית</a>
-<a href="properties">עסקאות</a>
-<a href="contact">צור קשר</a>
-<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="mobile-cta">הצטרפו עכשיו</a>
-</div>
-</nav>
+<a class="skip" href="#main">דלג לתוכן</a>
 
+<!-- ══════════════════════════════════════════════════
+     HEADER — sticky pill
+     מנוחה: רוחב מלא, רקע שקוף
+     נדבק (scrollY > 20): 60vw + רקע Pill + radius 100px, 0.3s
+     ══════════════════════════════════════════════════ -->
+<header class="site-header" id="site-header">
+  <div class="header-shell">
+    <div class="header-bar">
 
-<!-- ============================================================ -->
-<!-- SECTION 1: HERO                                               -->
-<!-- ============================================================ -->
-<section id="hero" class="relative bg-background">
+      <!-- הלוגו. במנוחה — הנעילה המלאה. בגלילה — האותיות afe
+           נגררות שמאלה, מתכווצות ונבלעות מאחורי המגן.
+           ה-span חותך את מה שיוצא מהמסגרת; ה-svg עצמו לא משנה מידה,
+           כך שהמגן נשאר בדיוק באותו גודל לאורך כל המעבר. -->
+      <a class="brand" href="#top" aria-label="סייף קפיטל — לעמוד הבית">
+        <span class="brand__logo">
+          <svg class="logo" viewBox="0 0 459.98 129.02" role="img" aria-label="Safe Capital">
+            <!-- afe — מצויר ראשון, ולכן המגן נצבע מעליו -->
+            <g class="logo__word"><g transform="translate(-19.912 -185.379)">
+              <path d="M 198.683 214.291 L 218.778 262.478 L 176.946 262.425 L 196.978 214.242 Z M 129.263 308.326 C 129.263 308.326 157.569 308.353 157.59 308.353 C 157.611 308.353 168.159 283.309 168.159 283.309 L 227.695 283.626 L 237.827 308.357 L 266.371 308.42 L 211.882 187.799 L 184.012 187.638 Z"/>
+              <path d="M 286.812 187.8 L 370.763 187.983 L 370.721 210.218 L 313.432 209.881 L 313.484 240.734 L 363.893 240.688 L 363.874 263.08 L 313.225 262.659 L 313.355 308.488 L 286.678 308.506 L 286.812 187.8 Z"/>
+              <path d="M 395.1 187.8 L 478.272 187.865 L 478.242 210.025 L 422.125 210.019 L 422.083 236.731 L 471.073 236.511 L 471.072 258.684 L 421.906 258.407 L 421.936 286.947 L 479.781 286.573 L 479.888 308.523 L 394.823 308.313 L 395.1 187.8 Z"/>
+            </g></g>
+            <!-- המגן עם ה-S וקו הבתים -->
+            <g class="logo__s"><g transform="translate(-19.912 -185.379) matrix(0.286374 0 0 0.286374 -1.55448 179.333313)">
+              <path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/>
+              <path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/>
+              <path class="logo__towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/>
+            </g></g>
+          </svg>
+        </span>
+      </a>
 
-<!-- Mobile: vertical scroll-frame background -->
-<div class="hero-mobile-bg md:hidden">
-  <img class="mobile-scroll-frame" src="images/hero-mobile.jpg" alt="">
-  <div class="hero-mobile-overlay"></div>
-</div>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="menu">
+        <span class="nav-toggle__box" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="sr-only">תפריט</span>
+      </button>
 
-<!-- Desktop: frame scroll video background -->
-<div class="hero-video-bg">
-  <img class="scroll-frame" src="https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames/frame-01.jpg" alt="">
-  <div class="hero-vignette"></div>
-</div>
+      <nav id="menu" class="menu" aria-label="Primary">
+        <ul class="menu__list">
+          <li><a href="#top" class="is-current">איך זה עובד</a></li>
+          <li><a href="deals.html">עסקאות</a></li>
+          <li><a href="about.html">עלינו</a></li>
+          <li><a href="contact.html">צור קשר</a></li>
+        </ul>
+      </nav>
 
-<!-- Scroll panels over video -->
-<div class="relative z-10">
-
-  <!-- Panel 1: Hero Headline -->
-  <div class="scroll-panel" data-panel="0">
-    <div class="max-w-[1200px] ml-auto px-6 md:pr-[84px] w-full">
-      <div class="scroll-panel-inner md:w-[55%] md:ml-auto text-right active">
-        <h1 class="font-headline font-extrabold leading-tight mb-6 mobile-hero-title">
-          <span class="block text-2xl md:text-4xl lg:text-5xl md:whitespace-nowrap"><span class="text-primary">הכסף שלך </span><span class="text-secondary">עובד בשבילך?</span></span>
-          <span class="block text-2xl md:text-4xl lg:text-[2.8rem] md:whitespace-nowrap"><span class="text-primary">או שאתה עובד </span><span class="text-primary opacity-50">בשביל הכסף?</span></span>
-        </h1>
-        <div class="text-lg md:text-xl leading-relaxed mb-10 max-w-xl space-y-1 mobile-hero-lines">
-          <p class="text-on-surface-variant">השקעות נדל"ן קצרות בארה"ב</p>
-          <p class="font-label font-bold text-secondary">עד 20% רווח</p>
-          <p class="font-label font-bold text-secondary">עד שנה מרגע השיפוץ למכירה</p>
-          <p class="text-on-surface-variant">אנחנו מנהלים הכל</p>
-        </div>
-        <div class="flex flex-col sm:flex-row-reverse gap-4 items-start sm:items-center mobile-hero-buttons">
-          <a href="properties" class="inline-block text-white font-bold text-lg px-8 py-4 rounded-lg hover:opacity-90 active:scale-[0.97] transition-all" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">צפו בעסקאות הזמינות</a>
-          <a href="#method" class="hidden md:inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-4 rounded-lg hover:bg-secondary/5 transition-all scroll-link">איך זה עובד?</a>
-        </div>
-      </div>
     </div>
   </div>
+</header>
 
-  <!-- Scroll spacer for video animation -->
-  <div class="hidden md:block" style="height:35vh"></div>
+<!-- רקע מעומעם מאחורי גיליון התפריט במובייל · לחיצה סוגרת -->
+<button class="menu-scrim" id="menu-scrim" tabindex="-1" aria-hidden="true"></button>
 
+<!-- ══════════════════════════════════════════════════
+     LOADER — נעלם אחרי 1300ms, התוכן נכנס ב-fadeIn 1.25s
+     ══════════════════════════════════════════════════ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <svg class="loader__mark" viewBox="74.959 21.109 343.912 450.512">
+    <path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/>
+    <path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/>
+    <path class="loader__towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/>
+  </svg>
 </div>
 
-<!-- Mobile video removed — now plays as hero background -->
-</section>
+<main id="main">
+
+<!-- ══════════════════════════════════════════════════
+     01 · HERO — 102vh, מרכוז מלא, בלוק כותרת 52vw
+     ══════════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero__inner">
 
 
-<!-- ============================================================ -->
-<!-- SECTION 2: PAIN                                               -->
-<!-- ============================================================ -->
-<section class="bg-background py-20 md:py-24">
-<div class="max-w-[900px] mx-auto px-8 text-center">
+    <!-- הטקסט המלא יושב כאן מלכתחילה — בלי JS העמוד עדיין קריא.
+         ה-JS מרוקן אותו רק ברגע שרצף הפתיחה מתחיל. -->
+    <h1 class="hero__title" id="hero-title"><span class="hero__typed" id="hero-typed">אנחנו מאמינים
+שהדרך היחידה להכפיל הון
+היא לייצר ערך
+שמצדיק אותו</span><span class="caret" id="hero-caret" aria-hidden="true"></span></h1>
 
-<h2 class="mb-10">
-  <span class="font-extrabold text-3xl md:text-4xl leading-tight"><span class="text-primary">הכסף שלנו </span><span class="text-secondary">שווה פחות</span><span class="text-primary"> בכל יום שעובר</span></span>
-</h2>
-
-<div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
-  <p class="">האינפלציה שוחקת אותו, ואם אנחנו לא רוצים להיות <strong class="text-secondary">"עבדים"</strong> של העבודה שלנו, אנחנו חייבים להשקיע</p>
-  <p class="leading-relaxed">שוק ההון נותן תשואות נחמדות, <strong class="text-primary">אבל הנדל"ן בארץ כבר מזמן לא בצד של המשקיע הקטן</strong><br>בישראל אתה צריך הון עצמי מטורף בשביל לקבל תשואה של כמה <span class="font-label font-bold text-secondary">אחוזים בודדים</span> בשנה, במקרה הטוב</p>
-  <p class="font-bold text-primary text-xl mt-4">לנו זה לא הספיק</p>
-  <p class="font-bold text-xl -mt-2"><span class="text-primary">חיפשנו דרך לראות רווחים משמעותיים יותר, </span><span class="text-secondary">ובזמן קצר הרבה יותר</span></p>
-</div>
-
-</div>
-</section>
-
-
-<!-- ============================================================ -->
-<!-- SECTION 3: METHOD (Vision + Transition + Birmingham + Steps)  -->
-<!-- ============================================================ -->
-<section id="method" class="bg-background py-20 md:py-24 px-8">
-<div class="max-w-[1200px] mx-auto">
-
-<!-- Part A: Founder's Vision -->
-<div class="max-w-[800px] mx-auto mb-20 text-center">
-  <h2 class="text-primary font-extrabold text-3xl md:text-4xl mb-10">למה הקמנו את סייף קפיטל?</h2>
-  <div class="space-y-6 text-lg text-on-surface-variant leading-relaxed">
-    <p>כי אנחנו מאמינים שכסף מייצר <strong class="text-primary">שקט נפשי,</strong> ואנחנו רוצים לחיות את החיים שלנו בשקט<br>רצינו אפיק השקעה רציני, לא כזה של <span class="font-label font-bold text-secondary">10%</span> בשנה, כי זה פשוט לא מקדם אותנו מספיק מהר</p>
-    <p>הקמנו את החברה כי ראינו יותר מדי אנשים שעובדים קשה, חוסכים שקל לשקל, ומגלים בסוף שהבנק או המדינה <strong class="text-secondary">לוקחים להם הכל</strong></p>
-    <p><strong class="text-primary">אנחנו מאמינים בשותפות אמיתית:</strong> אם אתם לא מרוויחים <span class="font-extrabold text-secondary text-xl">גם אנחנו לא</span></p>
-    <p>לכן אנחנו תמיד שמים את הכסף האישי שלנו באותן עסקאות <strong class="text-primary underline decoration-1 underline-offset-4">יחד איתכם</strong></p>
-  </div>
-</div>
-
-<!-- Close method section temporarily for full-width transition -->
-</div>
-</section>
-
-<!-- Part B: Transition Statement — Gradient navy background, blends into zoom -->
-<section class="py-16 md:py-20 pb-0 md:pb-0" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
-<div class="text-center max-w-[700px] mx-auto px-6 pb-16 md:pb-20">
-  <h2 class="font-extrabold text-3xl md:text-4xl leading-tight mb-6">
-    <span class="block text-white">הגיע הזמן שהכסף</span>
-    <span class="block text-white" style="transition-delay:0.2s">יתחיל לייצר לכם</span>
-    <span class="block text-secondary" style="transition-delay:0.5s">עוד כסף.</span>
-  </h2>
-  <p class="text-white/80 text-lg leading-relaxed" style="transition-delay:0.7s">אנחנו פותחים לישראלים דלת להשקעות <strong class="text-white">"פליפ"</strong> (קונים, משפצים ומוכרים) בתוך <span class="font-label font-bold text-secondary">6 עד 12 חודשים</span> בבירמינגהם, אלבמה</p>
-</div>
-</section>
-
-<!-- Continue method section -->
-<section class="bg-background py-20 md:py-24 px-8">
-<div class="max-w-[1200px] mx-auto">
-
-<!-- Part C: Birmingham -->
-<div class="max-w-[1010px] mx-auto mb-20 text-center">
-  <h3 class="font-extrabold text-3xl text-primary mb-3">למה בירמינגהם?</h3>
-  <p class="text-on-surface-variant font-bold text-lg mb-10">כי אנחנו מחפשים איפה הכי משתלם להשקיע, <span class="text-secondary">והעיר הזו עונה על כל הדרישות</span></p>
-
-  <!-- Info cards grid -->
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-
-    <!-- 1. מרכז רפואי — צלב רפואי -->
-    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
-      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מרכז רפואי">
-          <path d="M12 7v4" stroke="#984349"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M14 9h-4" stroke="#984349"/><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16"/>
-        </svg>
-      </div>
-      <p class="font-bold text-primary text-sm mb-2">מרכז רפואי מוביל</p>
-      <p class="text-on-surface-variant text-sm leading-relaxed"><span class="font-label font-bold text-secondary">UAB Hospital</span> רביעי בגודלו בארה"ב, 2 מיליון מטופלים בשנה</p>
-    </div>
-
-    <!-- 2. כלכלה יציבה — גרף עולה -->
-    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
-      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="כלכלה יציבה">
-          <path d="M16 7h6v6" stroke="#984349"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
-        </svg>
-      </div>
-      <p class="font-bold text-primary text-sm mb-2">כלכלה יציבה ומגוונת</p>
-      <p class="text-on-surface-variant text-sm leading-relaxed">אבטלה <span class="font-label font-bold text-secondary">2.2%</span> בלבד. UAB מעסיקה 28,000 איש</p>
-    </div>
-
-    <!-- 3. ביוטכנולוגיה — מיקרוסקופ/מבחנה -->
-    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
-      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מרכז ביוטכנולוגיה">
-          <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2"/><path d="M6.453 15h11.094" stroke="#984349"/><path d="M8.5 2h7"/>
-        </svg>
-      </div>
-      <p class="font-bold text-primary text-sm mb-2">מרכז ביוטכנולוגיה פדרלי</p>
-      <p class="text-on-surface-variant text-sm leading-relaxed">אחד מ-<span class="font-label font-bold text-secondary">31 Tech Hubs</span> בארה"ב. 100+ סטארטאפים פעילים</p>
-    </div>
-
-    <!-- 4. מטרו בצמיחה — בניינים עולים -->
-    <div class="bg-white rounded-xl p-5" style="box-shadow:var(--shadow-ambient)">
-      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מטרו בצמיחה">
-          <path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3" stroke="#984349"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/>
-        </svg>
-      </div>
-      <p class="font-bold text-primary text-sm mb-2">מטרו בצמיחה</p>
-      <p class="text-on-surface-variant text-sm leading-relaxed"><span class="font-label font-bold text-secondary">879,000</span> תושבים, צמיחה של 5,700 בשנה האחרונה</p>
-    </div>
-
-    <!-- 5. מיסוי ידידותי — מטבע עם V -->
-    <div class="bg-white rounded-xl p-5 col-span-2 md:col-span-1" style="box-shadow:var(--shadow-ambient)">
-      <div class="w-10 h-10 rounded-lg bg-primary/[0.06] flex items-center justify-center mb-3 mx-auto">
-        <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מיסוי ידידותי">
-          <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m15 9-6 6" stroke="#984349"/><path d="M9 9h.01"/><path d="M15 15h.01"/>
-        </svg>
-      </div>
-      <p class="font-bold text-primary text-sm mb-2">מיסוי ידידותי למשקיע</p>
-      <p class="text-on-surface-variant text-sm leading-relaxed">מס נכס <span class="font-label font-bold text-secondary">$919</span> בשנה. ממוצע ארצי: $2,400</p>
-    </div>
-
-  </div>
-
-  <div class="space-y-4 text-lg text-on-surface-variant leading-relaxed max-w-[800px] mx-auto">
-    <p>אנחנו פועלים רק ב<strong class="text-secondary">שכונות יוקרה</strong> ובאזורים שליד <strong class="text-primary">בתי חולים גדולים ואוניברסיטאות</strong></p>
-    <p>אלו מקומות ש<strong class="text-primary">תמיד יש בהם ביקוש גבוה</strong> ואין מספיק בתים למכירה, מה ששומר על ערך הנכס וגורם לו <strong class="text-secondary">להימכר מהר</strong></p>
-  </div>
-</div>
-
-</div>
-</section>
-
-<!-- ============================================================ -->
-<!-- HOUSE FLIP: Scroll-driven renovation animation + Method overlay -->
-<!-- ============================================================ -->
-<section id="house-flip-section" class="relative" style="height:300vh;background:#fbf9f6">
-  <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#fbf9f6">
-
-    <!-- Method overlay (top portion) -->
-    <div class="relative z-10 pt-8 md:pt-36 pb-6" style="background:#fbf9f6">
-      <div class="max-w-[1000px] mx-auto px-8">
-        <h3 class="font-extrabold text-3xl text-primary mb-3 text-center">איך אנחנו מייצרים כסף?</h3>
-        <p class="text-on-surface-variant font-bold text-lg mb-8 text-center">השיטה שלנו</p>
-
-        <!-- Desktop: horizontal flow -->
-        <div class="hidden md:flex items-start justify-center gap-0">
-          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מתחת למחיר השוק">
-                <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/><path d="M8 11h6" stroke="#984349"/><path d="M11 8v6" stroke="#984349"/>
-              </svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">01</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">בוחרים בפינצטה</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">מוצאים בתים <strong class="text-secondary">מתחת למחיר השוק</strong> בשכונות הכי מבוקשות</p>
-          </div>
-          <div class="flex items-center pt-12"><div class="flow-connector-h"></div></div>
-          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="משפצים מהר">
-                <path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4" stroke="#984349"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/>
-              </svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">02</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">משפצים מהר</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">הופכים את הבית ל<strong class="text-secondary">הכי יפה בשכונה</strong> בעזרת הצוותים שלנו בשטח</p>
-          </div>
-          <div class="flex items-center pt-12"><div class="flow-connector-h"></div></div>
-          <div class="step-card text-center flex flex-col items-center max-w-[240px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מכירה ברווח">
-                <circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" stroke="#984349"/><path d="M12 18V6" stroke="#984349"/>
-              </svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">03</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">מוכרים ברווח</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">מכיוון שהשכונה יוקרתית ויש ביקוש, הבית נמכר מהר ו<strong class="text-secondary">במחיר גבוה הרבה יותר</strong> ממה שקנינו</p>
-          </div>
-        </div>
-
-        <!-- Mobile: vertical flow -->
-        <div class="flex md:hidden flex-col items-center gap-0">
-          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מתחת למחיר השוק"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/><path d="M8 11h6" stroke="#984349"/><path d="M11 8v6" stroke="#984349"/></svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">01</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">בוחרים בפינצטה</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">מוצאים בתים <strong class="text-secondary">מתחת למחיר השוק</strong> בשכונות הכי מבוקשות</p>
-          </div>
-          <div class="flow-connector-v"></div>
-          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="משפצים מהר"><path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4" stroke="#984349"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/></svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">02</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">משפצים מהר</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">הופכים את הבית ל<strong class="text-secondary">הכי יפה בשכונה</strong> בעזרת הצוותים שלנו בשטח</p>
-          </div>
-          <div class="flow-connector-v"></div>
-          <div class="step-card flex flex-col items-center text-center max-w-[280px]">
-            <div class="w-16 h-16 rounded-xl bg-primary/[0.06] flex items-center justify-center mb-3">
-              <svg viewBox="0 0 24 24" class="w-8 h-8" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="מכירה ברווח"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" stroke="#984349"/><path d="M12 18V6" stroke="#984349"/></svg>
-            </div>
-            <span class="font-label font-bold text-5xl text-secondary opacity-15 block leading-none">03</span>
-            <h4 class="font-bold text-xl text-primary mt-2 mb-2">מוכרים ברווח</h4>
-            <p class="text-on-surface-variant text-sm leading-relaxed">מכיוון שהשכונה יוקרתית ויש ביקוש, הבית נמכר מהר ו<strong class="text-secondary">במחיר גבוה הרבה יותר</strong> ממה שקנינו</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Animation frame (full screen behind method) -->
-    <img id="house-frame" src="https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames-house/frame-0000.jpg" alt="אנימציית שיפוץ בית" style="position:absolute;bottom:0;left:4.5%;width:90%;height:70%;object-fit:contain;object-position:center bottom;z-index:0">
-
-  </div>
-</section>
-
-
-<!-- ============================================================ -->
-<!-- SECTION 4: BEFORE / AFTER                                     -->
-<!-- ============================================================ -->
-<section class="bg-background py-20 md:py-24">
-<div class="max-w-[1200px] mx-auto px-6">
-
-<h2 class="text-3xl md:text-4xl font-extrabold text-center mb-16">
-  <span class="text-primary">התוצאות </span><span class="text-secondary">בשטח</span>
-</h2>
-
-<!-- Live deal cards from admin API -->
-<div class="carousel-wrapper">
-  <div id="landing-deals" class="carousel-track md-grid-3"></div>
-  <div class="carousel-dots"></div>
-</div>
-
-<!-- Fallback: shown if API fails or no deals -->
-<div id="static-results" class="text-center text-on-surface-variant py-8" style="display:none">
-  <p>עסקאות יעודכנו בקרוב</p>
-</div>
-
-<div class="text-center mt-10">
-  <a href="properties" class="inline-block border-2 border-secondary text-secondary font-bold text-lg px-8 py-4 rounded-lg hover:bg-secondary/5 transition-all">צפו בכל העסקאות</a>
-</div>
-
-</div>
-</section>
-
-
-<!-- ============================================================ -->
-<!-- SECTION 5: TRUST CARDS                                        -->
-<!-- ============================================================ -->
-<section class="bg-background py-20 md:py-24">
-<div class="max-w-[1200px] mx-auto px-6">
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-  <!-- Card 1: Investors First -->
-  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
-    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="אתם מרוויחים ראשונים">
-        <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/>
-        <path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/>
-        <path d="M18 9h1.5a1 1 0 0 0 0-5H18"/>
-        <path d="M4 22h16"/>
-        <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" stroke="#984349"/>
-        <path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>
+    <!-- הגבעה + הבית. יושבים בתחתית מסך ההירו ונראים כבר בטעינה.
+         בגלילה הם מטפסים מעלה ומכסים את הכותרת — הכותרת לא דוהה,
+         היא נחסמת. ה-transform מנוהל ב-JS (updateHeroPin). -->
+    <div class="hero__hill" id="hero-hill" aria-hidden="true">
+      <svg class="hero__house" viewBox="0 0 130 108">
+        <path d="M 10 108 L 10 50 L 0 50 L 0 46 L 14 33 L 14 10 L 24 10 L 24 24 L 50 0 L 100 46 L 100 50 L 90 50 L 90 70 L 130 70 L 130 75 L 122 75 L 122 108 Z"/>
       </svg>
     </div>
-    <h3 class="text-xl font-bold text-right mb-3">
-      <span class="text-primary">אתם מרוויחים </span><span class="text-secondary">ראשונים</span>
-    </h3>
-    <p class="text-on-surface-variant leading-relaxed text-right">המשקיעים מקבלים את הרווח שלהם לפני כולם (<span class="font-label font-bold text-secondary">עד 20%</span>). אנחנו מקבלים את החלק שלנו רק מהשקל שאחריכם</p>
-  </div>
 
-  <!-- Card 2: Skin in the Game -->
-  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
-    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="הכסף שלנו שם איתכם">
-        <path d="m11 17 2 2a1 1 0 1 0 3-3"/>
-        <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/>
-        <path d="m21 3 1 11h-2" stroke="#984349"/>
-        <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" stroke="#984349"/>
-        <path d="M3 4h8"/>
-      </svg>
-    </div>
-    <h3 class="text-xl font-bold text-right mb-3">
-      <span class="text-primary">הכסף שלנו </span><span class="text-secondary">שם איתכם</span>
-    </h3>
-    <p class="text-on-surface-variant leading-relaxed text-right">אנחנו משקיעים <strong class="text-primary">מהכיס הפרטי שלנו</strong> בכל עסקה. אנחנו שותפים מלאים לכל מה שקורה</p>
   </div>
-
-  <!-- Card 3: Transparency -->
-  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
-    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="הכל שקוף">
-        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
-        <circle cx="12" cy="12" r="3" stroke="#984349"/>
-      </svg>
-    </div>
-    <h3 class="text-xl font-bold text-right mb-3">
-      <span class="text-primary">הכל </span><span class="text-secondary">שקוף</span>
-    </h3>
-    <p class="text-on-surface-variant leading-relaxed text-right"><strong class="text-primary">קבוצת ווצאפ לכל עסקה ואזור אישי באפליקציה שלנו</strong> לכל משקיע. אתם מקבלים תמונות מהשיפוץ, מסמכים ועדכונים שוטפים מהשטח</p>
-  </div>
-
-  <!-- Card 4: Hassle-free -->
-  <div class="bg-white rounded-xl p-8" style="box-shadow:0 8px 24px rgba(27,28,26,0.04)">
-    <div class="w-10 h-10 rounded-full bg-background flex items-center justify-center mb-5">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="#022445" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-label="בלי כאבי ראש וניירת">
-        <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" stroke="#022445"/>
-        <path d="M15 4l1-1.5" stroke="#984349"/>
-        <path d="M18 6l1.5-1" stroke="#984349"/>
-        <path d="M17 2l.5 1" stroke="#984349"/>
-      </svg>
-    </div>
-    <h3 class="text-xl font-bold text-right mb-3">
-      <span class="text-primary">בלי כאבי ראש </span><span class="text-secondary">וניירת</span>
-    </h3>
-    <p class="text-on-surface-variant leading-relaxed text-right">אנחנו דואגים להכל, מהקנייה והשיפוץ ועד לדיווח ל<strong class="text-primary">מס הכנסה</strong> אתם רק מקבלים עדכונים</p>
-  </div>
-
-</div>
-</div>
 </section>
 
+<!-- ══════════════════════════════════════════════════
+     02 · REVEAL — קו אופק ישר, בית קטן במרכזו
+     הקו הוא הקצה העליון של גוש הנייבי (CSS נטו, פריך בכל רוחב).
+     הבית הוא ה-SVG היחיד — יושב על הקו ולא נמתח לעולם,
+     כי הוא לא נצבע לרוחב המסך אלא מקבל רוחב משלו.
+     המשפט הנעוץ הוא position:fixed, opacity לפי 4 נקודות עוגן
+     ══════════════════════════════════════════════════ -->
+<section class="reveal" id="reveal">
+  <!-- נייבי מלא. הגבעה והבית עברו לתחתית ההירו, ומשם הם
+       מטפסים ומכסים אותו — כשמגיעים לכאן המסך כבר כהה. -->
+  <div class="reveal__city" aria-hidden="true"></div>
 
-<!-- ============================================================ -->
-<!-- SECTION 6: KEY METRICS                                        -->
-<!-- ============================================================ -->
-<section class="bg-background py-20 md:py-24">
-<div class="max-w-[1200px] mx-auto px-6">
-
-<div class="max-w-[720px] mx-auto text-center space-y-4">
-  <p class="text-lg text-on-surface-variant leading-relaxed">בזמן שאתם בשגרה, <strong class="text-primary">הבית שלכם עובר שיפוץ</strong></p>
-  <p class="text-lg text-on-surface-variant leading-relaxed">בלי להתעסק עם שוכרים או עורכי דין אתם ממשיכים בחיים שלכם – <strong class="text-secondary">אנחנו דואגים שהכסף יעבוד</strong></p>
-</div>
-
-</div>
+  <div class="pinned" id="pinned">
+    <p class="pinned__eyebrow">המטרה שלנו ברורה:</p>
+    <h2 class="pinned__line">שתרוויח 20% על ההון<br>תוך פחות מ-12 חודשים</h2>
+  </div>
 </section>
 
+<!-- ══════════════════════════════════════════════════
+     03 · PROCESS — 150vw של מסלול גלילה
+     הרכבת נעה translateX(0 → −50vw), הדיסקים מסתובבים 0 → 200deg
+     ══════════════════════════════════════════════════ -->
+<section class="process" id="process">
+  <div class="process__stage" id="stage">
+    <div class="rail" id="rail">
 
-<!-- ============================================================ -->
-<!-- SECTION 7: FAQ                                                -->
-<!-- ============================================================ -->
-<section class="bg-background py-20 md:py-24">
-<div class="max-w-[800px] mx-auto px-6">
+      <!-- פאנל 1 · הכותרת -->
+      <div class="rail__panel rail__panel--title">
+        <h2 class="process__title">איך אנחנו<br>עושים את זה?</h2>
+      </div>
 
-<h2 class="text-3xl md:text-4xl font-extrabold text-center mb-2">
-  <span class="text-primary">שאלות נפוצות</span>
-</h2>
+      <!-- פאנל 2 · המפה. נעה שמאלה עם הרכבת, בלי תנועה משלה.
+           המדינות הן רסטר עם רקע שקוף (webp lossless, קובץ נפרד);
+           אלבמה היא מסלול וקטורי מעליו ולכן נשארת חדה בכל מידה. -->
+      <div class="rail__panel rail__panel--center">
+        <figure class="mapfig">
+          <svg class="mapfig__svg" viewBox="6.191 99.143 487.617 301.713" role="img"
+               aria-label="מפת ארצות הברית, אלבמה מסומנת">
+            <!-- ה-clipPath הוא מה שחותך את התוספות של אלסקה והוואי.
+                 בלעדיו הן חוזרות למפה — לכן הוא לא קישוט אלא חלק מהקומפוזיציה. -->
+            <defs><clipPath id="usmap-clip"><rect y="928.312" width="517.678" height="366.267"
+              x="-258.84" transform="matrix(0.86824, 0.496145, -0.394995, 0.926041, 673.349976, -848.663269)"/></clipPath></defs>
+            <image href="assets/us-alabama.webp" clip-path="url(#usmap-clip)"
+                   x="6.191" y="99.143" width="487.617" height="301.713"/>
+            <path class="mapfig__al" d="M 322.327 284.706 L 345.006 282.851 L 351.882 306.645 L 354.529 310.82 L 354.875 313.058 L 353.428 318.776 C 353.428 318.776 355.104 321.35 355.104 321.334 C 355.104 321.318 354.757 325.284 354.757 325.284 L 355.625 325.284 L 356.082 326.836 L 330.734 329.354 C 330.734 329.354 330.551 331.117 330.501 331.117 C 330.451 331.117 333.472 333.095 333.472 333.095 L 332.879 336.942 L 329.066 337.815 L 329.304 334.982 L 327.555 333.4 C 327.555 333.4 326.109 336.006 326.091 336.006 C 326.073 336.006 324.578 336.006 324.578 336.006 L 321.567 319.213 L 322.327 284.706 Z"/>
+          </svg>
+          <!-- משפט אחד שזורם, רק בשתי דרגות גודל.
+               ה-ב הקטנה נצמדת ל"בירמינגהם" ומרכיבה "בבירמינגהם". -->
+          <figcaption class="mapfig__cap">
+            <span class="mapfig__eyebrow">הכל מתחיל ב</span>
+            <span class="mapfig__place">בירמינגהם,<br>אלבמה</span>
+          </figcaption>
+        </figure>
+      </div>
 
-<div class="flex flex-col gap-6">
+      <!-- פאנל 3 · רשימת הערכים -->
+      <div class="rail__panel rail__panel--values">
+        <ol class="values">
+          <li>
+            <h3>כי יש שם שכונות יוקרה</h3>
+            <p>אנחנו עובדים בשכונות ספציפיות שיש בהן ביקוש עצום לבתי קרקע מפוארים אבל אין כמעט בתים בשוק מה שמאפשר לנו למכור נכס תוך פחות מחודש</p>
+          </li>
+          <li>
+            <h3>כי יש שם הזדמנויות מעולות</h3>
+            <p>אנחנו קונים נכסים שהם במצב גרוע, במחיר זול.<br>הכסף הוא בקנייה ובשיפוץ אנחנו לא בונים על עליית ערך</p>
+          </li>
+          <li>
+            <h3>כי האוכלוסייה שם מצוינת</h3>
+            <p>בירמינגהם היא עיר מצוינת עם אוכלוסייה אמידה שעובדת במקומות תעסוקה נחשבים ויציבים. לאוכלוסייה הזו אנחנו מוכרים את הבתים שלנו</p>
+          </li>
+        </ol>
+      </div>
 
-  <!-- Q1 -->
-  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
-    <div class="flex justify-between items-center gap-4">
-      <h4 class="text-xl font-bold text-primary text-right flex-1">למה ארה"ב ולא ישראל?</h4>
-      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
-    </div>
-    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p>כי בישראל מחירי הכניסה להשקעה בנדל"ן <span class="font-label font-bold text-secondary">גבוהים משמעותית</span>, תהליך הפליפ דורש לפחות <span class="font-label font-bold text-secondary">18 חודשים</span> כדי להימנע ממס שבח, והרגולציה לבנייה ושיפוצים <strong class="text-primary">מסובכת ואיטית</strong> ביחס לארצות הברית — שם אפשר לסגור עסקה, לשפץ ולמכור תוך חודשים בודדים</p>
     </div>
   </div>
-
-  <!-- Q2 -->
-  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
-    <div class="flex justify-between items-center gap-4">
-      <h4 class="text-xl font-bold text-primary text-right flex-1">איך הכסף שלי מוגן?</h4>
-      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
-    </div>
-    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p>הנכס רשום על חברה (<span class="font-label font-bold text-primary">LLC</span>) שאתם בעלים בה. בנוסף, חברה חיצונית בודקת כל עסקה שלנו. והכי חשוב: אנחנו מרוויחים רק <strong class="text-secondary">אחרי שאתם קיבלתם את שלכם</strong></p>
-    </div>
-  </div>
-
-  <!-- Q3 -->
-  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
-    <div class="flex justify-between items-center gap-4">
-      <h4 class="text-xl font-bold text-primary text-right flex-1">מה עם המיסים? זה לא מסובך?</h4>
-      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
-    </div>
-    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p><strong class="text-primary">ממש לא.</strong> אנחנו מלווים אתכם בכל שלב, פותחים עבורכם את החברה, דואגים לדוח השנתי ומפנים אתכם לרו"ח מומחה למיסוי אמריקאי כדי שלא תשלמו מס פעמיים. <strong class="text-primary">הכל מסודר ופשוט</strong></p>
-    </div>
-  </div>
-
-  <!-- Q4 -->
-  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
-    <div class="flex justify-between items-center gap-4">
-      <h4 class="text-xl font-bold text-primary text-right flex-1">זה נשמע"טוב מדי", איפה הקאץ'?</h4>
-      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
-    </div>
-    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p>אין קאץ', יש <span class="font-extrabold text-secondary">שקיפות.</span> אתם מוזמנים להצטרף לקבוצה שלנו, לדבר עם אנשים שכבר השקיעו וקיבלו את הכסף לחשבון, ולראות את הנתונים בעיניים</p>
-    </div>
-  </div>
-
-  <!-- Q5 -->
-  <div class="landing-faq-item rounded-xl p-6 cursor-pointer transition-colors" role="button" tabindex="0" aria-expanded="false">
-    <div class="flex justify-between items-center gap-4">
-      <h4 class="text-xl font-bold text-primary text-right flex-1">זה באמת יקרב אותי לחופש כלכלי?</h4>
-      <span class="landing-faq-chevron material-symbols-outlined text-primary flex-shrink-0">expand_more</span>
-    </div>
-    <div class="landing-faq-answer text-right text-on-surface-variant leading-relaxed">
-      <p>עסקה אחת? כנראה שלא. אבל המטרה היא להתגלגל מעסקה אחת לעסקה הבאה. זו הדרך הכי מהירה לגרום לכסף שלכם לצמוח כדי שתוכלו <strong class="text-secondary">לישון בשקט בעתיד</strong></p>
-    </div>
-  </div>
-
-</div>
-</div>
 </section>
 
+<!-- ══════════════════════════════════════════════════
+     04 · DEEP — "איך עסקה מייצרת רווח"
+     במה נעוצה אחת. u = מסכי גלילה מאז ש**הרכבת שלמעלה עוצרת**,
+     כלומר מאותו פיקסל שבו המפה מתחילה לדהות במקומה. השאלה
+     עולה בזמן שהמפה נעלמת, לא אחריה.
 
-<!-- ============================================================ -->
-<!-- SECTION 8: FINAL CTA                                          -->
-<!-- ============================================================ -->
-<section class="py-20 md:py-28" style="background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">
-<div class="max-w-[900px] mx-auto px-6 text-center">
+       0.00 → 1.00   הכותרת עולה מלמטה ונוחתת בצד שמאל,
+                     באותו מרחק מהקצה שיש לה בסוף מימין
+       1.00 → 1.35   עומדת שם
+       1.35 → 1.80   נוסעת ימינה לעמודה ונשארת שם
+       1.35 → 4.05   הטקסטים נכנסים משמאל ומתחלפים —
+                     הראשון מתחיל **עם** הנסיעה, לא אחריה
+       4.05 → 4.50   מנוחה, ואז הבמה נגללת החוצה
 
-<h2 class="text-3xl md:text-4xl font-extrabold leading-tight mb-8">
-  <span class="text-white">אל תפספסו </span><span class="text-secondary">את ההזדמנות הבאה</span>
-</h2>
+     הכותרת היא position:fixed — היא חייבת להופיע כשסקשן
+     הפרוצס עדיין על המסך, לפני שהבמה הזו בכלל נכנסת לפריים.
+     התנוחה שב-CSS היא הסופית (הכותרת כבר בעמודה); הפוזה
+     הממורכזת נגזרת ממנה ב-JS, ולכן אין שני מקורות אמת.
+     ══════════════════════════════════════════════════ -->
+<section class="deep" id="deep">
+  <div class="deep__stage" id="deep-stage">
 
-<div class="max-w-[720px] mx-auto space-y-6 mb-12">
-  <p class="text-white/90 text-lg leading-relaxed">עסקאות טובות בשכונות יוקרה <strong class="text-white">נסגרות תוך ימים בודדים</strong></p>
-  <p class="text-white/80 text-lg leading-relaxed">בכל חודש שהכסף שלכם מחכה בבנק, אתם מוותרים על רווח <strong class="text-secondary">שיכול היה כבר להיות שלכם</strong></p>
-  <p class="text-white/90 text-lg leading-relaxed">מעל <span class="font-label font-bold text-secondary text-2xl">100 משקיעים</span> <strong class="text-white">כבר בפנים</strong>, אל תהיו אלו שיגידו בעוד שנה <span class="text-secondary">"חבל שלא התחלתי אז"</span></p>
-</div>
+    <!-- השורות שבורות ידנית. הרוחב הוא max-content, ולכן
+         התיבה חובקת בדיוק את השורה הארוכה — וכשה-JS ממרכז
+         אותה במסך, מרכז התיבה הוא גם מרכז הטקסט. -->
+    <!-- שני ה-br עם .wide נשברים בדסקטופ בלבד:
+         דסקטופ — איך / עסקה / מייצרת / רווח?
+         מובייל  — איך עסקה / מייצרת רווח?
+         הרווח שלפני כל אחד מהם ב-HTML הוא מה שמחליף את
+         השבירה כשהיא מבוטלת; בלעדיו המילים היו נדבקות. -->
+    <h2 class="deep__lead" id="deep-lead">איך <br class="wide">עסקה<br>מייצרת <br class="wide">רווח?</h2>
 
-<!-- 3 Steps -->
-<div class="flex flex-col md:flex-row gap-8 mb-16 justify-center items-center md:items-start">
-  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
-    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-sm md:text-lg">1</span>
+    <!-- כל הטקסטים ערומים באותה נקודה; רק ה-opacity וה-translateX
+         מבדילים ביניהם. היוצא דוהה במקום, הנכנס מגיע משמאל. -->
+    <div class="deep__slides" id="deep-slides">
+
+      <!-- כל טקסט מחולק לשניים: .deep__text נושא את הקו האנכי
+           בצד, ו-.deep__fig הוא המכל לאינפוגרפיקה שמתחתיו.
+           הפרדה ולא בלוק אחד — אחרת הקו היה נמתח גם לאורך
+           הגרפיקה והופך משוליים של פסקה לעמוד שדרה. -->
+      <article class="deep__slide">
+        <div class="deep__text">
+          <!-- &nbsp; בין 12 לחודשים: מבטיח שהם לא ייפרדו בשום רוחב -->
+          <h3>עד 12&nbsp;חודשים לעסקה</h3>
+          <p>הבניה בבירמינגהם פשוטה וזולה יותר מהבניה בישראל<br>אנחנו מקבלים אישור לבניה תוך מספר שבועות<br>כל זה מאפשר לנו לעמוד בלוחות זמנים יחסית קצרים לפרוייקטים שלנו</p>
+        </div>
+
+        <!-- ציר הזמן. --span הוא מספר החודשים של המקטע, ומשם
+             נגזר רוחבו — כלומר הפרופורציה היא נתון ולא קישוט.
+             ב-RTL הפריט הראשון ב-DOM יושב מימין, וזה סדר הזמן,
+             ולכן גם הסולם chalk→ורוד→בורדו רץ עם הזמן. -->
+        <figure class="deep__fig">
+          <div class="tl__dim"><span class="tl__val">12 חודשים</span><span class="tl__rule"></span></div>
+          <ol class="tl">
+            <li class="tl__seg" style="--span:2"><span>רכישה</span></li>
+            <li class="tl__seg tl__seg--mid" style="--span:7"><span>שיפוץ</span></li>
+            <li class="tl__seg tl__seg--key" style="--span:3"><span>מכירה</span></li>
+          </ol>
+        </figure>
+      </article>
+
+      <article class="deep__slide">
+        <div class="deep__text">
+          <h3>מרוויחים יותר בזכות חברת מימון</h3>
+          <p>הרווח שלנו על ההון גבוה יותר בגלל שאנחנו עובדים עם חברת מימון “hard money” שנותנת לנו גב כלכלי לפרוייקטים מורכבים יותר שהרווח בהם גבוה יותר</p>
+        </div>
+
+        <!-- תרשים עוגה. שלושת האחוזים הם הנתון היחיד שנכתב;
+             הזוויות נגזרות מהם ב-CSS. הסכום חייב להיות 100.
+             aria-hidden כי כל הנתונים כתובים במקרא שמתחת. -->
+        <figure class="deep__fig deep__fig--pie">
+          <div class="pie" style="--p1:10;--p2:30;--p3:60" aria-hidden="true"></div>
+          <ul class="pie__key">
+            <li class="pie__row pie__row--key"><b>10%</b><span>היזמים</span></li>
+            <li class="pie__row pie__row--mid"><b>30%</b><span>המשקיעים</span></li>
+            <li class="pie__row"><b>60%</b><span>חברת המימון</span></li>
+          </ul>
+        </figure>
+      </article>
+
+      <article class="deep__slide">
+        <div class="deep__text">
+          <h3>אנחנו פוסלים עשרות עסקאות</h3>
+          <p>אנחנו מעבירים כל עסקה 3 נקודות ביקורת שהן המסננת האסטרטגית שלנו</p>
+        </div>
+
+        <!-- משפך הסינון. ה-SVG הוא הצורה בלבד ולכן aria-hidden;
+             ה-ol שמעליו הוא שנושא את התוכן. הצבעים מגיעים מ-CSS
+             ולא מ-fill בתגית, כדי שהטוקנים יישארו מקור האמת.
+
+             שתי צורות, אחת מוצגת בכל פעם. ההתכנסות היא ברוחב אמיתי
+             ולא באחוזים, ולכן משפך שעובד ב-461px מצר את הרצועה
+             התחתונה מתחת לרוחב הטקסט כשהוא יורד ל-84vw במובייל.
+             לגרסת המובייל גם viewBox גבוה יותר, כי אותו מלל נשבר
+             שם ליותר שורות. גבהי הרצועות אינם שווים בכוונה: הרצועה
+             הצרה ביותר מחזיקה את המלל הארוך ביותר. -->
+        <figure class="deep__fig deep__fig--fun">
+          <div class="fun">
+            <!-- 104 ולא 90: מתחת ל-1255px המשפט של השלב השני נשבר
+                 לשתי שורות, והרצועה חייבת להכיל גם את המקרה הזה. -->
+            <svg class="fun__shape fun__shape--wide" viewBox="0 0 460 324"
+                 preserveAspectRatio="none" aria-hidden="true">
+              <path class="fun__a" d="M0,0 L460,0 L439,104 L21,104 Z"/>
+              <path class="fun__b" d="M22,110 L438,110 L416,214 L44,214 Z"/>
+              <path class="fun__c" d="M45,220 L415,220 L394,324 L66,324 Z"/>
+            </svg>
+            <svg class="fun__shape fun__shape--narrow" viewBox="0 0 460 585"
+                 preserveAspectRatio="none" aria-hidden="true">
+              <path class="fun__a" d="M0,0 L460,0 L440,191 L20,191 Z"/>
+              <path class="fun__b" d="M20,197 L440,197 L420,388 L40,388 Z"/>
+              <path class="fun__c" d="M40,394 L420,394 L400,585 L60,585 Z"/>
+            </svg>
+            <!-- מתחת ל-768 המלל מתקצר למשפט אחד לכל שלב, ולכן
+                 המשפך מתקצר איתו: 480 במקום 585, אותם ערכי x
+                 ולכן אותה צללית — רק דחוסה בציר Y.
+                 511 נמדד ולא נבחר: המקרה הצפוף ביותר הוא 320px,
+                 שם שתי הרצועות התחתונות דורשות 84px. רצועה של 167
+                 יחידות נותנת שם 91.4px — 7.4px אוויר, וב-378 היא
+                 109px מול 84, כלומר 25px. -->
+            <svg class="fun__shape fun__shape--mob" viewBox="0 0 460 511"
+                 preserveAspectRatio="none" aria-hidden="true">
+              <path class="fun__a" d="M0,0 L460,0 L440,167 L20,167 Z"/>
+              <path class="fun__b" d="M20,172 L440,172 L420,339 L40,339 Z"/>
+              <path class="fun__c" d="M40,344 L420,344 L400,511 L60,511 Z"/>
+            </svg>
+            <ol class="fun__rows">
+              <li class="fun__row">
+                <b>סינון עסקאות</b>
+                <i>כל שבוע אנחנו מסננים עסקאות לפי האסטרטגיה שלנו</i>
+                <i>עסקה שמתאימה לאסטרטגיה עוברת לשלב השני</i>
+                <i class="fun__i--mob">רק עסקה שמתאימה לאסטרטגיה שלנו עוברת לשלב הבא</i>
+              </li>
+              <li class="fun__row">
+                <b>בודקים מספרים</b>
+                <i>מתמחרים שיפוץ עם הקבלן, ומצליבים מחיר מכירה מול עסקאות דומות</i>
+                <i>עסקה עם רווח נטו נמוך מדי — יורדת בשלב הזה</i>
+                <i class="fun__i--mob">לאחר חישובי עלויות שיפוץ והערכת מחיר מכירה — עסקה עם רווח נטו צפוי נמוך מדי יורדת בשלב הזה</i>
+              </li>
+              <li class="fun__row fun__row--key">
+                <b>אישור חברת המימון</b>
+                <i>חברת המימון תממן פרויקט אם התוכנית העסקית נכונה</i>
+                <i>אחרי שהיא מאשרת את התוכנית יש אור ירוק לעסקה</i>
+                <i class="fun__i--mob">יהיה רק אחרי שהיא בדקה ואישרה את העסקה. וזה מבחינתנו אור ירוק</i>
+              </li>
+            </ol>
+          </div>
+        </figure>
+      </article>
+
     </div>
-    <p class="text-white/90 leading-relaxed text-center md:pt-1">הצטרפו לקבוצת הווצאפ השקטה<br>(זה בחינם)</p>
   </div>
-  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
-    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-sm md:text-lg">2</span>
-    </div>
-    <p class="text-white/90 leading-relaxed text-center md:pt-1">בואו לכנס המשקיעים הקרוב<br>ושמעו את כל הפרטים</p>
-  </div>
-  <div class="flex flex-col items-center gap-2 flex-1 md:flex-col md:items-center">
-    <div class="w-9 h-9 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-      <span class="font-label font-bold text-white text-sm md:text-lg">3</span>
-    </div>
-    <p class="text-white/90 leading-relaxed text-center md:pt-1">תחליטו אם מתאים לכם להצטרף<br>לעסקה הבאה</p>
-  </div>
-</div>
+</section>
 
-<!-- Closing line -->
-<p class="text-2xl md:text-3xl font-bold mb-12">
-  <span class="text-white">בנו לעצמכם עתיד פיננסי </span><span class="text-secondary">חכם יותר </span><span class="text-white">עם סייף קפיטל</span>
-</p>
+<!-- ══════════════════════════════════════════════════
+     04ב · AFTER — "מה קורה אחרי שסיימנו את השיפוץ?"
+     הכותרת עולה מלמטה ונעצרת, ואחריה ארבעת השלבים עולים
+     אחד־אחד. בדסקטופ הם שורה אחת מימין לשמאל, ומתחת ל-1200
+     הם נערמים ונכנסים משמאל. הסדר ב-DOM הוא סדר הזמן, וב-RTL
+     הוא ממילא מתחיל מימין.
+     ══════════════════════════════════════════════════ -->
+<section class="after" id="after">
+  <div class="after__stage" id="after-stage">
+    <h2 class="after__lead" id="after-lead">מה קורה אחרי<br>שסיימנו את השיפוץ?</h2>
+    <ol class="after__steps" id="after-steps">
 
-<!-- CTAs -->
-<div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
-  <a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="wa-glow inline-flex items-center gap-3 bg-whatsapp text-white font-bold text-lg px-10 py-5 rounded-xl hover:opacity-90 active:scale-[0.97] transition-all">
-    <svg viewBox="0 0 24 24" class="w-6 h-6 flex-shrink-0" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      <li class="after__step">
+        <h3>מוכרים את הנכס</h3>
+        <!-- המספר הזה הוא נתון שוק, לא הביצועים שלכם. ראה הערה. -->
+        <p>נכס משופץ ומתומחר נכון נמכר בבירמינגהם בתוך כחודש</p>
+      </li>
+
+      <li class="after__step">
+        <h3>משלמים את המס</h3>
+        <!-- אחוז ההפרשה לאלבמה חסר. בלי המספר האמיתי המשפט
+             מנוסח בלי אחוזים חוץ מה-25% שכן נמסר. -->
+        <p>משלמים מס רווחי הון על הרווח בלבד באופן פרטני עם ליווי של רואי חשבון מטעמנו</p>
+      </li>
+
+      <li class="after__step">
+        <h3>מחלקים את הרווח</h3>
+        <p>כל משקיע מקבל חזרה את הקרן שהשקיע ואת הרווח שעשה עליה</p>
+      </li>
+
+      <li class="after__step">
+        <h3>מחפשים את ההשקעה הבאה</h3>
+        <p>למשקיעים שרוצים להמשיך להשקיע את הכסף כבר תהיה עסקה חדשה על הפרק להשקיע בה</p>
+      </li>
+
+    </ol>
+
+    <!-- הגבעה שסוגרת את הנייבי. יושבת בתוך הבמה ולא בסקשן, ולכן
+         היא נעוצה יחד איתה ומטפסת מעל המלל במקום לדחוף אותו —
+         בדיוק המכניקה של .hero__hill, הפוכה בצבע. -->
+    <div class="after__hill" id="after-hill" aria-hidden="true">
+      <svg class="after__house" viewBox="0 0 340 200">
+        <path fill-rule="evenodd" d="M0 200V126H72V150H88V80H96V72L170 36L244 72V80H252V150H268V126H340V200ZM154 200V172A16 16 0 0 1 186 172V200ZM110 88H130V112H110ZM160 88H180V112H160ZM210 88H230V112H210ZM110 124H130V148H110ZM160 124H180V148H160ZM210 124H230V148H210ZM110 160H130V186H110ZM210 160H230V186H210ZM12 138H30V160H12ZM42 138H60V160H42ZM12 170H30V192H12ZM42 170H60V192H42ZM280 138H298V160H280ZM310 138H328V160H310ZM280 170H298V192H280ZM310 170H328V192H310Z"/>
+      </svg>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════
+     05 · WORK — רשת 90vw · 48.4% + gap 3.2%
+     כל פריט 5n+1 ברוחב מלא (מדיה 40vw במקום 23vw)
+     ══════════════════════════════════════════════════ -->
+<section class="work" id="work">
+  <div class="work__inner">
+
+    <!-- דרגת Display מסעיף 4ב, זהה ל-.page-head__title שבעמוד
+         העסקאות: אותן מילים בדיוק ובאותה דרגה בשני העמודים. -->
+    <h2 class="work__title">העסקאות שלנו</h2>
+
+    <!-- העסקאות מגיעות מאדמין הפאנל. מה שכתוב כאן הוא תצלום
+         מצב אמיתי שנטען גם בלי JS וגם כשה-API חסום ב-CORS;
+         assets/deals.js מחליף אותו במה שיש באדמין ברגע זה.
+         התמונות עצמן תמיד נטענות מהאדמין — img לא כפוף ל-CORS. -->
+    <ul class="grid" id="deals-grid">
+
+      <li class="card">
+        <a class="card__link" href="deals.html#deal-15">
+          <img class="card__media" src="https://admin.safecapital.co.il/uploads/15/drive_1PWaXY7vN4cBiK7S3AA5pQHiQ5WG9Uyko_WhatsApp_Image_2026-01-14_at_07.49.49__1_.jpeg"
+               alt="" loading="lazy" decoding="async">
+          <span class="card__scrim" aria-hidden="true"></span>
+          <span class="card__addr" dir="ltr">206 Mountain Avenue</span>
+        </a>
+      </li>
+
+      <li class="card">
+        <a class="card__link" href="deals.html#deal-16">
+          <img class="card__media" src="https://admin.safecapital.co.il/uploads/16/1775364865691_Gemini_Generated_Image_5awbyw5awbyw5awb.png"
+               alt="" loading="lazy" decoding="async">
+          <span class="card__scrim" aria-hidden="true"></span>
+          <span class="card__addr" dir="ltr">1513 Oxmoor Road</span>
+        </a>
+      </li>
+
+      <li class="card">
+        <a class="card__link" href="deals.html#deal-20">
+          <img class="card__media" src="https://admin.safecapital.co.il/uploads/20/drive_1nN_7ins8NTppOb3ARkE4ttJQ32WwkeXs_dd74a6d1646ae3b939198c4c68e3bac5-uncropped_scaled_within_1536_1152.webp"
+               alt="" loading="lazy" decoding="async">
+          <span class="card__scrim" aria-hidden="true"></span>
+          <span class="card__addr" dir="ltr">3425 Ridge Dell Circle</span>
+        </a>
+      </li>
+
+    </ul>
+
+    <div class="work__cta">
+      <a class="btn" href="deals.html">
+        לכל העסקאות
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════════════════════════════════════════════
+     06 · FOOTER
+     ══════════════════════════════════════════════════ -->
+<footer class="colophon" id="colophon">
+  <div class="colophon__inner">
+
+    <!-- ערימה ממורכזת אחת: לוגו · שורת קישורים · זכויות.
+         אותו מבנה בדסקטופ ובמובייל — רק הגדלים משתנים. -->
+    <a class="colophon__brand" href="#top" aria-label="סייף קפיטל — לראש העמוד">
+    <svg class="logo colophon__logo" viewBox="21.209 163.578 454.834 186.191" role="img" aria-label="Safe Capital">
+      <g id="object-4" transform="matrix(1, 0, 0, 1, -5.684341886080802e-14, 0)"><g id="object-1" style="" transform="matrix(0.286374, 0, 0, 0.286374, -0.273722, 157.533188)"><path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/><path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/><path class="logo__towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/></g><g style="" transform="matrix(1, 0, 0, 1, 0.332724, -20.075287)"><path style="transform-box: fill-box;transform-origin: 50% 50%" d="M 177.44 262.102 L 197.648 213.497 L 217.939 262.152 L 177.44 262.102 Z M 236.39 306.584 L 236.391 306.584 L 264.038 306.645 L 211.272 189.836 L 211.269 189.836 L 184.276 189.681 L 131.257 306.555 L 131.263 306.555 C 131.267 306.555 158.673 306.581 158.693 306.581 L 158.696 306.581 L 158.696 306.579 C 158.699 306.572 158.704 306.561 158.712 306.545 C 158.713 306.543 158.713 306.542 158.713 306.542 C 158.713 306.542 158.713 306.542 158.713 306.541 C 158.713 306.541 158.714 306.54 158.714 306.539 C 158.715 306.536 158.718 306.53 158.724 306.515 C 158.749 306.454 168.931 282.329 168.931 282.329 L 226.581 282.636 L 236.39 306.584 Z"/><path d="M 368.21 189.859 L 368.173 209.793 L 311.727 209.46 L 311.784 241.834 L 361.443 241.789 L 361.426 261.872 L 311.519 261.457 L 311.647 306.615 L 287.338 306.631 L 287.468 189.683 L 368.21 189.859 Z"/><path d="M 474.137 189.739 L 474.111 209.602 L 418.822 209.597 L 418.778 237.89 L 467.046 237.673 L 467.044 257.539 L 418.602 257.266 L 418.634 287.367 L 475.629 286.998 L 475.725 306.645 L 393.893 306.443 L 394.161 189.677 L 474.137 189.739 Z"/></g><text class="logo__sub" style="font-family: Arial, Heebo, sans-serif;font-size: 32px;letter-spacing: 49px;text-transform: capitalize;word-spacing: 2px;white-space: pre" text-anchor="middle" x="273.126" y="342.639">CAPITAL</text></g>
     </svg>
-    הצטרפו לקבוצת הווצאפ לעדכונים
-  </a>
-</div>
+    </a>
 
-</div>
-</section>
+    <!-- שורה אחת. המפריד הוא border על כל קישור שאינו הראשון,
+         ולכן הוא נופל בדיוק בין שניים ולא נשאר תלוי בקצה. -->
+    <nav class="colophon__nav" aria-label="מידע משפטי">
+      <a href="privacy.html">פרטיות</a>
+      <a href="accessibility.html">נגישות</a>
+      <a href="terms.html">תקנון</a>
+    </nav>
 
+    <p class="colophon__legal">כל הזכויות שמורות © סייף קפיטל 2026</p>
 
-<!-- ============================================================ -->
-<!-- FOOTER                                                        -->
-<!-- ============================================================ -->
-<footer class="site-footer">
-<div class="footer-inner">
-<div class="footer-links"><h4>ניווט מהיר</h4>
-<a href="/">עמוד הבית</a><a href="properties">עסקאות</a><a href="contact">צור קשר</a>
-</div>
-<div class="footer-links"><h4>מידע נוסף</h4>
-<a href="privacy">מדיניות פרטיות</a><a href="terms">תקנון אתר</a><a href="#">שאלות נפוצות</a>
-</div>
-<div class="footer-brand-cta" style="align-items:flex-end;gap:1.5rem">
-<div class="footer-brand">
-<p data-setting="footer_description">חברת Safe Capital מתמחה באיתור, השבחה ומכירה של נכסי נדל"ן בארה"ב, עם דגש על שקיפות מלאה ותשואה גבוהה למשקיעים</p></div>
-<div class="footer-buttons" style="margin-top:0;width:100%;max-width:320px"><a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" rel="noopener noreferrer" class="footer-cta-btn" style="width:100%;text-align:center">הצטרפו עכשיו</a><a href="contact" class="footer-ghost-btn" style="width:100%;text-align:center">צור קשר</a></div>
-</div></div>
-<div class="footer-bottom"><span data-setting="copyright_text">&copy; 2026 Safe Capital. כל הזכויות שמורות</span><span class="footer-bottom-contact"><span data-setting="email_info">safecapital2024@gmail.com</span> | <span data-setting="phone_footer">054-7828550</span></span></div>
+  </div>
 </footer>
 
+<script src="assets/motion.js?v=48"></script>
+<script src="assets/deals.js?v=20"></script>
 
-<!-- ============================================================ -->
+<!-- ══════════════════════════════════════════════════
+     כפתור ההצטרפות הצף + חלון שתי האפשרויות
 
+     הכפתור הוא **קישור אמיתי** לטופס ההרשמה, ולכן הוא
+     עובד גם בלי JS. ‏join.js מחליף את ההתנהגות ופותח
+     במקום זה את החלון. ראה ההערה בראש הסקריפט.
+     ══════════════════════════════════════════════════ -->
+<a class="join-fab" id="join-fab" href="contact.html#contact">
+  הצטרפות
+</a>
 
-<!-- ============================================================ -->
-<!-- ALL JAVASCRIPT (embedded)                                     -->
-<!-- ============================================================ -->
-<script>
-(function() {
-  'use strict';
+<dialog class="join" id="join-dialog" aria-labelledby="join-title">
+  <div class="join__panel">
 
-  /* Mobile Menu Toggle — handled by shared.js */
+    <!-- ── מסך 1 · הבחירה ── -->
+    <div class="join__screen" data-screen="choose">
+      <h2 class="join__title" id="join-title">אנחנו שמחים שבחרתם להצטרף אלינו!</h2>
+      <!-- כל אפשרות היא כפתור + הסבר קצר מתחתיו. ההסבר אינו
+           קישוט: שתי האפשרויות נשמעות דומות למי שלא מכיר, וההבדל
+           ביניהן — מי פונה למי, ומתי — הוא מה שמאפשר לבחור. -->
+      <div class="join__options">
 
-  /* Desktop: show all hero elements immediately */
-  if (window.innerWidth >= 768) {
-    var els = document.querySelectorAll('.mobile-hero-title, .mobile-hero-lines, .mobile-hero-buttons');
-    els.forEach(function(el) { el.style.opacity = '1'; el.style.transform = 'none'; });
-  }
+        <div class="join__choice">
+          <button class="join__option join__option--primary" type="button" id="join-to-form">הרשמה לרשימת ההמתנה לעסקה הבאה</button>
+          <p class="join__desc">רשימה של משקיעים עם הון זמין שרוצים לקבל עדכון כשהעסקה הבאה שלנו תפורסם</p>
+          <p class="join__desc">עדיפות תינתן לראשונים ברשימה</p>
+        </div>
 
-  /* ===== 2. Intersection Observer for .===== */
-  var fadeEls = document.querySelectorAll('.fade-in');
-  if ('IntersectionObserver' in window) {
-    var fadeObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          fadeObs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    fadeEls.forEach(function(el) { fadeObs.observe(el); });
-  } else {
-    fadeEls.forEach(function(el) { el.classList.add('visible'); });
-  }
+        <div class="join__choice">
+          <a class="join__option" href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t"
+             target="_blank" rel="noopener noreferrer">הצטרפות לקבוצת העדכונים בוואטסאפ</a>
+          <p class="join__desc">קבוצה שקטה שבה אנחנו מראים בעיקר את הפעילות שלנו ומעדכנים כשיש נכסים חדשים</p>
+        </div>
 
-  /* ===== 3. Hero Entrance (staggered on load) ===== */
-  window.addEventListener('load', function() {
-    var heroTexts = document.querySelectorAll('.hero-text');
-    heroTexts.forEach(function(el, i) {
-      setTimeout(function() {
-        el.classList.add('visible');
-      }, 100 + i * 200);
-    });
-  });
+      </div>
+    </div>
 
-  /* ===== 3b. Scroll-Driven Frames ===== */
-  var heroEl = document.getElementById('hero');
-  var frameImg = document.querySelector('.scroll-frame');
+    <!-- ══════════════════════════════════════════════════
+         מסך 2 · טופס רשימת ההמתנה
 
-  if (frameImg && heroEl && window.innerWidth >= 768) {
-    var TOTAL_FRAMES = 88;
-    var frameImages = [];
-    var framesLoaded = 0;
-    var lastFrame = -1;
+         **זהו הטופס שבשאלון בדיקת ההתאמה** (‏safe_capital/
+         website/fitcheck-preview.html, שורות 1114–1156):
+         אותם שבעה שדות, אותן אפשרויות, אותו ניסוח אישור.
 
-    /* Preload all frame images (desktop only — hidden on mobile) */
-    for (var f = 1; f <= TOTAL_FRAMES; f++) {
-      (function(idx) {
-        var img = new Image();
-        img.onload = function() { framesLoaded++; };
-        img.src = 'https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames/frame-' + (idx < 10 ? '0' : '') + idx + '.jpg';
-        frameImages[idx - 1] = img;
-      })(f);
-    }
+         שמות השדות זהים לשמות שם — first · last · mail ·
+         phone · capital · liquid · contact · ok — כי שני
+         הטפסים אמורים להזין את **אותה טבלה**. שינוי שם כאן
+         בלי שינוי מקביל שם ישבור את התאימות בלי להשמיע קול.
+         גם ערכי הבוררים הם הטקסט העברי, כמו בשאלון.
 
-    function updateScrollVideo() {
-      if (!framesLoaded) return;
-      var rect = heroEl.getBoundingClientRect();
-      var totalScroll = heroEl.offsetHeight - window.innerHeight;
-      if (totalScroll <= 0) return;
-      var progress = Math.max(0, Math.min(1, -rect.top / totalScroll));
-      var fi = Math.min(Math.floor(progress * TOTAL_FRAMES), TOTAL_FRAMES - 1);
-      if (fi !== lastFrame && frameImages[fi] && frameImages[fi].complete) {
-        frameImg.src = frameImages[fi].src;
-        lastFrame = fi;
-      }
-    }
+         זה **אינו** הטופס שבעמוד צור קשר — שם יושבת פנייה
+         כללית, עם שדות ושמות משלה.
+         ══════════════════════════════════════════════════ -->
+    <div class="join__screen" data-screen="form" hidden>
 
-    var videoBg = document.querySelector('.hero-video-bg');
+      <button class="join__back" type="button" id="join-back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+        חזרה
+      </button>
 
-    var scrollTicking = false;
-    window.addEventListener('scroll', function() {
-      if (!scrollTicking) {
-        requestAnimationFrame(function() {
-          updateScrollVideo();
-          /* Hide fixed video when hero scrolls out */
-          var heroRect = heroEl.getBoundingClientRect();
-          if (videoBg) {
-            videoBg.style.display = heroRect.bottom > 0 ? '' : 'none';
-          }
-          scrollTicking = false;
-        });
-        scrollTicking = true;
-      }
-    }, { passive: true });
-  }
+      <h2 class="join__title">הרשמה לרשימת ההמתנה</h2>
 
-  /* ===== 4. Step Card Sequential Reveal ===== */
-  var stepCards = document.querySelectorAll('.step-card');
-  var connectors = document.querySelectorAll('.flow-connector-h, .flow-connector-v');
-  if ('IntersectionObserver' in window && stepCards.length) {
-    var stepObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          /* Reveal all steps and connectors sequentially */
-          stepCards.forEach(function(card, i) {
-            setTimeout(function() {
-              card.classList.add('visible');
-            }, i * 400);
-            /* Show connector after card (connector i appears between card i and i+1) */
-            if (connectors[i]) {
-              setTimeout(function() {
-                connectors[i].classList.add('visible');
-              }, i * 400 + 250);
-            }
-          });
-          stepObs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    var firstVisibleCard = Array.from(stepCards).find(function(card) {
-      return card.offsetParent !== null;
-    });
-    if (firstVisibleCard) stepObs.observe(firstVisibleCard);
-  }
+      <form class="form join__form" id="waitlist-form" data-validate novalidate
+            data-done="נרשמת. נעדכן אותך ראשון כשתיפתח עסקה חדשה.">
 
-  /* ===== 5. Counter Animation ===== */
-  var counters = document.querySelectorAll('.counter');
-  var counterAnimated = false;
+        <div class="form__grid">
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
+          <p class="field">
+            <input class="field__input" id="wl-first" aria-describedby="err-wl-first" name="first"
+                   type="text" placeholder=" " required data-rule="name"
+                   autocomplete="given-name" autocapitalize="words" spellcheck="false" maxlength="40">
+            <label class="field__label" for="wl-first">שם<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-first"></span>
+          </p>
 
-  function animateCounter(el) {
-    var target = parseFloat(el.dataset.target);
-    var prefix = el.dataset.prefix || '';
-    var suffix = el.dataset.suffix || '';
-    var isDecimal = el.dataset.decimal === 'true';
+          <p class="field">
+            <input class="field__input" id="wl-last" aria-describedby="err-wl-last" name="last"
+                   type="text" placeholder=" " required data-rule="name"
+                   autocomplete="family-name" autocapitalize="words" spellcheck="false" maxlength="40">
+            <label class="field__label" for="wl-last">שם משפחה<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-last"></span>
+          </p>
 
-    /* Respect prefers-reduced-motion */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      el.textContent = prefix + (isDecimal ? target.toFixed(1) : Math.round(target)) + suffix;
-      return;
-    }
+          <p class="field field--wide">
+            <input class="field__input field__input--ltr" id="wl-mail" aria-describedby="err-wl-mail" name="mail"
+                   type="email" placeholder=" " required data-rule="email"
+                   autocomplete="email" inputmode="email" dir="ltr"
+                   spellcheck="false" autocapitalize="off" maxlength="254">
+            <label class="field__label" for="wl-mail">אימייל<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-mail"></span>
+          </p>
 
-    var duration = 2000;
-    var start = performance.now();
+          <p class="field field--wide">
+            <input class="field__input field__input--ltr" id="wl-phone" aria-describedby="err-wl-phone" name="phone"
+                   type="tel" placeholder=" " required data-rule="phone"
+                   autocomplete="tel" inputmode="tel" dir="ltr" maxlength="20">
+            <label class="field__label" for="wl-phone">טלפון<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-phone"></span>
+          </p>
 
-    function tick(now) {
-      var elapsed = now - start;
-      var progress = Math.min(elapsed / duration, 1);
-      var eased = easeOutCubic(progress);
-      var current = eased * target;
-      if (isDecimal) {
-        el.textContent = prefix + current.toFixed(1) + suffix;
-      } else {
-        el.textContent = prefix + Math.round(current) + suffix;
-      }
-      if (progress < 1) {
-        requestAnimationFrame(tick);
-      }
-    }
-    requestAnimationFrame(tick);
-  }
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-capital" aria-describedby="err-wl-capital" name="capital" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>עד 50 אלף דולר</option>
+              <option>50 עד 100 אלף דולר</option>
+              <option>100 עד 250 אלף דולר</option>
+              <option>מעל 250 אלף דולר</option>
+            </select>
+            <label class="field__label" for="wl-capital">הון משוער<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-capital"></span>
+          </p>
 
-  if ('IntersectionObserver' in window && counters.length) {
-    var metricsSection = document.getElementById('metrics');
-    if (metricsSection) {
-      var counterObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting && !counterAnimated) {
-            counterAnimated = true;
-            counters.forEach(function(c) { animateCounter(c); });
-            counterObs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.5 });
-      counterObs.observe(metricsSection);
-    }
-  }
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-liquid" aria-describedby="err-wl-liquid" name="liquid" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>כן</option>
+              <option>חלקית</option>
+              <option>לא</option>
+            </select>
+            <label class="field__label" for="wl-liquid">האם ההון נזיל כרגע?<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-liquid"></span>
+          </p>
 
-  /* ===== 6. Before/After Slider ===== */
-  document.querySelectorAll('[data-ba]').forEach(function(container) {
-    var afterEl = container.querySelector('.ba-after');
-    var handle = container.querySelector('.ba-handle');
-    if (!afterEl || !handle) return;
-    var isDragging = false;
+          <p class="field field--wide">
+            <select class="field__input field__select" id="wl-contact" aria-describedby="err-wl-contact" name="contact" required data-rule="choice">
+              <option value="" disabled selected></option>
+              <option>כן</option>
+              <option>לא כרגע</option>
+            </select>
+            <label class="field__label" for="wl-contact">האם תרצה שניצור איתך קשר?<i class="field__req" aria-hidden="true">*</i></label>
+            <span class="field__error" id="err-wl-contact"></span>
+          </p>
 
-    function updateSlider(clientX) {
-      var rect = container.getBoundingClientRect();
-      var x = clientX - rect.left;
-      var pct = Math.max(0, Math.min(x / rect.width, 1));
-      /* In RTL, clip-path inset: top right bottom left */
-      afterEl.style.clipPath = 'inset(0 ' + ((1 - pct) * 100) + '% 0 0)';
-      handle.style.left = (pct * 100) + '%';
-    }
+        </div>
 
-    container.addEventListener('mousedown', function(e) {
-      isDragging = true;
-      updateSlider(e.clientX);
-      e.preventDefault();
-    });
-    container.addEventListener('touchstart', function(e) {
-      isDragging = true;
-      updateSlider(e.touches[0].clientX);
-    }, { passive: true });
+        <p class="consent">
+          <input class="consent__box" id="wl-ok" name="ok" type="checkbox" required aria-describedby="err-wl-ok">
+          <label class="consent__text" for="wl-ok">אני מאשר שהפרטים שלי יישמרו אצלכם ושתיצרו איתי קשר, בהתאם ל<a href="privacy.html">מדיניות הפרטיות</a>.</label>
+          <span class="field__error" id="err-wl-ok"></span>
+        </p>
 
-    document.addEventListener('mousemove', function(e) {
-      if (isDragging) updateSlider(e.clientX);
-    });
-    document.addEventListener('touchmove', function(e) {
-      if (isDragging) updateSlider(e.touches[0].clientX);
-    }, { passive: true });
+        <p class="form__note" data-note role="status" aria-live="polite"></p>
 
-    document.addEventListener('mouseup', function() { isDragging = false; });
-    document.addEventListener('touchend', function() { isDragging = false; });
-  });
+        <div class="form__submit">
+          <button class="btn" type="submit">
+            הצטרפות לרשימה
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+        </div>
 
-  /* ===== 7. FAQ Accordion ===== */
-  document.querySelectorAll('.landing-faq-item').forEach(function(item) {
-    function toggle() {
-      var isOpen = item.classList.contains('open');
-      /* Close all others */
-      document.querySelectorAll('.landing-faq-item.open').forEach(function(other) {
-        if (other !== item) {
-          other.classList.remove('open');
-          other.setAttribute('aria-expanded', 'false');
-          var a = other.querySelector('.landing-faq-answer');
-          if (a) a.classList.remove('open');
-        }
-      });
-      /* Toggle current */
-      if (isOpen) {
-        item.classList.remove('open');
-        item.setAttribute('aria-expanded', 'false');
-        item.querySelector('.landing-faq-answer').classList.remove('open');
-      } else {
-        item.classList.add('open');
-        item.setAttribute('aria-expanded', 'true');
-        item.querySelector('.landing-faq-answer').classList.add('open');
-      }
-    }
-    item.addEventListener('click', toggle);
-    item.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggle();
-      }
-    });
-  });
+      </form>
+    </div>
 
-  /* ===== 8. WhatsApp FAB Visibility ===== */
-  var heroSection = document.getElementById('hero');
-  var fab = document.querySelector('.whatsapp-fab');
-  if (heroSection && fab && 'IntersectionObserver' in window) {
-    var fabObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          fab.classList.remove('visible');
-        } else {
-          fab.classList.add('visible');
-        }
-      });
-    }, { threshold: 0 });
-    fabObs.observe(heroSection);
-  }
+  </div>
+</dialog>
 
-  /* ===== 9. Smooth Scroll for internal links ===== */
-  document.querySelectorAll('.scroll-link').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      var href = this.getAttribute('href');
-      if (href && href.startsWith('#')) {
-        e.preventDefault();
-        var target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
-    });
-  });
-
-
-  /* ===== 11. House Flip Scroll Animation ===== */
-  var houseSection = document.getElementById('house-flip-section');
-  var houseFrame = document.getElementById('house-frame');
-
-  if (houseSection && houseFrame && window.innerWidth >= 768) {
-    var HOUSE_TOTAL = 192;
-    var houseImages = [];
-    var houseLoaded = 0;
-    var lastHouseFrame = -1;
-
-    /* Preload house frames (desktop only — hidden on mobile) */
-    for (var h = 0; h < HOUSE_TOTAL; h++) {
-      (function(idx) {
-        var img = new Image();
-        img.onload = function() { houseLoaded++; };
-        var padded = String(idx).padStart(4, '0');
-        img.src = 'https://atvhgtjlksfcsboqbttl.supabase.co/storage/v1/object/public/website-assets/frames-house/frame-' + padded + '.jpg';
-        houseImages[idx] = img;
-      })(h);
-    }
-
-    var houseTicking = false;
-    window.addEventListener('scroll', function() {
-      if (!houseTicking) {
-        requestAnimationFrame(function() {
-          if (!houseLoaded) { houseTicking = false; return; }
-          var rect = houseSection.getBoundingClientRect();
-          var totalScroll = houseSection.offsetHeight - window.innerHeight;
-          if (totalScroll <= 0) { houseTicking = false; return; }
-          var progress = Math.max(0, Math.min(1, -rect.top / totalScroll));
-          var fi = Math.min(Math.floor(progress * HOUSE_TOTAL), HOUSE_TOTAL - 1);
-          if (fi !== lastHouseFrame && houseImages[fi] && houseImages[fi].complete) {
-            houseFrame.src = houseImages[fi].src;
-            lastHouseFrame = fi;
-          }
-          houseTicking = false;
-        });
-        houseTicking = true;
-      }
-    }, { passive: true });
-  }
-
-  /* ===== 12. Live Deals from Admin API =====
-     Uses the shared renderDealCard() from js/deals.js so the home-page
-     card matches the properties-page collapsed card 1:1. */
-  var ADMIN_HOST_DEALS = (window.location.hostname === 'localhost') ? 'http://localhost:3000' : 'https://admin.safecapital.co.il';
-  var DEALS_API = ADMIN_HOST_DEALS + '/api/public/deals';
-  var dealsContainer = document.getElementById('landing-deals');
-  var staticResults = document.getElementById('static-results');
-
-  if (dealsContainer) {
-    var dealsRetries = 0;
-    function loadDeals() {
-      if (typeof window.renderDealCard !== 'function') {
-        // js/deals.js not yet loaded — try again on next tick
-        setTimeout(loadDeals, 50);
-        return;
-      }
-      fetch(DEALS_API)
-        .then(function(res) {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.json();
-        })
-        .then(function(data) {
-          if (!data.deals || data.deals.length === 0) {
-            if (staticResults) staticResults.style.display = '';
-            return;
-          }
-          var cards = data.deals.slice(0, 3);
-          // No expand/collapse on the home page — main CTA below cards
-          // links to properties.html.
-          cards.forEach(function(deal) { deal.is_expandable = false; });
-          dealsContainer.innerHTML = cards.map(function(deal, i) {
-            return window.renderDealCard(deal, i);
-          }).join('');
-          if (staticResults) staticResults.style.display = 'none';
-          // Mobile only: add CTA card after last deal
-          if (window.innerWidth < 768) {
-            dealsContainer.insertAdjacentHTML('beforeend',
-              '<div class="carousel-card-85 flex-shrink-0 rounded-xl p-8 flex flex-col items-center justify-center text-center text-white" style="min-height:300px;background:linear-gradient(135deg,#022445 0%,#1e3a5c 100%)">' +
-                '<span class="material-symbols-outlined text-4xl mb-4 text-secondary">notifications_active</span>' +
-                '<h3 class="font-bold text-lg mb-3">העסקה הבאה יכולה לצוץ מרגע לרגע</h3>' +
-                '<p class="text-white/80 text-sm mb-6 leading-relaxed">ולהיסגר תוך שבוע.<br>הדרך שלכם להישאר מעודכנים<br>היא בקבוצת הווצאפ</p>' +
-                '<a href="https://chat.whatsapp.com/HvYhT4qzlYR1lM24jaNyL0?mode=gi_t" data-setting-href="whatsapp_group" target="_blank" class="inline-flex items-center gap-2 bg-whatsapp text-white font-bold px-6 py-3 rounded-lg hover:opacity-90">' +
-                  '<svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.96 11.96 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.37 0-4.567-.7-6.42-1.9l-.147-.1-3.056 1.024 1.024-3.056-.1-.147A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>' +
-                  '\u05D4\u05E6\u05D8\u05E8\u05E4\u05D5 \u05DC\u05E7\u05D1\u05D5\u05E6\u05EA \u05D4\u05D5\u05D5\u05E6\u05D0\u05E4' +
-                '</a>' +
-              '</div>'
-            );
-          }
-          // Re-init carousels for dynamically loaded deals
-          if (window.innerWidth < 768 && window.initCarousels) {
-            window.initCarousels();
-          }
-        })
-        .catch(function() {
-          dealsRetries++;
-          if (dealsRetries < 3) {
-            setTimeout(loadDeals, 3000);
-          } else {
-            if (staticResults) staticResults.style.display = '';
-          }
-        });
-    }
-    loadDeals();
-  }
-
-})();
-</script>
-<script src="js/settings.js"></script>
-<script src="js/shared.js?v=2"></script>
-<script src="js/deal-display-config.js?v=1"></script>
-<script src="js/deals.js?v=1"></script>
-
-<!-- NagishLi z-index fix + dismiss button -->
-<style>
-nagishli,nagishli *{z-index:99999!important}
-#nl-r2m{z-index:99999!important}
-#nl-dismiss{position:fixed;bottom:52px;right:8px;z-index:999999;width:20px;height:20px;border-radius:50%;background:#022445;color:#fff;border:none;font-size:12px;line-height:20px;text-align:center;cursor:pointer;opacity:0.7;padding:0}
-#nl-dismiss:hover{opacity:1}
-</style>
-<!-- jQuery for NagishLi -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<!-- NagishLi Accessibility Widget -->
-<script>
-var nl_pos="br";var nl_lang="he";var nl_color="blue";var nl_compact="1";var nl_accordion="0";var nl_dir="nl-files/";
-(function(){var s=document.createElement("script");s.type="text/javascript";s.src="nagishli.js?v=2.3";s.async=true;document.getElementsByTagName("head")[0].appendChild(s)})();
-/* Add dismiss X button after nagishli loads */
-setTimeout(function(){
-  if(sessionStorage.getItem("nl_hidden")){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";return}
-  var btn=document.createElement("button");
-  btn.id="nl-dismiss";btn.textContent="✕";btn.title="הסתר כפתור נגישות";
-  btn.onclick=function(){var nl=document.querySelector("nagishli");if(nl)nl.style.display="none";this.style.display="none";sessionStorage.setItem("nl_hidden","1")};
-  document.body.appendChild(btn);
-},2000);
-</script>
-
+<script src="assets/a11y.js?v=2"></script>
+<script src="assets/forms.js?v=1"></script>
+<script src="assets/join.js?v=4"></script>
 </body>
 </html>
