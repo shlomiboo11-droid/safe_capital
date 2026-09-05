@@ -971,7 +971,14 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
      (רוחב הערימה במקום גובה השלב) — ולכן המסלול ארוך יותר. */
   /* ארוך מהדסקטופ: הטיפוס הוא מסך מלא, והמסך כאן גבוה יותר
      ביחס לרוחבו — ולכן גם המרחק שהשלבים נוסעים גדול יותר. */
-  .after{min-height:483svh}
+  /* ‏vh ולא svh — חייב להיות אותה יחידה כמו .work{margin-top:-86vh}
+     שמושך את עצמו לתוך הסקשן הזה. ב-iOS‏ svh קטן מ-vh, ולכן
+     הסקשן התקצר ב-479px בזמן שהמשיכה נשארה 726px מלאים:
+     ‏.work (z-4) טיפס מעל .after (z-3, יוצר stacking context
+     שכולא בתוכו את z-5 של הגבעה) וכיסה את הבית לגמרי.
+     נמדד: 95 מתוך 95 הפריימים שבהם הבית על המסך היו מכוסים.
+     היכן ש-svh שווה ל-vh — דסקטופ, אמולציה — זה no-op גמור. */
+  .after{min-height:483vh}
   .after__lead{top:12vh;font-size:var(--fs-h1)}
   /* אין שורה — ערימה. הקו האנכי נשאר בקצה הקריאה של כל שלב. */
   .after__steps{
@@ -2475,7 +2482,15 @@ input.field__input:not(:placeholder-shown) ~ .field__label,
 }
 .hero__inner{
   position:sticky;top:0;
-  width:100%;height:100svh;
+  /* ‏vh ולא svh. ב-iOS‏ svh הוא הגובה כשסרגל הכתובת פתוח, אבל
+     בגלילה הסרגל נסגר והשטח הנראה גדל ל-vh — והבמה, שגובהה
+     נעול על svh, הפסיקה לכסות אותו. מתחתיה נחשף הרקע של .hero,
+     שהוא bone, ולכן הופיעה רצועה לבנה בתחתית המסך. נמדד:
+     99px ב-iPhone 12 Pro. באמולציה של דסקטופ svh שווה ל-vh
+     ולכן הבאג לא מופיע שם בכלל.
+     ‏vh גם מיישר את הבמה הזו עם .deep__stage ו-.after__stage,
+     ששתיהן כבר 100vh — היא הייתה היחידה שחרגה. */
+  width:100%;height:100vh;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   padding-inline:10px;
@@ -2741,14 +2756,6 @@ input.field__input:not(:placeholder-shown) ~ .field__label,
 @media (max-width:767px){
   .process{min-height:500svh;padding:0}
 
-  /* ‏.deep מתחיל עכשיו מוקדם ב-843px — נקודת האפס שלו נקשרה
-     לרגע שהבמה של הפרוצס משתחררת (ראה M.deepTop ב-motion.js).
-     בלי לקצר אותו כאן כל העודף היה נערם בזנב: השקף האחרון
-     החזיק 1366px מול ~500 של השניים שלפניו, כלומר מסך וחצי
-     שבו כלום לא קורה. ‏275svh מחזיר אותו ל-547px — באותו קצב
-     כמו 474 ו-570 שביניהם. נמדד ב-390×844.
-     בדסקטופ ובטאבלט הוא נשאר 390svh, כי שם נקודת האפס לא זזה. */
-  .deep{min-height:275svh}
   .process__stage{
     position:sticky;top:0;
     height:100svh;
