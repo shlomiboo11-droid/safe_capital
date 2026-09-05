@@ -613,8 +613,20 @@
       M.houseH = afterHouse
         ? Math.round(afterHouse.getBoundingClientRect().height) : 0;
       M.hillClimb = Math.round(vh + M.hillR + M.houseH);
-      M.climbFrom = t0 - AFTER_GAP + AFTER_HOLD;
-      M.climbSpan = M.hillClimb / vh;          /* 1:1 עם הגלילה */
+      M.climbSpan = M.hillClimb / vh;
+      /* הטיפוס חייב להסתיים **לפני** שהבמה משתחררת מהנעיצה.
+         אחרת נפתח חלון שבו שתי תנועות של 1:1 מצטברות: הדף כבר
+         מגלגל את הבמה מעלה, וה-JS עוד מטפס בתוכה — והגבעה עם
+         הבית זזות פי שניים מהאצבע. נמדד 8 פיקסלים בקצב 2.0
+         בדיוק בנקודת השחרור, וזו הקפיצה של הבית.
+         הרגע נגזר מגובה הסקשן ולא מלוח השלבים, ולכן הוא נכון
+         גם אם המספרים שמעליו ינועו. */
+      /* ‏-4px: בפיקסל השחרור עצמו ה-sticky עובר ממצב נעוץ לזורם,
+         והעיגול ב-Math.round משאיר שם עוד פריים בקצב 1.8.
+         שוליים של 4 פיקסלים מרחיקים את סוף הטיפוס מהתפר. */
+      var releaseU = (after.offsetHeight - vh - 4) / vh;
+      M.climbFrom = Math.min(t0 - AFTER_GAP + AFTER_HOLD,
+                             releaseU - M.climbSpan);          /* 1:1 עם הגלילה */
       M.afterU = undefined;
     }
 
