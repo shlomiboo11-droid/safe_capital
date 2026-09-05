@@ -427,7 +427,7 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
      לקרות כשהמפה עומדת במקום ולא בזמן שהיא נגללת מעלה.
      היחידה svh ולא vw — שתיהן נמדדות במסכים ב-JS.
      הסכום חייב להתאים ל-PHASE ב-motion.js: 1.45 + מסך לבמה. */
-  min-height:245svh;
+  min-height:245vh;
   background:var(--ink);
   color:var(--chalk);
   /* התפר בין שני סקשנים כהים נפתח לפעמים לפיקסל של נייר
@@ -549,7 +549,7 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
      קצר, והעודף היה נערם בסוף כגלילה שבה כלום לא קורה. נמדד:
      הזנב על השקף האחרון שווה עכשיו ל-hold של השניים שלפניו,
      כלומר לכל אינפוגרפיקה אותו זמן קריאה בדיוק. */
-  min-height:390svh;
+  min-height:390vh;
   background:var(--ink);
   color:var(--chalk);
   margin-top:-1px;   /* סוגר תפר תת־פיקסלי בין שני סקשנים כהים */
@@ -868,7 +868,7 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
   /* במובייל הזנב היה שני מסכים שלמים של גלילה אחרי שהשקף
      האחרון התייצב. נמדד — עכשיו הוא שווה ל-hold של השניים
      שלפניו, כלומר אותו זמן קריאה לשלושתם. */
-  .deep{min-height:372svh}
+  .deep{min-height:372vh}
   /* הכותרת חוזרת לשתי שורות. display:none על br מבטל את
      השבירה, והרווח שלפניו ב-HTML הוא שמחליף אותה. */
   .deep__lead br.wide{display:none}
@@ -922,7 +922,7 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
      של ~0.55 מסך, כמו ב-.deep. נמדד, לא הוקלד. */
   /* כולל את טיפוס הגבעה בסוף: מסך מלא ועוד רדיוס הקימור,
      בקצב 1:1 — ולכן הסקשן ארוך במסך שלם מכפי שהיה. */
-  min-height:388svh;
+  min-height:388vh;
   background:var(--ink);color:var(--chalk);
   margin-top:-1px;
 }
@@ -1024,7 +1024,7 @@ body.is-ready .site-header{animation:fadeIn 1.25s var(--ease) both}
   position:absolute;z-index:5;
   inset-inline:-8vw;
   top:100%;
-  height:200svh;
+  height:200vh;
   background:var(--bone);
   border-radius:50% 50% 0 0 / clamp(60px,11vw,180px) clamp(60px,11vw,180px) 0 0;
   will-change:transform;
@@ -2517,7 +2517,7 @@ input.field__input:not(:placeholder-shown) ~ .field__label,
   position:absolute;z-index:3;
   inset-inline:-8vw;
   top:calc(100% - var(--hill-peek));
-  height:200svh;
+  height:200vh;
   background:var(--ink);
   /* הרדיוס האנכי = עוצמת הקימור. גדול יותר = גבעה מעוגלת יותר. */
   border-radius:50% 50% 0 0 / clamp(60px,11vw,180px) clamp(60px,11vw,180px) 0 0;
@@ -2754,11 +2754,11 @@ input.field__input:not(:placeholder-shown) ~ .field__label,
    4.00 מסכים של מסלול = 500svh. המסלול התארך כשמשך הכניסה
    של הערכים נגזר מהמרחק במקום להיות מוקלד — ראה PROC_M. */
 @media (max-width:767px){
-  .process{min-height:500svh;padding:0}
+  .process{min-height:500vh;padding:0}
 
   .process__stage{
     position:sticky;top:0;
-    height:100svh;
+    height:100vh;
     display:block;      /* לא flex — הילדים ממוקמים מוחלט */
     overflow:hidden;    /* מה שחותך את השורה הרצה בשני הקצוות */
   }

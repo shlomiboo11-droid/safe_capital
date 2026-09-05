@@ -283,8 +283,31 @@
   /* ── מידות ב-cache ────────────────────────────────────────── */
   var M = {};
 
+  /* כמה פיקסלים שווה 100vh בפועל. נמדד מאלמנט זמני ולא מחושב,
+     כי רק הדפדפן יודע איך הוא פותר את היחידה. */
+  var vhProbe;
+  function cssVh() {
+    if (!document.body) return window.innerHeight;
+    if (!vhProbe) {
+      vhProbe = document.createElement('div');
+      vhProbe.style.cssText = 'position:absolute;top:0;left:0;width:0;' +
+        'height:100vh;visibility:hidden;pointer-events:none';
+    }
+    document.body.appendChild(vhProbe);
+    var h = vhProbe.offsetHeight;
+    document.body.removeChild(vhProbe);
+    return h || window.innerHeight;
+  }
+
   function measure() {
-    var vh = window.innerHeight;
+    /* **לא** window.innerHeight. ב-iOS סרגל הכתובת נסגר ונפתח תוך
+       כדי גלילה, innerHeight משתנה, ו-measure() מחשב מחדש את כל
+       המרחקים — האלמנטים קופצים בלי ששום דבר נגלל. נמדד בסימולציה
+       של +99px, בלי גלילה כלל: שלבי .after זזו 359px, שקף המשפך
+       199px, והאטימות שלו קפצה ב-0.74 בפריים אחד.
+       ‏CSS vh אינו משתנה עם הסרגל, וכל הסקשנים מוגדרים בו — ולכן
+       זה המספר שמשאיר את הלוח והפריסה מסונכרנים. */
+    var vh = cssVh();
 
     M.vh = vh;
     M.fxOn = window.innerWidth >= MIN_FX_WIDTH && !reduceMotion.matches;
