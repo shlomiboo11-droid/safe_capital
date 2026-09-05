@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>בדיקת התאמה · Safe Capital — תצוגה מקדימה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sc-navy:#0e1e2e; --sc-claret:#6b2434;
+  --sc-line:rgba(14,30,46,.26);
+  --sc-bg:#f7f5f1; --sc-surface:#ffffff; --sc-fill:#e8e5df;
+  --sc-text:#0e1e2e; --sc-text-muted:rgba(14,30,46,.72);
+  --sc-radius:8px;
+  --sc-ease:cubic-bezier(0.2,0.8,0.2,1);
+  --sc-dur-fast:150ms; --sc-dur-base:200ms;
+  --sc-focus:2px solid #0e1e2e;
+  --hints-h:82px;
+  --offer-gap:16px;
+}
+@media(min-width:768px){ :root{--hints-h:68px; --offer-gap:22px} }
+*{box-sizing:border-box;margin:0;padding:0}
+/* אנימציות המעבר מזיזות אלמנטים הצידה — בלי החיתוך הזה נוצרת גלילה אופקית והמסך קופץ */
+html,body{height:100%;overflow-x:clip;max-width:100%}
+@supports not (overflow-x:clip){ html,body{overflow-x:hidden} }
+body{
+  font-family:'Heebo',system-ui,sans-serif; font-weight:300;
+  background:var(--sc-bg); color:var(--sc-text);
+  -webkit-font-smoothing:antialiased;
+}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+[hidden]{display:none!important}
+
+/* ---------- shell ---------- */
+/* padding-bottom בגובה פס הרמזים — כך התוכן לעולם לא נכנס מתחתיו */
+.shell{min-height:100dvh;display:flex;flex-direction:column;max-width:100%;overflow-x:clip;
+  padding-bottom:var(--hints-h)}
+.stage{flex:1;display:flex;flex-direction:column;padding:24px 24px 8px;}
+.col{width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;justify-content:center}
+.col.anchored{justify-content:flex-start;padding-top:calc(45vh - 132px)}
+@media(min-width:768px){ .col.anchored{padding-top:30vh} }
+@media(min-width:768px){
+  .stage{padding:0 40px 32px}
+  .col{max-width:820px}
+  .formcard,.teach-cta{max-width:640px;width:100%;margin-inline:auto}
+}
+@media(min-width:1280px){ .col{max-width:960px} }
+
+/* ---------- screens ---------- */
+.screen{display:none;flex-direction:column}
+.screen.grow{flex:1}
+.screen.is-active{display:flex}
+
+/* מעברים מדורגים — יוצא ימינה, נכנס משמאל, אחד אחרי השני מלמעלה */
+[data-anim]{opacity:0}
+.anim-in{transform:translateX(-40px);
+  animation:slideIn 380ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 70ms)}
+@keyframes slideIn{to{opacity:1;transform:none}}
+.anim-out{opacity:1;
+  animation:slideOut 300ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 60ms)}
+@keyframes slideOut{to{opacity:0;transform:translateX(40px)}}
+
+/* החלפה בין שני מצבי ההמלצה על רשימת ההמתנה.
+   from ו-to מפורשים, כדי שההחלפה לא תלויה במה שהאנימציה הקודמת השאירה */
+.swap-out{animation:swapOut 280ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 60ms)}
+@keyframes swapOut{from{opacity:1;transform:none} to{opacity:0;transform:translateX(40px)}}
+.swap-in{animation:swapIn 360ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 70ms)}
+@keyframes swapIn{from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:none}}
+
+/* מעבר אנכי — למסך רשימת ההמתנה ולתודה. עולה מלמטה, הקודם יוצא למעלה */
+.anim-up-in{transform:translateY(36px);
+  animation:slideUpIn 380ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 70ms)}
+@keyframes slideUpIn{to{opacity:1;transform:none}}
+.anim-up-out{opacity:1;
+  animation:slideUpOut 300ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 60ms)}
+@keyframes slideUpOut{to{opacity:0;transform:translateY(-36px)}}
+
+/* כל שורה מכילה תמיד את הטקסט המלא — מה שטרם הוקלד רק מוסתר.
+   כך השורה תופסת מלכתחילה את רוחבה הסופי, נשארת ממורכזת, ואות שכבר נכתבה לא זזה */
+.tline{display:block;text-align:center;white-space:pre}
+.tghost{visibility:hidden}
+/* סמן הקלדה — רוחב אפס בפריסה, כדי שלא יזיז את הטקסט */
+.caret{display:inline-block;width:0;height:.9em;position:relative;vertical-align:-2px}
+.caret::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:2px;
+  width:3px;background:var(--sc-navy);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* גובה קבוע לשתי שורות — כך גם השאלה וגם התשובות תמיד באותו גובה */
+h1.q{font-size:32px;font-weight:800;line-height:1.25;margin:0 0 28px;text-align:center;
+  min-height:2.5em;display:flex;align-items:center;justify-content:center}
+/* הטקסט חייב לשבת בבלוק פנימי — אחרת הסמן הופך לפריט flex ונתקע בצד */
+h1.q .qtext{display:block;width:100%}
+@media(min-width:768px){h1.q{font-size:52px;margin:0 0 40px}}
+
+/* "אפשר לבחור כמה תשובות" — רק בשאלות רב-בחירה, צמוד מתחת לשאלה */
+.q-note{font-size:13px;font-weight:300;color:var(--sc-text-muted);
+  text-align:center;margin:0 0 22px}
+h1.q:has(+ .q-note){margin-bottom:10px}
+@media(min-width:768px){
+  .q-note{font-size:14px;margin-bottom:30px}
+  h1.q:has(+ .q-note){margin-bottom:14px}
+}
+
+/* ---------- answers ---------- */
+.answers{display:flex;flex-direction:column;gap:8px;list-style:none}
+/* מובייל — התשובות צרות מהשאלה ביחס הזהב */
+@media(max-width:767px){
+  .answers{max-width:78%;width:100%;margin-inline:auto}
+}
+/* דסקטופ — רשת "שוקולדה" רק כשיש יותר מ-5 תשובות */
+@media(min-width:768px){
+  .answers.is-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;
+    max-width:760px;width:100%;margin-inline:auto}
+  .answers.is-grid > *:last-child:nth-child(odd){grid-column:1 / -1}
+  .answers:not(.is-grid){max-width:640px;width:100%;margin-inline:auto}
+}
+.opt{
+  width:100%;display:flex;align-items:center;justify-content:center;
+  min-height:40px;padding:6px 16px;
+  background:transparent;border:1px solid var(--sc-line);border-radius:999px;
+  font-family:inherit;font-size:14px;font-weight:400;color:var(--sc-navy);line-height:1.3;
+  text-align:center;cursor:pointer;
+  transition:background-color var(--sc-dur-base) var(--sc-ease),
+             color var(--sc-dur-base) var(--sc-ease),
+             transform var(--sc-dur-fast) var(--sc-ease);
+}
+/* ריחוף — מתמלא */
+.opt:hover{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+/* נבחר — נשאר מלא */
+.opt[aria-checked="true"],.opt[data-on="1"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+.opt:active{transform:scale(.98)}
+.opt:focus-visible{outline:var(--sc-focus);outline-offset:3px}
+.opt .lbl{display:block}
+
+/* ---------- sticky action ---------- */
+.nav-row{
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:640px;width:100%;margin:14px auto 0;
+}
+@media(max-width:767px){ .nav-row{max-width:100%;margin-top:18px} }
+@media(min-width:768px){ .nav-row{max-width:760px;margin-top:18px} }
+.nav-row .is-off{visibility:hidden;pointer-events:none}
+.btn-icon{
+  width:44px;height:44px;flex:0 0 44px;
+  background:none;border:0;padding:0;
+  color:var(--sc-navy);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color var(--sc-dur-base) var(--sc-ease),
+             background-color var(--sc-dur-base) var(--sc-ease),
+             color var(--sc-dur-base) var(--sc-ease),
+             opacity var(--sc-dur-base) var(--sc-ease);
+}
+.btn-icon:hover{color:var(--sc-claret)}
+.btn-icon:focus-visible{outline:var(--sc-focus);outline-offset:3px}
+.btn-icon:disabled{opacity:.28;cursor:not-allowed;color:var(--sc-navy)}
+.btn-icon .ring{
+  width:26px;height:26px;border-radius:50%;
+  border:1px solid transparent;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:border-color var(--sc-dur-base) var(--sc-ease),
+             background-color var(--sc-dur-base) var(--sc-ease);
+}
+.btn-icon svg{display:block;width:12px;height:12px}
+/* קדימה — מקבל עיגול ברגע שיש בחירה */
+.btn-icon.is-ready .ring{border-color:var(--sc-navy)}
+.btn-icon.is-ready:hover .ring{background:var(--sc-navy)}
+.btn-icon.is-ready:hover{color:#fff}
+.btn{
+  width:100%;min-height:48px;border:0;border-radius:999px;
+  font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity var(--sc-dur-base) var(--sc-ease),transform var(--sc-dur-fast) var(--sc-ease);
+}
+.btn-lg{min-height:64px;font-size:18px}
+.btn-primary{background:var(--sc-navy);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-tonal{background:var(--sc-fill);color:var(--sc-navy)}
+.btn-tonal:hover{background:#ded9d1}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible{outline:var(--sc-focus);outline-offset:2px}
+.btn:disabled{background:rgba(14,30,46,.35);color:#fff;cursor:not-allowed;opacity:1}
+.btn .sub{display:block;font-size:13px;font-weight:300;opacity:.85;margin-top:2px}
+.btn-stack{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.3}
+
+/* ═══ ניווט פיתוח — זמני, להסרה לפני עלייה לאוויר ═══ */
+.devnav{position:fixed;top:10px;inset-inline-end:10px;z-index:99;
+  display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:8px;
+  background:#5d1819;box-shadow:0 4px 14px rgba(0,0,0,.22);
+  font-family:'Heebo',sans-serif;direction:rtl}
+.devnav button{width:26px;height:26px;padding:0;border:0;border-radius:6px;
+  background:rgba(255,255,255,.14);color:#fff;font-size:15px;font-weight:700;
+  line-height:1;cursor:pointer}
+.devnav button:hover{background:rgba(255,255,255,.28)}
+.devnav select{height:26px;max-width:150px;border:0;border-radius:6px;
+  background:rgba(255,255,255,.92);color:#5d1819;
+  font-family:inherit;font-size:12px;font-weight:700;padding:0 6px;cursor:pointer}
+.devnav.is-off{display:none}
+/* ═══ סוף ניווט פיתוח ═══ */
+
+/* ---------- hints ---------- */
+/* מקובע לתחתית המסך. גובה קבוע — רמז בשתי שורות לא מזיז את הפס,
+   ואורך השאלה שמעליו לא משפיע עליו בכלל */
+.hints{
+  position:fixed;inset-inline:0;bottom:0;z-index:5;
+  padding:14px 24px;height:var(--hints-h);
+  display:flex;align-items:center;
+  background:var(--sc-bg);
+}
+@media(min-width:768px){ .hints{height:var(--hints-h)} }
+.hints .inner{width:100%;margin:0 auto;max-width:1100px}
+.hint{
+  font-size:13px;font-weight:400;color:var(--sc-text-muted);line-height:1.5;
+  text-align:center;white-space:nowrap;
+  opacity:0;transform:translateX(-24px);
+}
+/* תנועה משמאל לימין — נכנס משמאל וזז ימינה, יוצא ממשיך ימינה ונעלם */
+.hint.in{opacity:1;transform:none;
+  transition:opacity 450ms var(--sc-ease),transform 450ms var(--sc-ease)}
+.hint.out{opacity:0;transform:translateX(24px);
+  transition:opacity 300ms var(--sc-ease),transform 300ms var(--sc-ease)}
+/* מתחת ל-768 חלק מהרמזים ארוכים מרוחב המסך — מותר להם לרדת שורה */
+@media(max-width:767px){.hint{white-space:normal}}
+/* הדיסקליימר יושב בפס התחתון, במקום שבו הרמזים מופיעים בשאלות */
+.legalbar{font-size:12px;color:#74777f;text-align:center;line-height:1.5}
+
+/* ---------- entry ---------- */
+.entry{justify-content:center;text-align:center;gap:0}
+/* הריווח הזה נועד למסך הכניסה בלבד. בלי הסינון הוא חל גם על רשימת
+   ההמתנה והתודה, ודוחף אותם 82px למטה בלי סיבה */
+@media(max-width:767px){ .col:not(.anchored):has(.entry){padding-top:82px} }
+.eyebrow{font-size:13px;font-weight:700;color:var(--sc-claret);margin-bottom:16px}
+.entry h1{font-size:28px;font-weight:800;line-height:1.3;margin-bottom:16px}
+@media(min-width:768px){.entry h1{font-size:34px}}
+/* "סה״כ דקה" — הכיתוב שהופך לשעון בלחיצה */
+.entry-note{font-size:13px;font-weight:400;color:var(--sc-text-muted);
+  text-align:center;margin-bottom:44px;
+  opacity:0;transition:opacity 500ms var(--sc-ease)}
+.entry-note.in{opacity:1}
+
+/* השעון — מקובע לראש המסך, סופר לאחור מדקה */
+.timer{
+  position:fixed;top:14px;inset-inline:0;z-index:6;
+  text-align:center;font-family:inherit;
+  font-size:13px;font-weight:400;color:var(--sc-text-muted);
+  font-variant-numeric:tabular-nums;
+  pointer-events:none;
+}
+@media(min-width:768px){ .timer{top:20px} }
+.btn-ghost{
+  align-self:center;min-height:52px;padding:14px 40px;
+  background:transparent;border:1px solid var(--sc-line);border-radius:999px;
+  font-family:inherit;font-size:16px;font-weight:700;color:var(--sc-navy);cursor:pointer;
+  transition:background-color var(--sc-dur-base) var(--sc-ease),
+             color var(--sc-dur-base) var(--sc-ease),
+             transform var(--sc-dur-fast) var(--sc-ease);
+}
+.btn-ghost:hover{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+.btn-ghost:active{transform:scale(.98)}
+.btn-ghost:focus-visible{outline:var(--sc-focus);outline-offset:3px}
+
+/* ---------- teach ---------- */
+.teach{justify-content:center;text-align:center}
+.teach-block{margin-bottom:26px}
+.teach-block.rise{opacity:0;transform:translateY(14px);
+  animation:riseIn 600ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 2200ms)}
+@keyframes riseIn{to{opacity:1;transform:none}}
+.teach-eyebrow,.say-eyebrow{font-size:14px;font-weight:300;color:var(--sc-text-muted);margin-bottom:8px;text-align:center}
+.teach-line,.say-line{max-width:720px;margin:0 auto;font-size:20px;font-weight:700;line-height:1.5;
+  color:var(--sc-text);text-align:center}
+@media(min-width:768px){
+  .teach-line,.say-line{font-size:26px}
+  .teach-eyebrow,.say-eyebrow{font-size:15px}
+}
+.teach-cta{margin-top:24px;display:flex;justify-content:center}
+.teach-cta.rise{opacity:0;animation:riseIn 600ms var(--sc-ease) forwards;
+  animation-delay:calc(var(--i) * 2200ms)}
+.teach-cta .btn{width:auto;padding:0 40px}
+.teach p.in{opacity:1;transform:none;transition:opacity 450ms var(--sc-ease),transform 450ms var(--sc-ease)}
+
+/* ---------- result ---------- */
+.result{justify-content:center}
+/* מד טעינה — טבעת מתמלאת סביב המספר */
+.loader{display:flex;flex-direction:column;align-items:center;margin:24px auto 0;
+  transform:translateY(var(--shift,0px));
+  transition:transform 800ms var(--sc-ease)}
+/* 52px = בדיוק גובה הכפתור שהטבעת הופכת אליו. הגובה לא משתנה בהמרה,
+   ולכן מרכז הטבעת ומרכז הכפתור הם אותה נקודה */
+.dial{position:relative;width:52px;height:52px;padding:0;border:0;background:none;
+  border-radius:999px;cursor:default;overflow:hidden;
+  transform:scale(var(--sc,1));
+  transition:width 500ms var(--sc-ease),height 500ms var(--sc-ease),
+             background-color 500ms var(--sc-ease),transform 800ms var(--sc-ease)}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg);
+  transition:opacity 300ms var(--sc-ease)}
+/* r=57 + חצי עובי קו = 60 = קצה ה-viewBox, כך שקוטר הטבעת הוא בדיוק גובה האלמנט */
+.dial .bg{fill:none;stroke:var(--sc-fill);stroke-width:6}
+.dial .fg{fill:none;stroke:var(--sc-navy);stroke-width:6;stroke-linecap:round}
+.dial .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:var(--sc-navy);letter-spacing:-.01em;
+  transition:opacity 300ms var(--sc-ease)}
+.dial .lbl-go{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:inherit;font-size:16px;font-weight:700;color:#fff;opacity:0;white-space:nowrap;
+  transition:opacity 400ms var(--sc-ease) 250ms}
+/* הטעינה הופכת לכפתור */
+.dial.as-button{width:148px;height:52px;background:var(--sc-navy);cursor:pointer}
+.dial.as-button svg,.dial.as-button .pct{opacity:0}
+.dial.as-button .lbl-go{opacity:1}
+.dial.as-button:hover{opacity:.92}
+.dial:focus-visible{outline:var(--sc-focus);outline-offset:3px}
+.status{text-align:center;font-size:15px;color:var(--sc-text-muted);margin:16px 0 0;
+  opacity:0;transition:opacity 500ms var(--sc-ease)}
+.status.in{opacity:1}
+/* משפטים — פייד מלמטה למעלה. כברירת מחדל גלויים, ההסתרה נוספת רק אם ה-JS רץ */
+.say.hid{opacity:0;transform:translateY(16px)}
+/* 450ms — קצר מ-800ms של ירידת הטבעת, כך שהטקסט נקרא בזמן שהיא עוד בדרך */
+.say.hid.in{opacity:1;transform:none;transition:opacity 450ms var(--sc-ease),transform 450ms var(--sc-ease)}
+/* המשפט הפותח והסיבה — אותו גודל בדיוק, קטן ודק, משני לכותרת */
+.offer-lead,.rec{max-width:600px;margin-inline:auto;text-align:center;
+  font-size:14px;font-weight:300;line-height:1.7;color:var(--sc-text-muted)}
+@media(min-width:768px){ .offer-lead,.rec{font-size:15px;max-width:640px} }
+/* מרווח אחיד: פותח→כותרת = כותרת→סיבה = G, וסיבה→כפתור = 2G */
+.offer-lead{margin-bottom:var(--offer-gap)}
+.rec{margin-bottom:0;opacity:0;transform:translateY(12px)}
+.rec p + p{margin-top:8px}
+.rec.in{opacity:1;transform:none;
+  transition:opacity 500ms var(--sc-ease),transform 500ms var(--sc-ease)}
+/* שתי הפסקאות — פתיח קטן מעל, המענה בגדול. אותו מבנה כמו מסך הלימוד */
+.result .say{max-width:720px;margin:0 auto 26px;text-align:center}
+.result .say + .say{margin-bottom:32px}
+
+.actions{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:0}
+@media(min-width:768px){
+  .actions{flex-direction:row;justify-content:center;align-items:stretch;gap:16px}
+}
+.actions .btn{width:auto;min-width:0;padding:0 32px}
+.actions .btn-primary{font-size:16px;min-height:52px;padding:0 32px}
+.actions .btn-tonal{min-height:52px}
+/* האופציה השנייה צמודה ל-CTA */
+.quiet{display:block;text-align:center;font-size:14px;color:var(--sc-text-muted);
+  text-decoration:none;padding:6px 12px;margin-top:4px;border-radius:var(--sc-radius)}
+.quiet:hover{color:var(--sc-claret)}
+.quiet:focus-visible{outline:var(--sc-focus);outline-offset:2px}
+
+/* ---------- offer ---------- */
+/* דסקטופ — הכותרת וה-CTA מקובצים ומרוכזים לגובה, בדיוק כמו מסך הכניסה */
+.offer{justify-content:center;text-align:center}
+.offer .offer-h{margin-bottom:var(--offer-gap)}
+/* דסקטופ — הכל בזרימה, אז המרווח לכפתור נקבע כאן */
+@media(min-width:768px){ .offer-text{margin-bottom:calc(var(--offer-gap) * 2)} }
+.offer-cta{opacity:0;transform:translateY(16px)}
+.offer-cta.in{opacity:1;transform:none;
+  transition:opacity 600ms var(--sc-ease),transform 600ms var(--sc-ease)}
+/* מובייל — הכותרת בשליש העליון, והכפתור עצמו בדיוק בראש השליש התחתון.
+   המשפט המסביר יוצא מהזרימה ויושב מעל הבלוק, אחרת הוא היה דוחף את הכפתור למטה */
+/* מובייל — הכפתור מעוגן לראש השליש התחתון, והטקסט נתלה מעליו:
+   התחתית שלו יושבת 2G מעל הכפתור, כך שכל הבלוק זז לפי הכפתור ולא לפי ראש המסך */
+@media(max-width:767px){
+  .offer{justify-content:flex-start}
+  .offer-text{position:fixed;bottom:calc(33.3vh + var(--offer-gap) * 2);inset-inline:24px;z-index:2}
+  .offer-cta{position:fixed;top:66.7vh;inset-inline:24px;z-index:2}
+}
+
+/* ---------- רשימת המתנה + תודה ---------- */
+.waitlist,.thanks{justify-content:center;text-align:center;padding-block:24px}
+/* padding-bottom:16 מקזז את ההפרש בין ריפוד הבמה למעלה (24) ולמטה (8),
+   אחרת המרכוז יוצא 4px גבוה מדי */
+.waitlist{justify-content:flex-start;padding-block:0 16px}
+/* הטופס ממורכז לגובה במרחב שמעל כפתור החזרה, והכפתור נשאר מקובע בתחתית */
+.wl-mid{flex:1;display:flex;align-items:center;justify-content:center;width:100%}
+/* בלי איפוס השוליים הטופס נדחף למטה והמרכוז יוצא לא סימטרי */
+.wl-mid .formcard{margin-bottom:0}
+.wl-h{font-size:28px;font-weight:800;line-height:1.25;margin-bottom:20px;text-align:center}
+@media(min-width:768px){ .wl-h{font-size:38px;margin-bottom:24px} }
+
+/* שני שדות בשורה — שם ושם משפחה, טלפון וגיל */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row .field{margin-bottom:20px}
+
+.field select{appearance:none;cursor:pointer}
+
+/* חזרה למסך הקודם — מקובע לתחתית, כך שהטופס מתמרכז במסך כולו
+   ולא רק במרחב שמעליו */
+.wl-back{position:fixed;bottom:calc(var(--hints-h) + 6px);inset-inline-start:24px;
+  display:flex;z-index:3;margin:0}
+
+/* אישור שמירת פרטים ויצירת קשר. יושב מחוץ ל-.field כדי לא לרשת את סגנון השדות */
+.consent{display:flex;align-items:flex-start;gap:10px;margin:4px 0 4px}
+.consent input[type="checkbox"]{
+  width:18px;height:18px;flex:0 0 18px;margin-top:2px;
+  accent-color:var(--sc-navy);cursor:pointer}
+.consent label{font-size:13px;font-weight:300;line-height:1.6;
+  color:var(--sc-text-muted);cursor:pointer}
+.consent.missing label{color:var(--sc-claret)}
+.consent.missing input[type="checkbox"]{outline:2px solid var(--sc-claret);outline-offset:2px}
+/* :user-invalid ולא :invalid — אחרת שדה חובה ריק נצבע אדום לפני שנגעו בו */
+.field input:user-invalid{border-bottom-color:var(--sc-claret)}
+
+.thanks-pos{font-size:18px;line-height:1.6;color:var(--sc-text);margin-bottom:20px}
+.thanks-pos strong{font-weight:800}
+.thanks-note{font-size:15px;line-height:1.7;color:var(--sc-text-muted);margin-bottom:8px;
+  max-width:520px;margin-inline:auto}
+.thanks .actions{margin-top:24px}
+.btn-wa{background:#25D366;color:#0e1e2e;text-decoration:none;min-height:52px;padding:0 32px}
+.btn-wa:hover{opacity:.9}
+
+/* ---------- form ---------- */
+/* טופס מינימלי — בלי כרטיס ובלי קופסאות, קו תחתון בלבד תחת כל שדה */
+.formcard{background:none;box-shadow:none;border-radius:0;padding:0;margin-bottom:20px;
+  text-align:start;max-width:460px;width:100%;margin-inline:auto}
+.field{margin-bottom:24px}
+/* אין תוויות גלויות — כל שדה נושא את הטקסט שלו בתוכו */
+.field input,.field select{
+  width:100%;height:44px;padding:8px 2px;
+  border:0;border-bottom:2px solid rgba(14,30,46,.62);border-radius:0;background:none;
+  font-family:inherit;font-size:16px;font-weight:400;color:var(--sc-text);
+  transition:border-color var(--sc-dur-base) var(--sc-ease);
+}
+.field input::placeholder{color:var(--sc-text-muted);font-weight:400}
+.field select.is-empty{color:var(--sc-text-muted)}
+/* טלפון נדחף שמאלה כי דפדפנים מפעילים LTR על שדה tel */
+.field input[type="tel"]{direction:rtl;text-align:start}
+/* פוקוס = אותו קו, בצבע מלא. בלי שינוי עובי, כדי שהשדה לא יזוז */
+.field input:focus,.field select:focus{outline:none;border-bottom-color:var(--sc-navy)}
+/* כפתור השליחה קטן ונצמד לקצה השמאלי (flex-end ב-RTL) */
+.formcard .btn{margin-top:12px;width:fit-content;min-width:0;
+  min-height:44px;padding:0 28px;font-size:15px;margin-inline-start:auto}
+
+.badge{display:inline-block;background:var(--sc-fill);color:var(--sc-text-muted);
+  font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;margin-bottom:16px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:.01ms!important;
+    transition-duration:.01ms!important}
+  .hint,.teach-block,.teach-cta,.say{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- שעון ספירה לאחור -->
+  <div class="timer" id="timer" hidden aria-hidden="true">1:00</div>
+
+  <!-- ═══ ניווט פיתוח — זמני, להסרה לפני עלייה לאוויר ═══ -->
+  <div class="devnav" id="devNav">
+    <button type="button" id="devPrev" title="מסך קודם">‹</button>
+    <select id="devJump" title="קפיצה למסך"></select>
+    <button type="button" id="devNext" title="מסך הבא">›</button>
+    <button type="button" id="devHide" title="הסתרה">✕</button>
+  </div>
+  <!-- ═══ סוף ניווט פיתוח ═══ -->
+
+  <!-- stage -->
+  <div class="stage"><div class="col" id="stage"></div></div>
+
+  <!-- hints -->
+  <div class="hints" id="hints">
+    <div class="inner">
+      <p class="hint" id="hintText" aria-hidden="true"></p>
+      <p class="legalbar" id="legalBar" hidden>אין באמור כדי להוות ייעוץ השקעות</p>
+    </div>
+  </div>
+  <ul class="sr-only" id="hintList"></ul>
+</div>
+
+
+
+<script>
+/* ============================================================
+   נתוני השאלון — מקור: QUIZ-QUESTIONS.md
+   ============================================================ */
+const CHAPTERS = ['מה מביא אותך','מה אתה כבר יודע','התאמה'];
+
+const QUESTIONS = [
+ {id:'goal', ch:0, type:'single', q:'מה היית רוצה לעשות עם הכסף שלך?',
+  opts:['לייצר רווח משמעותי בזמן קצר','פיזור לאפיק השקעה נוסף','לבנות הון לטווח ארוך','עוד לא בטוח, אני בודק אפשרויות']},
+
+ {id:'where', ch:0, type:'multi', q:'איפה הכסף שלך עובד היום?',
+  opts:['בפיקדון או בעובר ושב','בשוק ההון','בנדל״ן בישראל','בקרנות או השקעות אלטרנטיביות','מושקע בסטארט-אפ']},
+
+ {id:'pain', ch:0, type:'multi', q:'מה הכי מטריד אותך בהשקעת נדל״ן בחו״ל?',
+  opts:['אני לא מכיר את השוק שם','איך אני יודע שהכסף מוגן','המיסוי נשמע מסובך','מה קורה אם אצטרך את הכסף','זה רחוק, אין לי שליטה','שום דבר, אני בעיקר סקרן']},
+
+ {id:'exp', ch:1, type:'single', q:'השקעת פעם בנדל״ן בארה״ב?',
+  opts:['כן, יותר מפעם אחת','כן, פעם אחת','לא, אבל בדקתי את הנושא','לא, זו הפעם הראשונה שאני שוקל']},
+
+ {id:'stage', ch:1, type:'single', q:'איפה אתה נמצא בחיפוש שלך?',
+  opts:['רק התחלתי לבדוק','כבר בדקתי כמה אופציות','הייתי קרוב לסגירה אבל התחרטתי','לא מצאתי עסקה שהתאימה לי']},
+
+ {id:'who', ch:1, type:'single', q:'מי עוד שותף להחלטה?',
+  opts:['רק אני','אני ובן או בת הזוג','המשפחה שלי','אני ושותף לעסקים','מתייעץ עם איש מקצוע']},
+
+ {id:'amount', ch:2, type:'single', q:'כמה חשבת להשקיע?',
+  opts:['עד 50 אלף דולר','50 עד 100 אלף דולר','100 עד 250 אלף דולר','מעל 250 אלף דולר','עוד לא חשבתי על סכום']},
+
+ {id:'when', ch:2, type:'single', q:'מתי היית רוצה להיכנס לעסקה?',
+  opts:['כשתהיה עסקה שמתאימה לי','בחודשים הקרובים','בשנה הקרובה','רק לומד בשלב הזה']},
+
+ {id:'need', ch:2, type:'multi', q:'מה יעזור לך להחליט?',
+  opts:['לראות את המספרים של עסקה אמיתית','לדבר עם מישהו שכבר השקיע איתכם','להבין איך המיסוי עובד','להכיר את האנשים מאחורי החברה','עוד לא יודע']}
+];
+
+/* מסך הלימוד — אחרי שאלה 6 */
+const TEACH = [
+ 'אנחנו עובדים רק בשכונות עם ביקוש גבוה והיצע נמוך. מאתרים נכס ישן, משפצים ומוכרים אותו — התהליך לוקח בין 6 ל-12 חודשים',
+ 'הנכס נרשם על חברה שגם אתה בעלים בה',
+ 'במכירה אתה מקבל את הרווח ראשון, והיזמים אחרי את מה שנותר'
+];
+
+/* 10 רמזים — לולאת B→C→A */
+const HINTS = [
+ 'כל פרויקט נקנה, משופץ ונמכר תוך פחות מ12 חודשים',
+ 'כל תכנית עסקית עוברת אישור בחברת מימון. אם התחזית שלנו לא מדוייקת לא נקבל מימון',
+ 'במכירה המשקיעים מקבלים רווחים ראשונים. היזמים יקבלו מה שנותר',
+ 'המיסוי הוא על הרווחים בלבד והוא 25%',
+ 'בכל עסקה אנחנו משקיעים כסף מהכיס הפרטי שלנו',
+ 'האבטלה בבירמינגהם 2.4%, מול 4.1% בממוצע הארצי בארה״ב',
+ 'מיסים? אנחנו דואגים למיסוי מקצה לקצה עם רואי חשבון מומחים בישראל ובאמריקה',
+ 'לכל עסקה יש קבוצת ווצאפ ואזור אישי באתר עם תמונות ועדכונים מהשטח',
+ 'כל משקיע רשום כבעלים בחברה שקונה את הנכס',
+ 'בשכונות שלנו נכס שיוצא למכירה מקבל הצעה תוך 5 ימים בממוצע'
+];
+
+
+/* מודולי מסך התוצאה */
+const OBJECTION = {
+ 0:{h:'סימנת שאתה לא מכיר את השוק שם',
+    a:'כל עסקה מגיעה עם דוח מלא ועם עסקאות דומות באזור, וכל תכנית עסקית מאושרת מראש מול חברת מימון שלא תיתן מימון אם התחזית שלנו לא מדויקת'},
+ 1:{h:'ציינת שאתה רוצה לדעת שהכסף מוגן',
+    a:'הנכס נרשם על חברה שאתה בעלים בה, לא על שמנו. הכסף עובר לחשבון בנק ייעודי לפרוייקט והתזרים מוצג בזמן אמת באזור האישי שלך'},
+ 2:{h:'ציינת שהמיסוי נשמע לך מסובך',
+    a:'המיסוי הוא על הרווחים בלבד והוא 25%, ואנחנו מלווים מקצה לקצה עם רואי חשבון בישראל ובאמריקה את תהליך המיסוי'},
+ 3:{h:'ציינת שחשוב לך לדעת מתי הכסף חוזר',
+    a:'בסיום העסקה. אנחנו קונים, משפצים ומוכרים, והמחזור המלא נסגר תוך 6 עד 12 חודשים'},
+ 4:{h:'ציינת שזה רחוק ושאין לך שליטה',
+    a:'לכל עסקה יש קבוצת ווצאפ ייעודית ואזור אישי באתר עם תמונות ועדכונים מהשטח ככה שאתה עד לתהליך בזמן אמת'},
+ 5:{h:'ציינת שאתה בעיקר סקרן',
+    a:'אנחנו קונים בתים בשכונות מבוקשות בבירמינגהם, משפצים ומוכרים תוך 6 עד 12 חודשים, ואתה מקבל את הרווח ראשון'}
+};
+
+const SEGMENT = {
+ ready:{name:'מוכן', fit:'אתה יודע מה אתה מחפש. מה שנשאר לך זה לראות עסקה שמתאימה'},
+ almost:{name:'כמעט', fit:'אתה לא בשלב של ללמוד מה זה פליפ, אלא בשלב של לראות אם המספרים עושים לך שכל'},
+ learn:{name:'לומד', fit:'אתה עוד בשלב של לאסוף מידע, וזה בסדר גמור! אף אחד לא נכנס לעסקה ראשונה בלי להבין קודם איך היא עובדת'},
+ below:{name:'מתחת לסף', fit:'הסכום שסימנת נמוך מההון המינימלי שאנחנו דורשים, אבל אנחנו בונים קשר לטווח הארוך!<br>שווה להישאר בלופ ולראות מה קורה'}
+};
+
+const PAIN_ECHO = {
+ 0:'סימנת שאתה לא מכיר את השוק שם',
+ 1:'ציינת שאתה רוצה לדעת שהכסף מוגן',
+ 2:'ציינת שהמיסוי נשמע לך מסובך',
+ 3:'ציינת שחשוב לך לדעת מתי הכסף חוזר',
+ 4:'ציינת שזה רחוק ושאין לך שליטה',
+ 5:'ציינת שאתה בעיקר סקרן'
+};
+const WHEN_ECHO = {
+ 0:'ציינת שאתה מחכה לעסקה שמתאימה לך',
+ 1:'ציינת שאתה מסתכל על החודשים הקרובים',
+ 2:'ציינת שאתה מסתכל על השנה הקרובה',
+ 3:'ציינת שאתה עדיין בשלב הלמידה'
+};
+/* ---- רשימת ההמתנה ---- */
+const WL_LINES = [
+ 'אנחנו מחפשים נכסים פוטנציאלים כל יום',
+ 'השקעה שמתאימה לאסטרטגיה שלנו מגיעה אחת לחודש',
+ 'כשיש עסקה, אנחנו מציעים אותה קודם למשקיעים ברשימה לפי הסדר'
+];
+/* מיקום ברשימה — בפרוטוטייפ מספר קבוע. בגרסה האמיתית מגיע מהשרת בתשובת ההרשמה */
+const WL_POSITION = 87;
+const WA_LINK = 'https://wa.me/';   // להשלים מספר לפני עלייה לאוויר
+
+/* המשפט הפותח במסך ההצעה — נקבע לפי הפילוח ומוביל אל ההמלצה */
+const OFFER_LEAD = {
+ ready:'לפי התשובות שהזנת נראה שאתה כבר ממש רוצה להשקיע את הכסף, ולכן',
+ almost:'לפי התשובות שהזנת נראה שאתה עוד בוחן אופציות, ולכן',
+ learn:'לפי התשובות שהזנת נראה שאתה עוד בוחן אופציות, ולכן',
+ below:'לפי התשובות שהזנת נראה שאתה עוד בוחן אופציות, ולכן'
+};
+/* lead נכנס לכותרת המוקלדת אחרי "אנחנו ממליצים לך", note הוא הסיבה שמתחתיה */
+const RECOMMEND = {
+ wa:{lead:'להצטרף לקהילה השקטה שלנו בווצאפ',
+     note:'שם אנחנו נפרסם מידע רלוונטי על האזור, על הנכסים, ועל עסקאות עתידיות'},
+ wl:{lead:'להירשם לרשימת ההמתנה',
+     note:'כי כשתהיה עסקה אנחנו נציע אותה קודם לראשונים שברשימת ההמתנה, ונראה שאתה רוצה להיות שם'}
+};
+const NEED_SUB = {
+ 0:'תהיה לך גישה לעסקאות שלנו באתר ובקהילה',
+ 1:'אנחנו ניצור איתך קשר ונחבר אותך לאחד המשקיעים שלנו',
+ 2:'אנחנו מתארים כיצד המיסוי מתנהל',
+ 3:'אנחנו כותבים שם בעצמנו, כל שבוע',
+ 4:'זה מוקדם לקבל החלטה, עדיף שרק תישאר בעניינים בינתיים'
+};
+
+/* ============================================================
+   מצב
+   ============================================================ */
+const A = {};                 // תשובות
+let step = -1;                // -1 = מסך כניסה, 0..8 = שאלות, 'teach', 'result'
+let flow = [];                // רצף המסכים
+
+function buildFlow(){
+  flow = ['entry'];
+  QUESTIONS.forEach((q,i)=>{ flow.push(i); if(i===5) flow.push('teach'); });
+  flow.push('result'); flow.push('offer'); flow.push('waitlist'); flow.push('thanks');
+}
+buildFlow();
+let pos = 0;
+
+const stage = document.getElementById('stage');
+const hintsBar = document.getElementById('hints');
+
+/* ============================================================
+   פילוח
+   ============================================================ */
+function segment(){
+  const amt = A.amount, when = A.when, st = A.stage;
+  if(amt===0) return 'below';
+  if(when===3 || amt===4) return 'learn';
+  if(amt!==undefined && amt>=1 && amt<=3 && (when===0||when===1)) return 'ready';
+  if(st===2) return 'ready';               // שדרוג: היה קרוב לסגירה
+  return 'almost';
+}
+
+/* ============================================================
+   רינדור
+   ============================================================ */
+/* יציאה זהה בכל מעבר — כל אלמנט מחליק ימינה ונמוג, אחד אחרי השני.
+   מסירים קודם את מחלקות החשיפה, אחרת האנימציה שלהן מנצחת את היציאה */
+/* data-anim = נכנס גם יוצא (מתחיל שקוף). data-exit = גלוי מלכתחילה, רק יוצא */
+let axis='x';                 // 'x' = הצידה בין השאלות, 'y' = מלמטה למעלה
+function animateOut(done){
+  const els=[...stage.querySelectorAll('[data-anim],[data-exit]')];
+  if(!els.length || reduced()) return done();
+  els.forEach((el,i)=>{
+    el.style.setProperty('--i',i);
+    el.classList.remove('anim-in','anim-up-in','rise','hid');
+    el.style.animation='';
+    el.style.opacity='1'; el.style.transform='';
+    el.classList.add(axis==='y' ? 'anim-up-out' : 'anim-out');
+  });
+  setTimeout(done, 300 + els.length*60);
+}
+let busy=false;
+function go(delta, dir){
+  if(busy) return; busy=true;
+  axis = dir==='y' ? 'y' : 'x';
+  animateOut(()=>{ pos+=delta; render(); });
+}
+function reduced(){ return window.matchMedia('(prefers-reduced-motion: reduce)').matches }
+function markAnim(root, sel){
+  const cls = axis==='y' ? 'anim-up-in' : 'anim-in';
+  [...root.querySelectorAll(sel || '[data-anim]')].forEach((el,i)=>{
+    el.style.setProperty('--i',i);
+    el.classList.add(cls);
+    if(reduced()) el.style.opacity=1;
+  });
+}
+
+function render(){
+  clearInterval(typeTimer); clearTimeout(teachTimer);
+  clearInterval(offerSwapTimer); offerSwapTimer=null;
+  resultTimers.forEach(clearTimeout); resultTimers=[];
+  busy=false;
+  const node = flow[pos];
+  stage.innerHTML='';
+  const isQuiz = typeof node === 'number' || node==='teach';
+
+  // הפס התחתון בגובה קבוע. בשאלות מוצגים בו רמזים, בהצעה הדיסקליימר, אחרת ריק
+  const isEnd = node==='offer' || node==='waitlist' || node==='thanks';
+  hintEl.hidden = !isQuiz;
+  legalBar.hidden = !isEnd;
+  // השעון חי מרגע "בוא נתחיל" ועד ההצעה, ונעלם גם כשהזמן נגמר
+  if(node==='entry' || isEnd || clockDone) timerEl.hidden=true;
+  else if(clockTimer || clockLeft<60) timerEl.hidden=false;
+
+  document.getElementById('stage').classList.toggle('anchored', typeof node === 'number');
+  if(node==='entry')       renderEntry();
+  else if(node==='teach')  renderTeach();
+  else if(node==='result') renderResult();
+  else if(node==='offer')  renderOffer();
+  else if(node==='waitlist') renderWaitlist();
+  else if(node==='thanks')   renderThanks();
+  else                     renderQuestion(node);
+
+  if(isQuiz){ startHints(); } else { stopHints(); }
+  window.scrollTo(0,0);
+  devSync();                       // ניווט פיתוח — להסרה יחד עם הסרגל
+}
+
+function renderEntry(){
+  const s=document.createElement('section');
+  s.className='screen is-active entry grow';
+  s.innerHTML=`
+    <h1 id="entryH1" data-anim style="opacity:1"></h1>
+    <p class="entry-note" id="entryNote">סה״כ דקה</p>
+    <button class="btn-ghost" id="startBtn" data-anim style="opacity:0;transition:opacity 500ms var(--sc-ease)">בוא נתחיל</button>`;
+  stage.appendChild(s);
+  const line = 'לפני שנספר לך על עצמנו\nבוא נכיר אותך\nונראה אם זה מתאים לך';
+  const h1 = s.querySelector('#entryH1');
+  const btn = s.querySelector('#startBtn');
+  const note = s.querySelector('#entryNote');
+  typeIn(h1, line, ()=>{ btn.style.opacity=1; note.classList.add('in'); });
+  btn.onclick=()=>{ morphNoteToTimer(note); go(1); };
+}
+
+/* ============================================================
+   השעון — "סה״כ דקה" מתעופף לראש המסך והופך ל-1:00 שסופר לאחור
+   ============================================================ */
+const timerEl=document.getElementById('timer');
+let clockTimer=null, clockLeft=60, clockDone=false;
+
+function fmt(sec){ const m=Math.floor(sec/60), s=sec%60; return m+':'+String(s).padStart(2,'0'); }
+
+function morphNoteToTimer(note){
+  if(clockTimer) return;                       // כבר רץ
+  clockLeft=60; timerEl.textContent=fmt(clockLeft);
+  timerEl.hidden=false;
+
+  if(!reduced()){
+    // הכיתוב במסך הכניסה נעלם, והשעון מגיע ממקומו אל ראש המסך
+    const from=note.getBoundingClientRect(), to=timerEl.getBoundingClientRect();
+    const dx=(from.left+from.width/2)-(to.left+to.width/2);
+    const dy=(from.top+from.height/2)-(to.top+to.height/2);
+    note.style.opacity='0';
+    timerEl.style.transition='none';
+    timerEl.style.transform=`translate(${dx}px,${dy}px)`;
+    timerEl.style.opacity='0';
+    void timerEl.offsetWidth;                  // מכריח חישוב מחדש לפני שמחזירים מעבר
+    timerEl.style.transition='transform 650ms var(--sc-ease),opacity 450ms var(--sc-ease)';
+    timerEl.style.transform='none';
+    timerEl.style.opacity='1';
+  }
+
+  clockTimer=setInterval(()=>{
+    clockLeft--;
+    timerEl.textContent=fmt(Math.max(0,clockLeft));
+    if(clockLeft<=0){
+      clearInterval(clockTimer); clockTimer=null;
+      // הזמן נגמר — השעון נמוג במקום להישאר תקוע על 0:00
+      timerEl.style.transition='opacity 700ms var(--sc-ease)';
+      timerEl.style.opacity='0';
+      setTimeout(()=>{ timerEl.hidden=true; clockDone=true; }, 800);
+    }
+  },1000);
+}
+
+/* מפרק טקסט לשורות כפי שהן נשברות בפועל, ומחזיר לכל שורה את המחרוזת והרוחב */
+function splitIntoLines(el, text){
+  el.textContent='';
+  const frag=document.createDocumentFragment();
+  const nodes=[];
+  text.split('\n').forEach((part,i)=>{
+    if(i) frag.appendChild(document.createElement('br'));
+    const t=document.createTextNode(part);
+    nodes.push(t); frag.appendChild(t);
+  });
+  el.appendChild(frag);
+
+  const lines=[];
+  const rng=document.createRange();
+  nodes.forEach((node,ni)=>{
+    const str=node.data;
+    let cur='', top=null, left=Infinity, right=-Infinity;
+    for(let i=0;i<str.length;i++){
+      rng.setStart(node,i); rng.setEnd(node,i+1);
+      const r=rng.getBoundingClientRect();
+      const y=Math.round(r.top);
+      if(top===null) top=y;
+      if(y!==top && cur){
+        lines.push({text:cur, width:Math.ceil(right-left)});
+        cur=''; top=y; left=Infinity; right=-Infinity;
+      }
+      cur+=str[i];
+      if(r.width||r.height){ left=Math.min(left,r.left); right=Math.max(right,r.right); }
+    }
+    if(cur) lines.push({text:cur, width:Math.ceil(right-left)});
+    if(ni<nodes.length-1) lines[lines.length-1].hardBreak=true;
+  });
+  rng.detach&&rng.detach();
+  return lines;
+}
+
+let typeTimer=null;
+function typeIn(el, text, done, opt){
+  opt = opt || {};
+  const speed = opt.speed || 38, keepCaret = opt.keepCaret !== false;
+  const caret=document.createElement('span');
+  caret.className='caret'; caret.setAttribute('aria-hidden','true');
+
+  const begin=()=>{
+    const lines = splitIntoLines(el, text).map(l=>({text:l.text.replace(/\s+$/,'')}));
+    // בונים מחדש: כל שורה מכילה מלכתחילה את כל תוויה — החלק שטרם הוקלד מוסתר
+    el.textContent='';
+    const rows = lines.map(l=>{
+      const sp=document.createElement('span'); sp.className='tline';
+      const shown=document.createElement('span');
+      const ghost=document.createElement('span'); ghost.className='tghost';
+      ghost.textContent=l.text;
+      sp.append(shown, ghost);
+      el.appendChild(sp);
+      return {shown, ghost, text:l.text};
+    });
+    el.style.minHeight = el.offsetHeight + 'px';
+
+    const fillAll=()=>rows.forEach(r=>{ r.shown.textContent=r.text; r.ghost.textContent=''; });
+    if(reduced()){ fillAll(); rows[rows.length-1].shown.appendChild(caret);
+      if(!keepCaret) caret.remove(); done&&done(); return; }
+
+    let li=0, ci=0;
+    rows[0].shown.appendChild(caret);
+    const t=typeTimer=setInterval(()=>{
+      if(li>=rows.length){ clearInterval(t); if(!keepCaret) caret.remove(); done&&done(); return; }
+      const row=rows[li];
+      if(ci>=row.text.length){ li++; ci=0;
+        if(li<rows.length) rows[li].shown.appendChild(caret);
+        return; }
+      // תו אחד עובר מהחלק המוסתר לחלק הגלוי — הרוחב הכולל לא משתנה
+      row.shown.insertBefore(document.createTextNode(row.text[ci]), caret);
+      row.ghost.textContent = row.text.slice(++ci);
+    }, speed);
+  };
+  if(document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(begin);
+  else begin();
+}
+
+function renderQuestion(i){
+  const q=QUESTIONS[i];
+  const s=document.createElement('section');
+  s.className='screen is-active';
+  const multi = q.type==='multi';
+  s.innerHTML=`
+    <h1 class="q" id="q-${q.id}" data-anim><span class="qtext"></span></h1>
+    ${multi?`<p class="q-note" data-anim>אפשר לבחור כמה תשובות</p>`:''}
+    <div class="answers${q.opts.length>5?' is-grid':''}" role="${multi?'group':'radiogroup'}" aria-labelledby="q-${q.id}"></div>
+    <div class="nav-row" data-anim>
+      <button class="btn-icon" id="backBtn" aria-label="אחורה"><span class="ring"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+      ${multi?`<button class="btn-icon" id="nextBtn" aria-label="הבא" disabled><span class="ring"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>`:'<span></span>'}
+    </div>`;
+  stage.appendChild(s);
+
+  const box=s.querySelector('.answers');
+  q.opts.forEach((label,idx)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='opt'; b.setAttribute('data-anim','');
+    if(multi){
+      b.setAttribute('aria-pressed', String((A[q.id]||[]).includes(idx)));
+      if((A[q.id]||[]).includes(idx)) b.dataset.on='1';
+    }else{
+      b.setAttribute('role','radio');
+      b.setAttribute('aria-checked', String(A[q.id]===idx));
+    }
+    b.innerHTML=`<span class="lbl">${label}</span>`;
+    b.onclick=()=>{
+      if(multi){
+        const cur=new Set(A[q.id]||[]);
+        cur.has(idx)?cur.delete(idx):cur.add(idx);
+        A[q.id]=[...cur].sort((x,y)=>x-y);
+        b.dataset.on = cur.has(idx)?'1':'';
+        b.setAttribute('aria-pressed', String(cur.has(idx)));
+        const nb2=s.querySelector('#nextBtn');
+        nb2.disabled = A[q.id].length===0;
+        nb2.classList.toggle('is-ready', A[q.id].length>0);
+      }else{
+        A[q.id]=idx;
+        box.querySelectorAll('.opt').forEach(o=>o.setAttribute('aria-checked','false'));
+        b.setAttribute('aria-checked','true');
+        setTimeout(()=>go(1),250);   // קידום אוטומטי
+      }
+    };
+    box.appendChild(b);
+  });
+  const h = s.querySelector('h1.q');
+  h.style.opacity = 1;
+  typeIn(h.querySelector('.qtext'), q.q, ()=>markAnim(s, '[data-anim]:not(h1)'), {speed:22, keepCaret:true});
+
+  s.querySelector('#backBtn').onclick=()=>go(-1);
+  if(multi){
+    const nb=s.querySelector('#nextBtn');
+    nb.disabled = !(A[q.id]&&A[q.id].length);
+    nb.classList.toggle('is-ready', !nb.disabled);
+    nb.onclick=()=>go(1);
+  }
+}
+
+let teachTimer=null;
+const TEACH_LABELS=['חשוב שתדע:','ויותר מזה:','ויותר מזה:'];
+
+let resultTimers=[];
+let offerSwapTimer=null;   // לולאת ההחלפה בין שני מצבי ההמלצה
+function renderTeach(){
+  const short = (A.stage===2 || A.stage===3);
+  const lines = short ? TEACH.slice(1) : TEACH;
+  const s=document.createElement('section');
+  s.className='screen is-active teach grow';
+  s.innerHTML = lines.map((ln,i)=>`
+    <div class="teach-block" data-exit>
+      <p class="teach-eyebrow">${TEACH_LABELS[Math.min(i,TEACH_LABELS.length-1)]}</p>
+      <p class="teach-line">${ln}</p>
+    </div>`).join('') +
+    `<div class="teach-cta" id="tCta" data-exit><button class="btn btn-primary" id="gotIt">הבנתי</button></div>`;
+  stage.appendChild(s);
+
+  // כל הבלוקים תופסים מקום מלכתחילה — נחשפים אחד אחרי השני בלי שהעמוד יזוז
+  const blocks=[...s.querySelectorAll('.teach-block')], cta=s.querySelector('#tCta');
+  if(!reduced()){
+    blocks.forEach((b,i)=>{ b.style.setProperty('--i', i); b.classList.add('rise'); });
+    cta.style.setProperty('--i', blocks.length); cta.classList.add('rise');
+    // רשת ביטחון — אם האנימציה לא רצה, הטקסט נחשף בכל מקרה
+    [...blocks, cta].forEach((e,i)=>{
+      resultTimers.push(setTimeout(()=>{
+        e.style.opacity=1; e.style.transform='none';
+      }, i*2200 + 1200));
+    });
+  }
+
+  s.querySelector('#gotIt').onclick=()=>go(1);
+}
+
+function renderResult(){
+  const painIdx = (A.pain&&A.pain.length)?A.pain[0]:5;
+  const ob = OBJECTION[painIdx];
+  const sg = SEGMENT[segment()];
+
+  const s=document.createElement('section');
+  s.className='screen is-active result grow';
+  s.innerHTML=`
+    <div class="say hid" id="say1" data-exit>
+      <p class="say-eyebrow">${PAIN_ECHO[painIdx]}</p>
+      <p class="say-line">${ob.a}</p>
+    </div>
+    <div class="say hid" id="say2" data-exit>
+      <p class="say-eyebrow">${WHEN_ECHO[A.when!==undefined?A.when:3]}</p>
+      <p class="say-line">${sg.fit}</p>
+    </div>
+    <div class="loader" id="loader" data-exit>
+      <button class="dial" id="dial" disabled aria-label="מנתחים את המידע">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="bg" cx="60" cy="60" r="54"></circle>
+          <circle class="fg" cx="60" cy="60" r="57" id="ring"
+                  stroke-dasharray="358.1" stroke-dashoffset="358.1"></circle>
+        </svg>
+        <span class="pct" id="pct">0%</span>
+        <span class="lbl-go">הבנתי</span>
+      </button>
+      <p class="status" id="status">אנחנו בודקים התאמה</p>
+    </div>`;
+  stage.appendChild(s);
+
+  const pct=s.querySelector('#pct'), ring=s.querySelector('#ring'), loader=s.querySelector('#loader');
+  const C=358.1;   // היקף מעגל ברדיוס 57
+  const DUR = reduced()?0:8000, t0=performance.now();
+  // קצב לא אחיד — זינוקים, האטות ותקיעות, כמו טעינה אמיתית
+  // כל זוג הוא [חלק מהזמן, חלק מההתקדמות]
+  const CURVE = [[0,0],[.09,.23],[.24,.31],[.33,.58],[.53,.62],[.63,.79],[.80,.84],[.91,.97],[1,1]];
+  const easedProgress = (t)=>{
+    for(let i=1;i<CURVE.length;i++){
+      if(t<=CURVE[i][0]){
+        const [t0_,p0]=CURVE[i-1], [t1,p1]=CURVE[i];
+        const k=(t-t0_)/(t1-t0_);
+        // האטה בסוף כל מקטע — הקפיצה מרגישה כמו נתח שנטען ואז עצירה
+        return p0 + (p1-p0) * (1-Math.pow(1-k,2));
+      }
+    }
+    return 1;
+  };
+  const step=(now)=>{
+    const t = DUR ? Math.min(1,(now-t0)/DUR) : 1;
+    const p = easedProgress(t);
+    const v = Math.round(p*100);
+    pct.textContent=v+'%'; ring.setAttribute('stroke-dashoffset', C*(1-p));
+    if(t<1) requestAnimationFrame(step);
+    else {
+      // הטעינה הסתיימה — הטבעת הופכת לכפתור ההמשך
+      const d=s.querySelector('#dial');
+      d.classList.add('as-button'); d.disabled=false;
+      d.setAttribute('aria-label','הבנתי');
+      d.onclick=()=>go(1);
+    }
+  };
+  const st=s.querySelector('#status');
+  if(reduced()){
+    st.classList.add('in');
+    s.querySelector('#say1').classList.add('in');
+    s.querySelector('#say2').classList.add('in');
+  } else {
+    // שלב א' — הטבעת ממורכזת במסך, עם "אנחנו בודקים התאמה" מתחתיה. קצר
+    const r=s.querySelector('#dial').getBoundingClientRect();
+    const shift = Math.round(window.innerHeight/2 - (r.top + r.height/2));
+    // המצב ההתחלתי נקבע בלי מעבר, ואז המעברים חוזרים מיד.
+    // חישוב כפוי ולא requestAnimationFrame — הוא מושהה בלשונית רקע והמעבר היה נשאר מבוטל
+    const dl=s.querySelector('#dial');
+    loader.style.transition='none'; dl.style.transition='none';
+    loader.style.setProperty('--shift', shift+'px');
+    dl.style.setProperty('--sc','1.45');
+    void loader.offsetWidth;
+    loader.style.transition=''; dl.style.transition='';
+
+    resultTimers.push(setTimeout(()=>st.classList.add('in'), 150));
+    // שלב ב' — הטבעת יורדת למקומה, ובאותו רגע ממש המשפט הראשון עולה
+    resultTimers.push(setTimeout(()=>{
+      loader.style.setProperty('--shift','0px');
+      s.querySelector('#dial').style.setProperty('--sc','1');
+      s.querySelector('#say1').classList.add('in');
+    }, 350));
+    resultTimers.push(setTimeout(()=>st.classList.remove('in'), 1600));
+    resultTimers.push(setTimeout(()=>s.querySelector('#say2').classList.add('in'), 2400));
+    // רשת ביטחון
+    resultTimers.push(setTimeout(()=>{
+      s.querySelectorAll('.say').forEach(e=>{ e.style.opacity=1; e.style.transform='none'; });
+      loader.style.setProperty('--shift','0px');
+      s.querySelector('#dial').style.setProperty('--sc','1');
+    }, 3400));
+  }
+  requestAnimationFrame(step);
+}
+
+function renderOffer(){
+  const seg = segment();
+  const needIdx = (A.need&&A.need.length)?A.need[0]:4;
+  const sub = NEED_SUB[needIdx];
+  let waFirst = (seg==='learn'||seg==='below');
+  if(A.need && A.need.includes(1)) waFirst = true;
+
+  /* מקרה א' — ממליצים על הווצאפ: מסך אחד, בלי החלפה, עם קישור לרשימת ההמתנה מתחת לכפתור
+     מקרה ב' — ממליצים על רשימת ההמתנה: שני מצבים שמתחלפים הלוך-חזור, בלי קישור משני */
+  const STATES = waFirst
+    ? [{head:'אנחנו ממליצים לך '+RECOMMEND.wa.lead, body:[RECOMMEND.wa.note]}]
+    : [{head:'אנחנו ממליצים לך '+RECOMMEND.wl.lead, body:[RECOMMEND.wl.note]},
+       {head:'למה שארשם לרשימת ההמתנה?',            body:WL_LINES}];
+
+  const s=document.createElement('section');
+  s.className='screen is-active offer grow';
+  s.innerHTML=`
+    <div class="offer-text">
+      <p class="offer-lead" data-exit>${OFFER_LEAD[seg]||OFFER_LEAD.almost}</p>
+      <h1 class="q offer-h" data-exit><span class="qtext"></span></h1>
+      <div class="rec" id="offerWhy" data-exit></div>
+    </div>
+    <div class="offer-cta" id="offerCta" data-exit>
+      <div class="actions">
+        ${waFirst
+          ? `<button class="btn btn-primary">הצטרפות לקהילה</button>`
+          : `<button class="btn btn-primary" id="wlBtn">הרשמה לרשימת ההמתנה</button>`}
+      </div>
+      ${waFirst ? `<a class="quiet" id="altLink" href="#">או להירשם לרשימת ההמתנה לגיוס הבא שלנו</a>` : ''}
+    </div>`;
+  stage.appendChild(s);
+
+  const cta=s.querySelector('#offerCta'), why=s.querySelector('#offerWhy'),
+        hTxt=s.querySelector('.offer-h .qtext');
+  let si=0;
+
+  const paintBody=(i)=>{ why.innerHTML = STATES[i].body.map(l=>`<p>${l}</p>`).join(''); };
+
+  /* גובה קבוע לפי המצב הארוך — גם לכותרת וגם לסיבה,
+     כדי שההחלפה לא תזיז את המשפט הפותח ואת הכפתור */
+  const reserve=()=>{
+    if(STATES.length<2) return;
+    /* שומרים את הצמתים עצמם ולא את textContent. ההקלדה בונה span לכל שורה,
+       ו-textContent היה משרשר אותן בלי הרווח שבגבול השורה — "לרשימתההמתנה" */
+    const saved=[...hTxt.childNodes];
+    let maxBody=0, maxHead=0;
+    STATES.forEach((st,i)=>{
+      paintBody(i); maxBody=Math.max(maxBody, why.offsetHeight);
+      hTxt.textContent=st.head; maxHead=Math.max(maxHead, hTxt.offsetHeight);
+    });
+    why.style.minHeight=maxBody+'px';
+    hTxt.style.minHeight=maxHead+'px';
+    hTxt.replaceChildren(...saved); paintBody(si);
+  };
+
+  paintBody(0);
+  reserve();                      // נועלים גובה מראש, אחרת הבלוק קופץ כשהסיבה נחשפת
+  // ההקלדה רצה פעם אחת בלבד, על המצב הראשון
+  /* reveal נקרא גם מסיום ההקלדה וגם מרשת הביטחון. בלי המנעול הזה הקריאה
+     השנייה מריצה reserve בזמן שהחלפה כבר רצה, ומשאירה כותרת של מצב אחד
+     עם גוף של המצב השני */
+  let revealed=false;
+  const reveal=()=>{
+    if(revealed) return; revealed=true;
+    reserve(); why.classList.add('in'); cta.classList.add('in'); startSwap();
+  };
+  typeIn(hTxt, STATES[0].head, reveal, {keepCaret:false});
+  resultTimers.push(setTimeout(reveal, 7000));
+
+  // מכאן רק החלפה, בלי הקלדה: יוצא ימינה, נכנס משמאל.
+  // הכפתור והמשפט הפותח נשארים במקומם ולא מתחלפים
+  /* ההחלפה רצה ב-Web Animations ולא במחלקות CSS. עם מחלקות היו שתי תקלות:
+     הסרת המחלקה החזירה את האלמנט לרגע למצב הבסיס והבהיקה אותו, ולוח הזמנים
+     של ה-setTimeout לא התלכד עם סוף האנימציה ויצר עצירה מתה באמצע */
+  let started=false;
+  const EASE='cubic-bezier(0.2,0.8,0.2,1)';
+  const OUT=240, IN=320, STAG=50, SHIFT=28;
+  function swap(){
+    const els=[hTxt.parentElement, why];
+    els.forEach((e,i)=>{
+      e.getAnimations().forEach(a=>a.cancel());
+      e.animate([{opacity:1,transform:'none'},
+                 {opacity:0,transform:`translateX(${SHIFT}px)`}],
+                {duration:OUT, delay:i*STAG, easing:EASE, fill:'forwards'});
+    });
+    resultTimers.push(setTimeout(()=>{
+      si=(si+1)%STATES.length;
+      hTxt.textContent=STATES[si].head; paintBody(si);
+      els.forEach((e,i)=>{
+        e.getAnimations().forEach(a=>a.cancel());
+        // fill:'both' מחזיק אטימות 0 גם במהלך ההשהיה, ולכן אין הבזק
+        e.animate([{opacity:0,transform:`translateX(${-SHIFT}px)`},
+                   {opacity:1,transform:'none'}],
+                  {duration:IN, delay:i*STAG, easing:EASE, fill:'both'});
+      });
+    }, OUT + STAG*(els.length-1)));
+  }
+  function startSwap(){
+    if(started || reduced() || STATES.length<2) return; started=true;
+    // 3 שניות אחרי שהכתיבה נגמרה, ומהחילוף הראשון והלאה כל 8 שניות
+    resultTimers.push(setTimeout(()=>{
+      swap();
+      offerSwapTimer=setInterval(swap, 8000);
+    }, 3000));
+  }
+
+  // רשימת ההמתנה היא מסך נפרד, והמעבר אליו אנכי
+  const toWaitlist=()=>go(1,'y');
+  if(!waFirst) s.querySelector('#wlBtn').onclick=toWaitlist;
+  if(waFirst)  s.querySelector('#altLink').onclick=(e)=>{ e.preventDefault(); toWaitlist(); };
+}
+
+/* ============================================================
+   רשימת ההמתנה — מסך הסבר וטופס
+   ============================================================ */
+function renderWaitlist(){
+  const s=document.createElement('section');
+  s.className='screen is-active waitlist grow';
+  s.innerHTML=`
+    <div class="wl-mid">
+    <form class="formcard" id="wlForm" data-anim novalidate>
+      <div class="field-row">
+        <div class="field"><label class="sr-only" for="f-first">שם (חובה)</label>
+          <input id="f-first" name="first" placeholder="שם*" autocomplete="given-name" required></div>
+        <div class="field"><label class="sr-only" for="f-last">שם משפחה (חובה)</label>
+          <input id="f-last" name="last" placeholder="שם משפחה*" autocomplete="family-name" required></div>
+      </div>
+      <div class="field"><label class="sr-only" for="f-mail">אימייל (חובה)</label>
+        <input id="f-mail" name="mail" type="email" placeholder="אימייל*" autocomplete="email" required></div>
+      <div class="field"><label class="sr-only" for="f-phone">טלפון (חובה)</label>
+        <input id="f-phone" name="phone" type="tel" placeholder="טלפון*" autocomplete="tel" required></div>
+      <div class="field"><label class="sr-only" for="f-cap">הון משוער</label>
+        <select id="f-cap" name="capital" class="is-empty" required>
+          <option value="" disabled selected hidden>הון משוער*</option>
+          <option>עד 50 אלף דולר</option>
+          <option>50 עד 100 אלף דולר</option>
+          <option>100 עד 250 אלף דולר</option>
+          <option>מעל 250 אלף דולר</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="sr-only" for="f-liquid">האם ההון נזיל כרגע?</label>
+        <select id="f-liquid" name="liquid" class="is-empty" required>
+          <option value="" disabled selected hidden>האם ההון נזיל כרגע?*</option>
+          <option>כן</option>
+          <option>חלקית</option>
+          <option>לא</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="sr-only" for="f-contact">האם תרצה שניצור איתך קשר?</label>
+        <select id="f-contact" name="contact" class="is-empty" required>
+          <option value="" disabled selected hidden>האם תרצה שניצור איתך קשר?*</option>
+          <option>כן</option>
+          <option>לא כרגע</option>
+        </select>
+      </div>
+      <div class="consent">
+        <input type="checkbox" id="f-ok" name="ok">
+        <label for="f-ok">אני מאשר שהפרטים שלי יישמרו אצלכם ושתיצרו איתי קשר</label>
+      </div>
+      <button class="btn btn-primary" type="submit">הצטרפות לרשימה</button>
+    </form>
+    </div>
+
+    <div class="wl-back" data-anim>
+      <button type="button" class="btn-icon" id="wlBack" aria-label="אחורה"><span class="ring"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    </div>`;
+  stage.appendChild(s);
+  markAnim(s);
+
+  s.querySelector('#wlBack').onclick=()=>go(-1,'y');
+
+  // רשימה נפתחת נצבעת כמו placeholder עד שנבחר בה ערך
+  s.querySelectorAll('select').forEach(sel=>{
+    sel.onchange=()=>sel.classList.toggle('is-empty', !sel.value);
+  });
+
+  s.querySelector('#wlForm').onsubmit=(e)=>{
+    e.preventDefault();
+    const f=e.target;
+    // כל השדות חובה — טקסט ובחירה כאחד
+    const missing=[...f.querySelectorAll('input[required],select[required]')]
+                    .find(el=>!el.value.trim());
+    if(missing){ missing.focus(); f.reportValidity(); return; }
+    // בלי אישור לשמירת הפרטים ויצירת קשר אין שליחה
+    if(!f.ok.checked){
+      const c=s.querySelector('.consent');
+      c.classList.add('missing'); f.ok.focus();
+      c.addEventListener('change', ()=>c.classList.remove('missing'), {once:true});
+      return;
+    }
+    go(1,'y');
+  };
+}
+
+/* ============================================================
+   תודה — אישור ההרשמה
+   ============================================================ */
+function renderThanks(){
+  const s=document.createElement('section');
+  s.className='screen is-active thanks grow';
+  s.innerHTML=`
+    <h1 class="wl-h" data-anim>תודה!</h1>
+    <p class="thanks-pos" data-anim>אתה מספר <strong>${WL_POSITION}</strong> ברשימה</p>
+    <!-- bdi — בלי בידוד הסמיילי מתהפך ל-"(:" בתוך משפט בעברית -->
+    <p class="thanks-note" data-anim>נציג שלנו יצור איתך קשר בקרוב להיכרות <bdi dir="ltr">:)</bdi></p>
+    <p class="thanks-note" data-anim>עד אז מציעים לך להצטרף לקהילה השקטה שלנו בווצאפ</p>
+    <div class="actions" data-anim>
+      <a class="btn btn-wa" href="${WA_LINK}" target="_blank" rel="noopener">להצטרפות לקהילה בווצאפ</a>
+    </div>`;
+  stage.appendChild(s);
+  markAnim(s);
+}
+
+/* ============================================================
+   רמזים — 7 שניות, פייד + משיכה ימינה
+   ============================================================ */
+const hintEl=document.getElementById('hintText');
+const legalBar=document.getElementById('legalBar');
+let hintTimer=null, hintIdx=0;
+document.getElementById('hintList').innerHTML = HINTS.map(h=>`<li>${h}</li>`).join('');
+
+function showHint(){
+  hintEl.classList.remove('in'); hintEl.classList.add('out');
+  setTimeout(()=>{
+    hintEl.textContent = HINTS[hintIdx % HINTS.length];
+    hintIdx++;
+    hintEl.classList.remove('out','in');
+    void hintEl.offsetWidth;
+    hintEl.classList.add('in');
+  },250);
+}
+function startHints(){
+  if(hintTimer) return;
+  if(!hintEl.textContent) showHint();
+  hintTimer=setInterval(showHint, 7000);
+}
+function stopHints(){ clearInterval(hintTimer); hintTimer=null; }
+/* הרמזים חיים רק במסכי השאלון. בלי הבדיקה הזו יציאת העכבר מהפס
+   הייתה מחיה אותם גם במסך התוצאה וההצעה */
+function onQuizScreen(){ const n=flow[pos]; return typeof n==='number' || n==='teach'; }
+hintsBar.addEventListener('mouseenter',stopHints);
+hintsBar.addEventListener('mouseleave',()=>{ if(onQuizScreen()) startHints(); });
+
+/* ============================================================
+   ניווט
+   ============================================================ */
+
+/* ═══════════════════════════════════════════════════════
+   ניווט פיתוח — זמני. להסרה: מוחקים את הבלוק הזה,
+   את בלוק ה-CSS ‎.devnav‎, את ה-HTML של ‎#devNav‎
+   ואת הקריאה ל-devSync() בתוך render()
+   ═══════════════════════════════════════════════════════ */
+const devNav=document.getElementById('devNav');
+const devJump=document.getElementById('devJump');
+
+function devLabel(n){
+  if(n==='entry') return 'כניסה';
+  if(n==='teach') return 'לימוד';
+  if(n==='result') return 'תוצאה';
+  if(n==='offer') return 'הצעה';
+  if(n==='waitlist') return 'רשימת המתנה';
+  if(n==='thanks') return 'תודה';
+  return (n+1)+'. '+QUESTIONS[n].q.replace(/\?$/,'');
+}
+/* ממלא רק תשובות שחסרות, כדי שמסכי התוצאה וההצעה יהיו עם תוכן
+   בלי למחוק בחירות שכבר סימנת */
+function devFill(){
+  const d={goal:0, where:[0], pain:[0], exp:1, stage:1, who:0, amount:2, when:1, need:[0]};
+  Object.keys(d).forEach(k=>{ if(A[k]===undefined) A[k]=d[k]; });
+}
+function devGo(i){
+  if(i<0 || i>=flow.length) return;
+  devFill(); clearInterval(typeTimer); busy=false; axis='x'; pos=i; render();
+}
+function devSync(){
+  if(!devNav) return;
+  devJump.innerHTML=flow.map((n,i)=>
+    `<option value="${i}"${i===pos?' selected':''}>${devLabel(n)}</option>`).join('');
+}
+document.getElementById('devPrev').onclick=()=>devGo(pos-1);
+document.getElementById('devNext').onclick=()=>devGo(pos+1);
+devJump.onchange=e=>devGo(+e.target.value);
+document.getElementById('devHide').onclick=()=>devNav.classList.add('is-off');
+/* ═══ סוף ניווט פיתוח ═══ */
+
+render();
+</script>
+</body>
+</html>

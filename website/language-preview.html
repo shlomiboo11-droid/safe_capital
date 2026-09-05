@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>השפה העיצובית — Safe Capital</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/design-tokens.css">
+<link rel="stylesheet" href="css/design-system.css">
+
+<style>
+/* ============================================================
+   פריסה בלבד. אין כאן אף צבע, גודל, משקל או פינה חדשים —
+   הכל מגיע מ---sc-*.
+   ============================================================ */
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--sc-bg);
+  font-family: var(--sc-font); color: var(--sc-text-muted);
+  -webkit-font-smoothing: antialiased;
+}
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* --- נאב: לוגו וקישורים. בלי רקע, בלי צל, בלי CTA --- */
+.nav { position: absolute; inset-inline: 0; top: 0; z-index: var(--sc-z-header); }
+.nav__in {
+  max-width: var(--sc-container); margin-inline: auto;
+  padding: var(--sc-space-6) var(--sc-gutter-mobile);
+  display: flex; align-items: center; direction: ltr;
+}
+.nav__logo {
+  display: flex; align-items: center; gap: var(--sc-space-2);
+  font-weight: var(--sc-fw-bold); font-size: 1.125rem;
+  color: var(--sc-navy); text-decoration: none; letter-spacing: var(--sc-ls-tight);
+}
+.nav__mark { display: flex; gap: 3px; }
+.nav__mark i { width: 16px; height: 16px; border-radius: var(--sc-radius-full); background: var(--sc-navy); display: block; }
+.nav__mark i:last-child { background: var(--sc-maroon); }
+.nav__links { display: none; gap: var(--sc-space-8); margin-inline-start: auto; direction: rtl; }
+.nav__links a {
+  font-size: 0.875rem; font-weight: var(--sc-fw-semi);
+  color: var(--sc-navy); text-decoration: none;
+  transition: color var(--sc-dur-base) var(--sc-ease);
+}
+.nav__links a.is-active { color: var(--sc-maroon); }
+@media (hover: hover) and (pointer: fine) { .nav__links a:hover { color: var(--sc-maroon); } }
+@media (min-width: 768px) {
+  .nav__in { padding: var(--sc-space-8) var(--sc-gutter); }
+  .nav__links { display: flex; }
+}
+
+/* --- hero: מסך שלם, מעט מאוד תוכן, ממורכז --- */
+.hero {
+  min-height: 88vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: var(--sc-space-32) var(--sc-gutter-mobile) var(--sc-space-24);
+}
+.hero__head { max-width: 20ch; }
+.hero__sub  { max-width: 34ch; margin-top: var(--sc-space-8); }
+.hero__cta  { margin-top: var(--sc-space-16); }
+.hero__cue  { margin-top: var(--sc-space-24); color: var(--sc-navy); opacity: .4; animation: cue 2.4s var(--sc-ease) infinite; }
+@keyframes cue { 0%,100% { transform: translateY(0) } 50% { transform: translateY(6px) } }
+@media (prefers-reduced-motion: reduce) { .hero__cue { animation: none } }
+@media (min-width: 768px) { .hero { padding-inline: var(--sc-gutter); } }
+
+/* --- רצועה: נשימה גדולה, מעט פריטים --- */
+.band { padding-block: var(--sc-space-28); }
+.band--alt  { background: var(--sc-surface); }
+.band--dark { background: var(--sc-navy); }
+@media (min-width: 768px) { .band { padding-block: 10rem; } }
+.lede { max-width: 26ch; }
+
+/* --- שורת מספרים --- */
+.figures { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sc-space-10) var(--sc-space-6); }
+@media (min-width: 768px) { .figures { grid-template-columns: repeat(4, 1fr); gap: var(--sc-space-12); } }
+.figure__k { margin-top: var(--sc-space-2); }
+
+/* --- פוטר --- */
+.foot { background: var(--sc-navy); padding-block: var(--sc-space-20) var(--sc-space-6); }
+.foot__grid { display: grid; grid-template-columns: 1fr; gap: var(--sc-space-10); }
+.foot h4 { font-size: 0.875rem; font-weight: var(--sc-fw-bold); color: var(--sc-on-dark-090); margin: 0 0 var(--sc-space-4); }
+.foot ul { list-style: none; margin: 0; padding: 0; }
+.foot li + li { margin-top: var(--sc-space-3); }
+.foot a { color: var(--sc-on-dark-070); text-decoration: none; font-size: 0.875rem; }
+.foot__bottom {
+  margin-top: var(--sc-space-16); padding-top: var(--sc-space-5);
+  border-top: 1px solid var(--sc-hairline-on-dark);
+  font-size: 0.8125rem; color: var(--sc-on-dark-050);
+}
+@media (hover: hover) and (pointer: fine) { .foot a:hover { color: var(--sc-on-dark-1); } }
+@media (min-width: 768px) { .foot__grid { grid-template-columns: 1.6fr 1fr 1fr; gap: var(--sc-space-12); } }
+
+/* --- מחוון מסך לבדיקה --- */
+.lab {
+  position: fixed; inset-block-end: var(--sc-space-4); inset-inline-end: var(--sc-space-4);
+  z-index: var(--sc-z-modal); background: var(--sc-surface);
+  border-radius: var(--sc-radius-lg); box-shadow: var(--sc-elev-overlay);
+  padding: var(--sc-space-3) var(--sc-space-4); font-size: 0.8125rem;
+  color: var(--sc-text-muted);
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="nav__logo" href="#">
+      <span class="nav__mark" aria-hidden="true"><i></i><i></i></span>
+      SAFE CAPITAL
+    </a>
+    <nav class="nav__links">
+      <a href="#" class="is-active">עסקאות</a>
+      <a href="#">בירמינגהם</a>
+      <a href="#">איך מצטרפים</a>
+      <a href="#">צור קשר</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ hero: מסך שלם, שלוש מילים ═══ -->
+<section class="hero">
+  <h1 class="sc-t-display hero__head">השבחה, מכירה, רווח</h1>
+  <p class="sc-t-lede hero__sub">עסקאות נדל״ן בבירמינגהם, אלבמה, למשקיעים ישראלים</p>
+  <div class="hero__cta">
+    <a href="#" class="sc-btn sc-btn--outline sc-btn--l">
+      לראות עסקאות פתוחות
+      <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+    </a>
+  </div>
+  <span class="material-symbols-outlined hero__cue" aria-hidden="true">expand_more</span>
+</section>
+
+<!-- ═══ הצהרה אחת ═══ -->
+<section class="band">
+  <div class="sc-container">
+    <p class="sc-eyebrow">מה אנחנו עושים</p>
+    <h2 class="sc-t-display lede">קונים מתחת לשוק, משפצים, מוכרים</h2>
+    <p class="sc-t-lede" style="max-width:44ch;margin-top:var(--sc-space-8)">
+      כל עסקה מוחזקת ב-LLC נפרד, נמכרת בתוך 6 עד 9 חודשים, וכל משקיע רואה את הדוחות של הנכס שלו בלבד
+    </p>
+  </div>
+</section>
+
+<!-- ═══ מספרים ═══ -->
+<section class="band band--alt">
+  <div class="sc-container">
+    <p class="sc-eyebrow">העסקה האחרונה</p>
+    <h2 class="sc-t-h2" style="margin-bottom:var(--sc-space-16)">Ridge Dell Circle</h2>
+    <div class="figures">
+      <div><div class="sc-t-metric">$248,500</div><div class="sc-t-label figure__k">מחיר קנייה</div></div>
+      <div><div class="sc-t-metric">$412,000</div><div class="sc-t-label figure__k">ARV</div></div>
+      <div><div class="sc-t-metric sc-t-metric--maroon">20.4%</div><div class="sc-t-label figure__k">תשואה חזויה</div></div>
+      <div><div class="sc-t-metric">7 חודשים</div><div class="sc-t-label figure__k">משך העסקה</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ שלושה כרטיסים — ההצללות נשארו ═══ -->
+<section class="band">
+  <div class="sc-container">
+    <p class="sc-eyebrow">איך זה עובד</p>
+    <h2 class="sc-t-display lede" style="margin-bottom:var(--sc-space-16)">שלושה דברים שלא מתפשרים עליהם</h2>
+    <div class="sc-grid sc-grid--3">
+      <article class="sc-card sc-card--interactive">
+        <span class="sc-icon-box sc-icon-box--sm" style="margin-bottom:var(--sc-space-6)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+            <path d="M8 11h6" stroke="var(--sc-maroon)"/><path d="M11 8v6" stroke="var(--sc-maroon)"/>
+          </svg>
+        </span>
+        <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">מתחת למחיר השוק</h3>
+        <p class="sc-t-small">כל נכס נבחן מול עסקאות אמיתיות באותו רדיוס, ואם הפער לא מספיק — מדלגים</p>
+      </article>
+      <article class="sc-card sc-card--interactive">
+        <span class="sc-icon-box sc-icon-box--sm" style="margin-bottom:var(--sc-space-6)">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+        </span>
+        <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">לוח זמנים סגור</h3>
+        <p class="sc-t-small">זמן הוא הסיכון האמיתי בהשבחה, לא המחיר — התאריכים נקבעים לפני החתימה</p>
+      </article>
+      <article class="sc-card sc-card--interactive">
+        <span class="sc-icon-box sc-icon-box--sm" style="margin-bottom:var(--sc-space-6)">
+          <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+        </span>
+        <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">LLC נפרד לכל נכס</h3>
+        <p class="sc-t-small">הפרדה מלאה בין עסקאות, וכל משקיע רואה את הדוחות של הנכס שלו בלבד</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ נייבי שטוח ═══ -->
+<section class="band band--dark sc-on-dark">
+  <div class="sc-container">
+    <p class="sc-eyebrow sc-eyebrow--on-dark">למה בירמינגהם</p>
+    <h2 class="sc-t-display lede" style="margin-bottom:var(--sc-space-8)">שוק שבו הפער עוד קיים</h2>
+    <p class="sc-t-lede" style="max-width:46ch;margin-bottom:var(--sc-space-16)">
+      מרכז העיר מאכלס את המעסיק הגדול במדינה, ואוכלוסיית השוכרים סביבו גדלה בקצב שמקדים את היצע הדיור
+    </p>
+    <div class="sc-actions">
+      <a href="#" class="sc-btn sc-btn--outline sc-btn--m">הנתונים המלאים</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ טופס ═══ -->
+<section class="band band--alt">
+  <div class="sc-container">
+    <p class="sc-eyebrow">דיבור אנושי</p>
+    <h2 class="sc-t-display lede" style="margin-bottom:var(--sc-space-8)">נחזור אליכם תוך 24 שעות</h2>
+    <p class="sc-t-body" style="max-width:44ch;margin-bottom:var(--sc-space-16)">
+      בלי מכירות — שיחה של עשרים דקות שבה נסביר איך העסקאות בנויות ומה הסיכונים
+    </p>
+
+    <div style="max-width:480px">
+      <label class="sc-field">
+        <input type="text" placeholder=" ">
+        <span class="sc-field__label">שם מלא</span>
+      </label>
+      <label class="sc-field sc-field--ltr">
+        <input type="email" placeholder=" ">
+        <span class="sc-field__label">אימייל</span>
+      </label>
+      <label class="sc-field sc-field--ltr">
+        <input type="tel" placeholder=" ">
+        <span class="sc-field__label">טלפון</span>
+        <span class="sc-field__hint">לתיאום השיחה</span>
+      </label>
+      <label class="sc-field">
+        <span class="sc-select">
+          <select>
+            <option value="">בחרו טווח</option>
+            <option>$50K – $100K</option>
+            <option>$100K – $250K</option>
+            <option>$250K ומעלה</option>
+          </select>
+          <span class="sc-select__chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+        </span>
+        <span class="sc-field__label">טווח השקעה</span>
+        <span class="sc-field__hint">אופציונלי</span>
+      </label>
+      <label class="sc-check" style="margin-bottom:var(--sc-space-8)">
+        <input type="checkbox">
+        <span>קראתי ואני מאשר את תנאי השימוש, ואני מבין שאין באמור ייעוץ השקעות</span>
+      </label>
+      <div class="sc-actions sc-actions--single">
+        <button type="button" class="sc-btn sc-btn--primary sc-btn--m sc-btn--block">שליחת הפנייה</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA סוגר: מסך כמעט ריק ═══ -->
+<section class="band" style="text-align:center">
+  <div class="sc-container">
+    <h2 class="sc-t-display" style="max-width:22ch;margin-inline:auto">העסקה הבאה נסגרת בחודש הבא</h2>
+    <div class="sc-actions sc-actions--single" style="margin-top:var(--sc-space-16);max-width:320px;margin-inline:auto">
+      <a href="#" class="sc-btn sc-btn--primary sc-btn--l">לתיאום שיחה</a>
+    </div>
+  </div>
+</section>
+
+<footer class="foot sc-on-dark">
+  <div class="sc-container">
+    <div class="foot__grid">
+      <div>
+        <a class="nav__logo" href="#" style="color:#fff;margin-bottom:var(--sc-space-5)">
+          <span class="nav__mark" aria-hidden="true"><i style="background:#fff"></i><i></i></span>
+          SAFE CAPITAL
+        </a>
+        <p class="sc-t-small" style="max-width:34ch">
+          עסקאות השבחה בבירמינגהם, אלבמה, למשקיעים ישראלים — השקעה מינימלית $50,000
+        </p>
+      </div>
+      <div>
+        <h4>ניווט</h4>
+        <ul>
+          <li><a href="#">עסקאות</a></li>
+          <li><a href="#">בירמינגהם</a></li>
+          <li><a href="#">איך מצטרפים</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>יצירת קשר</h4>
+        <ul>
+          <li><a href="#" dir="ltr">+972 54 000 0000</a></li>
+          <li><a href="#" dir="ltr">hello@safecapital.co.il</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot__bottom">© 2026 Safe Capital — אין באמור לעיל ייעוץ או שיווק השקעות</div>
+  </div>
+</footer>
+
+<div class="lab"><span id="vp">—</span></div>
+
+<script>
+(function () {
+  function vp() {
+    var w = innerWidth, m = document.querySelector('.sc-t-metric');
+    document.getElementById('vp').textContent =
+      (w >= 768 ? 'דסקטופ' : 'מובייל') + ' — ' + w + 'px — מספר ' + getComputedStyle(m).fontSize;
+  }
+  vp(); addEventListener('resize', vp);
+})();
+</script>
+</body>
+</html>

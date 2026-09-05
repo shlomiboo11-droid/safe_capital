@@ -1717,7 +1717,7 @@ function showError(container) {
     <div class="flex flex-col items-center justify-center py-24 gap-4 text-center" role="alert">
       <span class="material-symbols-outlined text-5xl text-secondary/50">error_outline</span>
       <p class="text-on-surface font-bold text-lg">לא הצלחנו לטעון את העסקאות</p>
-      <p class="text-on-surface-variant text-sm">בדקו את החיבור לאינטרנט ורענן את הדף, או <a href="contact.html" class="text-primary font-bold underline">צרו איתנו קשר</a>.</p>
+      <p class="text-on-surface-variant text-sm">בדקו את החיבור לאינטרנט ורענן את הדף, או <a href="contact" class="text-primary font-bold underline">צרו איתנו קשר</a>.</p>
     </div>`;
 }
 

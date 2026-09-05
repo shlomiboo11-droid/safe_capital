@@ -71,6 +71,28 @@
 
 שורש הדיפלוי של האדמין הוא `admin/` — **כל קובץ שהקוד בצד השרת קורא בזמן ריצה חייב לשבת בתוך `admin/`**, אחרת הוא לא נכלל בחבילה ויקרוס ב-ENOENT בפרודקשן בלבד (זה בדיוק מה שקרה עם `docs/voice-guide.md`, שהועבר ל-`admin/docs/`).
 
+## Design System — קרא לפני כל בנייה ב-`website/`
+
+**`DESIGN-SYSTEM.md` (שורש הפרויקט) הוא מקור האמת העיצובי.** חולץ מסריקה מלאה של האתר — 17 עמודי HTML, 7 קבצי CSS, 8 קבצי JS. כל ערך בו מגובה במופע אמיתי בקוד.
+
+| קובץ | תפקיד |
+|------|-------|
+| `DESIGN-SYSTEM.md` | ההנחיה המלאה — צבעים, טיפוגרפיה, מרווחים, כפתורים, טפסים, אייקונים, תמונות, מוֹשן, שכבות, RTL, כרטיסים. **כל כלל מכסה מובייל ודסקטופ** |
+| `website/css/design-tokens.css` | 121 טוקנים בתחילית `--sc-*`. אדיטיבי — קישור אליו לא משנה שום דבר חזותי |
+| `website/css/design-system.css` | **שכבת הקומפוננטות** — `.sc-btn`, `.sc-field`, `.sc-card`, `.sc-actions`, `.sc-form-card`, `.sc-t-*`. mobile-first, hover מוגן, reduced-motion מכובד. **תיקונים עיצוביים נכנסים כאן** |
+| `website/styleguide.html` | תצוגה חיה של הכל + תצוגת מובייל מקבילה ב-iframe. הערכים בו נקראים מהטוקנים בזמן ריצה |
+| `website/css/tokens.css` | גדלי פונט (`--fs-*`) — **דסקטופ בלבד.** לבנייה חדשה: `.sc-t-*`, שנושאת את שני המסכים |
+
+**חובה לפני בנייה של עמוד, סקשן או קומפוננטה:**
+1. **קרא את הסקשן הרלוונטי ב-`DESIGN-SYSTEM.md`** — לא לנחש ערך שנראה דומה לעמוד אחר
+2. **השתמש במחלקות `.sc-*`** לפני שכותבים CSS חדש. רוב מה שצריך כבר שם
+3. השתמש ב-`var(--sc-*)`, לא במספרים קשיחים. צריך ערך שאין? מוסיפים ל-`design-tokens.css`
+4. **בנה mobile-first** — הערך ללא media query הוא המובייל
+5. עבור על **§15 צ'קליסט** (כולל בלוק המובייל שבו) ו-**§18 מובייל** לפני סיום
+6. **§16 "חריגות מוכרות"** מפרט 25 באגים אמיתיים שקיימים בקוד — המסמך מנצח את הקוד, לא להעתיק מהם
+
+**במקרה של סתירה — `DESIGN-SYSTEM.md` קובע.** הסקשנים שמתחת (Key Design Constraints, Brand Colors, Typography) הם תקציר שלו.
+
 ## Key Design Constraints
 These rules are non-negotiable. Violating them produces an off-brand result:
 
@@ -78,22 +100,36 @@ These rules are non-negotiable. Violating them produces an off-brand result:
 - **No heavy shadows** — max `blur: 24px`, `Y: 8px`, `opacity: 4%`
 - **No center-alignment** — Hebrew flush-right, English flush-left. Center only for hero headlines
 - **RTL by default** — `dir="rtl"` on root, all layout/spacing/flex assumes RTL
-- **No full-box focus rings** — input focus = 2px bottom-border in `#022445` only
+- **No full-box focus rings** — input focus = 2px bottom-border in `var(--sc-navy)` only
 
 ## Brand Colors
+**הפלטה נקראת "דיו ואוקסבלד".** נבחרה מתוך חמש חלופות ב-`website/palettes.html`.
+
 | Token | Hex | Usage |
 |-------|-----|-------|
-| Primary (Navy) | `#022445` / `#1E3A5C` | Headlines, CTAs, gradient |
-| Secondary (Maroon) | `#984349` / `#7B2D33` | Key numbers, accents |
-| Background | `#fbf9f6` | Page base |
-| Surface Low | `#f5f3f0` | Section blocks |
-| Surface Lowest | `#ffffff` | Cards |
-| On Surface Variant | `#43474e` | Body text |
+| Primary (Ink Navy) | `#0e1e2e` | כל המבנה — טקסט, כותרות, כפתורים, סקשן כהה, פוקוס |
+| Accent (Oxblood) | `#5d1819` | המבטא היחיד — eyebrow, מספר מודגש, נאב אקטיבי |
+| Accent on dark | `#a47e7e` | **אותו מבטא בסקשן כהה בלבד** — 4.71:1 מול הנייבי |
+| Background | `#f7f5f1` | Page base |
+| Surface | `#ffffff` | Cards, alternating sections |
+| Fill | `#e8e5df` | Control fill — fields, tonal buttons |
+| Body text | `rgba(14,30,46,0.72)` | נגזר מנייבי, לא אפור נפרד |
+
+**למבטא שתי מדרגות, וזה לא קפריזה.** אוקסבלד על נייבי הוא 1.29:1 — כהה על כהה. הקס אחד לא יכול לשרת גם מצע בהיר וגם סקשן כהה, ואסור גם להפוך: המדרגה הבהירה על נייר היא 3.29:1 ונופלת. על `.sc-on-dark` משתמשים ב-`--sc-maroon-on-dark`. ראה `DESIGN-SYSTEM.md` §1.
+
+**הנייבי הקודם `#022445` היה כחול טהור** — ערוץ הכחול גדול פי 34 מהאדום, וגוונים טהורים ברוויה גבוהה הם מה שעפרונות צבעוניים ודגלים עשויים מהם. `#1E3A5C`, `#7B2D33` ו-`#43474e` הוסרו.
+
+**שלושה משטחים בהירים בלבד.** `#f5f3f0` ו-`#e4e2df` הוסרו — הם היו כמעט בלתי-נראים מול השכנים שלהם. ראה `DESIGN-SYSTEM.md` §1.2.
 
 ## Typography
-- **Heebo 700/800** — Hebrew headlines
-- **Inter / Montserrat** — numbers, financial metrics, English labels
-- **Heebo 300 / Inter** — body text
+**Heebo בלבד — משפחה אחת לכל דבר**, כולל מספרים ותוויות לטיניות.
+
+- **Heebo 800** — hero, display, כותרות סקשן, מספרים
+- **Heebo 700** — h3, h4, כפתורים, תוויות
+- **Heebo 300** — טקסט גוף
+
+Inter הוסר: ספרותיו פרופורציונליות ולכן עמודת סכומים לא מתיישרת. Montserrat מעולם לא היה בקוד.
+**אין uppercase ואין מרווח אות רחב על טקסט קטן.** ההדגשה מגיעה ממשקל וצבע.
 
 ## Typography — חוק ברזל
 

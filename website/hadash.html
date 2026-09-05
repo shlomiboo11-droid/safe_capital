@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Safe Capital | חדש</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/design-tokens.css">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   hadash — שלד מבני + מוֹשן
+
+   המכניקה נלמדה מהקלטת מסך של האתר המקורי:
+   כמוסה מרחפת · מכונת כתיבה · מעבר עיגול מתנפח ·
+   צורה שחוצה אופקית · עקרונות ממוספרים · כפתור כמוסה.
+
+   הצבעים, הפונט והתוכן — של סייף קפיטל.
+   כל מה שניתן לשינוי יושב ב-:root. אין ערך קשיח בגוף ה-CSS.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── עור: צבע — פלטת "דיו ואוקסבלד" ────────────────────────── */
+  --h-bg:           var(--sc-bg);              /* #f7f5f1 */
+  --h-ink:          var(--sc-navy);            /* #0e1e2e — צבע הלוגו */
+  --h-ink-soft:     var(--sc-text-muted);
+  --h-dark:         var(--sc-navy);
+  --h-on-dark:      var(--sc-text-on-dark);
+  --h-on-dark-soft: rgba(255,255,255,0.60);
+  --h-accent:       var(--sc-maroon);          /* #5d1819 — מצע בהיר בלבד */
+  --h-accent-dark:  var(--sc-maroon-on-dark);  /* #a47e7e — סקשן כהה בלבד */
+  --h-fill:         var(--sc-fill);            /* #e8e5df */
+  --h-pill:         rgba(232,229,223,0.92);    /* הכמוסה המרחפת */
+
+  /* ── עור: טיפוגרפיה ───────────────────────────────────────── */
+  --h-font: 'Heebo', sans-serif;
+  /* הסולם במקור ב-1440: 70.5 / 47.5 / 28.8 / 21.6 */
+  --h-display: clamp(2.6rem, 4.9vw, 4.4rem);
+  --h-h1:      clamp(1.9rem, 3.3vw, 2.97rem);
+  --h-h2:      clamp(1.4rem, 2vw, 1.8rem);
+  --h-h3:      clamp(1.2rem, 2vw, 1.8rem);
+  --h-lead:    clamp(1rem, 1.5vw, 1.35rem);
+  --h-body:    1rem;
+  --h-label:   0.875rem;
+
+  --h-w-display: 800;
+  --h-w-head:    700;
+  --h-w-sub:     600;
+  --h-w-body:    300;
+
+  --h-lh-tight: 1.0;
+  --h-lh-head:  1.3;
+  --h-lh-sub:   1.4;
+  --h-lh-body:  1.7;
+
+  /* ── עור: מבנה ────────────────────────────────────────────── */
+  --h-container: 1280px;
+  --h-inner:     1152px;
+  --h-gutter:    var(--sc-space-6);
+  --h-gutter-lg: var(--sc-space-12);
+  --h-pill-h:    56px;
+  --h-pill-top:  var(--sc-space-4);
+  --h-section-y:    var(--sc-space-20);
+  --h-section-y-lg: var(--sc-space-32);
+  --h-gap:       var(--sc-space-10);
+  --h-gap-col:   2.4rem;
+  --h-radius:    var(--sc-radius-lg);
+
+  /* ── מוֹשן — התזמונים שנמדדו במקור ─────────────────────────── */
+  --m-fast:  0.2s;
+  --m-base:  0.3s;
+  --m-tf:    0.4s;
+  --m-mid:   0.5s;
+  --m-slow:  1.5s;
+  --m-bg:    1.7s;
+  --m-ease:  ease;
+  --m-out:   ease-out;
+  --m-inout: ease-in-out;
+}
+
+html { scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--h-bg);
+  color: var(--h-ink);
+  font-family: var(--h-font);
+  font-size: var(--h-body);
+  font-weight: var(--h-w-body);
+  line-height: var(--h-lh-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { margin: 0; font-weight: var(--h-w-head); line-height: var(--h-lh-head); }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+
+.wrap { width: 100%; max-width: var(--h-container); margin-inline: auto; padding-inline: var(--h-gutter); }
+.inner { max-width: var(--h-inner); }
+
+/* ═══ KEYFRAMES ═════════════════════════════════════════════════ */
+@keyframes fadeIn     { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp   { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes fadeInOut  { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes moveUpDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(9px); } }
+@keyframes caretBlink { 0%, 45% { opacity: 1; } 55%, 100% { opacity: 0; } }
+@keyframes loadingOpacity { from { opacity: 0; } to { opacity: 1; } }
+
+body { animation: loadingOpacity var(--m-mid) var(--m-ease) both; }
+
+/* ═══ הדר — כמוסה מרחפת ═════════════════════════════════════════
+   בראש העמוד: שקוף ורוחב מלא.
+   מרגע הגלילה: מתכווץ לקפסולה מעוגלת שמרחפת במרכז. */
+.hd {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  padding-block-start: 0;
+  transition: padding-block-start var(--m-tf) var(--m-ease);
+}
+.hd .bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--h-pill-h);
+  padding-inline: var(--sc-space-6);
+  border-radius: 0;
+  background: transparent;
+  transition: background var(--m-tf) var(--m-ease),
+              border-radius var(--m-tf) var(--m-ease),
+              padding-inline var(--m-tf) var(--m-ease),
+              box-shadow var(--m-tf) var(--m-ease);
+}
+.hd.pill { padding-block-start: var(--h-pill-top); }
+.hd.pill .bar {
+  background: var(--h-pill);
+  border-radius: var(--sc-radius-full);
+  padding-inline: var(--sc-space-5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.hd.up { transform: translateY(calc(-100% - var(--h-pill-top))); }
+.hd { transition: transform var(--m-base) var(--m-ease),
+                  padding-block-start var(--m-tf) var(--m-ease); }
+
+.hd-mark { display: flex; align-items: center; color: var(--h-ink); }
+.hd-mark svg {
+  display: block;
+  block-size: 30px;
+  inline-size: auto;
+  transition: transform var(--m-tf) var(--m-ease);
+}
+/* קו הבתים הוא המבטא — אוקסבלד על בהיר */
+.mark-towers { fill: var(--h-accent); }
+/* על סקשן כהה: הלוגו לבן והמבטא עולה מדרגה, אחרת 1.29:1 */
+.dark .mark-towers, .ft .mark-towers { fill: var(--h-accent-dark); }
+
+.hd-nav { display: none; gap: var(--sc-space-8); }
+.hd-nav a {
+  font-size: var(--h-label);
+  font-weight: var(--h-w-sub);
+  opacity: 0.75;
+  transition: opacity var(--m-base) var(--m-ease);
+}
+
+/* ═══ HERO — ממורכז, עם מכונת כתיבה ═════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: calc(var(--h-pill-h) + var(--sc-space-16)) var(--sc-space-24);
+}
+.hero h1 {
+  font-size: var(--h-h1);
+  font-weight: var(--h-w-display);
+  line-height: var(--h-lh-head);
+  max-width: 18ch;
+  margin-inline: auto;   /* בלי זה הכותרת נצמדת לימין ב-RTL */
+}
+/* הסמן המהבהב בסוף הכותרת */
+.caret {
+  display: inline-block;
+  inline-size: 0.56ch;
+  border-block-end: 4px solid currentColor;
+  vertical-align: baseline;
+  animation: caretBlink 1.1s step-end infinite;
+}
+
+/* אינדיקטור גלילה — כתם + תווית */
+.scroll-hint {
+  position: absolute;
+  inset-block-end: var(--sc-space-12);
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--sc-space-2);
+  font-size: var(--h-label);
+  color: var(--h-ink-soft);
+}
+.scroll-hint b {
+  inline-size: 34px; block-size: 34px;
+  border-radius: 46% 54% 52% 48% / 50% 46% 54% 50%;
+  background: var(--h-ink);
+  animation: moveUpDown var(--m-slow) var(--m-inout) infinite;
+}
+.scroll-hint span { animation: fadeInOut var(--m-slow) var(--m-inout) infinite; }
+
+/* ═══ מעבר עיגול מתנפח ══════════════════════════════════════════
+   עיגול כהה ענק עולה מלמטה ובולע את המסך — הגשר מהבהיר לכהה. */
+.wipe {
+  position: relative;
+  block-size: 46svh;
+  overflow: hidden;
+  background: var(--h-bg);
+}
+.wipe i {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 50%;
+  inline-size: 190vw;
+  aspect-ratio: 1;
+  margin-inline-start: -95vw;
+  border-radius: 50%;
+  background: var(--h-dark);
+  transform: translateY(0);
+  will-change: transform;
+}
+
+/* ═══ בלוק כהה ══════════════════════════════════════════════════ */
+.dark { background: var(--h-dark); color: var(--h-on-dark); }
+
+/* הצהרת המשימה — ממורכזת */
+.mission {
+  text-align: center;
+  padding-block: var(--h-section-y);
+}
+.mission .eyebrow {
+  font-size: var(--h-label);
+  font-weight: var(--h-w-body);
+  letter-spacing: 0.04em;
+  color: var(--h-on-dark-soft);
+  margin-bottom: var(--sc-space-5);
+}
+.mission h2 {
+  font-size: var(--h-h1);
+  font-weight: var(--h-w-display);
+  max-width: 20ch;
+  margin-inline: auto;
+}
+
+/* ═══ "איך אנחנו עושים את זה" — כותרת בצד + צורה שחוצה ══════════ */
+.how {
+  position: relative;
+  padding-block: var(--h-section-y);
+  overflow: hidden;
+}
+.how h2 {
+  font-size: var(--h-display);
+  font-weight: var(--h-w-display);
+  line-height: var(--h-lh-tight);
+  max-width: 10ch;
+  color: var(--h-on-dark-soft);
+  margin-bottom: var(--h-gap);
+}
+/* הצורה הדקורטיבית — נעה אופקית לפי התקדמות הגלילה */
+.drift {
+  position: absolute;
+  inset-block-start: 12%;
+  inset-inline-end: 4%;
+  inline-size: clamp(120px, 20vw, 260px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* העקרונות — ממוספרים, עם קו אנכי מחבר */
+.rules { display: flex; flex-direction: column; gap: var(--h-gap); max-width: 62ch; }
+.rule { position: relative; padding-inline-start: var(--sc-space-8); }
+.rule::before {
+  content: attr(data-k);
+  position: absolute;
+  inset-inline-start: 0; inset-block-start: 0;
+  font-size: var(--h-h3);
+  font-weight: var(--h-w-head);
+  color: var(--h-on-dark);
+}
+.rule h3 {
+  font-size: var(--h-h3);
+  font-weight: var(--h-w-sub);
+  line-height: var(--h-lh-sub);
+}
+.rule p {
+  margin-top: var(--sc-space-2);
+  padding-inline-start: var(--sc-space-4);
+  border-inline-start: 1px solid rgba(255,255,255,0.22);
+  color: var(--h-on-dark-soft);
+}
+
+/* ═══ עסקאות — כרטיסים רחבים ════════════════════════════════════ */
+.work { padding-block: var(--h-section-y); }
+.work-grid { display: grid; grid-template-columns: 1fr; gap: var(--h-gap) var(--h-gap-col); }
+.work-item figure { margin: 0; overflow: hidden; border-radius: var(--h-radius); background: var(--h-fill); }
+.work-thumb { aspect-ratio: 16 / 9; background: var(--h-fill); transition: transform var(--m-slow) var(--m-out); }
+.work-item h3 {
+  font-size: var(--h-h2);
+  font-weight: var(--h-w-sub);
+  margin-top: var(--sc-space-5);
+  transition: color var(--m-base) var(--m-ease);
+}
+.work-item .meta { font-size: var(--h-label); color: var(--h-ink-soft); margin-top: var(--sc-space-1); }
+
+/* כפתור כמוסה עם חץ — ממורכז */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sc-space-3);
+  margin-top: var(--h-gap);
+  padding: var(--sc-space-4) var(--sc-space-8);
+  border: 1.5px solid var(--h-ink);
+  border-radius: var(--sc-radius-full);
+  font-weight: var(--h-w-sub);
+  transition: background var(--m-base) var(--m-ease), color var(--m-base) var(--m-ease);
+}
+.pill-btn svg { inline-size: 20px; block-size: 20px; transition: transform var(--m-base) var(--m-ease); }
+.center { display: flex; justify-content: center; }
+
+/* ═══ פוטר — כהה, ממורכז ════════════════════════════════════════ */
+.ft { background: var(--h-dark); color: var(--h-on-dark); text-align: center; padding-block: var(--sc-space-16); }
+.ft-mark { display: flex; justify-content: center; margin-bottom: var(--sc-space-3); }
+.ft-mark svg { display: block; block-size: 44px; inline-size: auto; }
+.ft-name { font-size: var(--h-label); color: var(--h-on-dark-soft); margin-bottom: var(--sc-space-8); }
+.ft-links { display: flex; justify-content: center; gap: var(--sc-space-5); font-size: var(--h-label); margin-bottom: var(--sc-space-5); }
+.ft-legal { font-size: var(--h-label); color: var(--h-on-dark-soft); }
+
+/* ═══ דסקטופ ════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  :root { --h-gutter: var(--h-gutter-lg); --h-section-y: var(--h-section-y-lg); }
+  .hd-nav { display: flex; }
+  .hd.pill .bar { max-width: var(--h-inner); margin-inline: auto; }
+  .how { display: grid; grid-template-columns: 1fr 1fr; gap: var(--h-gap-col); align-items: start; }
+  .how h2 { margin-bottom: 0; }
+  .work-grid { grid-template-columns: repeat(2, 1fr); }
+  .work-item:first-child { grid-column: 1 / -1; }
+  .work-item:first-child .work-thumb { aspect-ratio: 21 / 9; }
+}
+
+/* ═══ Hover ═════════════════════════════════════════════════════ */
+@media (hover: hover) {
+  .hd-nav a:hover { opacity: 1; }
+  .hd-mark:hover i:last-child { transform: translateX(5px); }
+  .work-item:hover .work-thumb { transform: scale(1.04); }
+  .work-item:hover h3 { color: var(--h-accent); }
+  .pill-btn:hover { background: var(--h-ink); color: var(--h-on-dark); }
+  .pill-btn:hover svg { transform: translateX(-4px); }
+}
+
+/* ═══ חשיפה בגלילה ══════════════════════════════════════════════ */
+.rise { opacity: 0; }
+.rise.in { animation: fadeInUp var(--m-mid) var(--m-out) both; }
+.rise.in.d1 { animation-delay: 0.10s; }
+.rise.in.d2 { animation-delay: 0.20s; }
+
+/* רשת ביטחון: בלי JS התוכן חייב להיראות */
+.no-js .rise { opacity: 1; animation: none; }
+.no-js .wipe { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rise { opacity: 1; }
+}
+</style>
+</head>
+<body class="no-js">
+
+<header class="hd" id="hd">
+  <div class="wrap">
+    <div class="bar">
+      <a href="/" class="hd-mark" aria-label="Safe Capital">
+        <svg viewBox="74.959 21.109 343.912 450.512" fill="currentColor" aria-hidden="true">
+          <path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/>
+          <path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/>
+          <!-- קו הבתים — האוקסבלד. על סקשן כהה מקבל את המדרגה הבהירה -->
+          <path class="mark-towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/>
+        </svg>
+      </a>
+      <nav class="hd-nav">
+        <a href="properties">עסקאות</a>
+        <a href="birmingham">בירמינגהם</a>
+        <a href="join">איך מצטרפים</a>
+        <a href="contact">צור קשר</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO — ממורכז, כותרת נכתבת תו-תו -->
+  <section class="hero">
+    <div class="wrap inner">
+      <h1><span id="typed" data-text="הכסף שלך עובד בשבילך? או שאתה עובד בשביל הכסף?"></span><span class="caret" aria-hidden="true"></span></h1>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <b></b><span>גלול</span>
+    </div>
+  </section>
+
+  <!-- מעבר: עיגול כהה מתנפח ובולע את המסך -->
+  <div class="wipe" id="wipe" aria-hidden="true"><i></i></div>
+
+  <div class="dark">
+
+    <!-- הצהרת משימה — ממורכזת -->
+    <section class="mission">
+      <div class="wrap inner">
+        <p class="eyebrow rise">המודל שלנו פשוט:</p>
+        <h2 class="rise d1">קונים נכס, משפצים אותו, מוכרים. עד שנה מרגע השיפוץ.</h2>
+      </div>
+    </section>
+
+    <!-- איך — כותרת בצד, צורה חוצה, עקרונות ממוספרים -->
+    <div class="wrap inner">
+      <section class="how">
+        <span class="drift" id="drift" aria-hidden="true"></span>
+        <h2 class="rise">איך אנחנו עושים את זה?</h2>
+        <div class="rules">
+          <article class="rule rise" data-k="א.">
+            <h3>בוחרים את העסקה</h3>
+            <p>כל נכס נבדק מול עסקאות דומות באזור לפני שנוגעים בו. רוב מה שאנחנו בוחנים — נפסל.</p>
+          </article>
+          <article class="rule rise" data-k="ב.">
+            <h3>מבנה LLC אמריקאי</h3>
+            <p>כל עסקה יושבת בחברה נפרדת. אתה רשום כשותף, והנכס רשום על שם החברה.</p>
+          </article>
+          <article class="rule rise" data-k="ג.">
+            <h3>המשקיעים ראשונים במפל</h3>
+            <p>בחלוקת הרווחים המשקיעים מקבלים לפני המייסדים. אנחנו אחרונים בתור.</p>
+          </article>
+        </div>
+      </section>
+    </div>
+
+  </div>
+
+  <!-- עסקאות -->
+  <section class="work">
+    <div class="wrap inner">
+      <div class="work-grid">
+        <article class="work-item rise">
+          <figure><div class="work-thumb"></div></figure>
+          <h3>שם העסקה</h3>
+          <p class="meta">בירמינגהם, אלבמה</p>
+        </article>
+        <article class="work-item rise">
+          <figure><div class="work-thumb"></div></figure>
+          <h3>שם העסקה</h3>
+          <p class="meta">בירמינגהם, אלבמה</p>
+        </article>
+        <article class="work-item rise d1">
+          <figure><div class="work-thumb"></div></figure>
+          <h3>שם העסקה</h3>
+          <p class="meta">בירמינגהם, אלבמה</p>
+        </article>
+        <article class="work-item rise">
+          <figure><div class="work-thumb"></div></figure>
+          <h3>שם העסקה</h3>
+          <p class="meta">בירמינגהם, אלבמה</p>
+        </article>
+        <article class="work-item rise d1">
+          <figure><div class="work-thumb"></div></figure>
+          <h3>שם העסקה</h3>
+          <p class="meta">בירמינגהם, אלבמה</p>
+        </article>
+      </div>
+      <div class="center">
+        <a href="properties" class="pill-btn rise">
+          לכל העסקאות
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ft">
+  <div class="wrap inner">
+    <div class="ft-mark" style="color:var(--h-on-dark)">
+      <svg viewBox="74.959 21.109 343.912 450.512" fill="currentColor" role="img" aria-label="סייף קפיטל">
+        <path d="M 232.622 21.892 L 232.569 100.724 C 206.63 102.417 168.185 113.365 167.806 147.198 C 167.334 189.305 260.653 200.845 269.148 202.737 C 311.273 212.121 413.071 231.038 416.255 320.951 C 419.953 425.387 310.16 447.853 310.16 447.853 L 261.872 470.962 L 261.429 377.295 C 261.429 377.295 323.383 378.684 322.906 333.031 C 322.429 287.317 215.568 274.63 215.568 274.63 C 215.568 274.63 154.637 262.762 119.698 240.203 C 73.81 210.575 75.339 162.987 75.339 162.987 L 74.959 70.77 L 232.622 21.892 Z"/>
+        <path d="M 75.452 237.156 C 75.452 237.156 97.593 264.775 143.497 282.833 C 180.507 297.392 232.858 306.197 232.858 306.157 C 232.858 306.117 233.012 471.621 233.012 471.621 C 233.012 471.621 148.934 432.65 113.381 390.537 C 75.435 345.588 75.81 299.459 75.81 299.502 C 75.81 299.545 75.109 236.745 75.452 237.156 Z"/>
+        <path class="mark-towers" d="M 260.412 21.109 C 260.412 21.109 418.451 69.798 418.488 69.798 C 418.525 69.798 418.871 247.767 418.871 247.767 C 418.871 247.767 408.158 234.325 401.967 228.402 C 397.166 223.809 386.386 215.97 386.386 215.97 L 386.529 135.616 L 355.506 125.54 L 355.303 200.203 C 355.303 200.203 344.689 194.913 339.147 192.833 C 333.907 190.866 323.059 188.029 323.059 188.029 L 322.557 116.387 L 293.816 105.521 L 292.577 179.581 C 292.577 179.581 281.266 176.451 275.011 174.987 C 270.792 173.999 261.189 172.106 261.189 172.106 C 261.189 172.106 260.2 21.532 260.412 21.109 Z"/>
+      </svg>
+    </div>
+    <p class="ft-name">Safe Capital</p>
+    <div class="ft-links">
+      <a href="privacy">מדיניות פרטיות</a>
+      <a href="terms">תקנון</a>
+      <a href="contact">צור קשר</a>
+    </div>
+    <p class="ft-legal">כל הזכויות שמורות © סייף קפיטל</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  document.body.classList.remove('no-js');
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── מכונת כתיבה בכותרת הראשית ──────────────────────────────── */
+  var typed = document.getElementById('typed');
+  if (typed) {
+    var text = typed.getAttribute('data-text') || '';
+    if (reduce) {
+      typed.textContent = text;
+    } else {
+      var i = 0;
+      (function tick() {
+        typed.textContent = text.slice(0, i++);
+        if (i <= text.length) setTimeout(tick, 45);
+      })();
+    }
+  }
+
+  /* ── חשיפה בגלילה ───────────────────────────────────────────── */
+  var items = document.querySelectorAll('.rise');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* ── הדר: כמוסה בגלילה, נעלם למטה, חוזר למעלה ──────────────── */
+  var hd = document.getElementById('hd');
+  var wipe = document.getElementById('wipe');
+  var circle = wipe ? wipe.querySelector('i') : null;
+  var drift = document.getElementById('drift');
+  var last = 0, ticking = false;
+  var TH = 6;
+
+  function frame() {
+    var y = window.scrollY;
+    var d = y - last;
+
+    hd.classList.toggle('pill', y > 24);
+    if (y <= 120) hd.classList.remove('up');
+    else if (d > TH) hd.classList.add('up');
+    else if (d < -TH) hd.classList.remove('up');
+    if (Math.abs(d) > TH) last = y;
+
+    /* העיגול המתנפח — נגרר מהתקדמות הגלילה בתוך אזור המעבר */
+    if (circle && !reduce) {
+      var r = wipe.getBoundingClientRect();
+      var p = 1 - (r.top / window.innerHeight);          /* 0 לפני, 1 אחרי */
+      p = p < 0 ? 0 : p > 1.6 ? 1.6 : p;
+      circle.style.transform = 'translateY(' + (-p * 100) + '%)';
+    }
+
+    /* הצורה חוצה אופקית לפי מיקום הסקשן */
+    if (drift && !reduce) {
+      var dr = drift.parentElement.getBoundingClientRect();
+      var q = 1 - (dr.top + dr.height / 2) / window.innerHeight;
+      q = q < -1 ? -1 : q > 1 ? 1 : q;
+      drift.style.transform = 'translateX(' + (q * 62) + 'vw)';
+    }
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(frame);
+  }, { passive: true });
+
+  frame();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>בחירת פלטה — Safe Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/design-tokens.css">
+<link rel="stylesheet" href="css/design-system.css">
+<style>
+  /* ── כרום העמוד: אפור נייטרלי בכוונה ─────────────────────
+     off-white נשפט נכון רק על מצע נייטרלי. קרם על קרם משקר. */
+  :root { --pg: #c9c9c7; --pg-ink: #2a2a28; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--pg); color: var(--pg-ink);
+    font-family: 'Heebo', sans-serif; font-weight: 400;
+  }
+
+  .pg-top { padding: 40px 24px 24px; max-width: 1120px; margin: 0 auto; }
+  .pg-top h1 { font-size: 1.875rem; font-weight: 700; line-height: 1.4; margin: 0 0 16px; }
+  .pg-top p  { font-size: 1rem; line-height: 1.8; margin: 0 0 8px; max-width: 66ch; }
+  .pg-top ul { margin: 8px 0 0; padding-inline-start: 20px; max-width: 66ch; }
+  .pg-top li { font-size: 1rem; line-height: 1.8; margin-bottom: 4px; }
+  .pg-top code {
+    font-family: 'Heebo', sans-serif; font-size: 0.875rem; font-weight: 600;
+    background: rgba(0,0,0,.07); padding: 1px 5px; border-radius: 4px;
+    direction: ltr; unicode-bidi: isolate;
+  }
+
+  /* ── כרטיס פלטה ─────────────────────────────────────────── */
+  .pal { max-width: 1120px; margin: 0 auto 40px; padding: 0 24px; }
+  .pal__head { margin-bottom: 16px; }
+  .pal__n {
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.4;
+    color: rgba(0,0,0,.5); margin: 0 0 4px;
+    direction: ltr; unicode-bidi: isolate; text-align: start;
+  }
+  .pal__name { font-size: 1.125rem; font-weight: 700; line-height: 1.4; margin: 0 0 6px; }
+  .pal__char { font-size: 1rem; line-height: 1.8; margin: 0; }
+  .pal__risk { font-size: 0.875rem; line-height: 1.8; margin: 4px 0 0; color: rgba(0,0,0,.62); }
+  .pal__risk b { font-weight: 600; }
+
+  /* ── דגימות ─────────────────────────────────────────────── */
+  .sw { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+  .sw__c { border-radius: 8px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+  .sw__chip { height: 64px; }
+  .sw__meta { background: #fff; padding: 8px 12px 10px; }
+  .sw__role { font-size: 0.8125rem; font-weight: 600; line-height: 1.4; }
+  .sw__hex {
+    font-size: 0.8125rem; font-weight: 400; color: rgba(0,0,0,.55);
+    direction: ltr; unicode-bidi: isolate; text-align: start;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── מדידות ─────────────────────────────────────────────── */
+  .cx { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .cx__i {
+    background: #fff; border-radius: 8px; padding: 8px 12px;
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.4;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+  }
+  .cx__v { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+  .cx__ok   { color: #1c5b32; }
+  .cx__fail { color: #97231f; }
+
+  /* ── הדגמה יישומית: אור מעל, כהה מתחת ──────────────────── */
+  .demo { border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.10); }
+  .demo__light { background: var(--sc-bg); padding: 32px 24px; }
+  .demo__dark  { background: var(--sc-navy); padding: 32px 24px; }
+
+  .d-eyebrow {
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.4;
+    color: var(--sc-maroon); margin: 0 0 8px;
+  }
+  .d-h { font-size: 1.875rem; font-weight: 700; line-height: 1.4;
+         color: var(--sc-navy); margin: 0 0 12px; }
+  .d-p { font-size: 1rem; font-weight: 400; line-height: 1.8;
+         color: var(--sc-text-muted); margin: 0 0 24px; max-width: 54ch; }
+
+  .d-metrics { display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 24px; }
+  .d-m__v {
+    font-size: 1.875rem; font-weight: 700; line-height: 1;
+    color: var(--sc-maroon); margin: 0 0 4px;
+    direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums;
+  }
+  .d-m__k { font-size: 0.875rem; font-weight: 400; line-height: 1.4; color: var(--sc-text-muted); }
+
+  .d-card {
+    background: var(--sc-surface); border-radius: 16px; padding: 24px;
+    box-shadow: 0 8px 24px rgba(27,28,26,.06); margin-bottom: 24px;
+  }
+  .d-card__t { font-size: 1.125rem; font-weight: 700; line-height: 1.4;
+               color: var(--sc-navy); margin: 0 0 8px; }
+  .d-card__p { font-size: 0.875rem; font-weight: 400; line-height: 1.8;
+               color: var(--sc-text-muted); margin: 0; }
+
+  .d-field { max-width: 320px; margin-bottom: 24px; }
+  .d-field__l { display: block; font-size: 0.8125rem; font-weight: 600;
+                line-height: 1.4; color: var(--sc-navy); margin-bottom: 4px; }
+  .d-field__i {
+    width: 100%; min-height: 40px; padding: 8px 0;
+    font-family: 'Heebo', sans-serif; font-size: 1rem; font-weight: 400;
+    color: var(--sc-navy); background: transparent;
+    border: 0; border-bottom: 1px solid var(--sc-divider); border-radius: 0;
+  }
+  .d-field__i:focus { outline: none; border-bottom: 2px solid var(--sc-navy); padding-bottom: 7px; }
+
+  .d-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .d-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 40px; padding: 11px 24px; border: 0; cursor: pointer;
+    font-family: 'Heebo', sans-serif; font-size: 1rem; font-weight: 700;
+    line-height: 1; border-radius: 9999px; text-decoration: none;
+  }
+  .d-btn--primary { background: var(--sc-navy);   color: #fff; }
+  .d-btn--accent  { background: var(--sc-maroon); color: #fff; }
+  .d-btn--outline {
+    background: transparent; color: var(--sc-navy);
+    border: 1px solid var(--sc-navy); padding: 10px 23px;
+  }
+  .d-btn--tonal   { background: var(--sc-fill); color: var(--sc-navy); }
+
+  /* פס כהה */
+  .d-dark-eyebrow {
+    font-size: 0.8125rem; font-weight: 600; line-height: 1.4;
+    color: rgba(255,255,255,.7); margin: 0 0 8px;
+  }
+  .d-dark-h { font-size: 1.875rem; font-weight: 700; line-height: 1.4;
+              color: #fff; margin: 0 0 12px; }
+  .d-dark-p { font-size: 1rem; font-weight: 400; line-height: 1.8;
+              color: rgba(255,255,255,.7); margin: 0 0 24px; max-width: 54ch; }
+  .d-rule { height: 3px; width: 48px; background: var(--sc-maroon); margin-bottom: 16px; }
+  .d-dark-metrics { display: flex; flex-wrap: wrap; gap: 32px; }
+  .d-dm__v {
+    font-size: 1.875rem; font-weight: 700; line-height: 1; color: #fff; margin: 0 0 4px;
+    direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums;
+  }
+  .d-dm__v--accent { color: var(--sc-accent-on-dark); }
+  .d-note b { font-weight: 600; color: rgba(255,255,255,.7);
+              direction: ltr; unicode-bidi: isolate; }
+  .d-dm__k { font-size: 0.875rem; font-weight: 400; line-height: 1.4; color: rgba(255,255,255,.7); }
+  .d-note {
+    margin: 16px 0 0; font-size: 0.8125rem; font-weight: 400; line-height: 1.8;
+    color: rgba(255,255,255,.5);
+  }
+
+  @media (min-width: 768px) {
+    .pg-top { padding: 64px 48px 32px; }
+    .pg-top h1 { font-size: 5rem; line-height: 1; letter-spacing: -0.01em; }
+    .pal { padding: 0 48px; margin-bottom: 64px; }
+    .sw { grid-template-columns: repeat(5, 1fr); }
+    .demo__light, .demo__dark { padding: 64px 48px; }
+    .pal__name { font-size: 1.875rem; line-height: 1.4; }
+  }
+</style>
+</head>
+<body>
+
+<div class="pg-top">
+  <h1>בחירת פלטה</h1>
+  <p>חמש חלופות לכחול–אדום. כל אחת מוצגת על אותו בלוק תוכן בדיוק, כדי שההשוואה תהיה של הצבע ולא של העימוד. מצע העמוד אפור נייטרלי בכוונה — <strong>off-white נשפט נכון רק על אפור. קרם על קרם משקר.</strong></p>
+  <p><strong>למה הפלטה הנוכחית קוראת ילדותית — והחשוד העיקרי הוא הכחול, לא האדום:</strong></p>
+  <ul>
+    <li><code>#022445</code> הוא כחול <strong>טהור</strong>: ערוץ הכחול גדול פי 34 מהאדום. גוונים טהורים ברוויה גבוהה הם מה שעפרונות צבעוניים ודגלים עשויים מהם. נייבי יקר הוא תמיד "מלוכלך" — נושא מעט מהמשלים שלו, ולכן קורא כפיגמנט ולא כאור.</li>
+    <li>שני הגוונים יושבים על <strong>אותה רוויה בינונית</strong>, ולכן מתחרים. אף אחד מהם לא מוביל.</li>
+    <li>כחול + אדום + קרם באותו מפלס רוויה הוא הצירוף הקלאסי של <strong>סמל בית ספר או קבוצת ספורט</strong>. מה שמפרק את זה הוא הפרדת בהירות חדה: כחול כמעט-שחור, ואדום שהוא או עמוק בהרבה או עמום בהרבה.</li>
+  </ul>
+  <p><strong>מה שהמדידה למטה חשפה, וזה תקף לכל חמש החלופות:</strong> אף מבטא כהה לא עובר 4.5:1 על הנייבי שלו. זה לא פגם של גוון מסוים אלא מתמטיקה — אדום עמוק על כחול עמוק הם שני צבעים כהים. לכן <strong>הקס אחד לא יכול לשרת גם משטח בהיר וגם סקשן כהה</strong>, ולמבטא צריכות להיות שתי מדרגות: העמוקה למצע הבהיר, ובהירה לסקשן הכהה. המדרגה הבהירה למטה מחושבת אוטומטית — הגוון מוסע לעבר הלבן עד שהוא עובר 4.5:1 מול הנייבי, כך שהיא תקפה גם למספר גדול וגם לתווית 13px.</p>
+</div>
+
+<div id="out"></div>
+
+<script>
+/* ── הפלטות ─────────────────────────────────────────────────
+   navy   = כל המבנה: טקסט, כפתור ראשי, סקשן כהה
+   accent = המבטא היחיד
+   bg     = off-white / פנינה
+   fill   = מילוי פקדים                                      */
+var PALETTES = [
+  {
+    n: '00', name: 'עכשיו — נקודת הפתיחה',
+    char: 'זה מה שיש בקוד היום. מוצג ראשון כדי שיהיה למה להשוות.',
+    risk: 'הכחול טהור והאדום עמום — שניהם באותו מפלס רוויה.',
+    navy: '#022445', accent: '#984349', bg: '#fbf9f6', fill: '#eae8e5',
+    base: true
+  },
+  {
+    n: '01', name: 'דיו ואוקסבלד &nbsp;— &nbsp;נבחרה, והוחלה על מערכת העיצוב',
+    char: 'הכחול יורד לדיו כמעט-שחור עם נגיעת ירוק, והאדום יורד לאוקסבלד — גוון נייטרלי וכהה מאוד (24 ירוק מול 25 כחול). הפרדת הבהירות מקסימלית, התנגשות הרוויה אפסית. זו הפלטה של בנק פרטי ומשרד עריכת דין. <strong>האדום כאן הוא הבחירה של שלומי, לא ההצעה המקורית שלי</strong> — היא הייתה קלארט <code>#6b2434</code>, יין שנוטה לכחול.',
+    risk: 'שקטה מאוד. עלולה לצאת שמרנית מדי ובלי אנרגיה — ולמסך "גיוס משקיעים" צריך גם דחיפה. האוקסבלד מעמיק את זה: 11.98:1 על הנייר, כלומר כמעט טקסט.',
+    navy: '#0e1e2e', accent: '#5d1819', bg: '#f7f5f1', fill: '#e8e5df'
+  },
+  {
+    n: '02', name: 'חצות ואות אדומה',
+    char: 'הכחול יורד לכמעט-שחור, והאדום עולה לאדום אמיתי וחד. עובד בגלל הניגוד הקיצוני: כשהכחול כה כהה, אדום בוהק קורא כאות ולא כצעצוע. זו הפלטה עם המבטא הקולני ביותר, והיחידה שבה המדרגה הבהירה נשארת אדומה ולא נוטה לוורוד.',
+    risk: 'האדום הבוהק עובד רק בשטח זעיר. ברגע שהוא יגדל לרקע של סקשן או לכפתור מלא — הוא חוזר להיות ילדותי. פלטה שדורשת משמעת.',
+    navy: '#0a1420', accent: '#c1121f', bg: '#f4f4f2', fill: '#e6e6e3'
+  },
+  {
+    n: '03', name: 'אבן וחלודה',
+    char: 'האדום זז מהיין אל הלבנה — חם, עמום, עם חום בתוכו. הכחול מתרכך לצפחה. הצירוף חומרי ומוחשי, ומתחבר לנדל"ן: לבנים, קרקע, בטון.',
+    risk: 'החם קונה חיבה ומוכר פחות סמכות פיננסית. יש סיכוי שזה ייקרא מותג לייף-סטייל ולא חברת השקעות.',
+    navy: '#16293b', accent: '#96442a', bg: '#f6f2ec', fill: '#e7e1d8'
+  },
+  {
+    n: '04', name: 'נייבי ובורדו',
+    char: 'הזהות של היום, מתוקנת: אותה משפחה, אבל האדום נכנס לבורדו והכחול מאבד את הטוהר שלו. כל מה שקיים באתר ימשיך לקרוא "אנחנו".',
+    risk: 'הכי קרוב לנקודת המוצא. אם התחושה הילדותית מפריעה לך באמת — התיקון הזה עשוי להיות עדין מדי כדי לפתור אותה.',
+    navy: '#12263d', accent: '#7a2e3b', bg: '#f8f6f2', fill: '#eae6e0'
+  },
+  {
+    n: '05', name: 'פטרול ויין',
+    char: 'הכחול עצמו זז — לא נייבי אלא פטרול, כחול עם צל ירוק. זה מוציא אותנו מהנייבי שכל חברת נדל"ן משתמשת בו, ולכן הפלטה הכי מזוהה מהחמש.',
+    risk: 'מתרחקת מ"נייבי" שהמותג הצהיר עליו, ודורשת יותר ביטחון. פטרול על שטח גדול הוא החלטה בולטת.',
+    navy: '#0d2430', accent: '#6e2733', bg: '#f5f4f0', fill: '#e5e4df'
+  }
+];
+
+/* ניגודיות WCAG */
+function lum(hex) {
+  var c = [1,3,5].map(function(i){
+    var v = parseInt(hex.substr(i,2),16)/255;
+    return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4);
+  });
+  return 0.2126*c[0] + 0.7152*c[1] + 0.0722*c[2];
+}
+function ratio(a, b) {
+  var la = lum(a), lb = lum(b);
+  return ((Math.max(la,lb)+0.05) / (Math.min(la,lb)+0.05));
+}
+function rgba(hex, a) {
+  return 'rgba(' + parseInt(hex.substr(1,2),16) + ',' +
+                   parseInt(hex.substr(3,2),16) + ',' +
+                   parseInt(hex.substr(5,2),16) + ',' + a + ')';
+}
+
+/* מדרגת המבטא לסקשן הכהה — הגוון מוסע לעבר הלבן עד שהוא
+   עובר 4.5:1 מול הנייבי. לא נבחר בעין, נגזר מהמדידה. */
+function toward(hex, target, t) {
+  var out = '#';
+  for (var i = 1; i < 7; i += 2) {
+    var a = parseInt(hex.substr(i,2), 16),
+        b = parseInt(target.substr(i,2), 16),
+        v = Math.round(a + (b - a) * t).toString(16);
+    out += v.length === 1 ? '0' + v : v;
+  }
+  return out;
+}
+function accentOnDark(accent, navy) {
+  for (var t = 0; t <= 1.001; t += 0.02) {
+    var c = toward(accent, '#ffffff', t);
+    if (ratio(c, navy) >= 4.5) return c;
+  }
+  return '#ffffff';
+}
+
+var ROLES = [
+  ['navy',   'נייבי — כל המבנה'],
+  ['accent', 'מבטא — למצע הבהיר'],
+  ['onDark', 'מבטא — לסקשן הכהה'],
+  ['bg',     'off-white — מצע העמוד'],
+  ['fill',   'מילוי פקדים']
+];
+
+var html = PALETTES.map(function(p) {
+  p.onDark   = accentOnDark(p.accent, p.navy);
+  var onBg   = ratio(p.accent, p.bg);
+  var onNavy = ratio(p.accent, p.navy);
+  var liftOk = ratio(p.onDark, p.navy);
+
+  var vars = '--sc-navy:' + p.navy + ';--sc-maroon:' + p.accent +
+             ';--sc-bg:' + p.bg + ';--sc-fill:' + p.fill +
+             ';--sc-accent-on-dark:' + p.onDark +
+             ';--sc-text-muted:' + rgba(p.navy, 0.72) +
+             ';--sc-divider:' + rgba(p.navy, 0.14) + ';';
+
+  var swatches = ROLES.map(function(r) {
+    return '<div class="sw__c"><div class="sw__chip" style="background:' + p[r[0]] + '"></div>' +
+           '<div class="sw__meta"><div class="sw__role">' + r[1] + '</div>' +
+           '<div class="sw__hex">' + p[r[0]].toUpperCase() + '</div></div></div>';
+  }).join('');
+
+  var cx =
+    '<div class="cx">' +
+      '<div class="cx__i">מבטא על ה-off-white <span class="cx__v ' +
+        (onBg >= 4.5 ? 'cx__ok' : 'cx__fail') + '">' + onBg.toFixed(1) + ':1</span></div>' +
+      '<div class="cx__i">המבטא הכהה על הנייבי <span class="cx__v cx__fail">' +
+        onNavy.toFixed(1) + ':1</span></div>' +
+      '<div class="cx__i">המדרגה הבהירה על הנייבי <span class="cx__v cx__ok">' +
+        liftOk.toFixed(1) + ':1</span></div>' +
+      '<div class="cx__i">טקסט על ה-off-white <span class="cx__v cx__ok">' +
+        ratio(p.navy, p.bg).toFixed(1) + ':1</span></div>' +
+    '</div>';
+
+  var darkMetric =
+    '<div><div class="d-dm__v d-dm__v--accent">20%</div><div class="d-dm__k">תשואה יעד</div></div>';
+
+  var darkNote = 'המספר במבטא משתמש במדרגה הבהירה <b>' + p.onDark.toUpperCase() +
+    '</b> — ' + liftOk.toFixed(1) + ':1 מול הנייבי. המבטא הכהה עצמו מגיע ל-' +
+    onNavy.toFixed(1) + ':1 בלבד כאן, ולכן על הכהה הוא משמש רק לקו ולמשטח.';
+
+  return (
+  '<section class="pal">' +
+    '<div class="pal__head">' +
+      '<p class="pal__n">' + p.n + '</p>' +
+      '<p class="pal__name">' + p.name + '</p>' +
+      '<p class="pal__char">' + p.char + '</p>' +
+      '<p class="pal__risk"><b>הסיכון:</b> ' + p.risk + '</p>' +
+    '</div>' +
+
+    '<div class="sw">' + swatches + '</div>' +
+    cx +
+
+    '<div class="demo" style="' + vars + '">' +
+      '<div class="demo__light">' +
+        '<p class="d-eyebrow">בירמינגהם, אלבמה</p>' +
+        '<h2 class="d-h">שלוש עסקאות, מחזור אחד</h2>' +
+        '<p class="d-p">כל עסקה נסגרת בחברה נפרדת, וכל משקיע רואה את הדוחות של הנכס שלו בלבד. ההשקעה הראשונה מתחילה ב-50,000 דולר.</p>' +
+        '<div class="d-metrics">' +
+          '<div><div class="d-m__v">20%</div><div class="d-m__k">תשואה יעד</div></div>' +
+          '<div><div class="d-m__v">$50K</div><div class="d-m__k">סף כניסה</div></div>' +
+          '<div><div class="d-m__v">9</div><div class="d-m__k">חודשי מחזור</div></div>' +
+        '</div>' +
+        '<div class="d-card">' +
+          '<p class="d-card__t">Oxmoore — פליפ בביצוע</p>' +
+          '<p class="d-card__p">בית לבנים משנת 1962, שיפוץ מלא. הרכישה נסגרה במרץ, המכירה מתוכננת לדצמבר.</p>' +
+        '</div>' +
+        '<label class="d-field"><span class="d-field__l">שם מלא</span>' +
+          '<input class="d-field__i" type="text" value="שלומי דוד"></label>' +
+        '<div class="d-actions">' +
+          '<a class="d-btn d-btn--primary" href="#">להצטרפות</a>' +
+          '<a class="d-btn d-btn--outline" href="#">חזרה</a>' +
+          '<a class="d-btn d-btn--tonal" href="#">שמור טיוטה</a>' +
+          '<a class="d-btn d-btn--accent" href="#">מבטא מלא</a>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="demo__dark">' +
+        '<div class="d-rule"></div>' +
+        '<p class="d-dark-eyebrow">איך זה עובד</p>' +
+        '<h2 class="d-dark-h">המשקיעים נפרעים ראשונים</h2>' +
+        '<p class="d-dark-p">מפל התשלומים מחזיר את ההשקעה ואת התשואה למשקיעים, והשותפים נפרעים אחרונים.</p>' +
+        '<div class="d-dark-metrics">' +
+          darkMetric +
+          '<div><div class="d-dm__v">$50K</div><div class="d-dm__k">סף כניסה</div></div>' +
+        '</div>' +
+        '<p class="d-note">' + darkNote + '</p>' +
+      '</div>' +
+    '</div>' +
+  '</section>');
+}).join('');
+
+document.getElementById('out').innerHTML = html;
+</script>
+
+</body>
+</html>

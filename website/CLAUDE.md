@@ -47,20 +47,21 @@
 6. **Trust Over Flash** — אנימציות עדינות, לא מתלהבות. זה אתר פיננסי.
 
 ## Colors Quick Reference
+פלטת "דיו ואוקסבלד". מקור האמת: `css/design-tokens.css` → `DESIGN-SYSTEM.md` §1.
 ```
-Background:  #fbf9f6
-Surface:     #f5f3f0
-White:       #ffffff
-Navy:        #022445
-Navy Dark:   #1e3a5c
-Crimson:     #984349
-Text:        #1b1c1a
-Text Muted:  #43474e
-WhatsApp:    #25D366
+Background:        #f7f5f1
+Surface:           #ffffff
+Fill:              #e8e5df
+Navy (ink):        #0e1e2e
+Oxblood:           #5d1819    ← מצע בהיר בלבד (11.98:1)
+Oxblood on dark:   #a47e7e    ← סקשן כהה בלבד (4.71:1)
+Body text:         rgba(14,30,46,0.72)
+WhatsApp:          #25D366
 ```
+`#f5f3f0`, `#1e3a5c`, `#1b1c1a` ו-`#43474e` הוסרו. הנייבי הקודם `#022445` היה כחול טהור — ראה `DESIGN-SYSTEM.md` §1.
 
 ## Fonts
 ```
-Hebrew: Heebo (300, 400, 600, 700, 800)
-Numbers: Inter (400, 600, 700)
+Heebo (300, 700, 800) — משפחה אחת לכל דבר, כולל מספרים.
+Inter הוסר. ראה DESIGN-SYSTEM.md §2.1
 ```

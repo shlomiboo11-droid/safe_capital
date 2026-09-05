@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>מערכת העיצוב — Safe Capital</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<!-- מערכת העיצוב — שלוש שכבות -->
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/design-tokens.css">
+<link rel="stylesheet" href="css/design-system.css">
+
+<style>
+/* ============================================================
+   כרום העמוד בלבד — לא חלק ממערכת העיצוב.
+   כל מה שמוצג למטה מגיע מ-design-system.css.
+   ============================================================ */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--sc-bg);
+  font-family: var(--sc-font);
+  color: var(--sc-text-muted);
+  -webkit-font-smoothing: antialiased;
+}
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* --- סרגל עליון --- */
+.sg-top {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(251,249,246,0.85);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--sc-elev-1);
+}
+.sg-top__in {
+  max-width: 1400px; margin-inline: auto;
+  padding: 10px 24px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.sg-top__title {
+  font-weight: 700; font-size: 14px; color: var(--sc-navy);
+  margin-inline-end: auto;
+}
+.sg-top__title small {
+  display: block; font-weight: 400; font-size: 13px;
+  color: var(--sc-text-muted); letter-spacing: 0;
+}
+.sg-viewport-badge {
+  font-family: var(--sc-font); font-size: 13px; font-weight: 700;
+  padding: 6px 12px; border-radius: var(--sc-radius-full);
+  background: var(--sc-navy); color: #fff;
+}
+.sg-toggle {
+  border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 8px 16px;
+  border-radius: var(--sc-radius);
+  background: var(--sc-maroon); color: #fff;
+  font-family: var(--sc-font); font-weight: 700; font-size: 14px;
+}
+.sg-toggle .material-symbols-outlined { font-size: 18px; }
+
+/* --- תוכן עניינים --- */
+.sg-toc {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  max-width: 1400px; margin-inline: auto;
+  padding: 0 24px 12px;
+}
+.sg-toc a {
+  font-size: 13px; font-weight: 700; text-decoration: none;
+  color: var(--sc-text-muted);
+  padding: 5px 10px; border-radius: var(--sc-radius-full);
+  background: var(--sc-fill);
+}
+.sg-toc a:hover { background: var(--sc-navy); color: #fff; }
+
+/* --- פריסה עם תצוגת מובייל --- */
+.sg-shell { display: block; }
+.sg-shell.is-split { display: grid; grid-template-columns: 1fr auto; align-items: start; }
+.sg-main { min-width: 0; }
+.sg-mobile-pane { display: none; }
+.sg-shell.is-split .sg-mobile-pane {
+  display: block; position: sticky; top: 92px;
+  padding: 20px 24px 20px 0;
+}
+.sg-phone {
+  width: 390px; height: 780px;
+  border: 10px solid var(--sc-navy);
+  border-radius: 36px;
+  overflow: hidden; background: #fff;
+  box-shadow: var(--sc-elev-overlay);
+}
+.sg-phone iframe { width: 100%; height: 100%; border: 0; display: block; }
+.sg-phone-label {
+  text-align: center; font-family: var(--sc-font);
+  font-size: 13px; font-weight: 700; color: var(--sc-text-muted);
+  margin-bottom: 8px;
+}
+@media (max-width: 1200px) { .sg-shell.is-split { grid-template-columns: 1fr; } .sg-shell.is-split .sg-mobile-pane { display: none; } }
+
+/* --- סקשן --- */
+.sg-wrap { max-width: 1100px; margin-inline: auto; padding: 0 24px; }
+.sg-sec { padding-block: 48px; border-top: 1px solid rgba(196,198,207,.25); }
+.sg-sec:first-of-type { border-top: 0; }
+.sg-sec__h {
+  font-family: var(--sc-font); font-size: 14px; font-weight: 700;
+  color: var(--sc-maroon); margin: 0 0 6px;
+}
+.sg-sec__t { font-size: 30px; font-weight: 700; color: var(--sc-navy); margin: 0 0 8px; }
+.sg-sec__d { font-size: 14px; line-height: 1.7; margin: 0 0 28px; max-width: 70ch; }
+
+.sg-block { margin-bottom: 36px; }
+.sg-block__t {
+  font-size: 14px; font-weight: 700; color: var(--sc-navy);
+  margin: 0 0 4px; padding-bottom: 6px;
+}
+.sg-block__d { font-size: 14px; line-height: 1.65; margin: 0 0 16px; max-width: 70ch; }
+
+/* --- לוח תצוגה --- */
+.sg-demo {
+  background: var(--sc-surface); border-radius: var(--sc-radius-lg);
+  padding: 24px; box-shadow: var(--sc-elev-2);
+}
+.sg-demo--alt  { background: var(--sc-fill); box-shadow: none; }
+.sg-demo--dark { background: var(--sc-navy); box-shadow: none; }
+.sg-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.sg-stack { display: flex; flex-direction: column; gap: 16px; }
+
+/* --- קוד --- */
+code, .sg-code {
+  font-family: var(--sc-font); font-size: 13px;
+  background: var(--sc-fill); color: var(--sc-navy);
+  padding: 2px 6px; border-radius: 4px;
+  direction: ltr; unicode-bidi: isolate; display: inline-block;
+}
+.sg-tok {
+  font-family: var(--sc-font); font-size: 13px; color: var(--sc-text-muted);
+  direction: ltr; unicode-bidi: isolate;
+}
+
+/* --- טבלה --- */
+.sg-tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.sg-tbl th {
+  text-align: right; font-family: var(--sc-font); font-size: 13px;
+  font-weight: 700;
+  color: var(--sc-text-muted); padding: 0 10px 10px; white-space: nowrap;
+}
+.sg-tbl td { padding: 12px 10px; border-top: 1px solid rgba(196,198,207,.25); vertical-align: middle; }
+.sg-tbl tr td:first-child { font-weight: 700; color: var(--sc-navy); }
+
+/* --- צבעים --- */
+.sg-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.sg-sw { border-radius: var(--sc-radius); overflow: hidden; background: var(--sc-surface); box-shadow: var(--sc-elev-2); }
+.sg-sw__chip { height: 64px; border-bottom: 1px solid rgba(0,0,0,.04); }
+.sg-sw__meta { padding: 10px 12px; }
+.sg-sw__name { font-size: 13px; font-weight: 700; color: var(--sc-navy); display: block; }
+.sg-sw__val  { font-family: var(--sc-font); font-size: 13px; color: var(--sc-text-muted); direction: ltr; unicode-bidi: isolate; display: block; margin-top: 2px; }
+.sg-sw__use  { font-size: 13px; color: var(--sc-text-muted); display: block; margin-top: 4px; line-height: 1.4; }
+.sg-grad { height: 88px; border-radius: var(--sc-radius); }
+
+/* --- מרווחים --- */
+.sg-space-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.sg-space-bar { height: 18px; background: var(--sc-maroon); border-radius: 3px; flex: 0 0 auto; }
+.sg-radius-box {
+  width: 84px; height: 64px; background: var(--sc-navy);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 6px; color: #fff;
+  font-family: var(--sc-font); font-size: 13px; font-weight: 700;
+}
+
+/* --- מצבים מדומים לתצוגה --- */
+.sg-state { text-align: center; }
+.sg-state__cap {
+  display: block; margin-top: 8px;
+  font-family: var(--sc-font); font-size: 13px; font-weight: 700;
+  color: var(--sc-text-muted);
+}
+/* מדמה :hover — הדפדפן לא יכול להציג hover בצילום סטטי */
+.is-hover.sc-btn--primary, .is-hover.sc-btn--whatsapp { opacity: .9; }
+.is-hover.sc-btn--secondary { filter: brightness(1.1); }
+.is-hover.sc-btn--outline { background: rgba(152, 67, 73, 0.06); }
+.is-hover.sc-btn--tonal   { background: var(--sc-fill); }
+.is-hover.sc-btn--ghost   { border-color: #fff; color: #fff; }
+.is-hover.sc-btn--text    { color: var(--sc-maroon); }
+.is-hover.sc-btn--icon    { background: var(--sc-navy); color: #fff; }
+/* מדמה :focus-visible */
+.is-focus { outline: var(--sc-focus-ring); outline-offset: var(--sc-focus-offset); }
+.is-focus-dark { outline: 2px solid #fff; outline-offset: 2px; }
+/* מדמה :active */
+.is-active-demo { transform: var(--sc-press); }
+/* מדמה פוקוס בשדה */
+.is-field-focus { border-bottom-color: var(--sc-navy) !important; box-shadow: var(--sc-focus-field) !important; }
+
+/* --- הערות --- */
+.sg-note {
+  font-size: 13px; line-height: 1.65;
+  padding: 12px 16px; border-radius: var(--sc-radius);
+  background: var(--sc-navy-006); color: var(--sc-navy);
+  margin-top: 14px;
+}
+.sg-note--warn { background: rgba(186,26,26,.06); color: var(--sc-error); }
+.sg-note strong { font-weight: 700; }
+
+/* --- דגלוני מסך --- */
+.sg-only-mobile, .sg-only-desktop {
+  font-family: var(--sc-font); font-size: 13px; font-weight: 700;
+  padding: 3px 8px; border-radius: var(--sc-radius-full);
+}
+.sg-only-mobile  { background: var(--sc-maroon); color: #fff; }
+.sg-only-desktop { background: var(--sc-navy); color: #fff; }
+
+/* --- מסתיר את הכרום בתוך ה-iframe --- */
+body.sg-embed .sg-top, body.sg-embed .sg-toc { display: none; }
+body.sg-embed .sg-wrap { padding-inline: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ סרגל עליון ══════════════ -->
+<div class="sg-top">
+  <div class="sg-top__in">
+    <div class="sg-top__title">
+      מערכת העיצוב — Safe Capital
+      <small>מקור: DESIGN-SYSTEM.md, design-tokens.css, design-system.css</small>
+    </div>
+    <span class="sg-viewport-badge" id="vpBadge">—</span>
+    <button class="sg-toggle" id="mobToggle" type="button">
+      <span class="material-symbols-outlined" aria-hidden="true">smartphone</span>
+      <span id="mobToggleTxt">הצג מובייל לצד דסקטופ</span>
+    </button>
+  </div>
+  <nav class="sg-toc" aria-label="תוכן עניינים">
+    <a href="#colors">צבעים</a>
+    <a href="#type">טיפוגרפיה</a>
+    <a href="#buttons">כפתורים</a>
+    <a href="#actions">CTA, חזרה, ביטול</a>
+    <a href="#fields">שדות</a>
+    <a href="#choice">בחירה</a>
+    <a href="#forms">טפסים</a>
+    <a href="#cards">כרטיסים</a>
+    <a href="#icons">אייקונים</a>
+    <a href="#scale">מרווחים, פינות, הרמה</a>
+    <a href="#motion">מוֹשן</a>
+  </nav>
+</div>
+
+<div class="sg-shell" id="shell">
+<div class="sg-main">
+
+<!-- ══════════════ צבעים ══════════════ -->
+<section class="sg-sec" id="colors">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">01</p>
+  <h2 class="sg-sec__t">צבעים</h2>
+  <p class="sg-sec__d">הערכים למטה נקראים מ-<code>design-tokens.css</code> בזמן ריצה — לא מועתקים. אם טוקן משתנה, העמוד הזה משתנה איתו. צבע הוא הדבר היחיד במערכת שלא משתנה בין מובייל לדסקטופ.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">מותג — "דיו ואוקסבלד"</p>
+    <p class="sg-block__d">למבטא <strong>שתי מדרגות בהירות, לא אחת.</strong> אוקסבלד על דיו מגיע ל-1.29:1 — כהה על כהה. זו לא בעיה של גוון אלא מתמטיקה, ולכן על סקשן כהה משתמשים ב-<code>--sc-maroon-on-dark</code>. <strong>ואסור להפוך:</strong> המדרגה הבהירה על נייר היא 3.29:1 ונופלת מהרף. שם הטוקן <code>maroon</code> נשאר היסטורי כדי לא לשבור מופעים קיימים.</p>
+    <div class="sg-swatches" id="swBrand"></div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">משטחים בהירים — שלושה. זה הכל.</p>
+    <p class="sg-block__d">היו 5, ושניים מהם היו כמעט בלתי-נראים זה מול זה. הפרדה בין סקשנים נעשית בהחלפת משטח, לא בקו — <strong>לבן על נייר</strong>, שזו הפרדה ברורה יותר ממה שהיה.</p>
+    <div class="sg-swatches" id="swSurface"></div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">טקסט וסמנטי</p>
+    <div class="sg-swatches" id="swText"></div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">סולם לבן על רקע כהה</p>
+    <p class="sg-block__d">החלק המשומעת ביותר במערכת. חמש מדרגות, כל אחת עם תפקיד.</p>
+    <div class="sg-demo sg-demo--dark sc-on-dark">
+      <div class="sg-stack">
+        <div style="color:var(--sc-on-dark-1);font-weight:700;font-size:18px">1.0 — הדגשה, hover, מצב אקטיבי</div>
+        <div style="color:var(--sc-on-dark-090);font-weight:700;font-size:16px">0.9 — כותרת משנה</div>
+        <div style="color:var(--sc-on-dark-080);font-size:14px">0.8 — תווית כפתור רפאים</div>
+        <div style="color:var(--sc-on-dark-070);font-size:14px;line-height:1.7">0.7 — פסקת גוף על רקע כהה. זה המשקל שבו נכתב טקסט רץ בסקשן נייבי.</div>
+        <div style="color:var(--sc-on-dark-050);font-size:14px">0.5 — טקסט משפטי, קרדיט, זכויות</div>
+        <div style="border-top:1px solid var(--sc-hairline-on-dark);padding-top:12px;color:var(--sc-on-dark-050);font-size:13px">0.1 — קו מפריד</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">אין גרדיאנטים</p>
+    <p class="sg-block__d">הגרדיאנטים בוטלו. הם הוסיפו שישה צבעים ולא הוסיפו מידע. כפתור ראשי וסקשן כהה הם <strong>נייבי שטוח</strong>.</p>
+    <div class="sg-demo">
+      <div class="sg-row" style="gap:20px">
+        <div style="text-align:center">
+          <div class="sg-grad" style="background:var(--sc-navy)"></div>
+          <span class="sg-state__cap">נייבי שטוח — כפתור, סקשן כהה</span>
+        </div>
+        <div style="text-align:center">
+          <div class="sg-grad" style="background:var(--sc-navy)"><div style="height:100%;background:var(--sc-scrim-hero)"></div></div>
+          <span class="sg-state__cap">מסך hero — רמפת נייבי</span>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="type">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">02</p>
+  <h2 class="sg-sec__t">טיפוגרפיה</h2>
+  <p class="sg-sec__d">כל שורה בטבלה היא <strong>חיה</strong> — היא מרונדרת בגודל האמיתי של המסך שאתה מסתכל בו עכשיו. הרחב וצמצם את החלון, או פתח את תצוגת המובייל למעלה, כדי לראות את שני הצדדים. התצוגה שם היא <code>iframe</code> ברוחב 390px, ולכן ה-media queries נורות באמת — זו לא הקטנה חזותית. הגדלים המוצגים בעמודה השמאלית נקראים מהדפדפן בזמן ריצה.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">הסולם — חי ורספונסיבי</p>
+    <div class="sg-demo">
+      <table class="sg-tbl">
+        <thead><tr><th style="width:140px">מחלקה</th><th>דוגמה חיה</th><th style="width:150px">גודל בפועל</th></tr></thead>
+        <tbody id="typeRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">היררכיה שלמה — הקצב</p>
+    <p class="sg-block__d">בלוק מורכב אמיתי — כך נראית היררכיה שלמה כשהיא מיושמת לפי הקצב: eyebrow ← 12px ← כותרת ← 24px ← פסקה ← 40px ← CTA.</p>
+    <div class="sg-demo">
+      <p class="sc-eyebrow">ההזדמנות</p>
+      <h3 class="sc-t-h2" style="margin-bottom:var(--sc-space-6)">למה בירמינגהם, ולמה עכשיו</h3>
+      <p class="sc-t-lede" style="margin-bottom:var(--sc-space-4);max-width:60ch">בירמינגהם היא אחד השווקים הבודדים בארה״ב שבהם פער המחירים בין נכס במצבו הנוכחי לנכס משופץ עדיין מאפשר עסקת השבחה ברווח דו-ספרתי</p>
+      <p class="sc-t-body" style="margin-bottom:var(--sc-space-4);max-width:70ch">אנחנו קונים מתחת למחיר השוק, משפצים לפי מפרט שנקבע מראש, ומוכרים בתוך 6 עד 9 חודשים — כל עסקה מוחזקת ב-LLC נפרד, וכל משקיע רואה את הדוחות של הנכס שלו בלבד</p>
+
+      <h4 class="sc-t-label" style="margin:var(--sc-space-6) 0 var(--sc-space-2)">כותרת כרטיס — הרמה הרביעית</h4>
+      <p class="sc-t-small" style="margin-bottom:var(--sc-space-5);max-width:70ch">זה הגודל שמשמש בכותרות של כרטיסי דילים ובלוקים קטנים</p>
+
+      <p class="sc-t-small" style="margin-bottom:var(--sc-space-10)">אותיות קטנות — גילוי נאות, הערת שוליים, קרדיט</p>
+
+      <div class="sc-actions sc-actions--single">
+        <a href="#" class="sc-btn sc-btn--primary sc-btn--m">
+          לתיאום שיחה
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">טקסט רץ ארוך — כתבה</p>
+    <p class="sg-block__d">גובה שורה 1.85 במקום 1.7. עברית בפסקה ארוכה צריכה יותר אוויר.</p>
+    <div class="sg-demo">
+      <p class="sc-t-body" style="margin-bottom:var(--sc-space-5);max-width:68ch">שוק הנדל״ן בבירמינגהם עבר בעשור האחרון שינוי מבני — מרכז העיר, שהיה נטוש כמעט לחלוטין בשנות התשעים, מאכלס היום מרכז רפואי שהוא המעסיק הגדול במדינה, ואוכלוסיית השוכרים סביבו גדלה בקצב שמקדים את היצע הדיור</p>
+      <p class="sc-t-body" style="max-width:68ch">המשמעות המעשית למשקיע היא פשוטה: נכס שנקנה נכון, ושופץ לפי מפרט שהשוק המקומי מחפש, נמכר מהר — זמן הוא הסיכון האמיתי בעסקת השבחה, לא המחיר</p>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">מספרים</p>
+    <p class="sg-block__d">Heebo 600, ספרות טבלאיות, גובה שורה 1, מרווח אות שלילי, כיוון LTR מבודד — 18px בדסקטופ, 16px במובייל</p>
+    <div class="sg-demo">
+      <div class="sc-grid sc-grid--metrics">
+        <div><div class="sc-t-metric">$248,500</div><div class="sc-t-label" style="margin-top:4px">מחיר קנייה</div></div>
+        <div><div class="sc-t-metric sc-t-metric--maroon">20.4%</div><div class="sc-t-label" style="margin-top:4px">תשואה חזויה</div></div>
+        <div><div class="sc-t-metric">7 חודשים</div><div class="sc-t-label" style="margin-top:4px">משך העסקה</div></div>
+        <div><div class="sc-t-metric sc-t-metric--maroon">$412,000</div><div class="sc-t-label" style="margin-top:4px">ARV</div></div>
+      </div>
+      <div class="sg-note"><span class="sg-only-mobile">מובייל</span> שורת מספרים נשארת <strong>2 טורים לפחות — אף פעם לא טור אחד.</strong> כרטיס מספר קצר מספיק להיכנס שניים ב-375px</div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="buttons">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">03</p>
+  <h2 class="sg-sec__t">כפתורים</h2>
+  <p class="sg-sec__d">פינה 8px בכל הווריאנטים. <strong>אפס הצללה</strong> בכל מצב. רצפת מגע 44px. במובייל CTA שעומד לעצמו נמתח לרוחב מלא — כך הפדינג לא נדחס והרצפה נשמרת. CTA דביק יושב על <code>bottom: calc(16px + var(--sc-safe-bottom))</code> — מעל ה-home indicator.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">ווריאנטים — גודל M (ברירת המחדל)</p>
+    <div class="sg-demo">
+      <div class="sg-row">
+        <button class="sc-btn sc-btn--primary sc-btn--m" type="button">ראשי — לתיאום שיחה</button>
+        <button class="sc-btn sc-btn--secondary sc-btn--m" type="button">משני</button>
+        <button class="sc-btn sc-btn--outline sc-btn--m" type="button">Outline</button>
+        <button class="sc-btn sc-btn--tonal sc-btn--m" type="button">טונאלי</button>
+        <button class="sc-btn sc-btn--text" type="button">כפתור טקסט</button>
+      </div>
+      <div class="sg-row" style="margin-top:16px">
+        <a href="#" class="sc-btn sc-btn--whatsapp sc-btn--m">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.1-.7.1l-.7.9c-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.5-.6-1-1.2-1.3-1.9-.1-.2 0-.4.1-.5l.8-.8c.2-.2.2-.4.1-.6l-.9-2.1c-.1-.3-.4-.4-.7-.3-.6.2-1.1.5-1.5 1-.5.7-.6 1.5-.4 2.3.4 1.7 1.3 3.2 2.5 4.4 1.2 1.3 2.7 2.2 4.4 2.7.3.1.6.1.9.1.5 0 1.1-.2 1.5-.5.4-.4.8-.9 1-1.5.1-.3 0-.6-.3-.7zM12 2a10 10 0 0 0-8.7 15l-1.2 3.6a.5.5 0 0 0 .6.6l3.7-1.2A10 10 0 1 0 12 2z"/></svg>
+          שלחו לנו וואטסאפ
+        </a>
+        <button class="sc-btn sc-btn--secondary sc-btn--s" type="button">
+          CTA צף
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </button>
+        <button class="sc-btn sc-btn--icon" type="button" aria-label="שיתוף">
+          <span class="material-symbols-outlined" aria-hidden="true">share</span>
+        </button>
+      </div>
+      <div class="sg-note">הכפתור הכהה למטה קיים רק על רקע נייבי — הוא בלתי-נראה על רקע בהיר.</div>
+      <div class="sg-demo sg-demo--dark" style="margin-top:12px">
+        <div class="sg-row">
+          <button class="sc-btn sc-btn--ghost sc-btn--m" type="button">כפתור רפאים</button>
+          <button class="sc-btn sc-btn--secondary sc-btn--m" type="button">משני על כהה</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">גדלים</p>
+    <div class="sg-demo">
+      <table class="sg-tbl">
+        <thead><tr><th style="width:150px">גודל</th><th>דוגמה</th><th style="width:130px">גובה דסקטופ</th><th style="width:130px">גובה מובייל</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>L — CTA גדול</td>
+            <td><button class="sc-btn sc-btn--primary sc-btn--l" type="button" id="btnL">CTA גדול</button></td>
+            <td><span class="sg-tok">64px</span></td>
+            <td><span class="sg-tok">56px, רוחב מלא</span></td>
+          </tr>
+          <tr>
+            <td>M — ברירת המחדל</td>
+            <td><button class="sc-btn sc-btn--primary sc-btn--m" type="button" id="btnM">CTA רגיל</button></td>
+            <td><span class="sg-tok">56px</span></td>
+            <td><span class="sg-tok">56px, רוחב מלא</span></td>
+          </tr>
+          <tr>
+            <td>S — פעולות בזוג</td>
+            <td><button class="sc-btn sc-btn--primary sc-btn--s" type="button" id="btnS">אישור</button></td>
+            <td><span class="sg-tok">48px</span></td>
+            <td><span class="sg-tok">44px</span></td>
+          </tr>
+          <tr>
+            <td>רצפה — צ'יפ, אייקון, טקסט</td>
+            <td><button class="sc-btn sc-btn--text" type="button">כפתור טקסט</button></td>
+            <td><span class="sg-tok">44px</span></td>
+            <td><span class="sg-tok">44px</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="sg-note">גובה בפועל במסך הזה, נמדד מהדפדפן: <span class="sg-tok" id="btnHeights">—</span></div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">אייקון בתוך כפתור — כלל RTL</p>
+    <div class="sg-demo">
+      <div class="sg-row">
+        <button class="sc-btn sc-btn--primary sc-btn--m" type="button">
+          <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+          אייקון מותג לפני התווית
+        </button>
+        <button class="sc-btn sc-btn--tonal sc-btn--m" type="button">
+          חץ אחרי התווית
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </button>
+      </div>
+      <div class="sg-note">
+        <strong>אייקון מותג בא לפני התווית ב-DOM → מרונדר בימין.</strong> <strong>חץ כיווני בא אחרי התווית → מרונדר בשמאל.</strong><br>
+        <code>arrow_back</code> = "הבא", <code>arrow_forward</code> = "חזרה". ב-RTL קדימה זה שמאלה, ולכן שמות האייקונים הפוכים מהמשמעות. זה נכון, וזו מלכודת.
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">מצבים — שש מדרגות</p>
+    <p class="sg-block__d"><code>hover</code>, <code>focus</code> ו-<code>active</code> מוצגים כאן <strong>מדומים</strong> — אחרת אי אפשר לראות אותם בלי לרחף. הכפתורים עצמם אינטראקטיביים אמיתיים, אפשר ללחוץ ולהקיש Tab.</p>
+    <div class="sg-demo">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:20px">
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s" type="button">אישור</button><span class="sg-state__cap">מנוחה</span></div>
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s is-hover" type="button">אישור</button><span class="sg-state__cap">hover</span></div>
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s is-focus" type="button">אישור</button><span class="sg-state__cap">focus-visible</span></div>
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s is-active-demo" type="button">אישור</button><span class="sg-state__cap">active</span></div>
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s" type="button" disabled>אישור</button><span class="sg-state__cap">disabled</span></div>
+        <div class="sg-state"><button class="sc-btn sc-btn--primary sc-btn--s" type="button" disabled><span class="sc-btn__spinner" aria-hidden="true"></span>שולח…</button><span class="sg-state__cap">טעינה</span></div>
+      </div>
+      <div class="sg-note">
+        <strong>hover קיים רק במצביע אמיתי.</strong> כל <code>:hover</code> במערכת עטוף ב-<code>@media (hover: hover) and (pointer: fine)</code>, כי במסך מגע <code>hover</code> נדבק אחרי נגיעה ונשאר "דלוק" עד הנגיעה הבאה. במובייל המשוב הוא <code>:active</code> בלבד.
+      </div>
+      <div class="sg-note sg-note--warn">
+        <strong>הפער החמור באתר הקיים:</strong> <code>:focus-visible</code> חסר ב-24 מתוך 25 ווריאנטי הכפתורים. כל CTA ראשי, שני כפתורי השליחה וכל כפתורי הפוטר בלתי-נראים למקלדת. הקש Tab בעמוד הזה — כך זה צריך להיראות.<br>
+        גם רצפת המגע נשברת שם: כפתור חזרה 21px, כפתור טולטיפ 18px, צ'יפ 28px, נקודת קרוסלה 8px.
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="actions">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">04</p>
+  <h2 class="sg-sec__t">CTA, חזרה, ביטול — מיקום ב-RTL</h2>
+  <p class="sg-sec__d">זה החלק שנשבר הכי בקלות ב-RTL, ולכן הוא מנוסח כאן במדויק. סדר ה-DOM הוא <strong>[חזרה/ביטול] ... [ראשי]</strong> — כלומר החזרה נכתבת ראשונה בקוד ומרונדרת בימין.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">פעולה אחת — <code>.sc-actions--single</code></p>
+    <p class="sg-block__d">בדסקטופ רוחב אוטומטי. <span class="sg-only-mobile">מובייל</span> רוחב מלא, תווית ממורכזת — החריג היחיד לכלל "אין מירכוז".</p>
+    <div class="sg-demo">
+      <div class="sc-actions sc-actions--single">
+        <button class="sc-btn sc-btn--primary sc-btn--m" type="button">שליחת הפנייה</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">שתי פעולות מפוצלות — <code>.sc-actions--split</code></p>
+    <p class="sg-block__d">תבנית פוטר הטופס. ראשי צמוד שמאל, חזרה צמוד ימין. נשארת שורה גם במובייל.</p>
+    <div class="sg-demo sg-demo--alt">
+      <div class="sc-actions sc-actions--split">
+        <button class="sc-btn sc-btn--text" type="button">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          חזרה
+        </button>
+        <button class="sc-btn sc-btn--primary sc-btn--s" type="button">
+          המשך
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">אישור וביטול — <code>.sc-actions</code></p>
+    <p class="sg-block__d">בדסקטופ שורה: ביטול בימין, אישור בשמאל. <span class="sg-only-mobile">מובייל</span> נערם לטור, שני הכפתורים ברוחב מלא, <strong>האישור למעלה</strong> — האגודל מגיע אליו קודם.</p>
+    <div class="sg-demo">
+      <div class="sc-actions">
+        <button class="sc-btn sc-btn--primary sc-btn--s" type="button">אישור ומחיקה</button>
+        <button class="sc-btn sc-btn--outline sc-btn--s" type="button">ביטול</button>
+      </div>
+      <div class="sg-note">שים לב שסדר ה-DOM כאן הוא [אישור, ביטול] ולא להיפך — בשורה ב-RTL זה נותן ביטול בימין ואישור בשמאל, ובטור זה נותן את האישור למעלה. סדר אחד עובד נכון בשני המסכים.</div>
+    </div>
+  </div>
+
+ </div>
+</section>
+
+<section class="sg-sec" id="fields">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">05</p>
+  <h2 class="sg-sec__t">שדות</h2>
+  <p class="sg-sec__d">גובה 40px בדסקטופ <strong>וגם במובייל</strong>. בלי מילוי ובלי פינה — קו תחתון בלבד. במובייל גודל הטקסט נעול על 16px, אחרת iOS מזוּם את כל העמוד</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">אנטומיה</p>
+    <div class="sg-demo">
+      <label class="sc-field sc-field--ltr">
+        <input type="email" placeholder=" ">
+        <span class="sc-field__label">אימייל</span>
+        <span class="sc-field__hint">נשלח אליכם אישור הגעה</span>
+        <span class="sc-field__error">כתובת לא תקינה</span>
+      </label>
+      <div class="sg-note">
+        <strong>טקסט אחד בשדה.</strong> התווית יושבת בתוכו במנוחה, ובפוקוס או כשיש תוכן היא עולה ומתכווצת ל-13px — ולא נעלמת. placeholder-בלבד מוחק את שם השדה בדיוק כשצריך אותו. הרמז והשגיאה יושבים מתחת לשדה
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">מצבי שדה</p>
+    <div class="sg-demo">
+      <div class="sc-form-row">
+        <label class="sc-field">
+        <input type="text" placeholder=" ">
+        <span class="sc-field__label">ריק</span>
+      </label>
+        <label class="sc-field">
+        <input type="text" value="ישראל ישראלי" placeholder=" ">
+        <span class="sc-field__label">מלא</span>
+      </label>
+      </div>
+      <div class="sc-form-row">
+        <label class="sc-field">
+        <input type="text" value="ישראל ישראלי" class="is-field-focus" placeholder=" ">
+        <span class="sc-field__label">בפוקוס</span>
+      </label>
+        <label class="sc-field is-error">
+        <input type="text" value="ישראל" aria-invalid="true" placeholder=" ">
+        <span class="sc-field__label">שגיאה</span>
+        <span class="sc-field__hint">רמז</span>
+        <span class="sc-field__error">שדה חובה</span>
+      </label>
+      </div>
+      <div class="sc-form-row">
+        <label class="sc-field">
+        <input type="text" value="לא ניתן לעריכה" disabled placeholder=" ">
+        <span class="sc-field__label">חסום</span>
+      </label>
+        <label class="sc-field sc-field--ltr">
+        <input type="tel" value="+972 54 123 4567" placeholder=" ">
+        <span class="sc-field__label">טלפון — LTR</span>
+        <span class="sc-field__hint">אופציונלי</span>
+      </label>
+      </div>
+      <div class="sg-note">
+        <strong>סימון חובה — הכלל הפוך:</strong> מסמנים את האופציונליים ברמז <code>אופציונלי</code>, ומניחים שכל השאר חובה. בנוסף <code>aria-required="true"</code>.<br>
+        פוקוס ושגיאה חולקים <strong>אותה צורה</strong> — קו תחתון 2px, נבדלים רק בצבע. לכן שני המצבים יכולים לחיות יחד. בקוד הקיים טבעת השגיאה היא inset 1px מסביב לכל הקופסה, בספציפיות גבוהה מהפוקוס, ולכן פוקוס על שדה שגוי מוחק את הקו הכחול.
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">רשימה נפתחת</p>
+    <p class="sg-block__d">ה-chevron ממוקם ב-<code>inset-inline-start</code> — תכונה לוגית, ולכן הוא נדבק לקצה השמאלי ב-RTL בלי כלל נפרד. החץ מקבל <code>pointer-events: none</code> כדי שלחיצה עליו תפתח את הרשימה.</p>
+    <div class="sg-demo">
+      <label class="sc-field">
+        <span class="sc-select">
+          <select>
+            <option value="">בחרו אפשרות</option>
+            <option>המלצה מחבר</option>
+            <option>חיפוש בגוגל</option>
+            <option>פייסבוק או אינסטגרם</option>
+            <option>ערב משקיעים</option>
+            <option>אחר</option>
+          </select>
+          <span class="sc-select__chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+        </span>
+        <span class="sc-field__label">איך הגעתם אלינו</span>
+        <span class="sc-field__hint">אופציונלי</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">אזור טקסט</p>
+    <div class="sg-demo">
+      <label class="sc-field">
+        <textarea rows="3" placeholder=" "></textarea>
+        <span class="sc-field__label">תוכן הפנייה</span>
+        <span class="sc-field__hint">אופציונלי</span>
+      </label>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="choice">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">06</p>
+  <h2 class="sg-sec__t">בחירה</h2>
+  <p class="sg-sec__d">הכל ברצפת אזור לחיצה של 44px, גם כשהגובה החזותי קטן ממנה</p>
+
+  <div class="sg-demo">
+    <div class="sg-stack">
+      <label class="sc-check"><input type="checkbox" checked><span>צ'קבוקס מסומן</span></label>
+      <label class="sc-check"><input type="checkbox"><span>לא מסומן</span></label>
+      <fieldset class="sc-radiogroup" style="margin-top:var(--sc-space-4)">
+        <legend>רדיו — חייב fieldset ו-legend</legend>
+        <div class="sc-radiogroup__items">
+          <label class="sc-check"><input type="radio" name="d" checked><span>משקיע פרטי</span></label>
+          <label class="sc-check"><input type="radio" name="d"><span>חברה או שותפות</span></label>
+        </div>
+      </fieldset>
+      <div class="sc-field sc-field--static" style="margin-top:var(--sc-space-4)">
+        <span class="sc-field__label">בקרה מקטעית</span>
+        <div class="sc-seg sc-seg--2" role="radiogroup" aria-label="ניסיון">
+          <button class="sc-seg__btn" type="button" role="radio" aria-checked="true">כן</button>
+          <button class="sc-seg__btn" type="button" role="radio" aria-checked="false">לא</button>
+        </div>
+      </div>
+      <div class="sc-field sc-field--static">
+        <span class="sc-field__label">צ'יפים</span>
+        <div class="sc-chips" role="radiogroup" aria-label="מועד">
+          <button class="sc-chip" type="button" role="radio" aria-checked="false">מיד</button>
+          <button class="sc-chip" type="button" role="radio" aria-checked="true">תוך 3 חודשים</button>
+          <button class="sc-chip" type="button" role="radio" aria-checked="false">רק בודק</button>
+        </div>
+      </div>
+    </div>
+    <div class="sg-note">
+      בקרה מקטעית וצ'יפים בנויים מ-<code>&lt;button&gt;</code>, ולכן <strong>חייבים <code>role="radiogroup"</code> ו-<code>aria-checked</code></strong> — אחרת מצב הבחירה בלתי-נראה לקורא מסך
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="forms">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">07</p>
+  <h2 class="sg-sec__t">טופס</h2>
+  <p class="sg-sec__d">24px בין שדות, בשני המסכים. הפעולות יושבות בפס פוטר על משטח נפרד, לא בזרימת השדות — ההפרדה נעשית בהחלפת משטח</p>
+
+  <div style="max-width:520px">
+    <div class="sc-form-card">
+      <div class="sc-form-card__head">
+        <h3 class="sc-t-h2">פרופיל השקעה</h3>
+      </div>
+      <div class="sc-form-card__body">
+        <label class="sc-field">
+          <input type="text" placeholder=" ">
+          <span class="sc-field__label">שם מלא</span>
+        </label>
+        <label class="sc-field sc-field--ltr">
+          <input type="email" placeholder=" ">
+          <span class="sc-field__label">אימייל</span>
+          <span class="sc-field__hint">נשלח אליכם אישור</span>
+        </label>
+        <label class="sc-field">
+          <span class="sc-select">
+            <select><option value="">בחרו טווח</option><option>$50K – $100K</option></select>
+            <span class="sc-select__chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+          </span>
+          <span class="sc-field__label">טווח השקעה</span>
+          <span class="sc-field__hint">אופציונלי</span>
+        </label>
+      </div>
+      <div class="sc-form-card__foot">
+        <button class="sc-btn sc-btn--text" type="button">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          חזרה
+        </button>
+        <button class="sc-btn sc-btn--outline sc-btn--s" type="button">
+          המשך
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block" style="margin-top:var(--sc-space-10)">
+    <p class="sg-block__t">הודעות מערכת</p>
+    <div class="sg-demo">
+      <div class="sg-stack">
+        <div class="sc-alert sc-alert--error" role="alert"><strong>שגיאה בשליחה</strong> — נסו שוב, או פנו אלינו בוואטסאפ</div>
+        <div class="sc-alert sc-alert--success" role="status"><strong>הפנייה נשלחה</strong> — נחזור אליכם תוך 24 שעות עבודה</div>
+      </div>
+      <div class="sg-note">
+        צמודות ימין, לא ממורכזות. שגיאה מקבלת <code>role="alert"</code>, הצלחה <code>role="status"</code>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="cards">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">08</p>
+  <h2 class="sg-sec__t">כרטיסים</h2>
+  <p class="sg-sec__d">פינה 12px, הצללה <code>--sc-elev-2</code>, פדינג 32px בדסקטופ ו-24px במובייל. hover מוסיף <strong>שכבת צל שנייה</strong> במקום להעלות אטימות.</p>
+
+  <div class="sc-grid sc-grid--3">
+    <div class="sc-card sc-card--interactive">
+      <span class="sc-icon-box sc-icon-box--sm" style="margin-bottom:var(--sc-space-5)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+          <path d="M8 11h6" stroke="var(--sc-maroon)"/><path d="M11 8v6" stroke="var(--sc-maroon)"/>
+        </svg>
+      </span>
+      <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">מתחת למחיר השוק</h3>
+      <p class="sc-t-small">כל עסקה נבחנת מול קומפס אמיתיים באותו רדיוס, ואם הפער לא מספיק — לא קונים</p>
+    </div>
+    <div class="sc-card sc-card--interactive">
+      <span class="sc-icon-box sc-icon-box--sm" style="margin-bottom:var(--sc-space-5)">
+        <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+      </span>
+      <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">6 עד 9 חודשים</h3>
+      <p class="sc-t-small">זמן הוא הסיכון האמיתי בעסקת השבחה — לוח הזמנים נקבע לפני החתימה</p>
+    </div>
+    <div class="sc-card sc-card--interactive">
+      <span class="sc-icon-box sc-icon-box--sm sc-icon-box--round" style="margin-bottom:var(--sc-space-5)">
+        <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+      </span>
+      <h3 class="sc-t-label" style="margin-bottom:var(--sc-space-3)">LLC נפרד לכל עסקה</h3>
+      <p class="sc-t-small">הפרדה מלאה בין נכסים, וכל משקיע רואה את הדוחות של הנכס שלו בלבד</p>
+    </div>
+  </div>
+
+  <div style="margin-top:24px" class="sc-grid sc-grid--2">
+    <div class="sc-card sc-card--panel sc-card--flat">
+      <p class="sc-t-label" style="margin-bottom:var(--sc-space-2)">כרטיס שטוח</p>
+      <p class="sc-t-small"><code>.sc-card--flat</code> — משטח הרקע <code>#f7f5f1</code>, בלי הצללה. לבלוקים בתוך סקשן לבן.</p>
+    </div>
+    <div class="sc-card sc-card--panel">
+      <p class="sc-t-label" style="margin-bottom:var(--sc-space-2)">פאנל</p>
+      <p class="sc-t-small"><code>.sc-card--panel</code> — פינה 16px. לפאנלים גדולים, כרטיסי דילים, סקשנים מורחבים.</p>
+    </div>
+  </div>
+
+  <div class="sg-note" style="margin-top:24px">
+    <span class="sg-only-mobile">מובייל</span> <strong>גריד כרטיסים הופך לקרוסלת <code>scroll-snap</code></strong> — כרטיס ברוחב 80vw (מינימום 280px, מקסימום 340px). מעל 768px הוא חוזר להיות גריד ונקודות הניווט נעלמות. בטלפון קטן ≤374px הכרטיס עולה ל-85vw.
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="icons">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">09</p>
+  <h2 class="sg-sec__t">אייקונים</h2>
+  <p class="sg-sec__d">שתי מערכות עם גבול כתוב: <strong>Material Symbols</strong> לכל UI, <strong>Lucide דו-גוני</strong> לעמודי שיווק בלבד.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">Lucide דו-גוני — החתימה של המותג</p>
+    <p class="sg-block__d">viewBox 24, <code>stroke-width: 1.5</code>, קצוות מעוגלים, <code>fill: none</code>. הבסיס נייבי ו<strong>1-2 נתיבים במרון</strong>. הבסיס משתמש ב-<code>currentColor</code> כדי שהאייקון יוכל לירש את צבע ההורה.</p>
+    <div class="sg-demo">
+      <div class="sg-row" style="gap:28px;color:var(--sc-navy)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-label="חיפוש נכס">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+          <path d="M8 11h6" stroke="var(--sc-maroon)"/><path d="M11 8v6" stroke="var(--sc-maroon)"/>
+        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-label="מגמת עלייה">
+          <path d="M16 7h6v6" stroke="var(--sc-maroon)"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-label="שיפוץ">
+          <path d="m15 12-8.5 8.5a2.12 2.12 0 1 1-3-3L12 9"/>
+          <path d="M17.64 15 22 10.64" stroke="var(--sc-maroon)"/>
+          <path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A3.65 3.65 0 0 1 11.14 6v1.10l1.68 1.69"/>
+        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-label="רווח">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" stroke="var(--sc-maroon)"/>
+          <path d="M12 18V6" stroke="var(--sc-maroon)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">גדלים ומכלים — יחס אייקון:מכל תמיד 50%</p>
+    <div class="sg-demo">
+      <div class="sg-row" style="gap:32px;align-items:flex-end">
+        <div style="text-align:center">
+          <span class="sc-icon-box sc-icon-box--sm"><span class="material-symbols-outlined" aria-hidden="true">payments</span></span>
+          <span class="sg-state__cap">40px, אייקון 20px</span>
+        </div>
+        <div style="text-align:center">
+          <span class="sc-icon-box sc-icon-box--sm sc-icon-box--round"><span class="material-symbols-outlined" aria-hidden="true">shield</span></span>
+          <span class="sg-state__cap">40px עגול</span>
+        </div>
+        <div style="text-align:center">
+          <span class="sc-icon-box sc-icon-box--lg"><span class="material-symbols-outlined" aria-hidden="true">trending_up</span></span>
+          <span class="sg-state__cap" id="boxLgCap">64px, אייקון 32px</span>
+        </div>
+      </div>
+      <div class="sg-note"><span class="sg-only-mobile">מובייל</span> המכל הגדול יורד ל-48px והאייקון ל-24px — היחס נשמר. 64px כבד מדי על מסך 375px.</div>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">כיווניות ב-RTL — החלפת גליף, לא transform</p>
+    <div class="sg-demo">
+      <table class="sg-tbl">
+        <thead><tr><th style="width:150px">גליף</th><th style="width:80px">מצביע</th><th>תפקיד ב-RTL</th></tr></thead>
+        <tbody>
+          <tr><td><code>arrow_back</code> <span class="material-symbols-outlined" style="vertical-align:middle;font-size:16px">arrow_back</span></td><td>שמאלה</td><td><strong>"קדימה", "הבא", "המשך", "קרא עוד"</strong></td></tr>
+          <tr><td><code>arrow_forward</code> <span class="material-symbols-outlined" style="vertical-align:middle;font-size:16px">arrow_forward</span></td><td>ימינה</td><td><strong>"חזרה", "הקודם"</strong></td></tr>
+          <tr><td><code>chevron_left</code> <span class="material-symbols-outlined" style="vertical-align:middle;font-size:16px">chevron_left</span></td><td>שמאלה</td><td>מפריד שברי לחם (הורה → ילד)</td></tr>
+          <tr><td><code>expand_more</code> <span class="material-symbols-outlined" style="vertical-align:middle;font-size:16px">expand_more</span></td><td>למטה</td><td>אקורדיון. מסתובב 180° בפתיחה. נייטרלי לכיוון</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="scale">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">10</p>
+  <h2 class="sg-sec__t">מרווחים, פינות, הרמה</h2>
+  <p class="sg-sec__d">בסיס 4px. הערכים למטה נמדדים מהטוקנים בזמן ריצה.</p>
+
+  <div class="sg-block">
+    <p class="sg-block__t">סולם המרווחים</p>
+    <div class="sg-demo"><div id="spaceScale"></div></div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">הקצב — מה משתנה בין המסכים</p>
+    <p class="sg-block__d">70%+ מהתנועה מהטלפון, ולכן <strong>מובייל הוא מקרה הבסיס ולא תיקון בסוף</strong>. כל CSS במערכת נכתב mobile-first — הערך ללא media query הוא המובייל, והדסקטופ נוסף מעליו ב-<code>min-width: 768px</code>.</p>
+    <div class="sg-demo">
+      <table class="sg-tbl">
+        <thead><tr><th>יחס</th><th style="width:120px">דסקטופ</th><th style="width:120px">מובייל</th></tr></thead>
+        <tbody>
+          <tr><td>פדינג אנכי של סקשן</td><td><span class="sg-tok">96px</span></td><td><span class="sg-tok">40px</span></td></tr>
+          <tr><td>מרזב אופקי</td><td><span class="sg-tok">48px</span></td><td><span class="sg-tok">24px</span></td></tr>
+          <tr><td>פדינג פנימי של כרטיס</td><td><span class="sg-tok">32px</span></td><td><span class="sg-tok">24px</span></td></tr>
+          <tr><td>gap בגריד כרטיסים</td><td><span class="sg-tok">24px</span></td><td><span class="sg-tok">16px</span></td></tr>
+          <tr><td>מרווח בין שדות טופס</td><td><span class="sg-tok">24px</span></td><td><span class="sg-tok">24px</span></td></tr>
+          <tr><td>תווית → שדה</td><td><span class="sg-tok">8px</span></td><td><span class="sg-tok">8px</span></td></tr>
+          <tr><td>גובה שדה</td><td><span class="sg-tok">40px</span></td><td><span class="sg-tok">40px</span></td></tr>
+          <tr><td>רצפת יעד מגע</td><td><span class="sg-tok">44px</span></td><td><span class="sg-tok">44px</span></td></tr>
+          <tr><td>פינות</td><td colspan="2"><span class="sg-tok">זהות בשני המסכים</span></td></tr>
+          <tr><td>טלפון קטן ≤374px</td><td colspan="2"><span class="sg-tok">מדרגה שלישית — הכותרות יורדות עוד שלב, כרטיס קרוסלה 85vw</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">פינות — שני ערכים בכל האפליקציה</p>
+    <p class="sg-block__d">היה 6 (4, 6, 8, 12, 16, גלולה), עכשיו <strong>2 + צורה</strong>. <code>--sc-radius-full</code> אינו ערך שלישי אלא <strong>צורה</strong> — נקודה, אווטאר, FAB וגלולה לא ניתנים לביטוי ב-8px או 16px.</p>
+    <div class="sg-demo"><div class="sg-row" style="gap:20px" id="radiusRow"></div></div>
+    <div class="sg-note">הוצאו: <code>4px</code> (היה לטבעת פוקוס — מיותר, <code>outline</code> יורש את פינת האלמנט), <code>6px</code> (שדות → 8px), <code>12px</code> (כרטיסים → 16px).</div>
+  </div>
+
+  <div class="sg-block">
+    <p class="sg-block__t">סולם ההרמה</p>
+    <p class="sg-block__d">תקרה: blur ≤ 24px, Y ≤ 8px, אטימות ≤ 4%. <code>--sc-elev-overlay</code> ו-<code>--sc-glow-whatsapp</code> הם חריגות מתועדות, מוגבלות למודאלים ולוואטסאפ.</p>
+    <div class="sg-demo sg-demo--alt">
+      <div class="sg-row" style="gap:24px">
+        <div style="text-align:center"><div style="width:110px;height:72px;background:#fff;border-radius:var(--sc-radius-lg);box-shadow:var(--sc-elev-0)"></div><span class="sg-state__cap">elev-0</span></div>
+        <div style="text-align:center"><div style="width:110px;height:72px;background:#fff;border-radius:var(--sc-radius-lg);box-shadow:var(--sc-elev-1)"></div><span class="sg-state__cap">elev-1, נאב</span></div>
+        <div style="text-align:center"><div style="width:110px;height:72px;background:#fff;border-radius:var(--sc-radius-lg);box-shadow:var(--sc-elev-2)"></div><span class="sg-state__cap">elev-2, כרטיס</span></div>
+        <div style="text-align:center"><div style="width:110px;height:72px;background:#fff;border-radius:var(--sc-radius-lg);box-shadow:var(--sc-elev-3)"></div><span class="sg-state__cap">elev-3, hover</span></div>
+        <div style="text-align:center"><div style="width:110px;height:72px;background:#fff;border-radius:var(--sc-radius-lg);box-shadow:var(--sc-elev-overlay)"></div><span class="sg-state__cap">overlay, מודאל</span></div>
+        <div style="text-align:center"><div style="width:110px;height:72px;background:var(--sc-whatsapp);border-radius:var(--sc-radius-lg);box-shadow:var(--sc-glow-whatsapp)"></div><span class="sg-state__cap">זוהר וואטסאפ</span></div>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section class="sg-sec" id="motion">
+ <div class="sg-wrap">
+  <p class="sg-sec__h">11</p>
+  <h2 class="sg-sec__t">מוֹשן</h2>
+  <p class="sg-sec__d">"אנימציות עדינות, לא מתלהבות. זה אתר פיננסי." עקומה קנונית אחת: <code>cubic-bezier(0.2, 0.8, 0.2, 1)</code>.</p>
+
+  <div class="sg-demo">
+    <table class="sg-tbl">
+      <thead><tr><th style="width:150px">טוקן</th><th style="width:90px">משך</th><th>שימוש</th><th style="width:110px">מובייל</th></tr></thead>
+      <tbody>
+        <tr><td><code>--sc-dur-fast</code></td><td><span class="sg-tok">150ms</span></td><td>צבע, אטימות, משוב לחיצה</td><td><span class="sg-tok">זהה</span></td></tr>
+        <tr><td><code>--sc-dur-base</code></td><td><span class="sg-tok">200ms</span></td><td>hover, טרנספורם, הצללה</td><td><span class="sg-tok">זהה</span></td></tr>
+        <tr><td><code>--sc-dur-slow</code></td><td><span class="sg-tok">300ms</span></td><td>אקורדיון, max-height</td><td><span class="sg-tok">זהה</span></td></tr>
+        <tr><td><code>--sc-dur-reveal</code></td><td><span class="sg-tok">600ms</span></td><td>חשיפה בגלילה</td><td><span class="sg-tok">זהה</span></td></tr>
+        <tr><td><code>--sc-dur-ambient</code></td><td><span class="sg-tok">20s</span></td><td>Ken Burns ב-hero</td><td><strong>כבוי</strong></td></tr>
+        <tr><td><code>hover</code></td><td><span class="sg-tok">—</span></td><td>הרמה, החלפת צבע, זום תמונה</td><td><strong>לא קיים</strong></td></tr>
+        <tr><td><code>:active</code></td><td><span class="sg-tok">150ms</span></td><td><code>scale(0.98)</code></td><td><strong>המשוב היחיד</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="sg-note">
+      <span class="sg-only-mobile">מובייל</span> אין <code>hover</code> במסך מגע — ולכן כל <code>:hover</code> במערכת עטוף ב-<code>@media (hover: hover) and (pointer: fine)</code>. בלי העטיפה, hover נדבק אחרי נגיעה ונשאר דלוק.
+      <br><br>
+      <strong>כל תנועה מכובדת תחת <code>prefers-reduced-motion</code>.</strong> בקוד הקיים הבלוק הזה קיים ב-index ו-landing בלבד; investor-nights ו-pitch שולחים Ken Burns אינסופי של 20 שניות למי שביקש פחות תנועה.
+    </div>
+  </div>
+
+  <div class="sg-block" style="margin-top:24px">
+    <p class="sg-block__t">הרמת כרטיס — רחף עליו</p>
+    <div class="sc-grid sc-grid--2">
+      <div class="sc-card sc-card--interactive"><p class="sc-t-label">רחף כאן</p><p class="sc-t-small" style="margin-top:8px">translateY(-2px) + שכבת צל שנייה, 200ms.</p></div>
+      <div class="sc-card"><p class="sc-t-label">כרטיס סטטי</p><p class="sc-t-small" style="margin-top:8px">בלי <code>--interactive</code> — אין תגובה.</p></div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<div style="height:60px"></div>
+</div><!-- /sg-main -->
+
+<!-- ══════════════ תצוגת מובייל ══════════════ -->
+<aside class="sg-mobile-pane">
+  <p class="sg-phone-label">390 × 780</p>
+  <div class="sg-phone"><iframe id="mobFrame" title="תצוגת מובייל" src="about:blank"></iframe></div>
+</aside>
+
+</div><!-- /sg-shell -->
+
+<script>
+(function () {
+  'use strict';
+
+  var EMBED = new URLSearchParams(location.search).get('view') === 'mobile';
+  if (EMBED) document.body.classList.add('sg-embed');
+
+  var cs = getComputedStyle(document.documentElement);
+  var tok = function (n) { return cs.getPropertyValue(n).trim(); };
+
+  /* ---------- צבעים ---------- */
+  var GROUPS = {
+    swBrand: [
+      ['--sc-navy',           'דיו — כל המבנה: טקסט, כותרות, כפתורים, סקשן כהה'],
+      ['--sc-maroon',         'אוקסבלד — המבטא היחיד, על מצע בהיר: eyebrow, מספר מודגש, נאב אקטיבי'],
+      ['--sc-maroon-on-dark', 'אוקסבלד על כהה — אותו מבטא בסקשן כהה בלבד. 4.71:1 מול הדיו']
+    ],
+    swSurface: [
+      ['--sc-surface', 'לבן — כרטיס, שדה בפוקוס, סקשן מתחלף'],
+      ['--sc-bg',      'נייר — רקע העמוד'],
+      ['--sc-fill',    'אפור — מילוי פקדים בלבד']
+    ],
+    swText: [
+      ['--sc-text',       'טקסט מודגש — נגזר מנייבי'],
+      ['--sc-text-muted', 'טקסט גוף — נייבי ב-72%'],
+      ['--sc-divider',    'מפריד — נייבי ב-14%'],
+      ['--sc-navy-006',   'רקע מכל אייקון — נייבי ב-6%'],
+      ['--sc-success',    'הצלחה — נגזר מנייבי, לא ירוק'],
+      ['--sc-error',      'שגיאה — חובה, אסור מרון'],
+      ['--sc-whatsapp',   'וואטסאפ — מותג חיצוני']
+    ]
+  };
+
+  Object.keys(GROUPS).forEach(function (id) {
+    var host = document.getElementById(id);
+    if (!host) return;
+    host.innerHTML = GROUPS[id].map(function (row) {
+      var name = row[0], use = row[1], val = tok(name);
+      /* טוקן שנמחק מחזיר מחרוזת ריקה. בלי הבדיקה הזאת הדוגמית
+         מרונדרת לבנה והבאג מסתתר — זה בדיוק מה שקרה כאן. */
+      if (!val) {
+        return '<div class="sg-sw" style="outline:2px solid var(--sc-error)">' +
+               '<div class="sg-sw__chip" style="background:repeating-linear-gradient(45deg,#ba1a1a 0 8px,#fff 8px 16px)"></div>' +
+               '<div class="sg-sw__meta">' +
+                 '<span class="sg-sw__name" style="color:var(--sc-error)">' + name.replace('--sc-', '') + '</span>' +
+                 '<span class="sg-sw__val" style="color:var(--sc-error)">טוקן לא קיים</span>' +
+                 '<span class="sg-sw__use">' + use + '</span>' +
+               '</div></div>';
+      }
+      return '<div class="sg-sw">' +
+             '<div class="sg-sw__chip" style="background:' + val + '"></div>' +
+             '<div class="sg-sw__meta">' +
+               '<span class="sg-sw__name">' + name.replace('--sc-', '') + '</span>' +
+               '<span class="sg-sw__val">' + val + '</span>' +
+               '<span class="sg-sw__use">' + use + '</span>' +
+             '</div></div>';
+    }).join('');
+  });
+
+  /* ---------- סולם הטיפוגרפיה ---------- */
+  var TYPE = [
+    ['sc-t-display', 'השבחה, מכירה, רווח',                                      'Heebo 700 — היחיד שמשתנה בין מסכים'],
+    ['sc-t-h2',      'למה בירמינגהם, ולמה עכשיו',                                'Heebo 600'],
+    ['sc-t-lede',    'פער המחירים בשוק עדיין מאפשר עסקת השבחה ברווח דו-ספרתי',   'Heebo 400'],
+    ['sc-t-body',    'אנחנו קונים מתחת למחיר השוק, משפצים לפי מפרט, ומוכרים',    'Heebo 400'],
+    ['sc-t-small',   'ההשקעה המינימלית היא 50 אלף דולר',                         'Heebo 400'],
+    ['sc-t-label',   'מחיר קנייה',                                              'Heebo 600'],
+    ['sc-t-metric',  '$248,500',                                                'Heebo 600, טבלאי, LTR']
+  ];
+
+  var tbody = document.getElementById('typeRows');
+  if (tbody) {
+    tbody.innerHTML = TYPE.map(function (r) {
+      return '<tr>' +
+        '<td><code>.' + r[0] + '</code><br><span class="sg-tok" style="font-size:13px">' + r[2] + '</span></td>' +
+        '<td><span class="' + r[0] + '" data-m="' + r[0] + '">' + r[1] + '</span></td>' +
+        '<td><span class="sg-tok" data-size="' + r[0] + '">—</span></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function readSizes() {
+    document.querySelectorAll('[data-size]').forEach(function (cell) {
+      var el = document.querySelector('[data-m="' + cell.getAttribute('data-size') + '"]');
+      if (!el) return;
+      var s = getComputedStyle(el);
+      var px = parseFloat(s.fontSize);
+      cell.textContent = Math.round(px * 10) / 10 + 'px, ' + s.fontWeight + ', lh ' +
+                         (Math.round(parseFloat(s.lineHeight) / px * 100) / 100);
+    });
+  }
+
+  /* ---------- סולם המרווחים ---------- */
+  var SPACE = [
+    ['--sc-space-1','תווית → מספר'], ['--sc-space-2','gap אייקון, תווית → שדה'],
+    ['--sc-space-3','eyebrow → כותרת'], ['--sc-space-4','פריטי רשימה'],
+    ['--sc-space-5','אייקון → כותרת'], ['--sc-space-6','פדינג כרטיס מובייל, gap גריד, שדות'],
+    ['--sc-space-8','פדינג כרטיס דסקטופ'], ['--sc-space-10','פדינג סקשן מובייל'],
+    ['--sc-space-12','מרזב דסקטופ'], ['--sc-space-16','פדינג עליון פוטר'],
+    ['--sc-space-20','—'], ['--sc-space-24','פדינג סקשן דסקטופ'],
+    ['--sc-space-28','CTA סוגר'], ['--sc-space-32','סקשן כתבה']
+  ];
+  var sHost = document.getElementById('spaceScale');
+  if (sHost) {
+    sHost.innerHTML = SPACE.map(function (r) {
+      var rem = tok(r[0]);
+      var px  = Math.round(parseFloat(rem) * 16);
+      return '<div class="sg-space-row">' +
+        '<span class="sg-tok" style="width:120px;flex:0 0 auto">' + r[0].replace('--sc-','') + '</span>' +
+        '<span class="sg-space-bar" style="width:' + px + 'px"></span>' +
+        '<span class="sg-tok" style="width:86px;flex:0 0 auto">' + px + 'px, ' + rem + '</span>' +
+        '<span style="font-size:13px">' + r[1] + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* ---------- פינות ---------- */
+  var RADIUS = [
+    ['--sc-radius',     'מכל קטן — מקטעי, הודעה, בלוק סליידר'],
+    ['--sc-radius-lg',  'מכל גדול — כרטיס, פאנל, תמונה'],
+    ['--sc-radius-full','כל הכפתורים והצ׳יפים, וכל דבר עגול']
+  ];
+  var rHost = document.getElementById('radiusRow');
+  if (rHost) {
+    rHost.innerHTML = RADIUS.map(function (r) {
+      return '<div style="text-align:center">' +
+        '<div class="sg-radius-box" style="border-radius:' + tok(r[0]) + '">' + tok(r[0]) + '</div>' +
+        '<span class="sg-state__cap">' + r[1] + '</span></div>';
+    }).join('');
+  }
+
+  /* ---------- גובה כפתורים בפועל ---------- */
+  function readBtnHeights() {
+    var out = ['btnL','btnM','btnS'].map(function (id) {
+      var el = document.getElementById(id);
+      return el ? id.replace('btn','') + ' = ' + Math.round(el.getBoundingClientRect().height) + 'px' : '';
+    }).filter(Boolean).join(' ,  ');
+    var cell = document.getElementById('btnHeights');
+    if (cell) cell.textContent = out;
+  }
+
+  /* ---------- תג מסך ---------- */
+  function readViewport() {
+    var w = window.innerWidth;
+    var label = w >= 768 ? 'דסקטופ' : (w <= 374 ? 'טלפון קטן' : 'מובייל');
+    var badge = document.getElementById('vpBadge');
+    if (badge) badge.textContent = label + ', ' + w + 'px';
+    var cap = document.getElementById('boxLgCap');
+    if (cap) cap.textContent = (w >= 768 ? '64px, אייקון 32px' : '48px, אייקון 24px');
+  }
+
+  function refresh() { readSizes(); readBtnHeights(); readViewport(); }
+  refresh();
+  window.addEventListener('resize', refresh);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(refresh);
+  }
+
+  /* ---------- סליידר ---------- */
+  var range = document.getElementById('rangeInput');
+  var rVal  = document.getElementById('rangeVal');
+  if (range && rVal) {
+    range.addEventListener('input', function () { rVal.textContent = '$' + range.value + 'K'; });
+  }
+
+  /* ---------- מקטעי וצ'יפים ---------- */
+  document.querySelectorAll('.sc-seg, .sc-chips').forEach(function (group) {
+    group.addEventListener('click', function (e) {
+      var btn = e.target.closest('[role="radio"]');
+      if (!btn || !group.contains(btn)) return;
+      group.querySelectorAll('[role="radio"]').forEach(function (b) {
+        b.setAttribute('aria-checked', String(b === btn));
+      });
+    });
+  });
+
+  /* ---------- תצוגת מובייל ---------- */
+  var toggle = document.getElementById('mobToggle');
+  if (toggle && !EMBED) {
+    toggle.addEventListener('click', function () {
+      var shell = document.getElementById('shell');
+      var frame = document.getElementById('mobFrame');
+      var on = shell.classList.toggle('is-split');
+      document.getElementById('mobToggleTxt').textContent = on ? 'סגור תצוגת מובייל' : 'הצג מובייל לצד דסקטופ';
+      if (on && frame.src === 'about:blank') {
+        frame.src = location.pathname + '?view=mobile' + location.hash;
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>

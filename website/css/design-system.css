@@ -1,0 +1,921 @@
+/* ============================================================
+   Safe Capital — Design System Components
+   ============================================================
+   שכבת הקומפוננטות של מערכת העיצוב. כל מחלקה בתחילית .sc-
+   כדי שלא תתנגש בשום דבר קיים באתר.
+
+   דורש: design-tokens.css (טוקנים) + tokens.css (גדלי פונט)
+   <link rel="stylesheet" href="css/tokens.css">
+   <link rel="stylesheet" href="css/design-tokens.css">
+   <link rel="stylesheet" href="css/design-system.css">
+
+   תצוגה חיה: website/styleguide.html
+   מסמך מלא:  DESIGN-SYSTEM.md
+
+   ── חוקים שהקובץ הזה אוכף ──────────────────────────────────
+   · mobile-first — הערך ללא media query הוא המובייל
+   · כל :hover עטוף ב-@media (hover: hover) — במסך מגע
+     hover נדבק אחרי נגיעה
+   · אין יעד מגע מתחת ל-44px
+   · פוקוס בשדה = קו תחתון 2px, לא טבעת מלאה
+   · אפס הצללה על כפתורים
+   · פינות זהות בין המסכים
+   · prefers-reduced-motion מכובד בכל תנועה
+   ============================================================ */
+
+
+/* ══════════════════════════════════════════════════════════
+   0. סולם טיפוגרפיה — שש מדרגות
+   ══════════════════════════════════════════════════════════
+   הסולם:  80 · 30 · 18 · 16 · 14 · 13
+
+   שני עקרונות שקובעים אותו:
+
+   1. קניון, לא מדרגות. בין הכותרת הראשית (80) לכותרת סקשן
+      (30) אין כלום. ההיררכיה נבנית מקפיצה אחת גדולה, לא
+      מסולם מדורג.
+
+   2. רק הכותרת הראשית רספונסיבית. 80→52 במובייל. כל השאר
+      זהה בשני המסכים — טקסט של 16px נקרא אותו דבר בטלפון
+      ובמחשב, ואין סיבה להקטין אותו.
+
+   משקלים: 400 גוף · 600 כותרות ותוויות · 700 כותרת ראשית.
+   ────────────────────────────────────────────────────────── */
+
+.sc-t-display, .sc-t-h2, .sc-t-lede, .sc-t-body, .sc-t-small, .sc-t-label, .sc-t-metric {
+  font-family: var(--sc-font);
+  margin: 0;
+}
+
+/* ── כותרת ראשית — היחידה שמשתנה בין מסכים ─────────────── */
+.sc-t-display {
+  font-size: 3.25rem;                 /* 52px מובייל */
+  font-weight: var(--sc-fw-bold);     /* 700 */
+  line-height: 1;
+  letter-spacing: var(--sc-ls-tight);
+  color: var(--sc-navy);
+}
+@media (min-width: 768px) { .sc-t-display { font-size: 5rem; } }   /* 80px */
+
+/* ── כותרת סקשן ────────────────────────────────────────── */
+.sc-t-h2 {
+  font-size: 1.875rem;                /* 30px, בשני המסכים */
+  font-weight: var(--sc-fw-semi);     /* 600 */
+  line-height: 1.4;
+  color: var(--sc-navy);
+}
+
+/* ── טקסט ──────────────────────────────────────────────── */
+.sc-t-lede, .sc-t-body, .sc-t-small {
+  font-weight: var(--sc-fw-regular);  /* 400 */
+  line-height: var(--sc-lh-body);     /* 1.8 */
+  color: var(--sc-text-muted);
+}
+.sc-t-lede  { font-size: 1.125rem; }  /* 18px */
+.sc-t-body  { font-size: 1rem;     }  /* 16px */
+.sc-t-small { font-size: 0.875rem; }  /* 14px */
+
+/* ── תווית ומספר ───────────────────────────────────────── */
+.sc-t-label {
+  font-size: 0.8125rem;               /* 13px */
+  font-weight: var(--sc-fw-semi);     /* 600 */
+  line-height: 1.4;
+  color: var(--sc-text-muted);
+}
+.sc-t-metric {
+  font-size: 1rem;                    /* 16px מובייל */
+  font-weight: var(--sc-fw-semi);
+  line-height: 1;
+  letter-spacing: var(--sc-ls-tight);
+  color: var(--sc-navy);
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 768px) { .sc-t-metric { font-size: 1.125rem; } }   /* 18px */
+.sc-t-metric--maroon { color: var(--sc-maroon); }
+
+/* ── על רקע כהה ───────────────────────────────────────── */
+.sc-on-dark .sc-t-display, .sc-on-dark .sc-t-h2,
+.sc-on-dark .sc-t-metric { color: var(--sc-text-on-dark); }
+.sc-on-dark .sc-t-lede, .sc-on-dark .sc-t-body,
+.sc-on-dark .sc-t-small { color: var(--sc-on-dark-070); }
+.sc-on-dark .sc-t-label { color: var(--sc-on-dark-050); }
+
+/* מבטא על כהה — המדרגה הבהירה, לא האוקסבלד.
+   חייב לבוא אחרי הכלל שמעל: אותה ספציפיות (0,2,0),
+   וסדר המקור הוא שמכריע. */
+.sc-on-dark .sc-t-metric--maroon { color: var(--sc-maroon-on-dark); }
+
+
+/* ══════════════════════════════════════════════════════════
+   1. EYEBROW — תווית מעל כותרת
+   ══════════════════════════════════════════════════════════ */
+
+.sc-eyebrow {
+  display: block;
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 0.8125rem;
+  line-height: var(--sc-lh-heading);
+  color: var(--sc-maroon);
+  margin-bottom: var(--sc-space-3);
+}
+.sc-eyebrow--on-dark { color: var(--sc-on-dark-070); }
+
+@media (min-width: 768px) {
+  .sc-eyebrow { font-size: 0.875rem; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   2. כפתורים
+   ══════════════════════════════════════════════════════════ */
+
+.sc-btn {
+  /* מבנה */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sc-space-2);
+  /* טיפוגרפיה */
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  /* צורה */
+  border: 0;
+  border-radius: var(--sc-radius-full);   /* גלולה — כל הכפתורים */
+  box-shadow: none;                       /* כפתורים לא מקבלים הרמה */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--sc-dur-base) var(--sc-ease),
+              border-color     var(--sc-dur-base) var(--sc-ease),
+              color            var(--sc-dur-base) var(--sc-ease),
+              opacity          var(--sc-dur-base) var(--sc-ease),
+              filter           var(--sc-dur-base) var(--sc-ease),
+              transform        var(--sc-dur-fast) var(--sc-ease);
+}
+
+.sc-btn:focus-visible {
+  outline: var(--sc-focus-ring);
+  outline-offset: var(--sc-focus-offset);
+}
+.sc-btn:active:not(:disabled) { transform: var(--sc-press); }
+.sc-btn:disabled,
+.sc-btn[aria-disabled="true"] { cursor: not-allowed; opacity: 0.4; }
+
+/* ── גדלים ─────────────────────────────────────────────────
+   הפדינג האנכי הוא מה שקובע את הגובה, ואין ‎min-height‎ שמנפח
+   אותו מעליו. הרוחב מגיע מהפדינג האופקי — לא מהאנכי. */
+.sc-btn--l { min-height: var(--sc-btn-h-l); padding: 13px 32px; font-size: 1rem;      }   /* 16 */
+.sc-btn--m { min-height: var(--sc-btn-h-m); padding: 11px 24px; font-size: 1rem;      }   /* 16 */
+.sc-btn--s { min-height: var(--sc-btn-h-s); padding:  9px 18px; font-size: 0.875rem;  }   /* 14 */
+
+/* אזור לחיצה מורחב — הגובה החזותי יורד מ-44px, אזור המגע לא.
+   ‎::after‎ שקוף מותח את השטח הלחיץ בלי לגעת בעיצוב.
+
+   חל על **כל** הכפתורים, לא רק על הקטנים: גם M הוא 40px, וגם L
+   מתכווץ ל-40px במובייל — שניהם 4px מתחת לרצפה. הכלל כוסה
+   בתחילה רק ל---s ולכן L ו-M נשארו חשופים. */
+@media (pointer: coarse) {
+  .sc-btn, .sc-chip, .sc-seg__btn { position: relative; }
+  .sc-btn::after, .sc-chip::after, .sc-seg__btn::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: var(--sc-touch-min);
+    min-width: var(--sc-touch-min);
+    pointer-events: none;   /* הכפתור עצמו כבר לוחץ — זה רק מרחיב שטח */
+  }
+}
+
+/* ── ווריאנטים ──────────────────────────────────────────── */
+.sc-btn--primary   { background: var(--sc-navy); color: var(--sc-text-on-dark); }
+.sc-btn--primary:disabled { background: rgba(14, 30, 46, 0.4); opacity: 1; }
+
+.sc-btn--secondary { background: var(--sc-maroon); color: var(--sc-text-on-dark); }
+
+/* קו 1px נייבי על שקוף. זה כפתור החתימה של השפה המינימלית. */
+.sc-btn--outline {
+  background: transparent;
+  color: var(--sc-navy);
+  border: 1px solid var(--sc-navy);
+}
+/* הבורדר נגרע מהפדינג כדי שהגובה יישאר זהה לווריאנט המלא */
+.sc-btn--outline.sc-btn--l { padding: 12px 31px; }
+.sc-btn--outline.sc-btn--m { padding: 10px 23px; }
+.sc-btn--outline.sc-btn--s { padding:  8px 17px; }
+/* על רקע כהה הקו מתהפך ללבן */
+.sc-on-dark .sc-btn--outline { color: var(--sc-text-on-dark); border-color: rgba(255,255,255,0.4); }
+
+.sc-btn--tonal { background: var(--sc-fill); color: var(--sc-navy); }
+
+.sc-btn--ghost {
+  background: transparent;
+  color: var(--sc-on-dark-080);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.sc-btn--ghost:focus-visible { outline: 2px solid var(--sc-on-dark-1); }
+
+.sc-btn--text {
+  background: transparent;
+  color: var(--sc-navy);
+  min-height: var(--sc-btn-h-min);
+  padding: var(--sc-space-2) 0;
+  font-size: 0.875rem;
+}
+
+.sc-btn--whatsapp { background: var(--sc-whatsapp); color: var(--sc-text-on-dark); }
+
+/* ‎.sc-btn--pill‎ הוסר: כל הכפתורים גלולה, ולכן הוא היה זהה
+   ל-‎.sc-btn--secondary‎. השתמש ב-‎.sc-btn--secondary.sc-btn--s‎. */
+
+.sc-btn--icon {
+  background: var(--sc-fill);
+  color: var(--sc-text-muted);
+  border-radius: var(--sc-radius-full);
+  width: var(--sc-btn-h-m);
+  min-width: var(--sc-btn-h-m);
+  height: var(--sc-btn-h-m);
+  min-height: var(--sc-btn-h-m);
+  padding: 0;
+}
+
+/* ── רוחב מלא ──────────────────────────────────────────── */
+.sc-btn--block { width: 100%; }
+
+/* ── hover — רק במצביע אמיתי ────────────────────────────
+   במסך מגע :hover נדבק אחרי נגיעה ונשאר "דלוק". */
+@media (hover: hover) and (pointer: fine) {
+  .sc-btn--primary:hover:not(:disabled),
+  .sc-btn--whatsapp:hover:not(:disabled) { opacity: 0.9; }
+  .sc-btn--secondary:hover:not(:disabled) { filter: brightness(1.1); }
+  .sc-btn--outline:hover:not(:disabled)  { background: var(--sc-navy); color: var(--sc-text-on-dark); }
+  .sc-on-dark .sc-btn--outline:hover:not(:disabled) { background: var(--sc-text-on-dark); color: var(--sc-navy); border-color: var(--sc-text-on-dark); }
+  .sc-btn--tonal:hover:not(:disabled)    { filter: brightness(0.96); }
+  .sc-btn--ghost:hover:not(:disabled)    { border-color: var(--sc-on-dark-1); color: var(--sc-on-dark-1); }
+  .sc-btn--text:hover:not(:disabled)     { color: var(--sc-maroon); }
+  .sc-btn--icon:hover:not(:disabled)     { background: var(--sc-navy); color: var(--sc-text-on-dark); }
+}
+
+/* ── מצב טעינה ─────────────────────────────────────────── */
+.sc-btn__spinner {
+  width: 18px; height: 18px;        /* זהה לאייקון — 20px ניפח את S ל-38px */
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: var(--sc-radius-full);
+  animation: sc-spin 700ms linear infinite;
+}
+@keyframes sc-spin { to { transform: rotate(360deg); } }
+
+/* ── אייקון בתוך כפתור ─────────────────────────────────
+   אייקון מותג לפני התווית ב-DOM  → מרונדר בימין ב-RTL
+   חץ כיווני אחרי התווית ב-DOM    → מרונדר בשמאל ב-RTL */
+/* גודל האייקון נגזר מגובה הכפתור: 18px בתוך 40px משאיר 11px
+   פדינג מכל צד ולא מנפח את הגובה. אייקון 24px ניפח את הכפתור
+   ל-46px — כלל שנכתב כשגודל M היה 56px. */
+.sc-btn .material-symbols-outlined { font-size: 18px; }
+.sc-btn svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.sc-btn--s .material-symbols-outlined { font-size: 16px; }
+.sc-btn--s svg,
+.sc-btn--s .sc-btn__spinner { width: 16px; height: 16px; }
+
+/* ── מובייל ────────────────────────────────────────────
+   CTA עומד לעצמו נמתח לרוחב מלא. זה מה שמחזיק את רצפת
+   44px בלי לדחוס את הפדינג, וזה מה ש-deal-card כבר עושה. */
+@media (max-width: 767px) {
+  /* L מתמזג ל-M. הגובה לא משתנה בין המסכים — מה שמשתנה זה
+     שה-CTA נמתח לרוחב מלא במקום להתנפח לגובה. */
+  .sc-btn--l { min-height: var(--sc-btn-h-m); padding: 11px 20px; font-size: 1rem; }
+  .sc-btn--m { padding: 11px 20px; }
+  .sc-btn--s { padding: 9px 16px; }
+  .sc-btn--outline.sc-btn--l,
+  .sc-btn--outline.sc-btn--m { padding: 9px 18px; }
+  .sc-btn--outline.sc-btn--s { padding: 7px 14px; }
+  /* CTA יחיד — רוחב מלא */
+  .sc-actions--single .sc-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-btn { transition-duration: 0.01ms; }
+  .sc-btn:active:not(:disabled) { transform: none; }
+  .sc-btn__spinner { animation-duration: 2s; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   3. שורות פעולה — CTA · חזרה · ביטול
+   ══════════════════════════════════════════════════════════
+   .sc-actions          מקבץ פעולות. במובייל נערם לטור.
+   .sc-actions--single  פעולה אחת. במובייל רוחב מלא.
+   .sc-actions--split   ראשי בקצה אחד, חזרה בשני. נשאר שורה
+                        גם במובייל.
+
+   סדר DOM ב-RTL:  [חזרה/ביטול]  ...  [ראשי]
+                    ↑ ימין              ↑ שמאל               */
+
+.sc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sc-space-3);
+}
+.sc-actions .sc-btn { width: 100%; }
+
+.sc-actions--split {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sc-space-4);
+}
+.sc-actions--split .sc-btn { width: auto; }
+
+@media (min-width: 768px) {
+  .sc-actions { flex-direction: row; align-items: center; gap: var(--sc-space-4); }
+  .sc-actions .sc-btn { width: auto; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   4. כרטיס
+   ══════════════════════════════════════════════════════════ */
+
+.sc-card {
+  background: var(--sc-surface);
+  border-radius: var(--sc-radius-lg);
+  padding: var(--sc-card-pad-mobile);
+  box-shadow: var(--sc-elev-2);
+  transition: transform var(--sc-dur-base) var(--sc-ease),
+              box-shadow var(--sc-dur-base) var(--sc-ease);
+}
+.sc-card--panel { border-radius: var(--sc-radius-lg); }
+.sc-card--flat  { box-shadow: var(--sc-elev-0); background: var(--sc-bg); }
+
+@media (min-width: 768px) { .sc-card { padding: var(--sc-card-pad); } }
+
+@media (hover: hover) and (pointer: fine) {
+  .sc-card--interactive:hover { transform: var(--sc-lift); box-shadow: var(--sc-elev-3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-card { transition-duration: 0.01ms; }
+  .sc-card--interactive:hover { transform: none; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   5. שדות טופס
+   ══════════════════════════════════════════════════════════ */
+
+/* פקדי טופס לא יורשים font-family מה-body — לדפדפן יש ברירת
+   מחדל משלו (Arial). זה חייב להיות מוצהר, אחרת כל פקד שיושב
+   מחוץ ל-‎.sc-field‎ נופל לפונט מערכת. */
+button, input, select, textarea, fieldset, legend {
+  font-family: inherit;
+}
+
+/* ── שדה עם תווית צפה ────────────────────────────────────────
+   טקסט אחד בתוך השדה במנוחה. בהקלדה או בפוקוס הוא עולה
+   ומתכווץ, ולא נעלם — placeholder בלבד מוחק את שם השדה
+   בדיוק כשהמשתמש צריך אותו.
+
+   סדר ה-DOM חייב להיות: input, ואחריו התווית — כדי שהתווית
+   תוכל להגיב ל-‎:focus‎ ול-‎:not(:placeholder-shown)‎ דרך ‎~‎.
+   ה-input חייב ‎placeholder=" "‎ (רווח) כדי שגלאי-המילוי יעבוד.
+   ──────────────────────────────────────────────────────────── */
+
+.sc-field {
+  position: relative;
+  display: block;
+  margin-bottom: var(--sc-field-gap);
+  padding-top: var(--sc-space-5);          /* מקום לתווית כשהיא למעלה */
+}
+
+.sc-field__label {
+  position: absolute;
+  inset-inline-start: 0;
+  top: var(--sc-space-5);                  /* במנוחה: בגובה הטקסט בשדה */
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-regular);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--sc-text-muted);
+  pointer-events: none;                    /* קליק עובר אל השדה */
+  transition: top       var(--sc-dur-base) var(--sc-ease),
+              font-size var(--sc-dur-base) var(--sc-ease),
+              color     var(--sc-dur-base) var(--sc-ease);
+}
+
+/* מורם: בפוקוס, או כשיש תוכן */
+.sc-field input:focus            ~ .sc-field__label,
+.sc-field input:not(:placeholder-shown) ~ .sc-field__label,
+.sc-field textarea:focus         ~ .sc-field__label,
+.sc-field textarea:not(:placeholder-shown) ~ .sc-field__label,
+.sc-field select:focus           ~ .sc-field__label,
+.sc-field select.has-value       ~ .sc-field__label,
+.sc-field input:-webkit-autofill ~ .sc-field__label {
+  top: 0;
+  font-size: 0.8125rem;               /* 13px — מדרגת הסולם הקטנה */
+  font-weight: var(--sc-fw-semi);
+  color: var(--sc-navy);
+}
+.sc-field.is-error input          ~ .sc-field__label,
+.sc-field.is-error select         ~ .sc-field__label,
+.sc-field.is-error textarea       ~ .sc-field__label { color: var(--sc-error); }
+
+/* פקד שאינו input — בקרה מקטעית, צ'יפים, סליידר — אין לו
+   placeholder לזהות, ולכן התווית שלו יושבת מעל באופן קבוע. */
+.sc-field--static { padding-top: 0; }
+.sc-field--static .sc-field__label {
+  position: static;
+  display: block;
+  margin-bottom: var(--sc-label-gap);
+  font-size: 0.8125rem;
+  font-weight: var(--sc-fw-semi);
+  color: var(--sc-navy);
+}
+
+/* רמז ושגיאה — מתחת לשדה, לא מעליו */
+.sc-field__hint,
+.sc-field__error {
+  display: block;
+  margin-top: var(--sc-space-2);
+  font-family: var(--sc-font);
+  font-size: 0.8125rem;               /* 13px — מדרגת הסולם הקטנה */
+  line-height: 1.4;
+}
+.sc-field__hint  { color: var(--sc-text-muted); }
+.sc-field__error { display: none; font-weight: var(--sc-fw-bold); color: var(--sc-error); }
+.sc-field.is-error .sc-field__error { display: block; }
+.sc-field.is-error .sc-field__hint  { display: none; }
+
+/* ── הפקד ──────────────────────────────────────────────── */
+.sc-field input[type="text"],
+.sc-field input[type="email"],
+.sc-field input[type="tel"],
+.sc-field input[type="number"],
+.sc-field input[type="password"],
+.sc-field input[type="search"],
+.sc-field input[type="date"],
+.sc-field select,
+.sc-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: var(--sc-field-h);
+  /* פדינג אופקי 0 — בלי מילוי, הטקסט חייב להתיישר לתווית שמעליו */
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--sc-divider);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sc-font);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--sc-text);
+  transition: border-color var(--sc-dur-base) var(--sc-ease),
+              box-shadow  var(--sc-dur-base) var(--sc-ease);
+}
+.sc-field textarea { min-height: 76px; padding-block: 8px; resize: none; }
+.sc-field textarea ~ .sc-field__label { top: var(--sc-space-5); }
+
+.sc-field ::placeholder { color: #74777f; opacity: 1; }
+
+/* פוקוס — קו תחתון 2px. לא טבעת מלאה. */
+/* פוקוס — הבורדר של 1px נשאר במקומו וה-2px מונח עליו כ-inset.
+   כך אין הזזה של פיקסל בפריסה בזמן פוקוס. */
+.sc-field input:focus,
+.sc-field select:focus,
+.sc-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--sc-navy);
+  box-shadow: var(--sc-focus-field);
+}
+/* שגיאה — אותה צורה, צבע אחר. שני המצבים חיים יחד. */
+.sc-field.is-error input,
+.sc-field.is-error select,
+.sc-field.is-error textarea {
+  border-bottom-color: var(--sc-error);
+  box-shadow: var(--sc-focus-error);
+}
+
+.sc-field input:disabled,
+.sc-field select:disabled,
+.sc-field textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-bottom-style: dashed;   /* affordance: קו מקווקו = לא ניתן לעריכה */
+}
+
+/* hover — מחזק את הקו כדי לפצות על היעדר המילוי */
+@media (hover: hover) and (pointer: fine) {
+  .sc-field input:hover:not(:disabled):not(:focus),
+  .sc-field select:hover:not(:disabled):not(:focus),
+  .sc-field textarea:hover:not(:disabled):not(:focus) {
+    border-bottom-color: var(--sc-text-muted);
+  }
+}
+
+/* כיווניות — מספרים, אימייל וטלפון תמיד LTR */
+.sc-field--rtl input, .sc-field--rtl textarea { direction: rtl; text-align: right; }
+.sc-field--ltr input, .sc-field--ltr textarea { direction: ltr; text-align: left;  }
+
+/* ── רשימה נפתחת ───────────────────────────────────────── */
+.sc-select {
+  position: relative;
+  display: block;
+}
+.sc-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+  padding-inline-end: 0;
+  padding-inline-start: 28px;   /* מקום ל-chevron בקצה השמאלי ב-RTL */
+  cursor: pointer;
+}
+.sc-select__chevron {
+  position: absolute;
+  inset-inline-start: 0;        /* לוגי — נדבק לשמאל ב-RTL */
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--sc-text-muted);
+  font-size: var(--sc-icon-sm) !important;
+}
+
+/* ── צ'קבוקס ורדיו ─────────────────────────────────────── */
+.sc-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sc-space-3);
+  min-height: var(--sc-touch-min);
+  cursor: pointer;
+  font-family: var(--sc-font);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--sc-text-muted);
+}
+.sc-check input[type="checkbox"],
+.sc-check input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 20px;
+  width: 20px;  min-width: 20px;  max-width: 20px;
+  height: 20px; min-height: 20px; max-height: 20px;
+  margin: 2px 0 0;
+  border: 1.5px solid var(--sc-text-muted);
+  background: var(--sc-surface);
+  cursor: pointer;
+  position: relative;
+  transition: background-color var(--sc-dur-fast) var(--sc-ease),
+              border-color     var(--sc-dur-fast) var(--sc-ease);
+}
+.sc-check input[type="checkbox"] { border-radius: var(--sc-radius); }
+.sc-check input[type="radio"]    { border-radius: var(--sc-radius-full); }
+
+.sc-check input:checked { background: var(--sc-navy); border-color: var(--sc-navy); }
+
+/* וי — CSS טהור */
+.sc-check input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 5px;
+  width: 5px; height: 10px;
+  border: solid var(--sc-text-on-dark);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+/* נקודה פנימית */
+.sc-check input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: var(--sc-radius-full);
+  background: var(--sc-text-on-dark);
+}
+.sc-check input:focus-visible {
+  outline: var(--sc-focus-ring);
+  outline-offset: var(--sc-focus-offset);
+}
+.sc-check input:disabled { opacity: 0.4; cursor: not-allowed; }
+.sc-check input:disabled ~ * { opacity: 0.5; }
+
+/* קבוצת רדיו — חייבת fieldset + legend */
+.sc-radiogroup { border: 0; margin: 0; padding: 0; }
+.sc-radiogroup > legend {
+  padding: 0;
+  margin-bottom: var(--sc-label-gap);
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 0.875rem;
+  color: var(--sc-navy);
+}
+.sc-radiogroup__items { display: flex; flex-direction: column; gap: var(--sc-space-3); }
+
+/* ── סליידר טווח ───────────────────────────────────────── */
+.sc-range-block {
+  background: var(--sc-fill);
+  border-radius: var(--sc-radius);
+  padding: var(--sc-space-5);
+}
+.sc-range-block__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--sc-space-4);
+}
+.sc-range-block__val {
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 1.125rem;
+  line-height: var(--sc-lh-metric);
+  letter-spacing: var(--sc-ls-tight);
+  color: var(--sc-maroon);
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+.sc-range {
+  width: 100%;
+  direction: ltr;              /* ציר מספרי נקרא משמאל לימין */
+  accent-color: var(--sc-navy);
+  background: transparent;
+  padding: 0;
+  min-height: var(--sc-touch-min);
+}
+.sc-range:focus-visible { outline: var(--sc-focus-ring); outline-offset: var(--sc-focus-offset); }
+.sc-range-ticks {
+  display: flex;
+  justify-content: space-between;
+  direction: ltr;
+  margin-top: var(--sc-space-2);
+  font-family: var(--sc-font);
+  font-size: 0.8125rem;
+  color: rgba(67, 71, 78, 0.7);
+}
+
+/* ── בקרה מקטעית ───────────────────────────────────────── */
+.sc-seg {
+  display: grid;
+  gap: var(--sc-space-2);
+  padding: 4px;
+  border-radius: var(--sc-radius);
+  background: var(--sc-fill);
+}
+.sc-seg--2 { grid-template-columns: repeat(2, 1fr); }
+.sc-seg--3 { grid-template-columns: repeat(3, 1fr); }
+.sc-seg--4 { grid-template-columns: repeat(4, 1fr); }
+.sc-seg__btn {
+  min-height: var(--sc-btn-h-s);
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--sc-radius);
+  background: transparent;
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 0.875rem;
+  color: var(--sc-text-muted);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--sc-dur-fast) var(--sc-ease),
+              color            var(--sc-dur-fast) var(--sc-ease),
+              box-shadow       var(--sc-dur-fast) var(--sc-ease);
+}
+.sc-seg__btn[aria-checked="true"] {
+  background: var(--sc-surface);
+  color: var(--sc-navy);
+  box-shadow: var(--sc-elev-1);
+}
+.sc-seg__btn:focus-visible { outline: var(--sc-focus-ring); outline-offset: var(--sc-focus-offset); }
+@media (hover: hover) and (pointer: fine) {
+  .sc-seg__btn:hover:not([aria-checked="true"]) { background: rgba(255, 255, 255, 0.6); }
+}
+
+/* ── צ'יפים ────────────────────────────────────────────── */
+.sc-chips { display: flex; flex-wrap: wrap; gap: var(--sc-space-2); }
+.sc-chip {
+  min-height: var(--sc-btn-h-s);     /* אזור המגע מורחב ל-44 ב-pointer: coarse */
+  padding: 7px 14px;
+  border: 0;
+  border-radius: var(--sc-radius-full);
+  background: var(--sc-fill);
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 0.875rem;
+  color: var(--sc-text-muted);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--sc-dur-base) var(--sc-ease),
+              color            var(--sc-dur-base) var(--sc-ease),
+              transform        var(--sc-dur-base) var(--sc-ease);
+}
+.sc-chip[aria-checked="true"] { background: var(--sc-navy); color: var(--sc-text-on-dark); }
+.sc-chip:focus-visible { outline: var(--sc-focus-ring); outline-offset: var(--sc-focus-offset); }
+@media (hover: hover) and (pointer: fine) {
+  .sc-chip:hover:not([aria-checked="true"]) {
+    filter: brightness(0.96);
+    transform: translateY(-1px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-chip, .sc-seg__btn { transition-duration: 0.01ms; }
+  .sc-chip:hover { transform: none; }
+}
+
+/* ── מובייל: רצפת 16px נגד זום ב-iOS ────────────────────
+   הסלקטורים חייבים לחזור על [type="..."] בדיוק כמו בכלל
+   הבסיס. ‎.sc-field input‎ הוא (0,1,1) ומפסיד ל-
+   ‎.sc-field input[type="text"]‎ שהוא (0,1,2) — וזה בדיוק
+   הבאג שתועד ב-investor-nights.css, שבו min-height:0
+   בספציפיות גבוהה הרג את רצפת 48px. */
+@media (max-width: 767px) {
+  .sc-field input[type="text"],
+  .sc-field input[type="email"],
+  .sc-field input[type="tel"],
+  .sc-field input[type="number"],
+  .sc-field input[type="password"],
+  .sc-field input[type="search"],
+  .sc-field input[type="date"],
+  .sc-field select,
+  .sc-field textarea { font-size: 16px; }   /* מתחת ל-16px iOS מזוּם את העמוד */
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   6. כרטיס טופס · פוטר פעולות · אינדיקטור שלבים
+   ══════════════════════════════════════════════════════════ */
+
+.sc-form-card {
+  background: var(--sc-surface);
+  border-radius: var(--sc-radius-lg);
+  box-shadow: var(--sc-elev-2);
+  overflow: hidden;
+}
+.sc-form-card__head { padding: var(--sc-space-6) var(--sc-space-5) var(--sc-space-4); }
+.sc-form-card__body { padding: var(--sc-space-2) var(--sc-space-5) var(--sc-space-5); }
+
+/* פס הפעולות — משטח נפרד. ראשי בשמאל, חזרה בימין ב-RTL. */
+.sc-form-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sc-space-3);
+  padding: 12px var(--sc-space-5);
+  background: var(--sc-fill);
+}
+.sc-form-card__foot .sc-btn { width: auto; }
+
+.sc-form-secure {
+  font-family: var(--sc-font);
+  font-size: 0.8125rem;
+  color: var(--sc-text-muted);
+}
+
+@media (min-width: 768px) {
+  .sc-form-card__head { padding: var(--sc-space-10) var(--sc-space-10) var(--sc-space-6); }
+  .sc-form-card__body { padding: var(--sc-space-2) var(--sc-space-10) var(--sc-space-8); }
+  .sc-form-card__foot { padding: var(--sc-space-5) var(--sc-space-10); }
+}
+
+/* שורה דו-טורית — ב-RTL השדה הראשון בימין */
+.sc-form-row { display: grid; grid-template-columns: 1fr; gap: var(--sc-space-4); }
+@media (min-width: 768px) {
+  .sc-form-row { grid-template-columns: 1fr 1fr; gap: var(--sc-space-5); }
+}
+
+/* ── אינדיקטור שלבים — שלב 01 בימין ב-RTL ─────────────── */
+.sc-stepper {
+  display: grid;
+  gap: var(--sc-space-2);
+  margin-top: var(--sc-space-6);
+}
+.sc-stepper--3 { grid-template-columns: repeat(3, 1fr); }
+.sc-stepper__step {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  text-align: right;            /* RTL */
+  cursor: pointer;
+  font-family: inherit;
+}
+.sc-stepper__step:disabled { cursor: default; opacity: 0.5; }
+.sc-stepper__bar {
+  height: 3px;
+  margin-bottom: var(--sc-space-2);
+  border-radius: var(--sc-radius-full);
+  background: rgba(196, 198, 207, 0.3);
+  transition: background-color var(--sc-dur-base) var(--sc-ease);
+}
+.sc-stepper__step.is-active .sc-stepper__bar,
+.sc-stepper__step.is-done   .sc-stepper__bar { background: var(--sc-navy); }
+.sc-stepper__row { display: flex; align-items: center; gap: var(--sc-space-2); }
+.sc-stepper__n {
+  font-family: var(--sc-font);
+  font-weight: var(--sc-fw-bold);
+  font-size: 0.8125rem;
+  color: rgba(67, 71, 78, 0.6);
+}
+.sc-stepper__txt {
+  font-family: var(--sc-font);
+  font-size: 0.8125rem;
+  color: rgba(67, 71, 78, 0.6);
+}
+.sc-stepper__step.is-active .sc-stepper__n { color: var(--sc-maroon); }
+.sc-stepper__step.is-done   .sc-stepper__n { color: var(--sc-navy); }
+.sc-stepper__step.is-active .sc-stepper__txt,
+.sc-stepper__step.is-done   .sc-stepper__txt {
+  color: var(--sc-navy);
+  font-weight: var(--sc-fw-bold);
+}
+.sc-stepper__step:focus-visible { outline: var(--sc-focus-ring); outline-offset: var(--sc-focus-offset); }
+
+@media (max-width: 767px) {
+  .sc-stepper { gap: var(--sc-space-2); }
+  .sc-stepper__row { flex-direction: column; align-items: flex-start; gap: 2px; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   7. הודעות מערכת
+   ══════════════════════════════════════════════════════════ */
+
+.sc-alert {
+  padding: var(--sc-space-4) var(--sc-space-5);
+  border-radius: var(--sc-radius);
+  font-family: var(--sc-font);
+  font-size: 0.875rem;                /* 14px */
+  line-height: var(--sc-lh-body);
+}
+.sc-alert--error   { background: rgba(186, 26, 26, 0.06);  color: var(--sc-error);   }
+.sc-alert--success { background: rgba(31, 58, 43, 0.06);   color: var(--sc-success); }
+.sc-alert--info    { background: var(--sc-navy-006);       color: var(--sc-navy);    }
+.sc-alert strong   { font-weight: var(--sc-fw-bold); }
+
+
+/* ══════════════════════════════════════════════════════════
+   8. מכלי אייקון — יחס אייקון:מכל תמיד 50%
+   ══════════════════════════════════════════════════════════ */
+
+.sc-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  background: var(--sc-navy-006);
+  color: var(--sc-navy);
+}
+.sc-icon-box--sm {
+  width: var(--sc-icon-box-sm); height: var(--sc-icon-box-sm);
+  border-radius: var(--sc-radius);
+}
+.sc-icon-box--sm > svg,
+.sc-icon-box--sm > .material-symbols-outlined { width: var(--sc-icon-sm); height: var(--sc-icon-sm); font-size: var(--sc-icon-sm); }
+
+.sc-icon-box--lg {
+  width: var(--sc-icon-box-lg-mobile); height: var(--sc-icon-box-lg-mobile);
+  border-radius: var(--sc-radius-lg);
+}
+.sc-icon-box--lg > svg,
+.sc-icon-box--lg > .material-symbols-outlined { width: var(--sc-icon-md); height: var(--sc-icon-md); font-size: var(--sc-icon-md); }
+
+.sc-icon-box--round { border-radius: var(--sc-radius-full); background: var(--sc-bg); }
+
+@media (min-width: 768px) {
+  .sc-icon-box--lg { width: var(--sc-icon-box-lg); height: var(--sc-icon-box-lg); }
+  .sc-icon-box--lg > svg,
+  .sc-icon-box--lg > .material-symbols-outlined { width: var(--sc-icon-lg); height: var(--sc-icon-lg); font-size: var(--sc-icon-lg); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   9. פריסה
+   ══════════════════════════════════════════════════════════ */
+
+.sc-container {
+  width: 100%;
+  max-width: var(--sc-container);
+  margin-inline: auto;
+  padding-inline: var(--sc-gutter-mobile);
+}
+.sc-container--narrow { max-width: var(--sc-container-narrow); }
+.sc-container--prose  { max-width: var(--sc-container-prose);  }
+
+.sc-section { padding-block: var(--sc-section-y-mobile); }
+.sc-section--alt { background: var(--sc-surface); }
+.sc-section--dark { background: var(--sc-navy); color: var(--sc-text-on-dark); }
+
+.sc-grid { display: grid; grid-template-columns: 1fr; gap: var(--sc-grid-gap-mobile); }
+
+@media (min-width: 768px) {
+  .sc-container { padding-inline: var(--sc-gutter); }
+  .sc-section   { padding-block: var(--sc-section-y); }
+  .sc-grid      { gap: var(--sc-grid-gap); }
+  .sc-grid--2   { grid-template-columns: repeat(2, 1fr); }
+  .sc-grid--3   { grid-template-columns: repeat(3, 1fr); }
+}
+/* שורת מספרים — 2 טורים לפחות. אף פעם לא טור אחד. */
+.sc-grid--metrics { grid-template-columns: repeat(2, 1fr); gap: var(--sc-space-3); }
+@media (min-width: 768px) { .sc-grid--metrics { gap: var(--sc-grid-gap); } }

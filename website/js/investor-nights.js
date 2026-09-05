@@ -699,7 +699,7 @@
     var params = new URLSearchParams();
     params.set('fn', state.firstName);
     params.set('email', state.email);
-    location.href = 'investor-nights-thankyou.html?' + params.toString();
+    location.href = 'investor-nights-thankyou?' + params.toString();
   }
 
   // ---------- Init Form ----------
