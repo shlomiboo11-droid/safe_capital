@@ -1,6 +1,6 @@
 /* Safe Capital Admin — WhatsApp Updates page
    All styles scoped with .wa-* prefix. Uses brand tokens:
-   Navy #022445, Maroon #984349, Background #fbf9f6, Surface #ffffff, Body #43474e
+   Navy #0E1E2E, Maroon #5D1819, Background #F7F5F1, Surface #ffffff, Body rgba(14,30,46,0.72)
    No 1px borders, no heavy shadows (per project rules). */
 
 /* ── Layout ─────────────────────────────────────────────────────── */
@@ -31,7 +31,7 @@
 .wa-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #022445;
+  color: #0E1E2E;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -47,15 +47,15 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 500;
-  background: #f5f3f0;
-  color: #43474e;
+  background: #F7F5F1;
+  color: rgba(14,30,46,0.72);
 }
 
 .wa-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #b8b4ae;
+  background: rgba(14,30,46,0.35);
 }
 
 .wa-status-chip[data-status="researching"] .wa-status-dot { background: #c69b3a; animation: wa-pulse 1.5s ease-in-out infinite; }
@@ -99,7 +99,7 @@
 .wa-chat-area {
   flex: 1;
   overflow-y: auto;
-  background: #fbf9f6;
+  background: #F7F5F1;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -114,7 +114,7 @@
 
 .wa-empty-icon {
   font-size: 72px;
-  color: #c9c5be;
+  color: rgba(14,30,46,0.25);
   display: block;
   margin-bottom: 1rem;
 }
@@ -122,12 +122,12 @@
 .wa-empty-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #022445;
+  color: #0E1E2E;
   margin: 0 0 0.5rem;
 }
 
 .wa-empty-text {
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   font-size: 0.9375rem;
   margin: 0;
 }
@@ -159,14 +159,14 @@
   border-radius: 1rem;
   font-size: 0.9375rem;
   line-height: 1.55;
-  color: #1b1b1f;
+  color: #0E1E2E;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .wa-msg-meta {
   font-size: 0.6875rem;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
   margin-top: 0.25rem;
   padding: 0 0.5rem;
 }
@@ -188,7 +188,7 @@
   align-self: flex-start;
 }
 .wa-msg-user .wa-msg-bubble {
-  background: #022445;
+  background: #0E1E2E;
   color: #ffffff;
   border-bottom-left-radius: 0.25rem;
 }
@@ -203,7 +203,7 @@
 }
 .wa-msg-system .wa-msg-bubble {
   background: transparent;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   font-size: 0.8125rem;
   text-align: center;
   padding: 0.25rem 0.5rem;
@@ -220,7 +220,7 @@
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #74777f;
+  background: rgba(14,30,46,0.6);
   animation: wa-typing-bounce 1.2s ease-in-out infinite;
 }
 .wa-typing-dot:nth-child(2) { animation-delay: 0.15s; }
@@ -245,7 +245,7 @@
   flex: 1;
   resize: none;
   border: none;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 1rem;
   padding: 0.75rem 1rem;
   font-family: inherit;
@@ -253,19 +253,19 @@
   line-height: 1.5;
   max-height: 180px;
   min-height: 44px;
-  color: #1b1b1f;
+  color: #0E1E2E;
   outline: none;
   transition: background 0.15s;
 }
 .wa-composer-input:focus {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 
 .wa-composer-send {
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  background: #022445;
+  background: #0E1E2E;
   color: #ffffff;
   border: none;
   cursor: pointer;
@@ -281,13 +281,13 @@
   transform: scaleX(-1);
 }
 .wa-composer-send:hover:not(:disabled) {
-  background: #033560;
+  background: #5D1819;
 }
 .wa-composer-send:active:not(:disabled) {
   transform: scale(0.96);
 }
 .wa-composer-send:disabled {
-  background: #c9c5be;
+  background: rgba(14,30,46,0.25);
   cursor: not-allowed;
 }
 
@@ -295,7 +295,7 @@
 .wa-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(2, 36, 69, 0.45);
+  background: rgba(14, 30, 46, 0.45);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -340,7 +340,7 @@
 .wa-modal-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #022445;
+  color: #0E1E2E;
   margin: 0;
 }
 
@@ -348,7 +348,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   padding: 0.25rem;
   display: flex;
   align-items: center;
@@ -357,12 +357,12 @@
   transition: background 0.15s, color 0.15s;
 }
 .wa-modal-close:hover {
-  background: #f5f3f0;
-  color: #022445;
+  background: #F7F5F1;
+  color: #0E1E2E;
 }
 
 .wa-modal-subtitle {
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   font-size: 0.875rem;
   margin: 0 0 1.25rem;
 }
@@ -378,7 +378,7 @@
   justify-content: flex-end;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: #fbf9f6;
+  background: #F7F5F1;
 }
 
 /* ── Form fields ────────────────────────────────────────────────── */
@@ -405,8 +405,8 @@
   flex: 1;
   min-width: 0;
   padding: 0.625rem 0.875rem;
-  background: #f5f3f0;
-  color: #43474e;
+  background: #F7F5F1;
+  color: rgba(14,30,46,0.72);
   font-size: 0.875rem;
   font-weight: 500;
   border-radius: 0.75rem;
@@ -417,13 +417,13 @@
   font-family: inherit;
 }
 .wa-chip:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-chip:active {
   transform: scale(0.97);
 }
 .wa-chip.active {
-  background: #022445;
+  background: #0E1E2E;
   color: #ffffff;
 }
 
@@ -453,7 +453,7 @@
   display: block;
   margin-top: 0.375rem;
   font-size: 0.75rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   line-height: 1.45;
 }
 
@@ -465,8 +465,8 @@
   font-family: inherit;
 }
 .wa-topic-textarea:disabled {
-  background: #eeeae5;
-  color: #9d9994;
+  background: #E8E5DF;
+  color: rgba(14,30,46,0.45);
   cursor: not-allowed;
 }
 
@@ -476,19 +476,19 @@
   gap: 0.625rem;
   margin-top: 0.75rem;
   padding: 0.75rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.75rem;
   cursor: pointer;
   transition: background 0.15s;
 }
 .wa-checkbox-row:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-checkbox-row input[type="checkbox"] {
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  accent-color: #022445;
+  accent-color: #0E1E2E;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -501,11 +501,11 @@
 .wa-checkbox-title {
   font-weight: 500;
   font-size: 0.9375rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
 }
 .wa-checkbox-help {
   font-size: 0.8125rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   line-height: 1.4;
 }
 
@@ -518,7 +518,7 @@
 
 .wa-sessions-empty {
   text-align: center;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   padding: 2rem 1rem;
   font-size: 0.875rem;
 }
@@ -529,13 +529,13 @@
   justify-content: space-between;
   gap: 0.625rem;
   padding: 0.875rem 1rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.75rem;
   cursor: pointer;
   transition: background 0.15s;
 }
 .wa-session-item:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-session-item-main {
   flex: 1;
@@ -544,7 +544,7 @@
 .wa-session-item-title {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #022445;
+  color: #0E1E2E;
   margin-bottom: 0.125rem;
   white-space: nowrap;
   overflow: hidden;
@@ -552,7 +552,7 @@
 }
 .wa-session-item-meta {
   font-size: 0.75rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
 }
 .wa-session-item-actions {
   display: flex;
@@ -569,15 +569,15 @@
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   transition: background 0.15s, color 0.15s;
 }
 .wa-session-action:hover {
   background: #ffffff;
-  color: #022445;
+  color: #0E1E2E;
 }
 .wa-session-action .material-symbols-outlined { font-size: 18px; }
-.wa-session-action-danger:hover { color: #984349; }
+.wa-session-action-danger:hover { color: #5D1819; }
 
 /* Search field inside sessions modal */
 .wa-sessions-search-row {
@@ -590,23 +590,23 @@
   right: 0.75rem;
   transform: translateY(-50%);
   font-size: 18px;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
   pointer-events: none;
 }
 .wa-sessions-search-input {
   width: 100%;
   padding: 0.625rem 2.25rem 0.625rem 0.875rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border: none;
   border-radius: 0.625rem;
   font-family: inherit;
   font-size: 0.875rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
   outline: none;
   transition: background 0.15s;
 }
 .wa-sessions-search-input:focus {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 
 /* Hide topbar action buttons when not relevant (e.g. Drive sync w/o session).
@@ -629,7 +629,7 @@
 }
 .wa-discovery-title {
   font-size: 0.9375rem;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   margin-bottom: 0.875rem;
   line-height: 1.55;
   font-weight: 500;
@@ -639,10 +639,10 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.875rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.625rem;
   font-size: 0.875rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
 }
 
 .wa-topic-list {
@@ -654,7 +654,7 @@
 .wa-topic-card {
   text-align: right;
   padding: 0.875rem 1rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
@@ -665,11 +665,11 @@
   gap: 0.375rem;
 }
 .wa-topic-card:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-topic-card.active {
   background: #ffffff;
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
 }
 .wa-topic-card-head {
   display: flex;
@@ -679,23 +679,23 @@
 .wa-topic-category {
   font-size: 0.6875rem;
   font-weight: 500;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   padding: 0.125rem 0.5rem;
   background: #ffffff;
   border-radius: 999px;
 }
 .wa-topic-card.active .wa-topic-category {
-  background: #f5f3f0;
+  background: #F7F5F1;
 }
 .wa-topic-card-title {
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #022445;
+  color: #0E1E2E;
   line-height: 1.4;
 }
 .wa-topic-card-desc {
   font-size: 0.8125rem;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   line-height: 1.5;
 }
 
@@ -707,7 +707,7 @@
   gap: 0.5rem;
   margin-top: 0.75rem;
   padding: 0.625rem;
-  background: #fbf9f6;
+  background: #F7F5F1;
   border-radius: 0.5rem;
   cursor: default;
   animation: wa-expansion-in 0.18s ease-out;
@@ -723,7 +723,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.875rem;
-  background: #fbf9f6;
+  background: #F7F5F1;
   border-radius: 0.75rem;
   margin-bottom: 0.875rem;
 }
@@ -733,13 +733,13 @@
 .wa-focus-label {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   margin-bottom: 0.125rem;
 }
 .wa-focus-label-secondary {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   font-weight: 400;
 }
 .wa-focus-textarea {
@@ -753,12 +753,12 @@
   font-family: inherit;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #1b1b1f;
+  color: #0E1E2E;
   outline: none;
   transition: box-shadow 0.15s;
 }
 .wa-focus-textarea:focus {
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
 }
 .wa-focus-custom-input {
   width: 100%;
@@ -768,12 +768,12 @@
   border-radius: 0.5rem;
   font-family: inherit;
   font-size: 0.875rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
   outline: none;
   transition: box-shadow 0.15s;
 }
 .wa-focus-custom-input:focus {
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
 }
 
 /* Primary CTA inside a chat bubble — Tier 1 in the in-bubble hierarchy.
@@ -810,7 +810,7 @@
 }
 .wa-queries-title {
   font-size: 0.9375rem;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   margin-bottom: 0.875rem;
   line-height: 1.55;
 }
@@ -824,18 +824,18 @@
   gap: 0.625rem;
   align-items: flex-start;
   padding: 0.625rem 0.75rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.75rem;
   transition: background 0.15s;
 }
 .wa-query-row:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-query-checkbox {
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  accent-color: #022445;
+  accent-color: #0E1E2E;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -845,7 +845,7 @@
 }
 .wa-query-text {
   font-size: 0.9375rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
   line-height: 1.5;
   outline: none;
   word-break: break-word;
@@ -856,11 +856,11 @@
 }
 .wa-query-text:focus {
   background: #ffffff;
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
 }
 .wa-query-text:empty:before {
   content: 'כתוב כאן את שאלת המחקר…';
-  color: #b8b4ae;
+  color: rgba(14,30,46,0.35);
 }
 .wa-query-meta {
   display: flex;
@@ -875,22 +875,22 @@
   background: #ffffff;
   border-radius: 999px;
   font-size: 0.6875rem;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   cursor: pointer;
   user-select: none;
   transition: background 0.15s;
 }
-.wa-query-lang:hover { background: #f5f3f0; }
+.wa-query-lang:hover { background: #F7F5F1; }
 .wa-query-rationale {
   font-size: 0.75rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   line-height: 1.4;
 }
 .wa-query-remove {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
   padding: 0.25rem;
   display: flex;
   align-items: center;
@@ -901,7 +901,7 @@
 }
 .wa-query-remove:hover {
   background: #ffffff;
-  color: #984349;
+  color: #5D1819;
 }
 .wa-query-remove .material-symbols-outlined {
   font-size: 18px;
@@ -918,7 +918,7 @@
 .wa-queries-add {
   background: transparent;
   border: none;
-  color: #022445;
+  color: #0E1E2E;
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 500;
@@ -930,7 +930,7 @@
   border-radius: 0.5rem;
   transition: background 0.15s;
 }
-.wa-queries-add:hover { background: #f5f3f0; }
+.wa-queries-add:hover { background: #F7F5F1; }
 .wa-queries-add .material-symbols-outlined { font-size: 18px; }
 
 .wa-queries-run {
@@ -953,13 +953,13 @@
 .wa-summary-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #022445;
+  color: #0E1E2E;
   margin-bottom: 0.625rem;
   padding-bottom: 0.5rem;
 }
 .wa-summary-body {
   font-size: 0.9375rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
   line-height: 1.6;
   white-space: pre-wrap;
   margin-bottom: 1rem;
@@ -981,7 +981,7 @@
 /* Typing label */
 .wa-typing-label {
   font-size: 0.8125rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   margin-right: 0.375rem;
 }
 
@@ -1009,7 +1009,7 @@
 .wa-panel-title {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
@@ -1039,11 +1039,11 @@
   gap: 0.25rem;
   font-size: 0.75rem;
   font-family: 'Inter', system-ui, sans-serif;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
 }
 .wa-panel-stat .material-symbols-outlined {
   font-size: 14px;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
 }
 .wa-panel-findings {
   flex: 1;
@@ -1055,13 +1055,13 @@
 }
 .wa-panel-empty {
   font-size: 0.8125rem;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
   text-align: center;
   padding: 1.5rem 0.5rem;
 }
 .wa-finding-item {
   padding: 0.625rem 0.75rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.625rem;
 }
 .wa-finding-head {
@@ -1070,17 +1070,17 @@
 .wa-finding-source {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #022445;
+  color: #0E1E2E;
   text-decoration: none;
 }
 .wa-finding-source:hover { text-decoration: underline; }
 .wa-finding-source-none {
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
   font-style: italic;
 }
 .wa-finding-note {
   font-size: 0.8125rem;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   line-height: 1.5;
 }
 /* Tighter markdown inside the small finding cards. The global h1/h2/h3 sizes
@@ -1107,7 +1107,7 @@
   padding: 0.5rem;
   width: 320px;
   max-width: calc(100vw - 16px);
-  box-shadow: 0 8px 24px rgba(2, 36, 69, 0.18);
+  box-shadow: 0 8px 24px rgba(14, 30, 46, 0.18);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -1127,21 +1127,21 @@
   align-items: center;
   gap: 0.125rem;
   padding: 0.5rem 0.25rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border: none;
   border-radius: 0.625rem;
   cursor: pointer;
   font-family: inherit;
-  color: #022445;
+  color: #0E1E2E;
   transition: background 0.15s;
   text-align: center;
 }
 .wa-popover-action:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-popover-action .material-symbols-outlined {
   font-size: 18px;
-  color: #022445;
+  color: #0E1E2E;
 }
 .wa-popover-action-label {
   font-size: 0.6875rem;
@@ -1156,24 +1156,24 @@
 .wa-popover-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border: none;
   border-radius: 0.625rem;
   font-family: inherit;
   font-size: 0.8125rem;
-  color: #1b1b1f;
+  color: #0E1E2E;
   outline: none;
   min-width: 0;
   transition: background 0.15s;
 }
 .wa-popover-input:focus {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-popover-send {
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: #022445;
+  background: #0E1E2E;
   color: #ffffff;
   border: none;
   cursor: pointer;
@@ -1183,7 +1183,7 @@
   flex-shrink: 0;
   transition: background 0.15s;
 }
-.wa-popover-send:hover { background: #033560; }
+.wa-popover-send:hover { background: #5D1819; }
 .wa-popover-send .material-symbols-outlined { font-size: 18px; }
 
 .wa-popover-busy {
@@ -1191,10 +1191,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 0.75rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   border-radius: 0.625rem;
   font-size: 0.8125rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
 }
 .wa-popover-busy.wa-hidden { display: none; }
 
@@ -1207,7 +1207,7 @@
   border-radius: 0.375rem;
 }
 .wa-diff-old {
-  color: #984349;
+  color: #5D1819;
   text-decoration: line-through;
   text-decoration-thickness: 1px;
   margin-left: 0.25rem;
@@ -1217,7 +1217,7 @@
   font-weight: 500;
 }
 .wa-diff-deleted-mark {
-  color: #984349;
+  color: #5D1819;
   font-style: italic;
   font-size: 0.875em;
 }
@@ -1242,13 +1242,13 @@
 .wa-diff-btn .material-symbols-outlined { font-size: 14px; }
 .wa-diff-accept { background: #166534; color: #ffffff; }
 .wa-diff-accept:hover { background: #14532d; }
-.wa-diff-reject { background: #984349; color: #ffffff; }
-.wa-diff-reject:hover { background: #7b2d33; }
+.wa-diff-reject { background: #5D1819; color: #ffffff; }
+.wa-diff-reject:hover { background: #0E1E2E; }
 
 /* Markdown rendering (used by summary + findings) */
 .wa-md-heading {
   margin: 0.75rem 0 0.375rem;
-  color: #022445;
+  color: #0E1E2E;
   line-height: 1.4;
 }
 .wa-md-h1 { font-size: 1.0625rem; }
@@ -1265,12 +1265,12 @@
 .wa-summary-hint {
   font-size: 0.75rem;
   font-weight: 400;
-  color: #9d9994;
+  color: rgba(14,30,46,0.45);
 }
 .wa-summary-editing {
   background: #ffffff;
   outline: none;
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
   padding: 0.625rem;
   border-radius: 0.5rem;
   cursor: text;
@@ -1289,7 +1289,7 @@
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #984349;
+  color: #5D1819;
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -1314,7 +1314,7 @@
   display: flex;
   gap: 0.25rem;
   margin-bottom: 0.875rem;
-  background: #f5f3f0;
+  background: #F7F5F1;
   padding: 0.25rem;
   border-radius: 0.625rem;
 }
@@ -1327,16 +1327,16 @@
   font-family: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: #43474e;
+  color: rgba(14,30,46,0.72);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 .wa-length-tab:hover {
-  background: #eeeae5;
+  background: #E8E5DF;
 }
 .wa-length-tab.active {
   background: #ffffff;
-  color: #022445;
+  color: #0E1E2E;
   font-weight: 600;
 }
 
@@ -1356,37 +1356,37 @@
 }
 .wa-meter-target {
   font-size: 0.75rem;
-  color: #74777f;
+  color: rgba(14,30,46,0.6);
 }
 .wa-meter-good { background: #ecf6ee; }
 .wa-meter-good .wa-meter-count { color: #166534; }
 .wa-meter-warn { background: #fdf4e7; }
 .wa-meter-warn .wa-meter-count { color: #c69b3a; }
 .wa-meter-bad  { background: #fbeaea; }
-.wa-meter-bad  .wa-meter-count { color: #984349; }
-.wa-meter-neutral { background: #f5f3f0; }
-.wa-meter-neutral .wa-meter-count { color: #43474e; }
+.wa-meter-bad  .wa-meter-count { color: #5D1819; }
+.wa-meter-neutral { background: #F7F5F1; }
+.wa-meter-neutral .wa-meter-count { color: rgba(14,30,46,0.72); }
 
 /* Post body */
 .wa-post-body {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: #1b1b1f;
+  color: #0E1E2E;
   white-space: pre-wrap;
   margin-bottom: 1rem;
   padding: 0.625rem;
-  background: #fbf9f6;
+  background: #F7F5F1;
   border-radius: 0.625rem;
   font-family: 'Heebo', sans-serif;
 }
 .wa-post-body strong {
   font-weight: 700;
-  color: #022445;
+  color: #0E1E2E;
 }
 .wa-post-editing {
   background: #ffffff;
   outline: none;
-  box-shadow: inset 0 0 0 2px #022445;
+  box-shadow: inset 0 0 0 2px #0E1E2E;
   cursor: text;
 }
 
@@ -1404,8 +1404,8 @@
   gap: 0.375rem;
   padding: 0.4375rem 0.625rem;
   min-height: 34px;
-  background: #f5f3f0;
-  color: #022445;
+  background: #F7F5F1;
+  color: #0E1E2E;
   border: none;
   border-radius: 0.5rem;
   font-family: inherit;
@@ -1416,7 +1416,7 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.wa-quick-btn:hover { background: #eeeae5; }
+.wa-quick-btn:hover { background: #E8E5DF; }
 .wa-quick-btn:disabled { opacity: 0.6; cursor: wait; }
 .wa-quick-btn .material-symbols-outlined { font-size: 16px; }
 .wa-quick-label { white-space: nowrap; }
@@ -1465,7 +1465,7 @@
     width: 3px;
     height: 48px;
     transform: translateY(-50%);
-    background: #022445;
+    background: #0E1E2E;
     opacity: 0.18;
     border-radius: 3px 0 0 3px;
     pointer-events: none;
@@ -1481,7 +1481,7 @@
   .wa-sidebar-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(2, 36, 69, 0.4);
+    background: rgba(14, 30, 46, 0.4);
     z-index: 30;
     opacity: 0;
     pointer-events: none;
@@ -1532,13 +1532,13 @@
   }
   .wa-topbar-actions .wa-btn-sm.btn-secondary {
     background: transparent;
-    color: #43474e;
+    color: rgba(14,30,46,0.72);
     box-shadow: none;
   }
   .wa-topbar-actions .wa-btn-sm.btn-secondary:hover,
   .wa-topbar-actions .wa-btn-sm.btn-secondary:active {
-    background: #f5f3f0;
-    color: #022445;
+    background: #F7F5F1;
+    color: #0E1E2E;
   }
   .wa-topbar-actions .wa-btn-sm .material-symbols-outlined {
     font-size: 20px;
@@ -1645,7 +1645,7 @@
     max-width: 100%;
     border-radius: 1.25rem 1.25rem 0 0;
     padding: 1rem 1rem 1.25rem;
-    box-shadow: 0 -6px 24px rgba(2, 36, 69, 0.18);
+    box-shadow: 0 -6px 24px rgba(14, 30, 46, 0.18);
     animation: wa-sheet-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .wa-popover-actions {

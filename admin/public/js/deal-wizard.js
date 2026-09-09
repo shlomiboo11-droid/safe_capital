@@ -278,7 +278,7 @@ function renderReviewStep() {
         <input type="number" min="1" max="60" step="1" class="form-input ltr text-sm" dir="ltr"
           value="${info.project_duration_months || ''}" placeholder="8"
           onchange="aiResult.property_info.project_duration_months = parseInt(this.value) || null">
-        <span class="text-sm" style="color: #6b7280; white-space: nowrap;">חודשים</span>
+        <span class="text-sm" style="color: rgba(14,30,46,0.6); white-space: nowrap;">חודשים</span>
       </div>
     </div>
   </div>`;

@@ -59,17 +59,17 @@ function renderEventCard(ev) {
         class="event-card-menu-btn"
         onclick="event.preventDefault();event.stopPropagation();toggleEventMenu(${ev.id});"
         aria-label="תפריט פעולות"
-        style="position:absolute;top:0.75rem;left:0.75rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:transparent;border:none;cursor:pointer;color:#6b7280;z-index:2;">
+        style="position:absolute;top:0.75rem;left:0.75rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:transparent;border:none;cursor:pointer;color:rgba(14,30,46,0.6);z-index:2;">
         <span class="material-symbols-outlined" style="font-size:20px;">more_vert</span>
       </button>
       <div id="event-menu-${ev.id}" class="event-card-menu hidden"
         onclick="event.preventDefault();event.stopPropagation();"
-        style="position:absolute;top:2.6rem;left:0.75rem;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:160px;z-index:10;overflow:hidden;">
-        <button type="button" onclick="event.preventDefault();event.stopPropagation();duplicateEvent(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#374151;">
+        style="position:absolute;top:2.6rem;left:0.75rem;background:#fff;border:1px solid #E8E5DF;border-radius:8px;box-shadow:0 8px 24px rgba(14, 30, 46,0.08);min-width:160px;z-index:10;overflow:hidden;">
+        <button type="button" onclick="event.preventDefault();event.stopPropagation();duplicateEvent(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:rgba(14,30,46,0.85);">
           <span class="material-symbols-outlined" style="font-size:18px;">content_copy</span>
           שכפל
         </button>
-        <button type="button" onclick="event.preventDefault();event.stopPropagation();${ev.is_active ? 'unpublishEvent' : 'publishEvent'}(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#374151;">
+        <button type="button" onclick="event.preventDefault();event.stopPropagation();${ev.is_active ? 'unpublishEvent' : 'publishEvent'}(${ev.id});" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:rgba(14,30,46,0.85);">
           <span class="material-symbols-outlined" style="font-size:18px;">${ev.is_active ? 'visibility_off' : 'publish'}</span>
           ${ev.is_active ? 'הסתר מהאתר' : 'פרסם'}
         </button>

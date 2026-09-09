@@ -85,7 +85,7 @@ function renderDealCard(deal) {
                <span class="material-symbols-outlined text-4xl text-gray-300">home</span>
              </div>`
         }
-        <button type="button" class="deal-card-menu-btn" style="position:absolute;top:0.75rem;right:0.75rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,0.4);border:none;color:#fff;cursor:pointer;padding:0;transition:background 0.15s;" onmouseover="this.style.background='rgba(0,0,0,0.6)'" onmouseout="this.style.background='rgba(0,0,0,0.4)'" onclick="event.preventDefault();event.stopPropagation();toggleDealMenu(event, ${deal.id})">
+        <button type="button" class="deal-card-menu-btn" style="position:absolute;top:0.75rem;right:0.75rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(14, 30, 46,0.4);border:none;color:#fff;cursor:pointer;padding:0;transition:background 0.15s;" onmouseover="this.style.background='rgba(14, 30, 46,0.6)'" onmouseout="this.style.background='rgba(14, 30, 46,0.4)'" onclick="event.preventDefault();event.stopPropagation();toggleDealMenu(event, ${deal.id})">
           <span class="material-symbols-outlined" style="font-size:1.25rem">more_vert</span>
         </button>
         ${deal.deal_number ? `<div class="absolute top-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded font-inter">#${deal.deal_number}</div>` : ''}
@@ -186,7 +186,7 @@ async function openInlineCashflow(dealId) {
     <div class="branded-modal" style="max-width:28rem">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
         <h3 class="branded-modal-title" style="margin-bottom:0">הוספת תנועה מהירה</h3>
-        <button type="button" onclick="closeInlineCashflow()" style="background:none;border:none;cursor:pointer;color:#9ca3af;padding:4px;">
+        <button type="button" onclick="closeInlineCashflow()" style="background:none;border:none;cursor:pointer;color:rgba(14,30,46,0.45);padding:4px;">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>

@@ -6,7 +6,7 @@
   <title>ניהול כתבות | Safe Capital Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link href="/css/tailwind-utilities.css" rel="stylesheet">
   <link href="/css/dashboard.css" rel="stylesheet">
@@ -138,19 +138,19 @@
 
     <!-- Empty state -->
     <div id="emptyState" style="display:none;" class="text-center py-20">
-      <span class="material-symbols-outlined" style="font-size:60px;color:#d1d5db;">article</span>
+      <span class="material-symbols-outlined" style="font-size:60px;color:rgba(14,30,46,0.18);">article</span>
       <h3 class="text-xl font-bold text-gray-400 mt-4">אין כתבות בפילטר הזה</h3>
       <p class="text-sm text-gray-400 mt-2">נסה לשנות את הסינון או להפעיל את הבוט</p>
     </div>
   </main>
 
   <style>
-    .filter-chip { padding: 0.45rem 0.9rem; border: 1px solid #e5e7eb; border-radius: 999px; background: #fff; font-size: 0.875rem; color: #374151; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; }
-    .filter-chip:hover { background: #f9fafb; }
-    .filter-chip.active { background: #022445; color: #fff; border-color: #022445; }
+    .filter-chip { padding: 0.45rem 0.9rem; border: 1px solid #E8E5DF; border-radius: 999px; background: #fff; font-size: 0.875rem; color: rgba(14,30,46,0.85); cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; }
+    .filter-chip:hover { background: #F7F5F1; }
+    .filter-chip.active { background: #0E1E2E; color: #fff; border-color: #0E1E2E; }
     .filter-chip .count { font-size: 0.72rem; opacity: 0.75; }
-    .filter-chip-sm { padding: 0.3rem 0.7rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; font-size: 0.8rem; color: #6b7280; cursor: pointer; font-family: Inter, sans-serif; }
-    .filter-chip-sm.active { background: #f5f3f0; color: #022445; border-color: #d1d5db; font-weight: 600; }
+    .filter-chip-sm { padding: 0.3rem 0.7rem; border: 1px solid #E8E5DF; border-radius: 6px; background: #fff; font-size: 0.8rem; color: rgba(14,30,46,0.6); cursor: pointer; font-family: 'Heebo', sans-serif; }
+    .filter-chip-sm.active { background: #F7F5F1; color: #0E1E2E; border-color: rgba(14,30,46,0.18); font-weight: 600; }
   </style>
 
   <script src="/js/api.js"></script>
@@ -239,7 +239,7 @@
         const statusLabel = STATUS_LABELS[status] || status;
         const statusColor = STATUS_COLORS[status] || 'gray';
         const region = a.region ? (REGION_LABELS[a.region] || a.region) : '—';
-        const botMark = a.generated_by_bot ? '<span title="נוצר ע"י בוט" class="material-symbols-outlined text-sm" style="color:#984349;vertical-align:middle;">smart_toy</span> ' : '';
+        const botMark = a.generated_by_bot ? '<span title="נוצר ע"י בוט" class="material-symbols-outlined text-sm" style="color:#5D1819;vertical-align:middle;">smart_toy</span> ' : '';
 
         const isPending = status === 'pending';
         const isPublished = status === 'published';
@@ -265,7 +265,7 @@
             ${botMark}<a href="/article-edit?id=${a.id}" class="font-medium text-primary hover:underline">${escapeHtml(a.title)}</a>
             ${sourceLine}
           </td>
-          <td><span class="text-xs font-inter" style="color:#6b7280;">${region}</span></td>
+          <td><span class="text-xs font-inter" style="color:rgba(14,30,46,0.6);">${region}</span></td>
           <td><span class="badge badge-${catColor}">${cat}</span></td>
           <td><span class="badge badge-${statusColor}">${statusLabel}</span></td>
           <td class="font-inter text-sm" dir="ltr">${date}</td>
