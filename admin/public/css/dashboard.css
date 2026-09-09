@@ -10,7 +10,7 @@ body {
 /* Sidebar */
 .sidebar {
   width: 260px;
-  min-height: 100vh;
+  height: 100vh;
   background: #022445;
   color: #fff;
   position: fixed;
@@ -18,6 +18,23 @@ body {
   right: 0;
   z-index: 40;
   transition: transform 0.3s ease;
+}
+
+/* הסיידבר הוא עמודת flex: הכותרת למעלה, הניווט גולל באמצע, תיבת המשתמש
+   יושבת בתחתית כפריט רגיל ולא כשכבה צפה — כך שבמסך נמוך (720px) הקישור
+   האחרון לא נבלע מאחוריה. */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+.sidebar > nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+.sidebar > .absolute.bottom-0 {
+  position: static;
+  flex: none;
 }
 
 .sidebar-link {
@@ -241,6 +258,7 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
 /* Buttons */
 .btn {
   display: inline-flex;
+  text-decoration: none;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;

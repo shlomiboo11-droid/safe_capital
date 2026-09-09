@@ -295,3 +295,12 @@ function getDealIdFromUrl() {
   const match = window.location.pathname.match(/\/deal\/(\d+)/);
   return match ? match[1] : null;
 }
+
+// Sidebar: when the nav has to scroll (short viewports), start with the active
+// page's link in view instead of hidden below the fold.
+document.addEventListener('DOMContentLoaded', () => {
+  const active = document.querySelector('.sidebar nav .sidebar-link.active');
+  if (active && typeof active.scrollIntoView === 'function') {
+    active.scrollIntoView({ block: 'nearest' });
+  }
+});

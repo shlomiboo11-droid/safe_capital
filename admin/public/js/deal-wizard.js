@@ -45,6 +45,24 @@ async function testApiConnection() {
 
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Sidebar: user info, users link for super_admin, mobile toggle — same as deals.js
+  if (typeof requireAuth === 'function' && !requireAuth()) return;
+  const user = API.getUser();
+  if (user) {
+    document.getElementById('sidebar-username').textContent = user.full_name;
+    document.getElementById('sidebar-role').textContent =
+      user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+    if (user.role === 'super_admin') {
+      const navUsers = document.getElementById('nav-users');
+      if (navUsers) navUsers.style.display = '';
+    }
+  }
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('sidebarToggle');
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+  }
+
   renderUploadCards();
   updateExtractButton();
 
