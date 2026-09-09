@@ -142,6 +142,8 @@
           ? 'אימייל או סיסמה שגויים'
           : err.message === 'Access denied'
           ? 'אין לך הרשאה לגשת למערכת'
+          : /Too many login attempts/.test(err.message)
+          ? 'יותר מדי ניסיונות התחברות — נסה שוב בעוד 15 דקות'
           : 'שגיאה בהתחברות. נסה שוב.';
         errorDiv.classList.remove('hidden');
       } finally {
