@@ -11,10 +11,9 @@ Thumbs.db
 
 # Media source files (too large for git)
 website_media/
-website-legacy/frames/
-website-legacy/frames-zoom/
-website-legacy/frames-house/
-website-legacy/frames-vertical/
+
+# Folders created by the Sep-2026 cleanup
+למחיקה/
 
 # IDE
 .vscode/
@@ -26,12 +25,8 @@ website-legacy/frames-vertical/
 # Claude
 .claude/
 
-# Deal documents (sensitive)
-206mountain*/
-oxmoor/
-oxmoore/
-1513*
-3425*
+# Deal documents (sensitive) — all deals live under נכסים/
+נכסים/
 *.zip
 
 # Large/sensitive files
@@ -52,7 +47,7 @@ supabase-credentials.txt
 google_stitch/
 landing_page_agents/
 marketing*/
-logo*/
+/logo/
 qa-plugin/
 prompt_*.md
 admin-dashboard-spec.md
