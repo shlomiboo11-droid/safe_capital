@@ -56,9 +56,7 @@ function renderUsers(users) {
           <div class="flex gap-2">
             <button  onclick="editUser(${u.id}, '${u.full_name}', '${u.email}', '${u.role}', '${u.phone || ''}')" class="btn-icon" title="ערוך"><span class="material-symbols-outlined">edit</span></button>
             <button  onclick="showResetPw(${u.id}, '${u.full_name}')" class="btn-icon" title="אפס סיסמה"><span class="material-symbols-outlined">lock_reset</span></button>
-            <button onclick="toggleUserStatus(${u.id}, '${u.status}')" class="btn btn-secondary btn-sm" title="${u.status === 'active' ? 'השעה' : 'הפעל'}">
-              <span class="material-symbols-outlined text-sm">${u.status === 'active' ? 'block' : 'check_circle'}</span>
-            </button>
+            <button  onclick="toggleUserStatus(${u.id}, '${u.status}')" class="btn-icon" title="${u.status === 'active' ? 'השעה' : 'הפעל'}"><span class="material-symbols-outlined">${u.status === 'active' ? 'block' : 'check_circle'}</span></button>
             <button  onclick="deleteUser(${u.id}, '${u.full_name}')" class="btn-icon danger" title="מחק"><span class="material-symbols-outlined">delete</span></button>
           </div>
         ` : '<span class="text-xs text-gray-400">--</span>'}

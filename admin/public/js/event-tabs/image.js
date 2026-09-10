@@ -27,8 +27,8 @@ function renderImageTab(data) {
           <label class="form-label">תצוגה מקדימה</label>
           <div id="heroImagePreview" class="rounded-lg overflow-hidden bg-gray-100" style="min-height:200px;">
             ${ev.hero_image_url
-              ? `<img src="${escAttr(ev.hero_image_url)}" alt="hero" style="width:100%;max-height:400px;object-fit:cover;display:block;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:3rem;text-align:center;color:#9ca3af;\\'>לא ניתן לטעון את התמונה</div>'">`
-              : `<div style="padding:3rem;text-align:center;color:#9ca3af;">אין תמונה</div>`
+              ? `<img src="${escAttr(ev.hero_image_url)}" alt="hero" style="width:100%;max-height:400px;object-fit:cover;display:block;" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:3rem;text-align:center;color:rgba(14,30,46,0.45);\\'>לא ניתן לטעון את התמונה</div>'">`
+              : `<div style="padding:3rem;text-align:center;color:rgba(14,30,46,0.45);">אין תמונה</div>`
             }
           </div>
         </div>
@@ -51,7 +51,7 @@ function renderImageTab(data) {
     if (url) {
       preview.innerHTML = `<img src="${escAttr(url)}" alt="hero" style="width:100%;max-height:400px;object-fit:cover;display:block;">`;
     } else {
-      preview.innerHTML = '<div style="padding:3rem;text-align:center;color:#9ca3af;">אין תמונה</div>';
+      preview.innerHTML = '<div style="padding:3rem;text-align:center;color:rgba(14,30,46,0.45);">אין תמונה</div>';
     }
   });
 

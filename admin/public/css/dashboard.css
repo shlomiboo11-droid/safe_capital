@@ -379,20 +379,31 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
   width: 100%;
   border-collapse: collapse;
 }
+/* שורה צרה (design-system 4ה טבלה): ריפוד --s1 אנכי, --s3 אופקי — שורה של ~30px.
+   מה שיושב בתא (תג, כפתור אייקון) מכווץ לגובה השורה ולא מרים אותה. */
 .data-table th {
-  padding: 0.625rem 0.875rem;
+  padding: var(--s1) var(--s3);
   text-align: right;
   font-size: var(--fs-meta);
   font-weight: 500;
   color: rgba(var(--ink-rgb), .6);
-  line-height: 1.5;
+  line-height: 1.4;
+  white-space: nowrap;
 }
 .data-table td {
-  padding: 0.625rem 0.875rem;
+  padding: var(--s1) var(--s3);
   font-size: var(--fs-body);
-  line-height: 1.5;
+  line-height: 1.4;
   font-variant-numeric: tabular-nums;
+  vertical-align: middle;
 }
+.data-table .badge { padding: 0 0.6rem; line-height: 20px; }
+.data-table .btn-icon { width: 28px; height: 28px; position: relative; }
+.data-table .btn-icon .material-symbols-outlined { font-size: 18px; }
+.data-table .btn-sm { padding: .15em .8em; }
+.data-table .form-input, .data-table .form-select, .data-table input[type="date"] { height: 28px; }
+/* המכל שגולל לרוחב — הטבלה לעולם לא מרחיבה את העמוד */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
 .data-table tbody tr:nth-child(even) td {
   background: var(--bone);
 }
@@ -1459,6 +1470,7 @@ label.is-missing .req { color: var(--accent); }
   /* יעד מגע */
   .btn { min-height: var(--tap); }
   .btn-icon { width: var(--tap); height: var(--tap); }
+  .data-table .btn-icon { width: 28px; height: 28px; }
   .tab-btn { min-height: var(--tap); display: inline-flex; align-items: center; }
   .filter-chip, .filter-chip-sm { min-height: var(--tap); display: inline-flex; align-items: center; }
   .deal-card-menu-btn { width: var(--tap) !important; height: var(--tap) !important; }
@@ -1515,6 +1527,10 @@ label.is-missing .req { color: var(--accent); }
   .branded-modal-actions > .branded-modal-btn, .modal-box .flex.gap-3:last-child > .btn, .modal-box .flex.justify-end > .btn { flex: 1 0 100%; }
   .branded-modal-btn-primary, .modal-box .btn-primary { order: -1; }
 
+  /* 4ה טבלה: תא לא שובר שורה — השורה לא גדלה, הטבלה גוללת לרוחב בתוך המכל שלה */
+  .data-table td, .data-table th { white-space: nowrap; }
+  /* יעד המגע של כפתור אייקון בשורה נשאר 44 — האזור הלחיץ גדל, לא הציור */
+  .data-table .btn-icon::before { content: ""; position: absolute; inset: -8px; border-radius: 50%; }
   /* 4ה טבלה: עמודת הזיהוי נשארת קריאה בגלילה */
   .data-table th:first-child, .data-table td:first-child {
     position: sticky; right: 0; z-index: 1;

@@ -371,3 +371,19 @@ document.addEventListener('DOMContentLoaded', () => {
     nav.scrollLeft += (t.left - n.left) - (n.width - t.width) / 2;
   }
 });
+
+// Tables never widen the page (design-system 4ה): any .data-table that is rendered
+// without a scrolling container gets one — also for tables built later by the deal tabs.
+document.addEventListener('DOMContentLoaded', () => {
+  const wrap = (t) => {
+    if (t.closest('.table-scroll, .overflow-x-auto, .overflow-auto')) return;
+    const d = document.createElement('div'); d.className = 'table-scroll';
+    t.parentNode.insertBefore(d, t); d.appendChild(t);
+  };
+  document.querySelectorAll('.data-table').forEach(wrap);
+  new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => {
+    if (n.nodeType !== 1) return;
+    if (n.matches?.('.data-table')) wrap(n);
+    n.querySelectorAll?.('.data-table').forEach(wrap);
+  }))).observe(document.body, { childList: true, subtree: true });
+});

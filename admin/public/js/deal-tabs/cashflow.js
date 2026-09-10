@@ -157,7 +157,7 @@ function renderCashflowTab(data) {
 
     <!-- Cashflow Table -->
     <div class="card overflow-hidden">
-      <table class="data-table">
+      <div class="table-scroll"><table class="data-table">
         <thead>
           <tr>
             <th>תאריך</th>
@@ -198,7 +198,7 @@ function renderCashflowTab(data) {
             </tr>
           `).join('')}
         </tbody>
-      </table>
+      </table></div>
       ${filtered.length > 0 ? `
         <div class="px-4 py-3 bg-gray-50 text-sm text-gray-500 border-t">
           מציג ${filtered.length} ${filtered.length < cashflow.length ? `מתוך ${cashflow.length}` : ''} תנועות

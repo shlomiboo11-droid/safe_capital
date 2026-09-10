@@ -383,10 +383,10 @@ function renderReviewStep() {
         <span class="material-symbols-outlined text-primary align-middle ml-1">calculate</span>
         תחשיב עסקה
       </h3>
-      <table class="data-table">
+      <div class="table-scroll"><table class="data-table">
         <thead><tr><th>פריט</th><th class="text-left" style="width: 160px;">סכום</th></tr></thead>
         <tbody>${rows}</tbody>
-      </table>
+      </table></div>
     </div>`;
   }
 
@@ -421,10 +421,10 @@ function renderReviewStep() {
           <span class="text-xl font-bold font-inter text-primary mr-2" dir="ltr" id="reno-total-display">${formatCurrency(renovation.total_cost)}</span>
           ${renovation.contractor ? `<span class="text-xs text-gray-500">| קבלן: ${esc(renovation.contractor)}</span>` : ''}
         </div>` : ''}
-      <table class="data-table">
+      <div class="table-scroll"><table class="data-table">
         <thead><tr><th>#</th><th>שלב</th><th>סכום</th><th>הסבר</th></tr></thead>
         <tbody>${phaseRows}</tbody>
-      </table>
+      </table></div>
     </div>`;
   }
 
@@ -437,7 +437,7 @@ function renderReviewStep() {
         <span class="material-symbols-outlined text-primary align-middle ml-1">account_balance</span>
         פרטי הלוואה
       </h3>
-      <table class="data-table">
+      <div class="table-scroll"><table class="data-table">
         <tbody>
           ${financing.lender_name ? `<tr><td class="text-sm py-2 px-4 font-bold">שם המלווה</td><td class="text-sm py-2 px-4">${esc(financing.lender_name)}</td></tr>` : ''}
           ${financing.loan_amount ? `<tr><td class="text-sm py-2 px-4 font-bold">סכום הלוואה</td><td class="text-sm py-2 px-4 font-inter" dir="ltr">${formatCurrency(financing.loan_amount)}</td></tr>` : ''}
@@ -446,7 +446,7 @@ function renderReviewStep() {
           ${financing.loan_term_months ? `<tr><td class="text-sm py-2 px-4 font-bold">תקופה</td><td class="text-sm py-2 px-4">${financing.loan_term_months} חודשים</td></tr>` : ''}
           ${financing.total_finance_cost ? `<tr class="border-t border-gray-200"><td class="text-sm py-2 px-4 font-bold">עלות מימון כוללת</td><td class="text-sm py-2 px-4 font-bold font-inter" dir="ltr">${formatCurrency(financing.total_finance_cost)}</td></tr>` : ''}
         </tbody>
-      </table>
+      </table></div>
     </div>`;
   }
 
@@ -481,7 +481,7 @@ function renderReviewStep() {
           <span class="material-symbols-outlined text-primary align-middle ml-1">compare_arrows</span>
           מפרט לפני / אחרי
         </h3>
-        <table class="data-table">
+        <div class="table-scroll"><table class="data-table">
           <thead><tr><th>מאפיין</th><th>לפני</th><th>אחרי</th></tr></thead>
           <tbody>
             ${specs.map(s => `<tr>
@@ -490,7 +490,7 @@ function renderReviewStep() {
               <td class="text-sm font-bold text-secondary">${s.after || '—'}</td>
             </tr>`).join('')}
           </tbody>
-        </table>
+        </table></div>
       </div>`;
     }
   }

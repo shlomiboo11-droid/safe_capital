@@ -68,7 +68,7 @@ function renderSpeakersList() {
           <label class="form-label">תמונת איש צוות</label>
           <div class="flex items-center gap-3 flex-wrap">
             <img id="speaker-preview-${idx}" src="${escAttrS(it.image_url)}" alt=""
-              style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid #e5e7eb;${it.image_url ? '' : 'display:none;'}"
+              style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid #E8E5DF;${it.image_url ? '' : 'display:none;'}"
               onerror="this.style.display='none'">
             <input type="file" id="speaker-file-${idx}" accept="image/png,image/jpeg,image/webp" style="display:none;"
               onchange="handleSpeakerFile(${idx}, this.files[0])">
