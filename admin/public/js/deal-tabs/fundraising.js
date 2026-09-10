@@ -42,7 +42,7 @@ function renderFundraisingTab(data) {
         <span class="font-inter font-medium">${formatPercent(pct, 0)}</span>
       </div>
       <div class="progress-bar h-3">
-        <div class="progress-fill" style="width: ${Math.min(100, pct)}%; background: ${pct >= 100 ? '#166534' : '#022445'}"></div>
+        <div class="progress-fill" style="width: ${Math.min(100, pct)}%; background: ${pct >= 100 ? '#2F6B3A' : '#0E1E2E'}"></div>
       </div>
     </div>
 
@@ -187,10 +187,10 @@ function addInvestor() {
           <input type="text" id="investorSearchInput" class="form-input text-sm" placeholder="הקלד שם, טלפון או מייל..." autocomplete="off">
           <div id="investorSearchDropdown" class="investor-search-dropdown" style="display:none;"></div>
           <input type="hidden" id="selectedInvestorId" name="investor_id" value="">
-          <div id="selectedInvestorBadge" style="display:none;" class="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg" style="background:#f0fdf4;">
-            <span class="material-symbols-outlined text-green-600 text-sm">check_circle</span>
-            <span id="selectedInvestorName" class="text-sm font-medium text-green-800"></span>
-            <button type="button" onclick="clearSelectedInvestor()" class="text-gray-400 hover:text-red-500 mr-auto">
+          <div id="selectedInvestorBadge" style="display:none;" class="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg" style="background:rgba(47,107,58,.12);">
+            <span class="material-symbols-outlined text-green-700 text-sm">check_circle</span>
+            <span id="selectedInvestorName" class="text-sm font-medium text-green-700"></span>
+            <button type="button" onclick="clearSelectedInvestor()" class="text-gray-400 hover:text-red-600 mr-auto">
               <span class="material-symbols-outlined text-sm">close</span>
             </button>
           </div>
@@ -249,7 +249,7 @@ function addInvestor() {
       try {
         investorSearchResults = await API.get(`/investors/search?q=${encodeURIComponent(q)}`);
         if (investorSearchResults.length === 0) {
-          dropdown.innerHTML = '<div class="investor-search-item" style="color:#9ca3af;cursor:default;">לא נמצאו תוצאות</div>';
+          dropdown.innerHTML = '<div class="investor-search-item" style="color:rgba(14,30,46,0.45);cursor:default;">לא נמצאו תוצאות</div>';
         } else {
           dropdown.innerHTML = investorSearchResults.map(inv => {
             const name = `${inv.first_name} ${inv.last_name || ''}`.trim();
@@ -349,7 +349,7 @@ function selectInvestor(id, name) {
   document.getElementById('selectedInvestorId').value = id;
   document.getElementById('selectedInvestorName').textContent = name;
   document.getElementById('selectedInvestorBadge').style.display = 'flex';
-  document.getElementById('selectedInvestorBadge').style.background = '#f0fdf4';
+  document.getElementById('selectedInvestorBadge').style.background = 'rgba(47,107,58,.12)';
   // Disable manual name when investor is selected
   document.getElementById('manualInvestorName').value = '';
   document.getElementById('manualInvestorName').disabled = true;

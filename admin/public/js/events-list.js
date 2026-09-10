@@ -37,7 +37,7 @@ async function loadEvents() {
 
     container.innerHTML = data.events.map(renderEventCard).join('');
   } catch (err) {
-    loading.innerHTML = `<p class="text-red-500">שגיאה בטעינה: ${err.message}</p>`;
+    loading.innerHTML = `<p class="text-red-600">שגיאה בטעינה: ${err.message}</p>`;
   }
 }
 

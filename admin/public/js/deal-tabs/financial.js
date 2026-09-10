@@ -103,7 +103,7 @@ function renderFinancialTab(data) {
           <tbody>
             <!-- Summary Row: Expected Sale Price (ARV) -->
             <tr class="bg-green-50/50 border-b-2 border-green-100">
-              <td class="font-bold text-green-800">מחיר מכירה צפוי (ARV)</td>
+              <td class="font-bold text-green-700">מחיר מכירה צפוי (ARV)</td>
               <td>
                 <input type="text" inputmode="numeric" data-currency="true"
                   class="form-input ltr text-sm w-36 font-inter ${!financialEditMode ? 'bg-gray-50 pointer-events-none' : ''}"
@@ -177,7 +177,7 @@ function renderFinancialTab(data) {
           <div class="text-xs text-gray-500 mt-1">רווח צפוי (תכנון)</div>
         </div>
         <div class="text-center p-4 bg-gray-50 rounded-lg">
-          <div class="text-2xl font-bold font-inter ${computed.actualProfit == null ? 'text-primary' : (computed.actualProfit >= 0 ? 'text-green-700' : 'text-red-700')}" id="roi-actual-profit">${computed.actualProfit != null ? formatCurrency(computed.actualProfit) : '--'}</div>
+          <div class="text-2xl font-bold font-inter ${computed.actualProfit == null ? 'text-primary' : (computed.actualProfit >= 0 ? 'text-green-700' : 'text-red-600')}" id="roi-actual-profit">${computed.actualProfit != null ? formatCurrency(computed.actualProfit) : '--'}</div>
           <div class="text-xs text-gray-500 mt-1">רווח (מעודכן)</div>
         </div>
       </div>

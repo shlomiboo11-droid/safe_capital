@@ -32,7 +32,7 @@ async function loadUsers() {
     renderUsers(data.users);
   } catch (err) {
     document.getElementById('usersTable').innerHTML =
-      `<tr><td colspan="6" class="text-center py-8 text-red-500">שגיאה: ${err.message}</td></tr>`;
+      `<tr><td colspan="6" class="text-center py-8 text-red-600">שגיאה: ${err.message}</td></tr>`;
   }
 }
 

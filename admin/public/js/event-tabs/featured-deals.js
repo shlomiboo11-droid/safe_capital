@@ -55,7 +55,7 @@ async function renderFeaturedDealsTab(data) {
     });
     renderPublishedDealsList();
   } catch (err) {
-    document.getElementById('featuredDealsList').innerHTML = `<div class="text-sm text-red-500 py-4 text-center">שגיאה בטעינה: ${err.message}</div>`;
+    document.getElementById('featuredDealsList').innerHTML = `<div class="text-sm text-red-600 py-4 text-center">שגיאה בטעינה: ${err.message}</div>`;
   }
 }
 

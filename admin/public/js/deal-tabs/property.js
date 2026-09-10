@@ -43,7 +43,7 @@ function renderPropertyTab(data) {
             <div class="flex items-center gap-2">
               <input type="number" name="project_duration" class="form-input ltr font-inter" dir="ltr" min="1" max="60" step="1"
                 value="${(deal.project_duration || '').toString().match(/\d+/)?.[0] || ''}" placeholder="8">
-              <span class="text-sm" style="color: var(--color-text-muted, #43474e); white-space: nowrap;">חודשים</span>
+              <span class="text-sm" style="color: var(--color-text-muted, rgba(14,30,46,0.72)); white-space: nowrap;">חודשים</span>
             </div>
           </div>
         </div>

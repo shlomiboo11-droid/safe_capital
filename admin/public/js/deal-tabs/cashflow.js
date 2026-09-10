@@ -39,7 +39,7 @@ function renderCashflowTab(data) {
     <!-- Summary Cards: 4 cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       <div class="fin-card">
-        <div class="fin-card-value font-inter text-red-700">${formatCurrency(computed.totalExpense)}</div>
+        <div class="fin-card-value font-inter text-red-600">${formatCurrency(computed.totalExpense)}</div>
         <div class="fin-card-label">סה"כ הוצאות</div>
       </div>
       <div class="fin-card">
@@ -47,11 +47,11 @@ function renderCashflowTab(data) {
         <div class="fin-card-label">סה"כ הכנסות</div>
       </div>
       <div class="fin-card">
-        <div class="fin-card-value font-inter" style="color: #1e40af;">${formatCurrency(byFunding.equity)}</div>
+        <div class="fin-card-value font-inter" style="color: #0E1E2E;">${formatCurrency(byFunding.equity)}</div>
         <div class="fin-card-label">מימון הון עצמי</div>
       </div>
       <div class="fin-card">
-        <div class="fin-card-value font-inter" style="color: #92400e;">${formatCurrency(byFunding.loan)}</div>
+        <div class="fin-card-value font-inter" style="color: #8A5A0B;">${formatCurrency(byFunding.loan)}</div>
         <div class="fin-card-label">מימון הלוואה</div>
       </div>
     </div>
@@ -61,7 +61,7 @@ function renderCashflowTab(data) {
       <div class="flex items-center justify-between">
         <div>
           <span class="text-sm text-gray-500">מאזן נוכחי (הכנסות - הוצאות)</span>
-          <div class="font-inter font-bold text-xl ${computed.cashflowBalance >= 0 ? 'text-green-700' : 'text-red-700'}">${formatCurrency(computed.cashflowBalance)}</div>
+          <div class="font-inter font-bold text-xl ${computed.cashflowBalance >= 0 ? 'text-green-700' : 'text-red-600'}">${formatCurrency(computed.cashflowBalance)}</div>
         </div>
         <div class="flex gap-4 text-sm text-gray-500">
           ${byFunding.sale > 0 ? `<span>הכנסות מכירה: <strong class="font-inter">${formatCurrency(byFunding.sale)}</strong></span>` : ''}
@@ -180,7 +180,7 @@ function renderCashflowTab(data) {
                   ${entry.type === 'income' ? 'הכנסה' : 'הוצאה'}
                 </span>
               </td>
-              <td class="font-inter font-medium ${entry.type === 'income' ? 'text-green-700' : 'text-red-700'}">${formatCurrency(entry.amount)}</td>
+              <td class="font-inter font-medium ${entry.type === 'income' ? 'text-green-700' : 'text-red-600'}">${formatCurrency(entry.amount)}</td>
               <td class="text-sm text-gray-500">${entry.category_name || '--'}</td>
               <td class="text-sm text-gray-500">${entry.cost_item_name || '--'}</td>
               <td>

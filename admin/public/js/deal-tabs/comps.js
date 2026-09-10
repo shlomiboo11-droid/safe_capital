@@ -229,7 +229,7 @@ async function initCompsMap(dealId, ourData, comps) {
   let placed = 0;
 
   const items = [
-    { label: 'הנכס שלנו', address: ourData.address, color: '#022445',
+    { label: 'הנכס שלנו', address: ourData.address, color: '#0E1E2E',
       lat: null, lng: null, isOurs: true,
       price: ourData.price, sqft: ourData.sqft, ppsf: ourData.ppsf,
       bedrooms: ourData.bedrooms, bathrooms: ourData.bathrooms },
@@ -237,7 +237,7 @@ async function initCompsMap(dealId, ourData, comps) {
       const imgs = c.images || [];
       const primaryImg = (imgs.find(img => img.is_primary) || imgs[0])?.image_url || c.image_url || null;
       return {
-        label: `נכס דומה ${i + 1}`, address: c.address, color: '#984349',
+        label: `נכס דומה ${i + 1}`, address: c.address, color: '#5D1819',
         lat: c.latitude  ? parseFloat(c.latitude)  : null,
         lng: c.longitude ? parseFloat(c.longitude) : null,
         isOurs: false, image: primaryImg,
@@ -322,7 +322,7 @@ function _indicator(compVal, ourVal, higherIsGood = true) {
   const isHigher = diff > 0;
   const isGood = higherIsGood ? isHigher : !isHigher;
   const icon = isHigher ? 'arrow_upward' : 'arrow_downward';
-  const color = isGood ? 'text-green-600' : 'text-red-600';
+  const color = isGood ? 'text-green-700' : 'text-red-600';
   return `<span class="material-symbols-outlined ${color}" style="font-size:14px;">${icon}</span>`;
 }
 
@@ -381,7 +381,7 @@ function _renderCompColumn(comp, idx, ourData) {
         ${_compDataRow('ימים בשוק', comp.days_on_market != null ? comp.days_on_market : '--', null, null, false)}
 
         <div class="comp-row-actions">
-          ${comp.zillow_url ? `<a href="${comp.zillow_url}" target="_blank" class="text-xs text-blue-600 hover:underline">Zillow</a>` : ''}
+          ${comp.zillow_url ? `<a href="${comp.zillow_url}" target="_blank" class="text-xs text-primary hover:underline">Zillow</a>` : ''}
           <button class="btn btn-danger btn-sm" onclick="deleteComp(${comp.id})" title="מחק">
             <span class="material-symbols-outlined text-xs">delete</span>
           </button>
@@ -409,7 +409,7 @@ async function addCompFromZillow() {
   btn.disabled = true;
   const orig = btn.innerHTML;
   btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מחפש...';
-  statusEl.className = 'mt-3 text-sm text-blue-700 bg-blue-50 rounded-lg p-3';
+  statusEl.className = 'mt-3 text-sm text-primary bg-gray-100 rounded-lg p-3';
   statusEl.textContent = 'מחפש נתונים על הנכס...';
   statusEl.classList.remove('hidden');
 
@@ -421,7 +421,7 @@ async function addCompFromZillow() {
     showToast('נכס דומה נוסף');
     reloadDeal(renderCompsTab);
   } catch (err) {
-    statusEl.className = 'mt-3 text-sm text-red-700 bg-red-50 rounded-lg p-3';
+    statusEl.className = 'mt-3 text-sm text-red-600 bg-red-50 rounded-lg p-3';
     statusEl.textContent = err.message;
   } finally {
     btn.disabled = false;
@@ -445,13 +445,13 @@ function openCompAutoSearch() {
   footer.classList.add('hidden');
   summary.textContent = '';
   status.innerHTML = `
-    <div class="flex items-center gap-2 text-sm text-blue-700 bg-blue-50 rounded-lg p-3">
+    <div class="flex items-center gap-2 text-sm text-primary bg-gray-100 rounded-lg p-3">
       <span class="material-symbols-outlined animate-spin">refresh</span>
       מחפש נכסים דומים באזור... (עד 15 שניות)
     </div>`;
 
   _fetchCompCandidates().catch(err => {
-    status.innerHTML = `<div class="text-sm text-red-700 bg-red-50 rounded-lg p-3">${err.message || 'שגיאה לא ידועה'}</div>`;
+    status.innerHTML = `<div class="text-sm text-red-600 bg-red-50 rounded-lg p-3">${err.message || 'שגיאה לא ידועה'}</div>`;
   });
 }
 
@@ -495,20 +495,20 @@ async function _fetchCompCandidates() {
 function _candidateCard(c, idx) {
   const statusLabel = c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD' ? 'נמכר' :
                       c.home_status === 'FOR_SALE' ? 'למכירה' : 'Zestimate';
-  const statusColor = c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD' ? 'bg-green-100 text-green-800' :
-                      c.home_status === 'FOR_SALE' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700';
+  const statusColor = c.home_status === 'RECENTLY_SOLD' || c.home_status === 'SOLD' ? 'bg-green-50 text-green-700' :
+                      c.home_status === 'FOR_SALE' ? 'bg-gray-100 text-primary' : 'bg-gray-100 text-gray-700';
   const img = c.thumbnail_url
     ? `<img src="${c.thumbnail_url}" alt="" class="w-full h-full object-cover">`
     : `<div class="flex items-center justify-center h-full text-gray-300"><span class="material-symbols-outlined text-3xl">home</span></div>`;
 
   return `
-    <label class="flex gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer" style="background:#fbf9f6;">
+    <label class="flex gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer" style="background:#F7F5F1;">
       <input type="checkbox"
              class="comp-candidate-checkbox mt-1"
              data-idx="${idx}"
              onchange="_updateSelectedCount()"
-             style="width:1.125rem;height:1.125rem;accent-color:#022445;">
-      <div class="w-28 h-20 rounded overflow-hidden flex-shrink-0" style="background:#f5f3f0;">${img}</div>
+             style="width:1.125rem;height:1.125rem;accent-color:#0E1E2E;">
+      <div class="w-28 h-20 rounded overflow-hidden flex-shrink-0" style="background:#F7F5F1;">${img}</div>
       <div class="flex-1 min-w-0">
         <div class="flex items-start justify-between gap-2">
           <div class="text-sm font-semibold text-gray-900 truncate">${c.address || '—'}</div>
@@ -519,7 +519,7 @@ function _candidateCard(c, idx) {
           <span>${c.sqft ? c.sqft.toLocaleString() + ' sqft' : '—'}</span>
           <span>${c.bedrooms || '—'} bd / ${c.bathrooms || '—'} ba</span>
         </div>
-        ${c.zillow_url ? `<a href="${c.zillow_url}" target="_blank" class="text-xs text-blue-600 hover:underline mt-1 inline-block" onclick="event.stopPropagation();">פתח ב-Zillow ↗</a>` : ''}
+        ${c.zillow_url ? `<a href="${c.zillow_url}" target="_blank" class="text-xs text-primary hover:underline mt-1 inline-block" onclick="event.stopPropagation();">פתח ב-Zillow ↗</a>` : ''}
       </div>
     </label>
   `;
@@ -585,7 +585,7 @@ async function generateCompsAnalysis() {
   btn.disabled = true;
   const orig = btn.innerHTML;
   btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מנתח...';
-  contentEl.innerHTML = '<p class="text-sm text-blue-600">מייצר ניתוח AI... זה יכול לקחת מספר שניות.</p>';
+  contentEl.innerHTML = '<p class="text-sm text-primary">מייצר ניתוח AI... זה יכול לקחת מספר שניות.</p>';
 
   try {
     const result = await API.post(`/deals/${currentDeal.id}/comps/ai-analysis`, {});
@@ -661,7 +661,7 @@ function _renderGalleryGrid(images) {
           <span class="material-symbols-outlined text-sm ${img.is_primary ? 'text-yellow-500' : 'text-gray-400'}">star</span>
         </button>
         <button class="bg-white/90 rounded p-1 hover:bg-white" onclick="deleteCompImage(${img.comp_id}, ${img.id})" title="מחק">
-          <span class="material-symbols-outlined text-sm text-red-500">delete</span>
+          <span class="material-symbols-outlined text-sm text-red-600">delete</span>
         </button>
       </div>
       ${img.is_primary ? '<div class="absolute bottom-1 right-1 bg-yellow-500 text-white text-xs px-2 py-0.5 rounded">ראשית</div>' : ''}

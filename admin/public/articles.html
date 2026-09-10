@@ -221,7 +221,7 @@
         renderTable(articles);
       } catch (err) {
         document.getElementById('articlesBody').innerHTML =
-          '<tr><td colspan="6" class="text-center py-8 text-red-500">שגיאה בטעינה: ' + escapeHtml(err.message || '') + '</td></tr>';
+          '<tr><td colspan="6" class="text-center py-8 text-red-600">שגיאה בטעינה: ' + escapeHtml(err.message || '') + '</td></tr>';
       }
     }
 

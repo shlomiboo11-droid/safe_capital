@@ -63,7 +63,7 @@ async function loadDeals() {
     container.innerHTML = data.deals.map(deal => renderDealCard(deal)).join('');
 
   } catch (err) {
-    loading.innerHTML = `<p class="text-red-500">שגיאה בטעינת העסקאות: ${err.message}</p>`;
+    loading.innerHTML = `<p class="text-red-600">שגיאה בטעינת העסקאות: ${err.message}</p>`;
   }
 }
 

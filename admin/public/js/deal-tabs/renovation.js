@@ -73,7 +73,7 @@ function renderRenovationTab(data) {
         <span class="text-sm font-inter font-bold text-primary" id="renovation-progress-label">—</span>
       </div>
       <div class="progress-bar" style="height: 10px;">
-        <div class="progress-fill" id="renovation-progress-fill" style="width: 0%; background: #022445;"></div>
+        <div class="progress-fill" id="renovation-progress-fill" style="width: 0%; background: #0E1E2E;"></div>
       </div>
       <div class="text-xs text-gray-500 mt-2" id="renovation-progress-money">—</div>
       ${totalCount > 0 ? `<div class="text-xs text-gray-400 mt-1">${completedCount}/${totalCount} שלבי תשלום סומנו כהושלמו</div>` : ''}
@@ -236,7 +236,7 @@ async function loadRenovationFinancialProgress() {
 
     label.textContent = `${pct}% הושלמו`;
     fill.style.width = pct + '%';
-    fill.style.background = pct >= 100 ? '#166534' : '#022445';
+    fill.style.background = pct >= 100 ? '#2F6B3A' : '#0E1E2E';
     money.textContent = `${formatCurrency(spent)} מתוך ${formatCurrency(budget)}`;
   } catch (err) {
     console.error('Failed to load renovation progress:', err);

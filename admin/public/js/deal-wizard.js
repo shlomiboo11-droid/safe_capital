@@ -10,8 +10,8 @@
 
 // ── Document Types ───────────────────────────────────────────
 const DOC_TYPES = [
-  { id: 'calculator', label: 'מחשבון פיננסי', description: 'קובץ XLSX עם כל הנתונים הפיננסיים', icon: 'table_chart', accept: '.xlsx,.xls', color: 'text-blue-600 bg-blue-50', required: true, inputType: 'file' },
-  { id: 'loan_application', label: 'חוזה הלוואה', description: 'PDF: סכום, ריבית, תנאי מימון', icon: 'account_balance', accept: '.pdf', color: 'text-green-600 bg-green-50', required: true, inputType: 'file' },
+  { id: 'calculator', label: 'מחשבון פיננסי', description: 'קובץ XLSX עם כל הנתונים הפיננסיים', icon: 'table_chart', accept: '.xlsx,.xls', color: 'text-primary bg-gray-100', required: true, inputType: 'file' },
+  { id: 'loan_application', label: 'חוזה הלוואה', description: 'PDF: סכום, ריבית, תנאי מימון', icon: 'account_balance', accept: '.pdf', color: 'text-green-700 bg-green-50', required: true, inputType: 'file' },
   { id: 'renovation_plan', label: 'תכנית שיפוץ', description: 'PDF: תקציב, שלבי תשלום, קבלן', icon: 'construction', accept: '.pdf', color: 'text-yellow-700 bg-yellow-50', required: true, inputType: 'file' },
   { id: 'zillow', label: 'קישור Zillow', description: 'URL של הנכס ב-Zillow', icon: 'link', color: 'text-purple-600 bg-purple-50', required: true, inputType: 'url' }
 ];
@@ -33,10 +33,10 @@ async function testApiConnection() {
   try {
     const data = await API.get('/extract/test');
     result.textContent = 'API תקין';
-    result.classList.add('bg-green-100', 'text-green-700');
+    result.classList.add('bg-green-50', 'text-green-700');
   } catch (err) {
     result.textContent = `שגיאה: ${err.message}`;
-    result.classList.add('bg-red-100', 'text-red-700');
+    result.classList.add('bg-red-50', 'text-red-600');
   } finally {
     btn.textContent = 'בדוק API';
     btn.disabled = false;
@@ -83,7 +83,7 @@ function renderUploadCards() {
         <div class="flex items-center gap-3">
           <span class="material-symbols-outlined text-2xl ${dt.color} p-2 rounded-lg">${dt.icon}</span>
           <div>
-            <h4 class="font-bold text-sm">${dt.label} ${dt.required ? '<span class="text-red-500">*</span>' : ''}</h4>
+            <h4 class="font-bold text-sm">${dt.label} ${dt.required ? '<span class="text-red-600">*</span>' : ''}</h4>
             <p class="text-xs text-gray-500">${dt.description}</p>
           </div>
         </div>
@@ -97,7 +97,7 @@ function renderUploadCards() {
       <div class="flex items-center gap-3">
         <span class="material-symbols-outlined text-2xl ${dt.color} p-2 rounded-lg">${dt.icon}</span>
         <div>
-          <h4 class="font-bold text-sm">${dt.label} ${dt.required ? '<span class="text-red-500">*</span>' : ''}</h4>
+          <h4 class="font-bold text-sm">${dt.label} ${dt.required ? '<span class="text-red-600">*</span>' : ''}</h4>
           <p class="text-xs text-gray-500">${dt.description}</p>
         </div>
       </div>
@@ -140,7 +140,7 @@ function showFileNames(docType) {
   const files = uploadedFiles[docType] || [];
   div.innerHTML = files.map(f =>
     `<div class="flex items-center gap-1 mt-1">
-      <span class="material-symbols-outlined text-xs text-green-500">check_circle</span>
+      <span class="material-symbols-outlined text-xs text-green-700">check_circle</span>
       <span class="truncate">${f.name}</span>
       <span class="text-gray-300 font-inter">(${(f.size / 1024).toFixed(0)} KB)</span>
     </div>`
@@ -374,7 +374,7 @@ function renderReviewStep() {
     // Net profit at bottom
     rows += `<tr class="border-t-2 border-gray-300">
       <td class="font-bold text-sm py-3 px-4">רווח נטו משוער</td>
-      <td class="py-3 px-4 font-bold font-inter text-green-600 text-left" dir="ltr" style="width: 160px;" id="net-profit-display">${formatCurrency(summary.net_profit || 0)}</td>
+      <td class="py-3 px-4 font-bold font-inter text-green-700 text-left" dir="ltr" style="width: 160px;" id="net-profit-display">${formatCurrency(summary.net_profit || 0)}</td>
     </tr>`;
 
     calculatorHtml = `
@@ -527,7 +527,7 @@ function recalcAllTotals() {
   const profitEl = document.getElementById('net-profit-display');
   if (profitEl) {
     profitEl.textContent = formatCurrency(netProfit);
-    profitEl.className = `py-3 px-4 font-bold font-inter text-left ${netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`;
+    profitEl.className = `py-3 px-4 font-bold font-inter text-left ${netProfit >= 0 ? 'text-green-700' : 'text-red-600'}`;
   }
 
   // Recalc renovation total

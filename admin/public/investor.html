@@ -121,7 +121,7 @@
       const params = new URLSearchParams(window.location.search);
       investorId = params.get('id');
       if (!investorId) {
-        document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-red-500">לא צוין מזהה משקיע</div>';
+        document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-red-600">לא צוין מזהה משקיע</div>';
         return;
       }
 
@@ -130,7 +130,7 @@
         renderProfile(investorData);
         populatePortalSection(investorData.investor);
       } catch (err) {
-        document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-red-500">שגיאה בטעינת פרופיל המשקיע</div>';
+        document.getElementById('mainContent').innerHTML = '<div class="text-center py-12 text-red-600">שגיאה בטעינת פרופיל המשקיע</div>';
       }
     }
 
@@ -180,11 +180,11 @@
             <div class="text-sm text-gray-500 mt-1">סה"כ השקעה</div>
           </div>
           <div class="card p-4">
-            <div class="text-2xl font-bold font-inter ${summary.total_profit > 0 ? 'text-green-600' : 'text-gray-400'}" dir="ltr">${summary.total_profit ? formatCurrency(summary.total_profit) : '—'}</div>
+            <div class="text-2xl font-bold font-inter ${summary.total_profit > 0 ? 'text-green-700' : 'text-gray-400'}" dir="ltr">${summary.total_profit ? formatCurrency(summary.total_profit) : '—'}</div>
             <div class="text-sm text-gray-500 mt-1">רווח מצטבר</div>
           </div>
           <div class="card p-4">
-            <div class="text-2xl font-bold font-inter ${summary.avg_return > 0 ? 'text-green-600' : 'text-gray-400'}" dir="ltr">${summary.avg_return ? summary.avg_return.toFixed(1) + '%' : '—'}</div>
+            <div class="text-2xl font-bold font-inter ${summary.avg_return > 0 ? 'text-green-700' : 'text-gray-400'}" dir="ltr">${summary.avg_return ? summary.avg_return.toFixed(1) + '%' : '—'}</div>
             <div class="text-sm text-gray-500 mt-1">תשואה ממוצעת</div>
           </div>
         </div>

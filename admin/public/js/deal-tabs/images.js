@@ -43,7 +43,7 @@ async function renderImagesTab(data) {
           <div>
             <h3 class="text-lg font-bold">Google Drive</h3>
             ${_driveStatus.connected
-              ? `<p class="text-sm text-green-600">מחובר: ${_driveStatus.email || 'חשבון מחובר'}</p>`
+              ? `<p class="text-sm text-green-700">מחובר: ${_driveStatus.email || 'חשבון מחובר'}</p>`
               : `<p class="text-sm text-gray-400">לא מחובר</p>`
             }
           </div>
@@ -142,7 +142,7 @@ async function renderImagesTab(data) {
           </div>
         ` : `
           <div class="img-scroll-row"
-            ondragover="event.preventDefault(); this.style.outline='2px solid #022445';"
+            ondragover="event.preventDefault(); this.style.outline='2px solid #0E1E2E';"
             ondragleave="this.style.outline='';"
             ondrop="this.style.outline=''; handleImageDrop(event, '${cat.key}')">
             ${imgs.map(img => `
@@ -218,7 +218,7 @@ async function renderImagesTab(data) {
         </div>
 
         <div id="pickerStateError" class="hidden py-8 text-center">
-          <span class="material-symbols-outlined text-4xl text-red-500">error</span>
+          <span class="material-symbols-outlined text-4xl text-red-600">error</span>
           <p id="pickerErrorMsg" class="mt-3 text-sm text-gray-700"></p>
           <button class="btn btn-secondary mt-4" onclick="loadPickerFiles()">
             <span class="material-symbols-outlined text-sm">refresh</span>
@@ -268,7 +268,7 @@ async function renderImagesTab(data) {
 
         <div id="pickerStateDone" class="hidden py-6">
           <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <span class="material-symbols-outlined text-green-700">check_circle</span>
             <h3 class="font-bold text-gray-900">הסנכרון הושלם</h3>
           </div>
           <div id="pickerSummary" class="text-sm text-gray-700 space-y-1 mb-4"></div>
@@ -337,7 +337,7 @@ async function fetchZillowImages() {
   btn.disabled = true;
   const originalBtnHTML = btn.innerHTML;
   btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מושך תמונות...';
-  statusEl.className = 'mt-3 text-sm text-blue-700 bg-blue-50 rounded-lg p-3';
+  statusEl.className = 'mt-3 text-sm text-primary bg-gray-100 rounded-lg p-3';
   statusEl.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span> מתחבר ל-Zillow...';
   statusEl.classList.remove('hidden');
 
@@ -353,7 +353,7 @@ async function fetchZillowImages() {
     if (errMsg.includes('403') || errMsg.includes('429') || errMsg.includes('חסם')) {
       errMsg = 'Zillow חסם את הבקשה. נסה שוב בעוד מספר דקות.';
     }
-    statusEl.className = 'mt-3 text-sm text-red-700 bg-red-50 rounded-lg p-3';
+    statusEl.className = 'mt-3 text-sm text-red-600 bg-red-50 rounded-lg p-3';
     statusEl.textContent = errMsg;
   } finally {
     btn.disabled = false;
@@ -552,7 +552,7 @@ function renderPickerGrid() {
   const files = _pickerState.files;
 
   if (files.length === 0) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:#9ca3af; font-size:0.875rem;">
+    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:2rem; color:rgba(14,30,46,0.45); font-size:0.875rem;">
       התיקייה ריקה — אין קבצי תמונה ב-Drive
     </div>`;
   } else {
@@ -560,19 +560,19 @@ function renderPickerGrid() {
       const isSelected = _pickerState.selected.has(f.id);
       const isSynced = f.synced;
       return `
-        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${isSelected ? '3px solid #022445' : '2px solid transparent'}; transition: outline 0.15s;">
+        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${isSelected ? '3px solid #0E1E2E' : '2px solid transparent'}; transition: outline 0.15s;">
           <img src="/api/google-drive/thumb/${f.id}?token=${encodeURIComponent(token)}"
             alt="${(f.name || '').replace(/"/g,'&quot;')}" loading="lazy"
-            onerror="this.style.display='none'; this.parentElement.style.background='#f3f4f6';">
+            onerror="this.style.display='none'; this.parentElement.style.background='#E8E5DF';">
           <input type="checkbox" ${isSelected ? 'checked' : ''}
             onchange="togglePickerFile('${f.id}', this.checked)"
-            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#022445; z-index:2;">
+            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#0E1E2E; z-index:2;">
           ${isSynced ? `
-            <span style="position:absolute; bottom:0.4rem; right:0.4rem; background:rgba(2,36,69,0.85); color:#fff; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:0.25rem;">
+            <span style="position:absolute; bottom:0.4rem; right:0.4rem; background:rgba(14, 30, 46,0.85); color:#fff; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:0.25rem;">
               כבר מסונכרן
             </span>
           ` : ''}
-          <span style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.7), transparent); color:#fff; font-size:0.7rem; padding:0.5rem 0.4rem 0.3rem; text-align:right; direction:ltr; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <span style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(14, 30, 46,0.7), transparent); color:#fff; font-size:0.7rem; padding:0.5rem 0.4rem 0.3rem; text-align:right; direction:ltr; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
             ${(f.name || '').slice(0, 40)}
           </span>
         </label>`;
@@ -589,13 +589,13 @@ function renderPickerGrid() {
     orphansGrid.innerHTML = _pickerState.orphans.map(o => {
       const willDelete = _pickerState.orphansSelected.has(o.drive_file_id);
       return `
-        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${willDelete ? '3px solid #991b1b' : '2px solid transparent'}; transition: outline 0.15s;">
+        <label class="thumbnail-picker-item" style="position:relative; display:block; outline: ${willDelete ? '3px solid #B3261E' : '2px solid transparent'}; transition: outline 0.15s;">
           <img src="${o.image_url}" alt="${(o.alt_text || '').replace(/"/g,'&quot;')}" loading="lazy"
-            onerror="this.style.display='none'; this.parentElement.style.background='#f3f4f6';">
+            onerror="this.style.display='none'; this.parentElement.style.background='#E8E5DF';">
           <input type="checkbox" ${willDelete ? 'checked' : ''}
             onchange="togglePickerOrphan('${o.drive_file_id}', this.checked)"
             title="סמן למחיקה מקומית"
-            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#991b1b; z-index:2;">
+            style="position:absolute; top:0.5rem; right:0.5rem; width:1.25rem; height:1.25rem; cursor:pointer; accent-color:#B3261E; z-index:2;">
           <span style="position:absolute; bottom:0.4rem; right:0.4rem; background:rgba(153,27,27,0.85); color:#fff; font-size:0.65rem; padding:0.15rem 0.4rem; border-radius:0.25rem;">
             ${willDelete ? 'יימחק' : 'יישמר'}
           </span>
