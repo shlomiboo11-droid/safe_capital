@@ -73,7 +73,7 @@ function renderEventCard(ev) {
           <span class="material-symbols-outlined" style="font-size:18px;">${ev.is_active ? 'visibility_off' : 'publish'}</span>
           ${ev.is_active ? 'הסתר מהאתר' : 'פרסם'}
         </button>
-        <button type="button" onclick="event.preventDefault();event.stopPropagation();deleteEvent(${ev.id}, '${(title || '').replace(/'/g, "\\'")}');" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#b91c1c;">
+        <button type="button" onclick="event.preventDefault();event.stopPropagation();deleteEvent(${ev.id}, '${(title || '').replace(/'/g, "\\'")}');" class="event-menu-item" style="display:flex;align-items:center;gap:0.5rem;width:100%;padding:0.6rem 0.9rem;background:none;border:none;text-align:right;cursor:pointer;font-size:0.875rem;color:#B3261E;">
           <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
           מחק
         </button>

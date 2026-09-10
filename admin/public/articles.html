@@ -63,7 +63,7 @@
           <div class="text-sm font-medium" id="sidebar-username">--</div>
           <div class="text-xs text-white/50" id="sidebar-role">--</div>
         </div>
-        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+        <button onclick="API.logout()" class="btn-icon" title="התנתק" aria-label="התנתק">
           <span class="material-symbols-outlined">logout</span>
         </button>
       </div>
@@ -145,12 +145,12 @@
   </main>
 
   <style>
-    .filter-chip { padding: 0.45rem 0.9rem; border: 1px solid #E8E5DF; border-radius: 999px; background: #fff; font-size: 0.875rem; color: rgba(14,30,46,0.85); cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; }
+    .filter-chip { padding: 0.45rem 0.9rem; border: 1px solid var(--ink); border-radius: 999px; background: #fff; font-size: 0.875rem; color: rgba(14,30,46,0.85); cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; }
     .filter-chip:hover { background: #F7F5F1; }
-    .filter-chip.active { background: #0E1E2E; color: #fff; border-color: #0E1E2E; }
+    .filter-chip.active { background: var(--ink); color: var(--bone); border-color: var(--ink); }
     .filter-chip .count { font-size: 0.72rem; opacity: 0.75; }
-    .filter-chip-sm { padding: 0.3rem 0.7rem; border: 1px solid #E8E5DF; border-radius: 6px; background: #fff; font-size: 0.8rem; color: rgba(14,30,46,0.6); cursor: pointer; font-family: 'Heebo', sans-serif; }
-    .filter-chip-sm.active { background: #F7F5F1; color: #0E1E2E; border-color: rgba(14,30,46,0.18); font-weight: 600; }
+    .filter-chip-sm { padding: 0.3rem 0.7rem; border: 1px solid var(--ink); border-radius: var(--r-pill); background: #fff; font-size: 0.8rem; color: rgba(14,30,46,0.6); cursor: pointer; font-family: 'Heebo', sans-serif; }
+    .filter-chip-sm.active { background: var(--ink); color: var(--bone); border-color: var(--ink); font-weight: 500; }
   </style>
 
   <script src="/js/api.js"></script>
@@ -249,7 +249,7 @@
           `<a href="/article-edit?id=${encodeURIComponent(a.id)}" class="btn btn-secondary btn-sm" title="עריכה"><span class="material-symbols-outlined text-sm">edit</span></a>`
         ];
         if (isPending) {
-          actions.unshift(`<button class="btn btn-sm" style="background:#065f46;color:#fff;" onclick="approveArticle('${idStr}')" title="אשר ופרסם"><span class="material-symbols-outlined text-sm">check</span></button>`);
+          actions.unshift(`<button class="btn btn-primary btn-sm" onclick="approveArticle('${idStr}')" title="אשר ופרסם"><span class="material-symbols-outlined text-sm">check</span></button>`);
           actions.push(`<button class="btn btn-secondary btn-sm" onclick="rejectArticle('${idStr}')" title="דחה"><span class="material-symbols-outlined text-sm">close</span></button>`);
         } else if (isPublished) {
           actions.push(`<button class="btn btn-secondary btn-sm" onclick="unpublishArticle('${idStr}')" title="הסר מהאתר"><span class="material-symbols-outlined text-sm">visibility_off</span></button>`);

@@ -65,7 +65,7 @@
           <div class="text-sm font-medium" id="sidebar-username">--</div>
           <div class="text-xs text-white/50" id="sidebar-role">--</div>
         </div>
-        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+        <button onclick="API.logout()" class="btn-icon" title="התנתק" aria-label="התנתק">
           <span class="material-symbols-outlined">logout</span>
         </button>
       </div>
@@ -391,11 +391,11 @@
     function showToast(msg, color) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
-      const colors = { green: '#166534', red: '#991b1b', gray: 'rgba(14,30,46,0.85)' };
-      const bgs = { green: '#dcfce7', red: '#fef2f2', gray: '#E8E5DF' };
+      const colors = { green: '#2F6B3A', red: '#B3261E', gray: 'rgba(14,30,46,0.85)' };
+      const bgs = { green: 'rgba(47,107,58,.12)', red: 'rgba(179,38,30,.12)', gray: '#E8E5DF' };
       toast.style.background = bgs[color] || bgs.gray;
       toast.style.color = colors[color] || colors.gray;
-      toast.style.border = '1px solid ' + (color === 'green' ? '#bbf7d0' : color === 'red' ? '#fecaca' : '#E8E5DF');
+      toast.style.border = '1px solid ' + (color === 'green' ? 'rgba(47,107,58,.12)' : color === 'red' ? 'rgba(179,38,30,.12)' : '#E8E5DF');
       toast.style.opacity = '1';
       toast.classList.remove('pointer-events-none');
       setTimeout(() => {

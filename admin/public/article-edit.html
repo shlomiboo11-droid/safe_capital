@@ -63,7 +63,7 @@
           <div class="text-sm font-medium" id="sidebar-username">--</div>
           <div class="text-xs text-white/50" id="sidebar-role">--</div>
         </div>
-        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+        <button onclick="API.logout()" class="btn-icon" title="התנתק" aria-label="התנתק">
           <span class="material-symbols-outlined">logout</span>
         </button>
       </div>
@@ -134,7 +134,7 @@
           <label class="form-label">תמונה ראשית (URL)</label>
           <input type="url" name="thumbnail_url" class="form-input ltr" dir="ltr" placeholder="https://..." oninput="updatePreview(this.value)">
           <div id="imagePreview" class="mt-2" style="display:none;">
-            <img id="previewImg" src="" alt="תצוגה מקדימה" style="max-height:200px; border-radius:0.5rem;">
+            <img id="previewImg" src="" alt="תצוגה מקדימה" style="max-height:200px; border-radius: var(--r);">
           </div>
         </div>
       </div>

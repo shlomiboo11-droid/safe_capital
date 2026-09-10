@@ -217,7 +217,7 @@ async function startExtraction() {
     statusEl.textContent = 'שגיאה בניתוח';
     addLog(`שגיאה: ${err.message}`);
     progressEl.style.width = '100%';
-    progressEl.style.background = '#ef4444';
+    progressEl.style.background = '#B3261E';
     logEl.innerHTML += `<div class="mt-4">
       <button class="btn btn-primary btn-sm" onclick="startExtraction()">נסה שוב</button>
       <button class="btn btn-secondary btn-sm mr-2" onclick="goToStep(1)">חזור להעלאה</button>
