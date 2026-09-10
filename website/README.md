@@ -147,7 +147,7 @@ hero = 175vh          ← מסלול גלילה
 
 | רוצה לשנות | ערוך |
 |---|---|
-| צבעים | `:root` — ראה `safe-capital-design-system.md` |
+| צבעים | `:root` — ראה `brand/design-system.md` |
 | גודל הלוגו (וגם המגן) | `--logo-w` — `--logo-w-mark` נגזר ממנו |
 | כמה זמן הכותרת נעוצה במובייל | `.hero{min-height}` + `HERO_FADE` |
 | הבית שעל קו האופק | `.reveal__house` (רוחב) / ה-`path` שב-HTML (צורה) |

@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const pool = require('./db');
 
 const SUPER_ADMIN = {
-  email: 'admin@safecapital.co.il',
+  email: 'safecapital2024@gmail.com',
   password: process.env.SEED_ADMIN_PASSWORD || 'Admin123!',
   full_name: 'Shlomi David',
   role: 'super_admin'

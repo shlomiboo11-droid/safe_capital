@@ -11,6 +11,13 @@
   <link href="/css/tailwind-utilities.css" rel="stylesheet">
   <link href="/css/dashboard.css" rel="stylesheet">
   <link rel="icon" href="/images/logo-mark.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#022445">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Safe Capital">
   <style>
     .upload-zone {
       border: 2px dashed rgba(14,30,46,0.18);
@@ -124,13 +131,17 @@
       <a href="/" class="block">
         <img src="/images/logo-full-on-dark.svg" alt="Safe Capital" class="h-8 w-auto" onerror="this.style.display='none'">
       </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
     </div>
     <nav class="p-3 space-y-1 mt-2">
       <a href="/" class="sidebar-link">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span>עסקאות</span>
       </a>
-      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+      <a href="/leads" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">contact_mail</span>
+        <span>לידים</span>
+      </a>
       <a href="/events" class="sidebar-link">
         <span class="material-symbols-outlined text-xl">event</span>
         <span>ערב משקיעים</span>

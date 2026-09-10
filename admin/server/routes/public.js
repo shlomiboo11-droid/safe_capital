@@ -6,6 +6,11 @@
 const express = require('express');
 const pool = require('../db');
 const { sendEventRegistrationEmail } = require('../services/email');
+const { sendLeadThankYouEmail } = require('../services/lead-email');
+const { notifyNewLead } = require('../services/push');
+const {
+  createLead, recordAutomationResult, isHoneypotTripped, LeadInputError
+} = require('../services/leads');
 
 const router = express.Router();
 
@@ -586,22 +591,90 @@ router.post('/event-registration', async (req, res) => {
   }
 });
 
-// POST /api/public/contact — save contact form submission
-router.post('/contact', async (req, res) => {
+/* ═══════════════════════════════════════════════════════════════════
+   POST /api/public/leads — הכתובת היחידה של כל טופס לידים באתר
+
+   שלושה טפסים מגיעים לכאן, וכל אחד שולח kind משלו:
+     contact-page   → kind=contact    (טופס הפנייה בעמוד צור קשר)
+     join-dialog    → kind=waitlist   (החלון הצף)
+     fitcheck-quiz  → kind=waitlist   (שאלון בדיקת ההתאמה)
+
+   ── למה מחכים לאוטומציות לפני שעונים ──
+   הדפוס של הרשמה לאירוע (למעלה בקובץ) מפעיל את המייל אחרי res.json().
+   ב-Vercel הפונקציה יכולה לקפוא ברגע שהתשובה יוצאת, ולכן עבודה שנפתחה
+   אחריה היא "אולי". שתי האוטומציות כאן הן מה שהלקוח ביקש במפורש, אז הן
+   רצות לפני התשובה — ‏allSettled, כך ששום כישלון שלהן לא הופך לשגיאה
+   אצל המבקר, והתוצאה נרשמת על שורת הליד.
+   ═══════════════════════════════════════════════════════════════════ */
+async function handleLead(req, res) {
   try {
-    const { name, email, phone, message } = req.body;
-    if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    // מלכודת ספאם: בוט ממלא כל שדה שהוא מוצא. עונים "נקלט" ולא שומרים
+    // כלום — בוט שרואה שגיאה מנסה שוב עם ניסוח אחר.
+    if (isHoneypotTripped(req.body)) {
+      console.warn('[leads] honeypot tripped, dropped');
+      return res.json({ success: true });
     }
-    await pool.query(
-      'INSERT INTO contact_submissions (name, email, phone, message) VALUES ($1, $2, $3, $4)',
-      [name, email, phone || null, message]
-    );
-    res.json({ success: true });
+
+    const { lead, duplicate } = await createLead(req.body, {
+      ip: (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip,
+      user_agent: req.headers['user-agent']
+    });
+
+    if (duplicate) return res.json({ success: true, id: lead.id, duplicate: true });
+
+    /* הליד כבר שמור — זה החלק שאסור לאבד. אם אחת האוטומציות נתקעת,
+       עונים בלעדיה במקום לשרוף את תקציב הזמן של הפונקציה ולהחזיר
+       שגיאה על משהו שהצליח. */
+    const AUTOMATION_BUDGET_MS = 8000;
+    const withBudget = p => Promise.race([
+      p,
+      new Promise(resolve => setTimeout(() => resolve({ sent: false, reason: 'timeout' }), AUTOMATION_BUDGET_MS))
+    ]);
+
+    const [mailRes, pushRes] = await Promise.allSettled([
+      withBudget(sendLeadThankYouEmail(lead)),
+      withBudget(notifyNewLead(lead))
+    ]);
+
+    const mail = mailRes.status === 'fulfilled' ? mailRes.value : { sent: false, error: mailRes.reason };
+    const push = pushRes.status === 'fulfilled' ? pushRes.value : { sent: 0 };
+
+    await recordAutomationResult(lead.id, {
+      emailSent: mail.sent,
+      emailError: mail.sent ? null : (mail.error && mail.error.message) || mail.reason || null,
+      pushSent: push.sent > 0
+    });
+
+    res.json({ success: true, id: lead.id });
   } catch (err) {
-    console.error('Contact submission error:', err);
+    if (err instanceof LeadInputError) {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error('Lead submission error:', err);
     res.status(500).json({ error: 'Server error' });
   }
+}
+
+router.post('/leads', handleLead);
+
+/* POST /api/public/contact — הכתובת הישנה, נשארת כדי לא לשבור שום קורא
+   שעוד מצביע עליה. מקבלת את השדות שהיא תמיד קיבלה (name/email/message)
+   וכותבת ל-leads, לא ל-contact_submissions. הטבלה הישנה נשארת עם
+   השורות ההיסטוריות שלה ואינה נכתבת יותר. */
+router.post('/contact', async (req, res) => {
+  const { name, email, phone, message } = req.body || {};
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+  const [first, ...rest] = String(name).trim().split(/\s+/);
+  req.body = {
+    kind: 'contact',
+    first_name: first,
+    last_name: rest.join(' ') || null,
+    email, phone, message,
+    source: 'legacy-contact-endpoint'
+  };
+  return handleLead(req, res);
 });
 
 // GET /api/public/articles — published articles with pagination

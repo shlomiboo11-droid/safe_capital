@@ -11,6 +11,13 @@
   <link href="/css/tailwind-utilities.css" rel="stylesheet">
   <link href="/css/dashboard.css" rel="stylesheet">
   <link rel="icon" href="/images/logo-mark.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#022445">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Safe Capital">
 </head>
 <body class="bg-surface min-h-screen font-heebo">
 
@@ -27,6 +34,10 @@
       <a href="/" class="sidebar-link">
         <span class="material-symbols-outlined text-xl">dashboard</span>
         <span>עסקאות</span>
+      </a>
+      <a href="/leads" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">contact_mail</span>
+        <span>לידים</span>
       </a>
       <a href="/events" class="sidebar-link">
         <span class="material-symbols-outlined text-xl">event</span>
@@ -93,6 +104,10 @@
     <!-- Toast -->
     <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-all duration-300 opacity-0 pointer-events-none"></div>
 
+    <!-- התראות למכשיר הזה. הפקד נבנה ב-js/push.js; הוא יושב גם בעמוד
+         הלידים, כי שם מסתכלים עליו כשהתראה מגיעה. -->
+    <div class="card p-4 mb-8" id="push-toggle"></div>
+
     <!-- Settings form -->
     <div id="settingsContainer" class="space-y-8">
       <!-- Populated by JS -->
@@ -110,6 +125,7 @@
 
   <script src="/js/api.js"></script>
   <script src="/js/utils.js"></script>
+  <script src="/js/push.js"></script>
   <script>
     // ── Auth guard & sidebar init ──
     if (!requireAuth()) throw new Error('redirect');
@@ -425,7 +441,10 @@
     });
 
     // Init
-    document.addEventListener('DOMContentLoaded', loadSettings);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      SCPush.mount('push-toggle');
+    });
   </script>
 </body>
 </html>

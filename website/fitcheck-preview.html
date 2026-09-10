@@ -370,6 +370,21 @@ h1.q:has(+ .q-note){margin-bottom:10px}
   .offer-cta{position:fixed;top:66.7vh;inset-inline:24px;z-index:2}
 }
 
+/* ---------- פופ-אפ הסבר על רשימת ההמתנה ---------- */
+.wl-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(14,30,46,.45);
+  opacity:0;transition:opacity 260ms var(--sc-ease)}
+.wl-modal.in{opacity:1}
+.wl-modal-card{width:100%;max-width:420px;padding:28px 24px 24px;border-radius:12px;
+  background:var(--sc-surface);text-align:center;
+  transform:translateY(12px);transition:transform 260ms var(--sc-ease)}
+.wl-modal.in .wl-modal-card{transform:none}
+.wl-modal-card h2{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:18px;color:var(--sc-navy)}
+.wl-modal-card ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.wl-modal-card li{font-size:15px;line-height:1.6;color:var(--sc-text-muted)}
+.wl-modal-card .btn{width:auto;min-height:48px;padding:0 40px;margin-inline:auto}
+@media(min-width:768px){ .wl-modal-card{padding:32px} .wl-modal-card h2{font-size:26px} .wl-modal-card li{font-size:16px} }
+
 /* ---------- רשימת המתנה + תודה ---------- */
 .waitlist,.thanks{justify-content:center;text-align:center;padding-block:24px}
 /* padding-bottom:16 מקזז את ההפרש בין ריפוד הבמה למעלה (24) ולמטה (8),
@@ -652,12 +667,6 @@ function animateOut(done){
   setTimeout(done, 300 + els.length*60);
 }
 let busy=false;
-/* מרנדר מחדש את אותו מסך עם אנימציית מעבר, בלי לזוז בזרימה */
-function goSame(dir){
-  if(busy) return; busy=true;
-  axis = dir==='y' ? 'y' : 'x';
-  animateOut(()=>{ render(); });
-}
 function go(delta, dir){
   if(busy) return; busy=true;
   axis = dir==='y' ? 'y' : 'x';
@@ -684,7 +693,7 @@ function render(){
 
   // הפס התחתון בגובה קבוע. בשאלות מוצגים בו רמזים, בהצעה הדיסקליימר, אחרת ריק
   const isEnd = node==='offer' || node==='waitlist' || node==='thanks';
-  if(!isEnd) offerViaAlt=false;        // חוזרים לשאלון — הבחירה מתאפסת
+  if(!isEnd) wlExplain=false;          // חוזרים לשאלון — הדגל מתאפס
   hintEl.hidden = !isQuiz;
   legalBar.hidden = !isEnd;
   // השעון חי מרגע "בוא נתחיל" ועד ההצעה, ונעלם גם כשהזמן נגמר
@@ -906,9 +915,9 @@ const TEACH_LABELS=['חשוב שתדע:','ויותר מזה:','ויותר מזה
 
 let resultTimers=[];
 let offerSwapTimer=null;   // לולאת ההחלפה בין שני מצבי ההמלצה
-/* מי שהמלצנו לו ווצאפ ובחר בכל זאת ברשימת ההמתנה רואה את אותו מסך הצעה,
-   בגרסת רשימת ההמתנה, עם משפט פותח שמכיר בבחירה שלו */
-let offerViaAlt=false;
+/* מי שהמלצנו לו ווצאפ ובחר בכל זאת ברשימת ההמתנה לא ראה את ההסבר עליה —
+   הוא מקבל אותו בפופ-אפ מעל הטופס, ורק "הבנתי" חושף את הטופס */
+let wlExplain=false;
 function renderTeach(){
   const short = (A.stage===2 || A.stage===3);
   const lines = short ? TEACH.slice(1) : TEACH;
@@ -1042,7 +1051,6 @@ function renderOffer(){
   const sub = NEED_SUB[needIdx];
   let waFirst = (seg==='learn'||seg==='below');
   if(A.need && A.need.includes(1)) waFirst = true;
-  if(offerViaAlt) waFirst = false;      // בחר ברשימה למרות שהמלצנו ווצאפ
 
   /* מקרה א' — ממליצים על הווצאפ: מסך אחד, בלי החלפה, עם קישור לרשימת ההמתנה מתחת לכפתור
      מקרה ב' — ממליצים על רשימת ההמתנה: שני מצבים שמתחלפים הלוך-חזור, בלי קישור משני */
@@ -1055,7 +1063,7 @@ function renderOffer(){
   s.className='screen is-active offer grow';
   s.innerHTML=`
     <div class="offer-text">
-      <p class="offer-lead" data-exit>${offerViaAlt ? 'בחרת להירשם לרשימת ההמתנה' : (OFFER_LEAD[seg]||OFFER_LEAD.almost)}</p>
+      <p class="offer-lead" data-exit>${OFFER_LEAD[seg]||OFFER_LEAD.almost}</p>
       <h1 class="q offer-h" data-exit><span class="qtext"></span></h1>
       <div class="rec" id="offerWhy" data-exit></div>
     </div>
@@ -1148,8 +1156,8 @@ function renderOffer(){
   if(!waFirst) s.querySelector('#wlBtn').onclick=toWaitlist;
   if(waFirst)  s.querySelector('#altLink').onclick=(e)=>{
     e.preventDefault();
-    offerViaAlt=true;          // אותו מסך, בגרסת רשימת ההמתנה
-    goSame('x');
+    wlExplain=true;            // לא ראה את ההסבר — יקבל אותו בפופ-אפ מעל הטופס
+    toWaitlist();
   };
 }
 
@@ -1162,6 +1170,9 @@ function renderWaitlist(){
   s.innerHTML=`
     <div class="wl-mid">
     <form class="formcard" id="wlForm" data-anim novalidate>
+      <!-- מלכודת ספאם — נסתרת מאדם ומקורא מסך, ובוט שממלא אותה נחסם בשרת -->
+      <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <div class="field-row">
         <div class="field"><label class="sr-only" for="f-first">שם (חובה)</label>
           <input id="f-first" name="first" placeholder="שם*" autocomplete="given-name" required></div>
@@ -1214,6 +1225,29 @@ function renderWaitlist(){
 
   s.querySelector('#wlBack').onclick=()=>go(-1,'y');
 
+  // הסבר על הרשימה — רק למי שהגיע מהמלצת הווצאפ ולא ראה אותו במסך ההצעה
+  if(wlExplain){
+    const m=document.createElement('div');
+    m.className='wl-modal'; m.id='wlModal';
+    m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+    m.setAttribute('aria-labelledby','wlModalH');
+    m.innerHTML=`
+      <div class="wl-modal-card">
+        <h2 id="wlModalH">למה שארשם לרשימת ההמתנה?</h2>
+        <ul>${WL_LINES.map(l=>`<li>${l}</li>`).join('')}</ul>
+        <button type="button" class="btn btn-primary" id="wlGotIt">הבנתי</button>
+      </div>`;
+    s.appendChild(m);
+    requestAnimationFrame(()=>m.classList.add('in'));
+    const ok=m.querySelector('#wlGotIt');
+    ok.focus();
+    ok.onclick=()=>{
+      wlExplain=false;
+      m.classList.remove('in');
+      setTimeout(()=>{ m.remove(); s.querySelector('#f-first').focus(); }, 260);
+    };
+  }
+
   // רשימה נפתחת נצבעת כמו placeholder עד שנבחר בה ערך
   s.querySelectorAll('select').forEach(sel=>{
     sel.onchange=()=>sel.classList.toggle('is-empty', !sel.value);
@@ -1233,8 +1267,50 @@ function renderWaitlist(){
       c.addEventListener('change', ()=>c.classList.remove('missing'), {once:true});
       return;
     }
+    sendWaitlist(f);
     go(1,'y');
   };
+}
+
+/* ============================================================
+   שליחת ההרשמה לרשימה
+
+   אותה כתובת שאליה מגיעים שני הטפסים באתר —
+   ‏/api/public/leads — ואותם שמות שדות בדיוק, ולכן ההרשמה
+   מהשאלון נוחתת באותה טבלה ובאותו עמוד לידים.
+
+   ── למה לא מחכים לתשובה ──
+   השאלון הוא רצף מסכים. עצירה של שנייה על "שולח…" שוברת אותו,
+   והמשתמש כבר ענה על הכל. לכן ממשיכים למסך התודה מיד, והבקשה
+   ממשיכה ברקע עם keepalive — כך היא שורדת גם אם העמוד נסגר
+   מיד אחרי.
+
+   ‏A הוא אובייקט התשובות של השאלון; הוא נשמר בשלמותו בצד השרת,
+   כך ששום דבר שהמשתמש ענה לא הולך לאיבוד.
+   ============================================================ */
+const LEADS_API = 'https://admin.safecapital.co.il/api/public/leads';
+
+function sendWaitlist(form){
+  const data = {
+    kind: 'waitlist',
+    source: 'fitcheck-quiz',
+    page_url: location.href,
+    quiz: A
+  };
+  [...form.elements].forEach(el=>{
+    if(!el.name) return;
+    data[el.name] = el.type==='checkbox' ? el.checked : el.value;
+  });
+
+  try{
+    fetch(LEADS_API, {
+      method:'POST', mode:'cors', credentials:'omit', keepalive:true,
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    }).catch(err=>console.warn('[waitlist] send failed:', err.message));
+  }catch(err){
+    console.warn('[waitlist] send failed:', err.message);
+  }
 }
 
 /* ============================================================

@@ -33,7 +33,15 @@ function getTransporter() {
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD
-    }
+    },
+    // Serverless functions get a hard wall-clock budget, and a lead submission
+    // now waits for the mail before it answers the visitor. Without explicit
+    // timeouts a hung SMTP handshake eats the whole budget and the form appears
+    // to hang; with them the send fails fast, gets recorded on the lead row,
+    // and the visitor still gets an answer.
+    connectionTimeout: 7000,
+    greetingTimeout: 7000,
+    socketTimeout: 10000
   });
   return _transporter;
 }
@@ -248,5 +256,6 @@ async function sendMail({ to, subject, html, text }) {
 module.exports = {
   sendEventRegistrationEmail,
   sendMail,
-  isConfigured
+  isConfigured,
+  escapeHtml
 };

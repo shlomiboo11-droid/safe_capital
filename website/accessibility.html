@@ -248,7 +248,15 @@
       <h2 class="join__title">הרשמה לרשימת ההמתנה</h2>
 
       <form class="form join__form" id="waitlist-form" data-validate novalidate
+            data-lead-kind="waitlist" data-lead-source="join-dialog"
             data-done="נרשמת. נעדכן אותך ראשון כשתיפתח עסקה חדשה.">
+      <!-- מלכודת ספאם. אדם לא רואה את השדה ולכן לא ממלא אותו; בוט
+           שממלא כל שדה שהוא מוצא נחסם בשרת. ‏aria-hidden ו-tabindex
+           מוציאים אותו גם מקורא מסך וגם ממסלול ה-Tab. -->
+      <input type="text" name="company" tabindex="-1"
+             autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+
 
         <div class="form__grid">
 

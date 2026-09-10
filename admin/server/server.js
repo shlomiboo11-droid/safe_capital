@@ -59,7 +59,11 @@ const contactLimiter = rateLimit({
   max: 5,
   message: { error: 'יותר מדי פניות. נסה שוב בעוד שעה.' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  // The website posts JSON cross-origin, so every genuine submission is
+  // preceded by an OPTIONS preflight. Counting those would halve the budget
+  // and lock a real visitor out after two sends.
+  skip: req => req.method === 'OPTIONS'
 });
 
 // Serve static files
@@ -71,6 +75,7 @@ app.use('/images', express.static(path.join(__dirname, '..', '..', 'website', 'i
 // Public API routes — registered BEFORE auth middleware so no token is required
 // Rate-limit the contact form specifically to prevent spam/DoS
 app.use('/api/public/contact', contactLimiter);
+app.use('/api/public/leads', contactLimiter);
 app.use('/api/public', require('./routes/public'));
 app.use('/api/cron', require('./routes/cron'));
 
@@ -86,6 +91,8 @@ app.use('/api/extract', require('./routes/extract'));
 app.use('/api/audit', require('./routes/audit'));
 app.use('/api/google-drive', require('./routes/google-drive'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/leads', require('./routes/leads'));
+app.use('/api/push', require('./routes/push'));
 app.use('/api/mercury', require('./routes/mercury'));
 app.use('/api/investors', require('./routes/investors'));
 app.use('/api/content', require('./routes/content'));
@@ -147,6 +154,7 @@ app.get('*', (req, res) => {
     '/events': 'events.html',
     '/event': 'event.html',
     '/whatsapp-updates': 'whatsapp-updates.html',
+    '/leads': 'leads.html',
   };
 
   for (const [prefix, file] of Object.entries(htmlFiles)) {

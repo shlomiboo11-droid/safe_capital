@@ -23,13 +23,32 @@
    הדפדפן חוזר לוולידציה שלו — ולא נשארים בלי שום בדיקה.
 
    ── שליחה ──
-   **שום טופס לא שולח לשום מקום.** אין עדיין endpoint של
-   לידים. ‏submit() למטה הוא הנקודה היחידה שצריך למלא.
+   שני הטפסים נשלחים לאותה כתובת אחת —
+   ‏ADMIN_HOST + '/api/public/leads' — ומגיעים לאותה טבלה. מה
+   שמבדיל ביניהם הוא ‏data-lead-kind על ה-<form>:
+
+     ‏contact   · פנייה כללית
+     ‏waitlist  · הרשמה לרשימה
+
+   הסוג נשלח כערך מפורש ולא נגזר משמות השדות. גזירה כזו נשברת
+   בשקט ביום ששדה משנה שם, ואז ליד נכנס לרשימה הלא נכונה.
+
+   ── כשהשליחה נכשלת ──
+   לא מציגים "נקלט". הפרטים לא הגיעו לאף אחד, ומי שממתין
+   לשיחה שלא תבוא נפגע פעמיים. מוצגת הודעה שאומרת את האמת
+   ומציעה דרך חלופית, והכפתור חוזר להיות לחיץ.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   var EMPTY_MSG = 'שדה חובה';
+
+  /* אותו מארח שממנו נמשכות העסקאות וההגדרות (deals.js, settings.js). */
+  var ADMIN_HOST = 'https://admin.safecapital.co.il';
+  var LEADS_API = ADMIN_HOST + '/api/public/leads';
+
+  var FAIL_MSG = 'לא הצלחנו לשלוח כרגע. אפשר לנסות שוב, ' +
+                 'או לכתוב לנו ישירות בוואטסאפ.';
 
   /* ── הכללים ────────────────────────────────────────────────
      ── שם ──
@@ -91,6 +110,62 @@
     if (box) box.textContent = msg || '';
   }
 
+  /* מאיפה הגיע המבקר. נשמר ב-utm כדי שאפשר יהיה לדעת איזו מודעה
+     מביאה לידים — בלי לפזר חמש עמודות בסכימה על משהו שעוד לא
+     בטוח שנמדוד. */
+  function collectUtm() {
+    var utm = {};
+    try {
+      var params = new URLSearchParams(window.location.search);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid']
+        .forEach(function (k) {
+          var v = params.get(k);
+          if (v) utm[k] = v;
+        });
+      if (document.referrer && document.referrer.indexOf(window.location.host) === -1) {
+        utm.referrer = document.referrer;
+      }
+    } catch (err) { /* דפדפן ישן בלי URLSearchParams — פשוט בלי utm */ }
+    return utm;
+  }
+
+  function collectPayload(form) {
+    var data = {
+      kind: form.getAttribute('data-lead-kind') || 'contact',
+      source: form.getAttribute('data-lead-source') || '',
+      page_url: window.location.href,
+      utm: collectUtm()
+    };
+    /* שמות השדות עוברים כמו שהם. השרת מקבל את שני האיותים
+       (‏first_name/first, email/mail), ולכן אין כאן מיפוי שיכול
+       להתיישן ביחס ל-HTML. */
+    Array.prototype.slice.call(form.elements).forEach(function (el) {
+      if (!el.name) return;
+      if (el.type === 'checkbox') data[el.name] = el.checked;
+      else data[el.name] = el.value;
+    });
+    return data;
+  }
+
+  function sendLead(form) {
+    return fetch(LEADS_API, {
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collectPayload(form))
+    }).then(function (r) {
+      if (r.ok) return r.json();
+      /* לשרת יש מה להגיד על 400 ועל 429 ("יותר מדי פניות…"), והמשפט
+         שלו מדויק יותר מהודעת הגיבוי הכללית. */
+      return r.json().catch(function () { return null; }).then(function (body) {
+        var err = new Error((body && body.error) || 'HTTP ' + r.status);
+        err.fromServer = !!(body && body.error);
+        throw err;
+      });
+    });
+  }
+
   function boot(form) {
     var fields = Array.prototype.slice.call(form.querySelectorAll('[data-rule]'));
     var consent = form.querySelector('input[type="checkbox"][required]');
@@ -128,8 +203,13 @@
       consent.addEventListener('change', function () { mark(consent, ''); });
     }
 
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var submitLabel = submitBtn ? submitBtn.innerHTML : '';
+    var sending = false;
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (sending) return;
       var firstBad = null;
 
       fields.forEach(function (el) {
@@ -149,19 +229,32 @@
         return;
       }
 
-      /* ── כאן תיכנס השליחה בפועל ──
-         שני הטפסים אמורים להגיע לאותה טבלה, ולכן זו נקודה
-         אחת: fetch(ADMIN_HOST + '/api/public/leads', …) עם
-         ‏new FormData(form). הטופס שבחלון כבר שולח בדיוק את
-         המפתחות שהשאלון שולח.
-         עד אז: מנקים ומאשרים למשתמש שהפרטים נקלטו בצד שלו.
-         הנוסח נזהר ולא מבטיח שנחזור — שום דבר עדיין לא יוצא
-         מהדפדפן. */
-      form.reset();
-      fields.forEach(function (el) { mark(el, ''); });
-      if (consent) mark(consent, '');
-      setNote(form.getAttribute('data-done') ||
-              'הפרטים נקלטו. חיבור השליחה עדיין לא הוגדר.', true);
+      /* ── שליחה ──
+         הכפתור ננעל עד שיש תשובה, אחרת לחיצה כפולה שולחת
+         פעמיים. השרת ממילא מזהה הגשה כפולה, אבל עדיף שהמשתמש
+         יראה שמשהו קורה. */
+      sending = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'שולח…';
+      }
+      setNote('', false);
+
+      sendLead(form).then(function () {
+        form.reset();
+        fields.forEach(function (el) { mark(el, ''); });
+        if (consent) mark(consent, '');
+        setNote(form.getAttribute('data-done') ||
+                'הפרטים נקלטו. נחזור אליך בהקדם.', true);
+      }).catch(function (err) {
+        setNote(err.fromServer ? err.message : FAIL_MSG, false);
+      }).then(function () {
+        sending = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = submitLabel;
+        }
+      });
     });
   }
 

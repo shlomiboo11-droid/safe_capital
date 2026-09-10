@@ -73,25 +73,26 @@
 
 ## Design System — קרא לפני כל בנייה ב-`website/`
 
-**`DESIGN-SYSTEM.md` (שורש הפרויקט) הוא מקור האמת העיצובי.** חולץ מסריקה מלאה של האתר — 17 עמודי HTML, 7 קבצי CSS, 8 קבצי JS. כל ערך בו מגובה במופע אמיתי בקוד.
+**`brand/design-system.md` הוא מקור האמת העיצובי.** הוא מגדיר את הפלטה, את
+כללי הניגודיות שנגזרים ממנה, את מיפוי הטוקנים, את הלוגו, את סולם הטיפוגרפיה,
+את הכפתור ואת מצבי הפוקוס והשגיאה.
 
 | קובץ | תפקיד |
 |------|-------|
-| `DESIGN-SYSTEM.md` | ההנחיה המלאה — צבעים, טיפוגרפיה, מרווחים, כפתורים, טפסים, אייקונים, תמונות, מוֹשן, שכבות, RTL, כרטיסים. **כל כלל מכסה מובייל ודסקטופ** |
-| `website/css/design-tokens.css` | 121 טוקנים בתחילית `--sc-*`. אדיטיבי — קישור אליו לא משנה שום דבר חזותי |
-| `website/css/design-system.css` | **שכבת הקומפוננטות** — `.sc-btn`, `.sc-field`, `.sc-card`, `.sc-actions`, `.sc-form-card`, `.sc-t-*`. mobile-first, hover מוגן, reduced-motion מכובד. **תיקונים עיצוביים נכנסים כאן** |
-| `website/styleguide.html` | תצוגה חיה של הכל + תצוגת מובייל מקבילה ב-iframe. הערכים בו נקראים מהטוקנים בזמן ריצה |
-| `website/css/tokens.css` | גדלי פונט (`--fs-*`) — **דסקטופ בלבד.** לבנייה חדשה: `.sc-t-*`, שנושאת את שני המסכים |
+| `brand/design-system.md` | ההנחיה. §1 פלטה · §2 ניגודיות · §3 טוקנים · §4 איפה כל מבטא חי · §4א לוגו · §4ב טיפוגרפיה · §4ג כפתור · §4ד פוקוס ושגיאה · §5 מה לא לעשות |
+| `website/assets/styles.css` | **הגיליון היחיד.** הטוקנים ב-`:root` בראשו, ואחריהם הסקשנים לפי סדר העמוד. תיקונים עיצוביים נכנסים כאן |
+| `website/assets/motion.js` | כל התנועה מונעת-הגלילה. ערכי הכוונון נמצאים בראש הקובץ |
+| `brand/logo/` | קובצי הלוגו. `Untitled 6.svg` הוא הנעילה עם CAPITAL שבפוטר |
 
 **חובה לפני בנייה של עמוד, סקשן או קומפוננטה:**
-1. **קרא את הסקשן הרלוונטי ב-`DESIGN-SYSTEM.md`** — לא לנחש ערך שנראה דומה לעמוד אחר
-2. **השתמש במחלקות `.sc-*`** לפני שכותבים CSS חדש. רוב מה שצריך כבר שם
-3. השתמש ב-`var(--sc-*)`, לא במספרים קשיחים. צריך ערך שאין? מוסיפים ל-`design-tokens.css`
-4. **בנה mobile-first** — הערך ללא media query הוא המובייל
-5. עבור על **§15 צ'קליסט** (כולל בלוק המובייל שבו) ו-**§18 מובייל** לפני סיום
-6. **§16 "חריגות מוכרות"** מפרט 25 באגים אמיתיים שקיימים בקוד — המסמך מנצח את הקוד, לא להעתיק מהם
+1. **קרא את הסעיף הרלוונטי ב-`brand/design-system.md`** — לא לנחש ערך שנראה דומה לעמוד אחר
+2. השתמש ב-`var(--ink)`, `var(--accent)`, `var(--fs-*)` ולא במספרים קשיחים. צריך ערך שאין? מוסיפים ל-`:root` שב-`styles.css`
+3. **אל תמציא מדרגה באמצע סולם הטיפוגרפיה.** הסולם ב-§4ב סגור
+4. **בנה מובייל-תחילה** — הערך ללא media query הוא המובייל
+5. כל שינוי בניגודיות נמדד מול §2 לפני שהוא נכנס, ולא מוערך בעין
 
-**במקרה של סתירה — `DESIGN-SYSTEM.md` קובע.** הסקשנים שמתחת (Key Design Constraints, Brand Colors, Typography) הם תקציר שלו.
+**במקרה של סתירה — `brand/design-system.md` קובע.** הסקשנים שמתחת
+(Key Design Constraints, Brand Colors, Typography) הם תקציר שלו.
 
 ## Key Design Constraints
 These rules are non-negotiable. Violating them produces an off-brand result:
@@ -100,26 +101,26 @@ These rules are non-negotiable. Violating them produces an off-brand result:
 - **No heavy shadows** — max `blur: 24px`, `Y: 8px`, `opacity: 4%`
 - **No center-alignment** — Hebrew flush-right, English flush-left. Center only for hero headlines
 - **RTL by default** — `dir="rtl"` on root, all layout/spacing/flex assumes RTL
-- **No full-box focus rings** — input focus = 2px bottom-border in `var(--sc-navy)` only
+- **No full-box focus rings** — input focus = 2px bottom-border in `var(--ink)` only
 
 ## Brand Colors
-**הפלטה נקראת "דיו ואוקסבלד".** נבחרה מתוך חמש חלופות ב-`website/palettes.html`.
+**הפלטה נקראת "דיו ואוקסבלד".**
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| Primary (Ink Navy) | `#0e1e2e` | כל המבנה — טקסט, כותרות, כפתורים, סקשן כהה, פוקוס |
-| Accent (Oxblood) | `#5d1819` | המבטא היחיד — eyebrow, מספר מודגש, נאב אקטיבי |
-| Accent on dark | `#a47e7e` | **אותו מבטא בסקשן כהה בלבד** — 4.71:1 מול הנייבי |
-| Background | `#f7f5f1` | Page base |
-| Surface | `#ffffff` | Cards, alternating sections |
-| Fill | `#e8e5df` | Control fill — fields, tonal buttons |
-| Body text | `rgba(14,30,46,0.72)` | נגזר מנייבי, לא אפור נפרד |
+| `--ink` (Ink Navy) | `#0e1e2e` | כל המבנה — טקסט, כותרות, כפתורים, סקשן כהה, פוקוס |
+| `--accent` (Oxblood) | `#5d1819` | המבטא היחיד — eyebrow, מספר מודגש, נאב אקטיבי |
+| `--accent-dark` | `#a47e7e` | **אותו מבטא בסקשן כהה בלבד** — 4.71:1 מול הנייבי |
+| `--bone` | `#f7f5f1` | Page base |
+| `--white` | `#ffffff` | Cards, alternating sections |
+| `--chalk` | `#e8e5df` | Control fill — fields, tonal buttons |
+| `--ink-rgb` @ .72 | `rgba(14,30,46,0.72)` | נגזר מנייבי, לא אפור נפרד |
 
-**למבטא שתי מדרגות, וזה לא קפריזה.** אוקסבלד על נייבי הוא 1.29:1 — כהה על כהה. הקס אחד לא יכול לשרת גם מצע בהיר וגם סקשן כהה, ואסור גם להפוך: המדרגה הבהירה על נייר היא 3.29:1 ונופלת. על `.sc-on-dark` משתמשים ב-`--sc-maroon-on-dark`. ראה `DESIGN-SYSTEM.md` §1.
+**למבטא שתי מדרגות, וזה לא קפריזה.** אוקסבלד על נייבי הוא 1.29:1 — כהה על כהה. הקס אחד לא יכול לשרת גם מצע בהיר וגם סקשן כהה, ואסור גם להפוך: המדרגה הבהירה על נייר היא 3.29:1 ונופלת. על מצע כהה משתמשים ב-`var(--accent-dark)`. ראה `brand/design-system.md` §2.
 
 **הנייבי הקודם `#022445` היה כחול טהור** — ערוץ הכחול גדול פי 34 מהאדום, וגוונים טהורים ברוויה גבוהה הם מה שעפרונות צבעוניים ודגלים עשויים מהם. `#1E3A5C`, `#7B2D33` ו-`#43474e` הוסרו.
 
-**שלושה משטחים בהירים בלבד.** `#f5f3f0` ו-`#e4e2df` הוסרו — הם היו כמעט בלתי-נראים מול השכנים שלהם. ראה `DESIGN-SYSTEM.md` §1.2.
+**שלושה משטחים בהירים בלבד.** `#f5f3f0` ו-`#e4e2df` הוסרו — הם היו כמעט בלתי-נראים מול השכנים שלהם. ראה `brand/design-system.md` §1.
 
 ## Typography
 **Heebo בלבד — משפחה אחת לכל דבר**, כולל מספרים ותוויות לטיניות.
@@ -186,7 +187,7 @@ Specialist agents in `.claude/agents/`, organized by team:
 **Refresh:** Run `/graphify admin` after major structural changes to the admin codebase.
 
 ## Deal Data
-Deal folders (e.g., `oxmoore/`) contain: financial calculators (.xlsx), photos, renderings, construction plans, loan docs. Always read actual deal files — never invent financial data.
+Deal folders (e.g., `נכסים/oxmoor/`) contain: financial calculators (.xlsx), photos, renderings, construction plans, loan docs. Always read actual deal files — never invent financial data.
 
 ## RTL Note
 When Shlomi says "ימין" he means the right side visually — which in CSS (RTL) maps to `left`. Flip accordingly.

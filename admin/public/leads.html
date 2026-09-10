@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לידים | Safe Capital Admin</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#022445">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Safe Capital">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="/css/tailwind-utilities.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+  <link rel="icon" href="/images/logo-mark.svg" type="image/svg+xml">
+  <style>
+    /* ── הטבלאות בטלפון ────────────────────────────────────────────
+       העמוד הזה נפתח בטלפון יותר מכל עמוד אחר בפאנל: התראה על ליד
+       חדש מובילה ישר לכאן. שבע עמודות לא נכנסות ל-375px, וגלילה
+       אופקית בטבלה היא בדיוק מה שאף אחד לא מגלה שאפשר לעשות.
+       לכן בטלפון נשארות ארבע עמודות — שם, טלפון, סטטוס ופעולות —
+       והשאר עובר לחלון הפרטים, שממילא מציג הכל.
+       ה-CSS הזה מקומי לעמוד ולא נוגע בגיליון המשותף. */
+    .status-badge { display: none; }
+    /* עמודת השם צרה מדי בטבלה של תשע עמודות, ואז השם ותווית המקור
+       נשברים לשלוש שורות כל אחד. */
+    #contactTable  td:first-child,
+    #waitlistTable td:first-child { min-width: 9.5rem; white-space: nowrap; }
+    @media (max-width: 767px) {
+      .data-table .col-extra { display: none; }
+      /* הסטטוס נקרא בטלפון ומשתנה בחלון הפרטים — בורר ברוחב הזה גונב
+         חצי מהשורה, ותג אומר את אותו דבר בשליש מהמקום. */
+      .status-select { display: none; }
+      .status-badge  { display: inline-block; }
+      #contactTable td:first-child,
+      #waitlistTable td:first-child { min-width: 7rem; }
+      #contactTable td, #waitlistTable td { white-space: nowrap; }
+      /* ‏1rem לצד בשלוש עמודות מוציא את השורה אל מעבר ל-375px בדיוק
+         ברוחב שתי המרווחים האלה. */
+      #contactTable th, #contactTable td,
+      #waitlistTable th, #waitlistTable td { padding-inline: 0.625rem; }
+    }
+  </style>
+</head>
+<body class="bg-surface min-h-screen font-heebo">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <a href="/" class="block">
+        <img src="/images/logo-full-on-dark.svg" alt="Safe Capital" class="h-8 w-auto" onerror="this.style.display='none'">
+      </a>
+      <p class="text-xs text-white/50 mt-1">דאשבורד ניהול</p>
+    </div>
+
+    <nav class="p-3 space-y-1 mt-2">
+      <a href="/" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">dashboard</span>
+        <span>עסקאות</span>
+      </a>
+      <a href="/leads" class="sidebar-link active">
+        <span class="material-symbols-outlined text-xl">contact_mail</span>
+        <span>לידים</span>
+      </a>
+      <a href="/events" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">event</span>
+        <span>ערב משקיעים</span>
+      </a>
+      <a href="/investors" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">groups</span>
+        <span>משקיעים</span>
+      </a>
+      <a href="/users" class="sidebar-link" id="nav-users" style="display: none;">
+        <span class="material-symbols-outlined text-xl">group</span>
+        <span>ניהול משתמשים</span>
+      </a>
+      <a href="/settings" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">settings</span>
+        <span>הגדרות אתר</span>
+      </a>
+      <div class="sidebar-section-label">תוכן</div>
+      <a href="/articles" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">article</span>
+        <span>כתבות</span>
+      </a>
+      <a href="/article-bot" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">smart_toy</span>
+        <span>בוט כתבות</span>
+      </a>
+      <a href="/whatsapp-updates" class="sidebar-link">
+        <span class="material-symbols-outlined text-xl">forum</span>
+        <span>עדכוני וואטסאפ</span>
+      </a>
+    </nav>
+
+    <div class="absolute bottom-0 right-0 left-0 p-4 border-t border-white/10">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm font-medium" id="sidebar-username">--</div>
+          <div class="text-xs text-white/50" id="sidebar-role">--</div>
+        </div>
+        <button onclick="API.logout()" class="text-white/50 hover:text-white transition" title="התנתק">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <button id="sidebarToggle" class="lg:hidden fixed top-4 right-4 z-50 bg-primary text-white p-2 rounded-lg shadow">
+    <span class="material-symbols-outlined">menu</span>
+  </button>
+
+  <!-- Main -->
+  <main class="main-content">
+
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">לידים</h1>
+        <p class="text-sm text-gray-500 mt-1" id="leadsSummary">טוען…</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn btn-secondary" onclick="loadAll()">
+          <span class="material-symbols-outlined text-lg">refresh</span>
+          רענון
+        </button>
+        <button class="btn btn-secondary" onclick="exportCsv()">
+          <span class="material-symbols-outlined text-lg">download</span>
+          ייצוא
+        </button>
+      </div>
+    </div>
+
+    <!-- התראות למכשיר: הפקד נבנה ב-js/push.js -->
+    <div class="card p-4 mb-6" id="push-toggle"></div>
+
+    <!-- מסננים משותפים לשתי הרשימות -->
+    <div class="card p-4 mb-6">
+      <div class="flex flex-wrap gap-3 items-center">
+        <div class="flex-1 min-w-0">
+          <input type="text" id="searchInput" class="form-input" placeholder="חיפוש לפי שם, טלפון או מייל…" oninput="debounceLoad()">
+        </div>
+        <select id="statusFilter" class="form-select w-auto" onchange="loadAll()">
+          <option value="">כל הסטטוסים</option>
+          <option value="new">חדש</option>
+          <option value="read">נקרא</option>
+          <option value="contacted">יצרנו קשר</option>
+          <option value="qualified">מתאים</option>
+          <option value="archived">בארכיון</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ═══ פניות מצור קשר — למעלה ═══ -->
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">mail</span>
+          פניות מצור קשר
+        </h2>
+        <span class="text-sm text-gray-500" id="contactCount"></span>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="data-table" id="contactTable">
+            <thead>
+              <tr>
+                <th>שם</th>
+                <th>טלפון</th>
+                <th class="col-extra">אימייל</th>
+                <th class="col-extra">הון משוער</th>
+                <th class="col-extra">נזילות</th>
+                <th>סטטוס</th>
+                <th class="col-extra">התקבל</th>
+                <th class="col-extra"></th>
+              </tr>
+            </thead>
+            <tbody id="contactBody">
+              <tr><td colspan="8" class="text-center py-12 text-gray-400">טוען…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ רשימת המתנה — למטה ═══ -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">how_to_reg</span>
+          רשימת המתנה
+        </h2>
+        <span class="text-sm text-gray-500" id="waitlistCount"></span>
+      </div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="data-table" id="waitlistTable">
+            <thead>
+              <tr>
+                <th>שם</th>
+                <th>טלפון</th>
+                <th class="col-extra">אימייל</th>
+                <th class="col-extra">הון משוער</th>
+                <th class="col-extra">נזילות</th>
+                <th class="col-extra">ליצור קשר</th>
+                <th>סטטוס</th>
+                <th class="col-extra">נרשם</th>
+                <th class="col-extra"></th>
+              </tr>
+            </thead>
+            <tbody id="waitlistBody">
+              <tr><td colspan="9" class="text-center py-12 text-gray-400">טוען…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/push.js"></script>
+  <script>
+    if (!requireAuth()) throw new Error('redirect');
+
+    (function () {
+      const user = API.getUser();
+      if (user) {
+        document.getElementById('sidebar-username').textContent = user.full_name;
+        document.getElementById('sidebar-role').textContent =
+          user.role === 'super_admin' ? 'מנהל ראשי' : 'מנהל';
+        if (user.role === 'super_admin') document.getElementById('nav-users').style.display = '';
+      }
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.getElementById('sidebarToggle');
+      if (toggle) toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+    })();
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    /* טופס הפנייה שולח מפתחות (under-50k), טפסי הרשימה שולחים את הטקסט
+       העברי עצמו. הטבלה מתרגמת מפתחות; כל ערך אחר מוצג כמו שהוא. */
+    const VALUE_LABELS = {
+      'under-50k': 'עד 50 אלף $', '50k-100k': '50–100 אלף $',
+      '100k-250k': '100–250 אלף $', 'over-250k': 'מעל 250 אלף $',
+      yes: 'כן', partial: 'חלקית', no: 'לא'
+    };
+    const label = v => v ? (VALUE_LABELS[v] || v) : '';
+
+    const STATUS = {
+      new:       { text: 'חדש',        badge: 'badge-blue' },
+      read:      { text: 'נקרא',       badge: 'badge-gray' },
+      contacted: { text: 'יצרנו קשר',  badge: 'badge-yellow' },
+      qualified: { text: 'מתאים',      badge: 'badge-green' },
+      archived:  { text: 'בארכיון',    badge: 'badge-gray' }
+    };
+
+    const SOURCE_LABELS = {
+      'contact-page': 'עמוד צור קשר',
+      'join-dialog': 'חלון ההרשמה',
+      'fitcheck-quiz': 'שאלון ההתאמה',
+      'legacy-contact-endpoint': 'טופס ישן'
+    };
+
+    let LEADS = { contact: [], waitlist: [] };
+
+    let debounceTimer;
+    function debounceLoad() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(loadAll, 300);
+    }
+
+    function query(kind) {
+      const params = new URLSearchParams({ kind });
+      const q = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+      if (q) params.set('q', q);
+      if (status) params.set('status', status);
+      return params.toString();
+    }
+
+    async function loadAll() {
+      try {
+        const [contact, waitlist, stats] = await Promise.all([
+          API.get('/leads?' + query('contact')),
+          API.get('/leads?' + query('waitlist')),
+          API.get('/leads/stats')
+        ]);
+
+        LEADS.contact = contact.leads;
+        LEADS.waitlist = waitlist.leads;
+
+        renderContact(contact.leads);
+        renderWaitlist(waitlist.leads);
+
+        document.getElementById('contactCount').textContent =
+          `${contact.total} פניות · ${stats.contact.unread} חדשות`;
+        document.getElementById('waitlistCount').textContent =
+          `${waitlist.total} נרשמים · ${stats.waitlist.unread} חדשים`;
+        document.getElementById('leadsSummary').textContent = stats.unread
+          ? `${stats.unread} לידים חדשים שלא נפתחו`
+          : 'אין לידים חדשים';
+      } catch (err) {
+        const msg = '<tr><td colspan="9" class="text-center py-8 text-red-500">שגיאה בטעינה</td></tr>';
+        document.getElementById('contactBody').innerHTML = msg;
+        document.getElementById('waitlistBody').innerHTML = msg;
+      }
+    }
+
+    /* תא שם — כולל סימון "לא נשלח מייל" כשהאוטומציה נכשלה, אחרת
+       הכישלון חי רק בלוגים ואף אחד לא רואה אותו. */
+    function nameCell(lead) {
+      const name = [lead.first_name, lead.last_name].filter(Boolean).join(' ');
+      const source = SOURCE_LABELS[lead.source] || lead.source || '';
+      const mailFailed = !lead.email_sent_at;
+      return `<td>
+        <button class="font-medium text-primary hover:underline" onclick="openLead('${lead.id}')">${escapeHtml(name)}</button>
+        <div class="text-xs text-gray-400 mt-0.5">${escapeHtml(source)}</div>
+        ${mailFailed ? '<div class="text-xs text-red-600 mt-0.5">מייל התודה לא נשלח</div>' : ''}
+      </td>`;
+    }
+
+    function contactCells(lead) {
+      return `
+        <td>${lead.phone
+          ? `<a href="tel:${escapeHtml(lead.phone)}" class="text-gray-600 hover:text-primary font-inter" dir="ltr">${escapeHtml(lead.phone)}</a>`
+          : '<span class="text-gray-300">—</span>'}</td>
+        <td class="col-extra"><a href="mailto:${escapeHtml(lead.email)}" class="text-gray-600 hover:text-primary font-inter" dir="ltr">${escapeHtml(lead.email)}</a></td>`;
+    }
+
+    function statusCell(lead) {
+      const opts = Object.entries(STATUS).map(([k, v]) =>
+        `<option value="${k}"${lead.status === k ? ' selected' : ''}>${v.text}</option>`).join('');
+      const cur = STATUS[lead.status] || STATUS.new;
+      return `<td>
+        <select class="form-select w-auto text-sm status-select" onchange="setStatus('${lead.id}', this.value)">${opts}</select>
+        <span class="badge ${cur.badge} status-badge">${cur.text}</span>
+      </td>`;
+    }
+
+    function actionsCell(lead) {
+      return `<td class="col-extra">
+        <div class="flex gap-1">
+          <button class="text-gray-400 hover:text-primary transition" title="פתיחה" onclick="openLead('${lead.id}')">
+            <span class="material-symbols-outlined text-lg">open_in_full</span>
+          </button>
+          <button class="text-gray-400 hover:text-red-600 transition" title="מחיקה" onclick="deleteLead('${lead.id}')">
+            <span class="material-symbols-outlined text-lg">delete</span>
+          </button>
+        </div>
+      </td>`;
+    }
+
+    function empty(cols, text) {
+      return `<tr><td colspan="${cols}" class="text-center py-12 text-gray-400">${text}</td></tr>`;
+    }
+
+    function renderContact(rows) {
+      const tbody = document.getElementById('contactBody');
+      if (!rows.length) return void (tbody.innerHTML = empty(8, 'אין פניות'));
+      tbody.innerHTML = rows.map(l => `<tr>
+        ${nameCell(l)}
+        ${contactCells(l)}
+        <td class="text-gray-600 col-extra">${escapeHtml(label(l.capital)) || '<span class="text-gray-300">—</span>'}</td>
+        <td class="text-gray-600 col-extra">${escapeHtml(label(l.liquid)) || '<span class="text-gray-300">—</span>'}</td>
+        ${statusCell(l)}
+        <td class="text-gray-500 text-sm whitespace-nowrap col-extra">${formatDateTime(l.created_at)}</td>
+        ${actionsCell(l)}
+      </tr>`).join('');
+    }
+
+    function renderWaitlist(rows) {
+      const tbody = document.getElementById('waitlistBody');
+      if (!rows.length) return void (tbody.innerHTML = empty(9, 'אין נרשמים'));
+      tbody.innerHTML = rows.map(l => `<tr>
+        ${nameCell(l)}
+        ${contactCells(l)}
+        <td class="text-gray-600 col-extra">${escapeHtml(label(l.capital)) || '<span class="text-gray-300">—</span>'}</td>
+        <td class="text-gray-600 col-extra">${escapeHtml(label(l.liquid)) || '<span class="text-gray-300">—</span>'}</td>
+        <td class="text-gray-600 col-extra">${escapeHtml(label(l.wants_contact)) || '<span class="text-gray-300">—</span>'}</td>
+        ${statusCell(l)}
+        <td class="text-gray-500 text-sm whitespace-nowrap col-extra">${formatDateTime(l.created_at)}</td>
+        ${actionsCell(l)}
+      </tr>`).join('');
+    }
+
+    async function setStatus(id, status) {
+      try {
+        await API.request(`/leads/${id}`, { method: 'PATCH', body: { status } });
+        const lead = findLead(id);
+        if (lead) lead.status = status;
+        showToast('הסטטוס עודכן');
+        loadAll();
+      } catch (err) {
+        showToast(err.message || 'שגיאה בעדכון', 'error');
+      }
+    }
+
+    async function deleteLead(id) {
+      if (!await showConfirmModal('מחיקת ליד', 'הפרטים יימחקו לצמיתות. להמשיך?')) return;
+      try {
+        await API.delete(`/leads/${id}`);
+        document.querySelector('.branded-modal-overlay')?.remove();
+        showToast('הליד נמחק');
+        loadAll();
+      } catch (err) {
+        showToast(err.message || 'שגיאה במחיקה', 'error');
+      }
+    }
+
+    function findLead(id) {
+      return LEADS.contact.find(l => l.id === id) || LEADS.waitlist.find(l => l.id === id);
+    }
+
+    /* ── חלון הפרטים ──────────────────────────────────────────────────
+       פתיחת ליד חדש מסמנת אותו כנקרא. זה השינוי היחיד ש"קורה מעצמו",
+       והוא בדיוק מה שמשתמש מצפה לו מדואר נכנס. */
+    function openLead(id) {
+      const l = findLead(id);
+      if (!l) return;
+
+      /* ‏k מגיע גם מ-raw ומ-utm, כלומר משמות שדות ששולח מי שמילא את
+         הטופס — וכל אחד יכול לשלוח POST משלו. חייב לעבור בריחה
+         בדיוק כמו הערך. */
+      const row = (k, v, ltr) => v
+        ? `<div class="flex justify-between gap-4 py-2 border-b border-gray-100">
+             <span class="text-gray-500 text-sm">${escapeHtml(k)}</span>
+             <span class="text-gray-900 text-sm font-medium"${ltr ? ' dir="ltr"' : ''}>${escapeHtml(v)}</span>
+           </div>` : '';
+
+      const extras = l.raw ? Object.entries(l.raw)
+        .filter(([k]) => !['kind','first','last','first_name','last_name','mail','email','phone',
+                           'capital','liquid','contact','wants_contact','message','source'].includes(k))
+        .map(([k, v]) => row(k, typeof v === 'string' ? v : JSON.stringify(v))).join('') : '';
+
+      const utm = l.utm ? Object.entries(l.utm).map(([k, v]) => row(k, v, true)).join('') : '';
+
+      const overlay = document.createElement('div');
+      overlay.className = 'branded-modal-overlay';
+      overlay.innerHTML = `
+        <div class="branded-modal" style="max-width:520px;text-align:right;">
+          <h3 class="branded-modal-title">
+            ${escapeHtml([l.first_name, l.last_name].filter(Boolean).join(' '))}
+          </h3>
+          <p class="branded-modal-message" style="margin-bottom:12px;">
+            ${l.kind === 'waitlist' ? 'רשימת המתנה' : 'פנייה מצור קשר'}
+            · ${escapeHtml(SOURCE_LABELS[l.source] || l.source || '')}
+          </p>
+
+          <div class="mb-4">
+            ${row('אימייל', l.email, true)}
+            ${row('טלפון', l.phone, true)}
+            ${row('הון משוער', label(l.capital))}
+            ${row('נזילות', label(l.liquid))}
+            ${row('ליצור קשר', label(l.wants_contact))}
+            ${row('הודעה', l.message)}
+            ${row('הגיע מהעמוד', l.page_url, true)}
+            ${row('אישר שמירת פרטים', l.consent ? 'כן' : 'לא')}
+            ${row('התקבל', formatDateTime(l.created_at))}
+            ${row('מייל תודה', l.email_sent_at ? 'נשלח ' + formatDateTime(l.email_sent_at) : (l.email_error || 'לא נשלח'))}
+            ${row('התראה לנייד', l.push_sent_at ? 'נשלחה' : 'לא נשלחה')}
+            ${utm}
+            ${extras}
+          </div>
+
+          <label class="text-sm text-gray-500">סטטוס</label>
+          <select class="form-select mt-1 mb-4 w-full" id="leadStatus">
+            ${Object.entries(STATUS).map(([k, v]) =>
+              `<option value="${k}"${l.status === k ? ' selected' : ''}>${v.text}</option>`).join('')}
+          </select>
+
+          <label class="text-sm text-gray-500">הערות פנימיות</label>
+          <textarea class="form-input mt-1" id="leadNotes" rows="3"
+                    placeholder="מה סוכם בשיחה…">${escapeHtml(l.notes || '')}</textarea>
+
+          <div class="branded-modal-actions" style="margin-top:16px;">
+            <button type="button" class="branded-modal-btn branded-modal-btn-primary" data-act="save">שמירה</button>
+            <a class="branded-modal-btn branded-modal-btn-secondary" style="text-decoration:none;"
+               href="https://wa.me/${(l.phone || '').replace(/[^\d]/g, '').replace(/^0/, '972')}"
+               target="_blank" rel="noopener">וואטסאפ</a>
+            <button type="button" class="branded-modal-btn branded-modal-btn-danger" data-act="delete">מחיקה</button>
+            <button type="button" class="branded-modal-btn branded-modal-btn-secondary" data-act="close">סגירה</button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(overlay);
+      const close = () => overlay.remove();
+      overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+      overlay.querySelector('[data-act="close"]').addEventListener('click', close);
+      overlay.querySelector('[data-act="save"]').addEventListener('click', async (e) => {
+        e.target.disabled = true;
+        try {
+          await API.request(`/leads/${l.id}`, {
+            method: 'PATCH',
+            body: {
+              notes: overlay.querySelector('#leadNotes').value,
+              status: overlay.querySelector('#leadStatus').value
+            }
+          });
+          showToast('נשמר');
+          close();
+          loadAll();
+        } catch (err) {
+          e.target.disabled = false;
+          showToast(err.message || 'שגיאה בשמירה', 'error');
+        }
+      });
+      overlay.querySelector('[data-act="delete"]').addEventListener('click', () => deleteLead(l.id));
+
+      /* פתיחת ליד חדש מסמנת אותו כנקרא. הבורר שבחלון נבנה לפני כן, ולכן
+         הוא מתעדכן גם הוא — אחרת "שמירה" הייתה מחזירה אותו ל"חדש". */
+      if (l.status === 'new') {
+        l.status = 'read';
+        overlay.querySelector('#leadStatus').value = 'read';
+        setStatus(l.id, 'read');
+      }
+    }
+
+    /* ייצוא: הבקשה נושאת טוקן, ולכן לא אפשר להצביע על הקישור ישירות.
+       מורידים כ-blob ומשחררים את ה-URL מיד אחרי. */
+    async function exportCsv() {
+      try {
+        const resp = await fetch('/api/leads/export.csv', {
+          headers: { Authorization: 'Bearer ' + API.getToken() }
+        });
+        if (!resp.ok) throw new Error('ייצוא נכשל');
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'leads.csv';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        showToast(err.message || 'שגיאה בייצוא', 'error');
+      }
+    }
+
+    SCPush.mount('push-toggle');
+    loadAll();
+  </script>
+</body>
+</html>

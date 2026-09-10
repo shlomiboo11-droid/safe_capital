@@ -1,0 +1,25 @@
+{
+  "name": "Safe Capital · דאשבורד ניהול",
+  "short_name": "Safe Capital",
+  "description": "ניהול עסקאות, משקיעים ולידים של סייף קפיטל",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#022445",
+  "theme_color": "#022445",
+  "icons": [
+    { "src": "/images/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "לידים",
+      "short_name": "לידים",
+      "url": "/leads",
+      "icons": [{ "src": "/images/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
