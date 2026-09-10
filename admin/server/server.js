@@ -86,6 +86,7 @@ app.use('/api/extract', require('./routes/extract'));
 app.use('/api/audit', require('./routes/audit'));
 app.use('/api/google-drive', require('./routes/google-drive'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/mercury', require('./routes/mercury'));
 app.use('/api/investors', require('./routes/investors'));
 app.use('/api/content', require('./routes/content'));
 app.use('/api/events', require('./routes/events'));
