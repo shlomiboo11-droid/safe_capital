@@ -328,6 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!msg) { msg = document.createElement('div'); msg.className = 'form-missing-msg'; form.appendChild(msg); }
     const names = [...form.querySelectorAll(':invalid')].filter(x => x !== form).map(x => labelOf(x)?.textContent.replace('*', '').trim()).filter(Boolean);
     msg.textContent = names.length ? 'חסר שדה חובה: ' + [...new Set(names)].join(', ') : 'יש שדות שלא מולאו כראוי';
+    // 4ד במובייל: מעל מקלדת פתוחה השורה לא נראית מעצמה
+    if (matchMedia('(max-width: 767px)').matches) msg.scrollIntoView({ block: 'nearest' });
   }, true);
   document.addEventListener('input', (e) => {
     const el = e.target; if (!el.form || !el.checkValidity?.()) return;

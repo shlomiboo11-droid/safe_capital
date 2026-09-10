@@ -1501,3 +1501,30 @@ label.is-missing .req { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .sidebar, .sidebar-scrim, .btn, .btn-icon, .tab-btn, .toast, .branded-modal, .branded-modal-overlay { transition: none; animation: none; }
 }
+
+/* ── השלמות "במובייל" (design-system 4, 4ג, 4ד, 4ה) ── */
+/* 4: מה שחי ב-hover קיים גם בזמן הלחיצה */
+.btn:active { background: var(--accent); border-color: var(--accent); color: var(--bone); }
+.btn-icon:active { background: var(--chalk); }
+.tab-btn:active, .sidebar-link:active { opacity: 1; }
+.sidebar .btn-icon:active { background: rgba(var(--chalk-rgb), .12); }
+
+@media (max-width: 767px) {
+  /* 4ג: בתחתית חלון צר הכפתורים נערמים, הפעולה הראשית למעלה */
+  .branded-modal-actions, .modal-box form > .flex.gap-3:last-child, .modal-box .flex.justify-end { flex-wrap: wrap; }
+  .branded-modal-actions > .branded-modal-btn, .modal-box .flex.gap-3:last-child > .btn, .modal-box .flex.justify-end > .btn { flex: 1 0 100%; }
+  .branded-modal-btn-primary, .modal-box .btn-primary { order: -1; }
+
+  /* 4ה טבלה: עמודת הזיהוי נשארת קריאה בגלילה */
+  .data-table th:first-child, .data-table td:first-child {
+    position: sticky; right: 0; z-index: 1;
+    background: var(--white);
+    box-shadow: -8px 0 8px -8px rgba(var(--ink-rgb), .12);
+  }
+  .data-table th:first-child { background: var(--white); }
+
+  /* 4ה מרווחים: בין סקשנים דרגה למטה */
+  .main-content .space-y-8 > * + * { margin-top: var(--s5); }
+  .main-content .mb-8 { margin-bottom: var(--s5); }
+  .main-content .space-y-6 > * + * { margin-top: var(--s4); }
+}
