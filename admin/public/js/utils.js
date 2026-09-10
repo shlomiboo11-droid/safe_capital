@@ -360,6 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
   scrim.addEventListener('click', close);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   sidebar.querySelectorAll('.sidebar-link').forEach((a) => a.addEventListener('click', close));
-  // tabs that scroll sideways: start with the active one in view
-  document.querySelector('.tab-nav .tab-btn.active')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+  // tabs that scroll sideways: start with the active one in view. Scroll the row itself —
+  // scrollIntoView() also drags the page sideways in RTL, which is exactly rule 5.
+  const activeTab = document.querySelector('.tab-nav .tab-btn.active');
+  const nav = activeTab?.closest('.tab-nav');
+  if (nav && nav.scrollWidth > nav.clientWidth + 1) {
+    const n = nav.getBoundingClientRect(), t = activeTab.getBoundingClientRect();
+    nav.scrollLeft += (t.left - n.left) - (n.width - t.width) / 2;
+  }
 });
