@@ -1414,3 +1414,84 @@ input[type="time"]:focus { outline: none; box-shadow: var(--line-focus); }
 label .req { font-style: normal; margin-inline-start: 2px; color: rgba(var(--ink-rgb), .6); }
 label.is-missing .req { color: var(--accent); }
 .form-missing-msg { font-size: var(--fs-meta); color: var(--accent); margin-top: var(--s3); line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════════════════════
+   מובייל — design-system.md, פסקאות "במובייל" + "הערות מובייל".
+   נקודת שבירה אחת: עד 767 מובייל · 768–1023 צר · מ-1024 דסקטופ.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* מגירת הניווט (עד 1023): סקרים מאחוריה, נסגרת בנגיעה בו (utils.js) */
+.sidebar-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  z-index: 39;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.sidebar-scrim.show { opacity: 1; pointer-events: auto; }
+@media (min-width: 1024px) { .sidebar-scrim { display: none; } }
+
+@media (max-width: 1023px) {
+  .sidebar-link { min-height: var(--tap, 44px); }
+  #sidebarToggle {
+    width: 44px; height: 44px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    top: calc(var(--s4) + env(safe-area-inset-top, 0px));
+    border-radius: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  :root { --tap: 44px; }
+
+  /* מרווחים: דרגה אחת למטה בכל מה שנוגע בקצה המסך */
+  .main-content { padding: var(--s4); padding-top: calc(var(--s4) + 52px); }   /* מקום להמבורגר הצף */
+  .card.p-6, .card.p-8 { padding: var(--s4); }
+
+  /* מקלדת: שדה במגע הוא 16px — מתחת לזה iOS מזמם את המסך */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea {
+    font-size: var(--fs-input-touch, 16px);
+  }
+
+  /* יעד מגע */
+  .btn { min-height: var(--tap); }
+  .btn-icon { width: var(--tap); height: var(--tap); }
+  .tab-btn { min-height: var(--tap); display: inline-flex; align-items: center; }
+  .filter-chip, .filter-chip-sm { min-height: var(--tap); display: inline-flex; align-items: center; }
+  .deal-card-menu-btn { width: var(--tap) !important; height: var(--tap) !important; }
+  .wa-modal-close, .qcf-type-btn { min-height: var(--tap); }
+
+  /* טופס צפוף: טור אחד */
+  .grid-cols-2:has(> div > .form-input), .grid-cols-2:has(> div > .form-select),
+  .grid-cols-2:has(> div > input[type="date"]), .grid-cols-3:has(> div > .form-input),
+  .grid-cols-3:has(> div > .form-select) { grid-template-columns: 1fr; }
+
+  /* שורת פעולות: נשברת לשורות, לא מכווצת כפתורים */
+  .main-content > .flex.justify-between.mb-8 { flex-wrap: wrap; gap: var(--s3); }
+
+  /* מודל = גיליון מלמטה, פינות רק למעלה, הצל נשאר */
+  .modal-overlay { align-items: flex-end; }
+  .modal-box, .branded-modal-overlay .branded-modal {
+    width: 100%; max-width: none;
+    border-radius: var(--r) var(--r) 0 0;
+    max-height: 92vh;
+    padding-bottom: calc(var(--s5) + env(safe-area-inset-bottom, 0px));
+  }
+  .branded-modal-overlay { align-items: flex-end; }
+
+  /* טוסט למעלה, לא מתחת לאגודל ולמקלדת */
+  .toast {
+    top: calc(var(--s4) + env(safe-area-inset-top, 0px)); bottom: auto;
+    left: var(--s4); right: var(--s4);
+  }
+  .fab-button {
+    bottom: calc(var(--s4) + env(safe-area-inset-bottom, 0px));
+    left: calc(var(--s4) + env(safe-area-inset-left, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .sidebar-scrim, .btn, .btn-icon, .tab-btn, .toast, .branded-modal, .branded-modal-overlay { transition: none; animation: none; }
+}

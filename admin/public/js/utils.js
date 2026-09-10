@@ -345,3 +345,21 @@ function localDateInput(d) {
   const p = (n) => String(n).padStart(2, '0');
   return `${x.getFullYear()}-${p(x.getMonth() + 1)}-${p(x.getDate())}`;
 }
+
+// Mobile drawer (design-system, הערות מובייל): a scrim behind the open sidebar; tapping it,
+// pressing Esc, or choosing a page closes the drawer. Works with every page's own toggle.
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+  const scrim = document.createElement('div');
+  scrim.className = 'sidebar-scrim';
+  document.body.appendChild(scrim);
+  const close = () => sidebar.classList.remove('open');
+  const sync = () => scrim.classList.toggle('show', sidebar.classList.contains('open'));
+  new MutationObserver(sync).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+  scrim.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  sidebar.querySelectorAll('.sidebar-link').forEach((a) => a.addEventListener('click', close));
+  // tabs that scroll sideways: start with the active one in view
+  document.querySelector('.tab-nav .tab-btn.active')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+});
