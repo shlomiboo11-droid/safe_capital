@@ -53,28 +53,12 @@ function renderFinancialTab(data) {
         <div class="fin-card-label">סך השקעה בפועל</div>
       </div>
       <div class="fin-card">
-        <div class="fin-card-value font-inter ${overallStatus.color}" id="fc-deviation">${formatCurrency(deviation)}</div>
-        <div class="fin-card-label">חריגה כוללת <span class="badge ${overallStatus.class} mr-1" id="fc-dev-badge">${formatPercent(devPct)}</span></div>
+        <div class="fin-card-value font-inter" id="fc-expected-sale">${formatCurrency(deal.expected_sale_price || deal.arv || 0)}</div>
+        <div class="fin-card-label">מחיר מכירה צפוי</div>
       </div>
       <div class="fin-card">
         <div class="fin-card-value font-inter" id="fc-planned-profit">${formatCurrency(computed.plannedProfit)}</div>
         <div class="fin-card-label">רווח נקי צפוי (תכנון)</div>
-      </div>
-    </div>
-
-    <!-- Fundraising goal (read-only mirror from "גיוס הון" tab) -->
-    <div class="card p-6 mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="form-label">סכום יעד לגיוס</label>
-          <div class="form-input-readonly ltr">${deal.fundraising_goal ? formatCurrency(deal.fundraising_goal) : '—'}</div>
-          <div class="form-help-readonly">נערך בטאב "גיוס הון"</div>
-        </div>
-        <div>
-          <label class="form-label">סכום מינימום להשקעה</label>
-          <div class="form-input-readonly ltr">${formatCurrency(deal.min_investment || 50000)}</div>
-          <div class="form-help-readonly">נערך בטאב "גיוס הון"</div>
-        </div>
       </div>
     </div>
 
