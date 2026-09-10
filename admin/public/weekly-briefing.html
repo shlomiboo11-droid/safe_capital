@@ -229,7 +229,7 @@
           <form id="briefingForm" class="space-y-4">
             <div>
               <label class="form-label">שבוע (תאריך התחלה) *</label>
-              <input type="date" name="week_start" class="form-input ltr" dir="ltr" required value="${briefing?.week_start ? briefing.week_start.substring(0, 10) : ''}">
+              <input type="date" name="week_start" class="form-input ltr" dir="ltr" required value="${briefing?.week_start ? localDateInput(briefing.week_start) : ''}">
             </div>
             <div>
               <label class="form-label">תוכן *</label>

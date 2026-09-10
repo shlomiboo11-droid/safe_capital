@@ -177,7 +177,7 @@ async function openInlineCashflow(dealId) {
   _inlineCfCategories = categories;
 
   const catOptions = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDateInput(new Date());
 
   const overlay = document.createElement('div');
   overlay.className = 'branded-modal-overlay';

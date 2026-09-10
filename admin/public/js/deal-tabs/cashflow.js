@@ -104,7 +104,7 @@ function renderCashflowTab(data) {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
             <label class="form-label">תאריך</label>
-            <input type="date" name="date" class="form-input ltr text-sm" required value="${new Date().toISOString().split('T')[0]}">
+            <input type="date" name="date" class="form-input ltr text-sm" required value="${localDateInput(new Date())}">
           </div>
           <div>
             <label class="form-label">סוג</label>

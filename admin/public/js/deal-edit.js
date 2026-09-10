@@ -174,7 +174,7 @@ function openQuickCashflow(editEntry) {
 
     _qcfCurrentType = 'expense';
     form.querySelector('[name="type"]').value = 'expense';
-    form.querySelector('[name="date"]').value = new Date().toISOString().split('T')[0];
+    form.querySelector('[name="date"]').value = localDateInput(new Date());
 
     // Set type toggle buttons
     setQuickCashflowType('expense');

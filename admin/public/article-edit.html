@@ -265,7 +265,7 @@
         form.elements.is_published.checked = !!a.is_published;
         form.elements.is_featured.checked = !!a.is_featured;
         if (a.publish_date) {
-          form.elements.publish_date.value = a.publish_date.substring(0, 10);
+          form.elements.publish_date.value = localDateInput(a.publish_date);
         }
 
         if (a.thumbnail_url) updatePreview(a.thumbnail_url);

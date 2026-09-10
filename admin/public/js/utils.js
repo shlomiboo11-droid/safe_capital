@@ -336,3 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (msg && ![...form.querySelectorAll(':invalid')].some(x => x !== form)) msg.remove();
   });
 });
+
+// Date → "YYYY-MM-DD" in the browser's timezone. toISOString() is UTC, so a TIMESTAMPTZ
+// stored as Israel midnight comes back as 21:00Z the day before and lands a day early.
+function localDateInput(d) {
+  const x = d instanceof Date ? d : new Date(d);
+  if (isNaN(x)) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${x.getFullYear()}-${p(x.getMonth() + 1)}-${p(x.getDate())}`;
+}

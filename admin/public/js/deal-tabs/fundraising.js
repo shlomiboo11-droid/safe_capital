@@ -173,7 +173,7 @@ let investorSearchTimer = null;
 let investorSearchResults = [];
 
 function addInvestor() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = localDateInput(new Date());
   const overlay = document.createElement('div');
   overlay.className = 'branded-modal-overlay';
   overlay.innerHTML = `
