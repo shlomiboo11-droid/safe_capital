@@ -130,9 +130,7 @@ function renderFundraisingTab(data) {
                     onchange="updateInvestor(${inv.id}, 'notes', this.value)">
                 </td>
                 <td>
-                  <button class="btn btn-danger btn-sm" onclick="deleteDealInvestor(${inv.id})">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                  </button>
+                  <button  class="btn btn-danger btn-sm" onclick="deleteDealInvestor(${inv.id})"><span class="material-symbols-outlined">delete</span></button>
                 </td>
               </tr>`;
             }).join('')}

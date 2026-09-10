@@ -37,9 +37,7 @@ function buildSpecsHTML(specs) {
                 <td><input type="text" class="form-input ltr text-sm" value="${s.value_before || ''}" onchange="updateSpec(${s.id}, 'value_before', this.value)"></td>
                 <td><input type="text" class="form-input ltr text-sm" value="${s.value_after || ''}" onchange="updateSpec(${s.id}, 'value_after', this.value)"></td>
                 <td>
-                  <button class="btn btn-danger btn-sm" onclick="deleteSpec(${s.id})">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                  </button>
+                  <button  class="btn btn-danger btn-sm" onclick="deleteSpec(${s.id})"><span class="material-symbols-outlined">delete</span></button>
                 </td>
               </tr>
             `).join('')}

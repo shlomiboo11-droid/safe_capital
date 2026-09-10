@@ -246,15 +246,15 @@
 
         const idStr = String(a.id).replace(/'/g, "\\'");
         const actions = [
-          `<a href="/article-edit?id=${encodeURIComponent(a.id)}" class="btn btn-secondary btn-sm" title="עריכה"><span class="material-symbols-outlined text-sm">edit</span></a>`
+          `<a href="/article-edit?id=${encodeURIComponent(a.id)}" class="btn-icon" title="עריכה" aria-label="עריכה"><span class="material-symbols-outlined">edit</span></a>`
         ];
         if (isPending) {
           actions.unshift(`<button class="btn btn-primary btn-sm" onclick="approveArticle('${idStr}')" title="אשר ופרסם"><span class="material-symbols-outlined text-sm">check</span></button>`);
-          actions.push(`<button class="btn btn-secondary btn-sm" onclick="rejectArticle('${idStr}')" title="דחה"><span class="material-symbols-outlined text-sm">close</span></button>`);
+          actions.push(`<button class="btn-icon danger" onclick="rejectArticle('${idStr}')" title="דחה" aria-label="דחה"><span class="material-symbols-outlined text-sm">close</span></button>`);
         } else if (isPublished) {
-          actions.push(`<button class="btn btn-secondary btn-sm" onclick="unpublishArticle('${idStr}')" title="הסר מהאתר"><span class="material-symbols-outlined text-sm">visibility_off</span></button>`);
+          actions.push(`<button class="btn-icon" onclick="unpublishArticle('${idStr}')" title="הסר מהאתר" aria-label="הסר מהאתר"><span class="material-symbols-outlined text-sm">visibility_off</span></button>`);
         }
-        actions.push(`<button class="btn btn-secondary btn-sm" title="מחיקה" onclick="deleteArticle('${idStr}')"><span class="material-symbols-outlined text-sm">delete</span></button>`);
+        actions.push(`<button class="btn-icon danger" title="מחיקה" aria-label="מחיקה" onclick="deleteArticle('${idStr}')"><span class="material-symbols-outlined text-sm">delete</span></button>`);
 
         const sourceLine = a.source_url
           ? `<div class="text-xs text-gray-400 mt-0.5 font-inter" dir="ltr" style="max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(a.source_name || '')} · <a href="${escapeHtml(a.source_url)}" target="_blank" rel="noopener" class="hover:underline">${escapeHtml(a.source_url)}</a></div>`

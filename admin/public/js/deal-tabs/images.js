@@ -109,9 +109,7 @@ async function renderImagesTab(data) {
                 <span class="material-symbols-outlined text-sm">sync</span>
                 סנכרן
               </button>
-              <button class="btn btn-danger btn-sm" onclick="unlinkDriveFolder('${cat.key}')" title="נתק תיקייה">
-                <span class="material-symbols-outlined text-sm">link_off</span>
-              </button>
+              <button  class="btn-icon danger" onclick="unlinkDriveFolder('${cat.key}')" title="נתק תיקייה"><span class="material-symbols-outlined">link_off</span></button>
             ` : `
               <button class="btn btn-secondary btn-sm" onclick="openDriveLinkModal('${cat.key}')" title="קשר תיקיית Google Drive">
                 <span class="material-symbols-outlined text-sm">folder_shared</span>
@@ -152,9 +150,7 @@ async function renderImagesTab(data) {
                     onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;\\' ><span class=\\'material-symbols-outlined text-3xl text-gray-300\\'>broken_image</span></div>'">
                 </div>
                 <div class="img-scroll-actions">
-                  <button class="btn btn-danger btn-sm" onclick="deleteImage(${img.id})" title="מחק">
-                    <span class="material-symbols-outlined text-xs">delete</span>
-                  </button>
+                  <button  class="btn-icon danger" onclick="deleteImage(${img.id})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
                 </div>
               </div>
             `).join('')}

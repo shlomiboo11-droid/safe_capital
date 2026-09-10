@@ -1409,3 +1409,8 @@ input[type="time"] {
   appearance: none;
 }
 input[type="time"]:focus { outline: none; box-shadow: var(--line-focus); }
+
+/* ── שדה חובה שנשאר ריק (design-system 4ד): הכוכבית בבורדו, והסבר בשורה אחת מתחת לטופס ── */
+label .req { font-style: normal; margin-inline-start: 2px; color: rgba(var(--ink-rgb), .6); }
+label.is-missing .req { color: var(--accent); }
+.form-missing-msg { font-size: var(--fs-meta); color: var(--accent); margin-top: var(--s3); line-height: 1.5; }

@@ -69,13 +69,9 @@ function renderDocumentsTab(data) {
                 <td>
                   <div class="flex gap-1">
                     ${doc.file_url ? `
-                      <a href="${doc.file_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" title="פתח">
-                        <span class="material-symbols-outlined text-sm">open_in_new</span>
-                      </a>
+                      <a  href="${doc.file_url}" target="_blank" rel="noopener" class="btn-icon" title="פתח"><span class="material-symbols-outlined">open_in_new</span></a>
                     ` : ''}
-                    <button class="btn btn-danger btn-sm" onclick="deleteDocument(${doc.id})" title="מחק">
-                      <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
+                    <button  class="btn-icon danger" onclick="deleteDocument(${doc.id})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
                   </div>
                 </td>
               </tr>
@@ -186,18 +182,12 @@ function renderDocumentsTab(data) {
                         </button>
                       ` : ''}
                       ${doc.extraction_status === 'completed' ? `
-                        <button class="btn btn-secondary btn-sm" onclick="viewExtractedData(${doc.id})" title="צפה בנתונים">
-                          <span class="material-symbols-outlined text-sm">visibility</span>
-                        </button>
+                        <button  class="btn-icon" onclick="viewExtractedData(${doc.id})" title="צפה בנתונים"><span class="material-symbols-outlined">visibility</span></button>
                       ` : ''}
                       ${doc.file_url ? `
-                        <a href="${doc.file_url}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" title="הורד">
-                          <span class="material-symbols-outlined text-sm">download</span>
-                        </a>
+                        <a  href="${doc.file_url}" target="_blank" rel="noopener" class="btn-icon" title="הורד"><span class="material-symbols-outlined">download</span></a>
                       ` : ''}
-                      <button class="btn btn-danger btn-sm" onclick="deleteUploadedDoc(${doc.id})" title="מחק">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                      </button>
+                      <button  class="btn-icon danger" onclick="deleteUploadedDoc(${doc.id})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
                     </div>
                   </td>
                 </tr>

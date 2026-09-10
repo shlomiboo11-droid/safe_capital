@@ -382,9 +382,7 @@ function _renderCompColumn(comp, idx, ourData) {
 
         <div class="comp-row-actions">
           ${comp.zillow_url ? `<a href="${comp.zillow_url}" target="_blank" class="text-xs text-primary hover:underline">Zillow</a>` : ''}
-          <button class="btn btn-danger btn-sm" onclick="deleteComp(${comp.id})" title="מחק">
-            <span class="material-symbols-outlined text-xs">delete</span>
-          </button>
+          <button  class="btn-icon danger" onclick="deleteComp(${comp.id})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
         </div>
       </div>
     </div>

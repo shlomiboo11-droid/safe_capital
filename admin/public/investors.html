@@ -209,10 +209,10 @@
           <td>${inv.source ? (SOURCE_LABELS[inv.source] || inv.source) : '<span class="text-gray-300">—</span>'}</td>
           <td>
             <div class="flex gap-1">
-              <a href="/investor?id=${inv.id}" class="btn btn-secondary btn-sm" title="צפייה">
+              <a href="/investor?id=${inv.id}" class="btn-icon" title="צפייה" aria-label="צפייה">
                 <span class="material-symbols-outlined text-sm">visibility</span>
               </a>
-              <button class="btn btn-secondary btn-sm" title="עריכה" onclick="openInvestorModal('${inv.id}')">
+              <button class="btn-icon" title="עריכה" aria-label="עריכה" onclick="openInvestorModal('${inv.id}')">
                 <span class="material-symbols-outlined text-sm">edit</span>
               </button>
             </div>

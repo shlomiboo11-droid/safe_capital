@@ -269,12 +269,10 @@ function buildStepRowHTML(step, idx, total) {
             ${nextLabel}
           </button>
           <!-- Edit button -->
-          <button
-            class="btn btn-secondary btn-sm"
+          <button 
+            class="btn-icon"
             onclick="openEditTimelineStep(${step.id}, '${escapeHtml(step.step_name)}', '${step.status}', ${step.sort_order})"
-            title="ערוך שלב">
-            <span class="material-symbols-outlined text-sm">edit</span>
-          </button>
+            title="ערוך שלב"><span class="material-symbols-outlined">edit</span></button>
           <!-- Delete button -->
           <button
             class="btn btn-secondary btn-sm text-secondary"

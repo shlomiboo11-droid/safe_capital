@@ -176,10 +176,10 @@
           <td class="font-inter text-sm" dir="ltr">${createdDate}</td>
           <td>
             <div class="flex gap-1">
-              <button class="btn btn-secondary btn-sm" title="עריכה" onclick="openBriefingModal(${b.id})">
+              <button class="btn-icon" title="עריכה" aria-label="עריכה" onclick="openBriefingModal(${b.id})">
                 <span class="material-symbols-outlined text-sm">edit</span>
               </button>
-              <button class="btn btn-secondary btn-sm" title="מחיקה" onclick="deleteBriefing(${b.id})">
+              <button class="btn-icon danger" title="מחיקה" aria-label="מחיקה" onclick="deleteBriefing(${b.id})">
                 <span class="material-symbols-outlined text-sm">delete</span>
               </button>
             </div>

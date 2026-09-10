@@ -304,3 +304,35 @@ document.addEventListener('DOMContentLoaded', () => {
     active.scrollIntoView({ block: 'nearest' });
   }
 });
+
+// Required field left empty (design-system 4ד): the line does not change — only the
+// asterisk turns bordeaux, and a single message row under the form says what is missing.
+document.addEventListener('DOMContentLoaded', () => {
+  // wrap a trailing "*" in a label so it can be coloured on its own. Done lazily —
+  // most admin forms render their labels from JS long after DOMContentLoaded.
+  const wrapStar = (l) => {
+    if (!l || l.querySelector('.req')) return;
+    const last = l.lastChild;
+    if (last && last.nodeType === 3 && /\*\s*$/.test(last.textContent)) {
+      last.textContent = last.textContent.replace(/\s*\*\s*$/, ' ');
+      const i = document.createElement('i'); i.className = 'req'; i.textContent = '*';
+      l.appendChild(i);
+    }
+  };
+  document.querySelectorAll('label').forEach(wrapStar);
+  const labelOf = (el) => (el.id && document.querySelector(`label[for="${el.id}"]`)) || el.closest('label') || el.parentElement?.querySelector('label');
+  document.addEventListener('invalid', (e) => {
+    const el = e.target, form = el.form; if (!form) return;
+    const label = labelOf(el); if (label) { wrapStar(label); label.classList.add('is-missing'); }
+    let msg = form.querySelector('.form-missing-msg');
+    if (!msg) { msg = document.createElement('div'); msg.className = 'form-missing-msg'; form.appendChild(msg); }
+    const names = [...form.querySelectorAll(':invalid')].filter(x => x !== form).map(x => labelOf(x)?.textContent.replace('*', '').trim()).filter(Boolean);
+    msg.textContent = names.length ? 'חסר שדה חובה: ' + [...new Set(names)].join(', ') : 'יש שדות שלא מולאו כראוי';
+  }, true);
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el.form || !el.checkValidity?.()) return;
+    labelOf(el)?.classList.remove('is-missing');
+    const form = el.form, msg = form.querySelector('.form-missing-msg');
+    if (msg && ![...form.querySelectorAll(':invalid')].some(x => x !== form)) msg.remove();
+  });
+});

@@ -191,12 +191,8 @@ function renderCashflowTab(data) {
               <td class="text-sm">${entry.description || ''}</td>
               <td>
                 <div class="flex gap-1">
-                  <button class="btn btn-secondary btn-sm" onclick="editCashflowEntry(${entry.id})" title="ערוך">
-                    <span class="material-symbols-outlined text-sm">edit</span>
-                  </button>
-                  <button class="btn btn-danger btn-sm" onclick="deleteCashflowEntry(${entry.id})" title="מחק">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                  </button>
+                  <button  class="btn-icon" onclick="editCashflowEntry(${entry.id})" title="ערוך"><span class="material-symbols-outlined">edit</span></button>
+                  <button  class="btn-icon danger" onclick="deleteCashflowEntry(${entry.id})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
                 </div>
               </td>
             </tr>

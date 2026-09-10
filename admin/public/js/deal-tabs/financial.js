@@ -236,9 +236,7 @@ function renderCategoryRows(cat, editMode) {
           <td class="font-inter text-sm text-right ltr ${itemStatus.color}">${itemActual ? formatCurrency(itemDev) : '--'}</td>
           <td class="font-inter text-sm text-right ${itemStatus.color}">${itemActual ? formatPercent(itemDevPct) : '--'}</td>
           <td>
-            <button class="btn btn-danger btn-sm" onclick="deleteCostItem(${item.id})">
-              <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
+            <button  class="btn btn-danger btn-sm" onclick="deleteCostItem(${item.id})"><span class="material-symbols-outlined">delete</span></button>
           </td>
         </tr>
       `;
@@ -270,13 +268,9 @@ function renderCategoryRows(cat, editMode) {
       </td>
       <td>
         <div class="flex gap-1">
-          <button class="btn btn-secondary btn-sm" onclick="addCostItem(${cat.id})" title="הוסף פריט">
-            <span class="material-symbols-outlined text-sm">add</span>
-          </button>
+          <button  class="btn-icon" onclick="addCostItem(${cat.id})" title="הוסף פריט"><span class="material-symbols-outlined">add</span></button>
           ${!cat.is_default ? `
-            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה">
-              <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
+            <button  class="btn-icon danger" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה"><span class="material-symbols-outlined">delete</span></button>
           ` : ''}
         </div>
       </td>

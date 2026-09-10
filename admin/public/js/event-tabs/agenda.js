@@ -52,7 +52,7 @@ function renderAgendaList() {
           <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
         </div>
         <div class="flex gap-1">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="removeAgendaItem(${idx})" title="מחק"><span class="material-symbols-outlined text-sm">delete</span></button>
+          <button  type="button" class="btn-icon" onclick="removeAgendaItem(${idx})" title="מחק"><span class="material-symbols-outlined">delete</span></button>
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3">

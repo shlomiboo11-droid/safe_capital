@@ -165,9 +165,7 @@ function renderRenovationTab(data) {
                 </td>
                 <td class="text-center">
                   ${renovationEditMode ? `
-                    <button class="btn btn-danger btn-sm" onclick="deleteRenovationPhase(${idx})" title="מחק שלב">
-                      <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
+                    <button  class="btn-icon danger" onclick="deleteRenovationPhase(${idx})" title="מחק שלב"><span class="material-symbols-outlined">delete</span></button>
                   ` : ''}
                 </td>
               </tr>

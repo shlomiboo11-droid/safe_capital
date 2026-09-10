@@ -47,7 +47,7 @@ function renderFaqsList() {
           <span class="text-xs text-gray-500 font-inter">#${idx + 1}</span>
         </div>
         <div class="flex gap-1">
-          <button type="button" class="btn btn-secondary btn-sm" onclick="removeFaq(${idx})"><span class="material-symbols-outlined text-sm">delete</span></button>
+          <button  type="button" class="btn btn-secondary btn-sm" onclick="removeFaq(${idx})"><span class="material-symbols-outlined">delete</span></button>
         </div>
       </div>
       <div class="space-y-3">
