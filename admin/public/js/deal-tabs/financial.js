@@ -85,8 +85,21 @@ function renderFinancialTab(data) {
             </tr>
           </thead>
           <tbody>
+            <!-- Category rows with items -->
+            ${categories.map(cat => renderCategoryRows(cat, financialEditMode)).join('')}
+
+            <!-- Grand Total Row -->
+            <tr class="font-bold bg-gray-100 border-t-2 border-gray-300" id="grand-total-row">
+              <td class="text-primary">סה"כ עלויות</td>
+              <td class="font-inter" id="grand-total-planned">${formatCurrency(totalPlanned)}</td>
+              <td class="font-inter" id="grand-total-actual">${formatCurrency(totalActual)}</td>
+              <td class="font-inter ${overallStatus.color}" id="grand-total-dev">${formatCurrency(deviation)}</td>
+              <td class="font-inter ${overallStatus.color}" id="grand-total-devpct">${formatPercent(devPct)}</td>
+              <td></td>
+            </tr>
+
             <!-- Summary Row: Expected Sale Price (ARV) -->
-            <tr class="bg-green-50/50 border-b-2 border-green-100">
+            <tr class="fin-arv bg-gray-50">
               <td class="font-bold text-green-700">מחיר מכירה צפוי (ARV)</td>
               <td>
                 <input type="text" inputmode="numeric" data-currency="true"
@@ -109,24 +122,6 @@ function renderFinancialTab(data) {
               <td class="font-inter text-sm" id="devpct-arv">
                 ${deal.arv && deal.actual_sale_price ? formatPercent(((deal.actual_sale_price - deal.arv) / deal.arv) * 100) : '--'}
               </td>
-              <td></td>
-            </tr>
-
-            <!-- Separator -->
-            <tr class="bg-gray-100">
-              <td colspan="6" class="py-1"></td>
-            </tr>
-
-            <!-- Category rows with items -->
-            ${categories.map(cat => renderCategoryRows(cat, financialEditMode)).join('')}
-
-            <!-- Grand Total Row -->
-            <tr class="font-bold bg-gray-100 border-t-2 border-gray-300" id="grand-total-row">
-              <td class="text-primary">סה"כ עלויות</td>
-              <td class="font-inter" id="grand-total-planned">${formatCurrency(totalPlanned)}</td>
-              <td class="font-inter" id="grand-total-actual">${formatCurrency(totalActual)}</td>
-              <td class="font-inter ${overallStatus.color}" id="grand-total-dev">${formatCurrency(deviation)}</td>
-              <td class="font-inter ${overallStatus.color}" id="grand-total-devpct">${formatPercent(devPct)}</td>
               <td></td>
             </tr>
           </tbody>
@@ -169,8 +164,23 @@ function renderFinancialTab(data) {
   `;
 }
 
+// Which categories are expanded. Survives the full re-render that follows every save.
+const expandedCats = new Set();
+
+function toggleCategory(catId) {
+  if (expandedCats.has(catId)) expandedCats.delete(catId); else expandedCats.add(catId);
+  const open = expandedCats.has(catId);
+  document.querySelectorAll(`#financialBreakdownTable tr.fin-item[data-cat-id="${catId}"]`).forEach(r => { r.hidden = !open; });
+  const btn = document.querySelector(`#financialBreakdownTable tr.fin-cat[data-cat-id="${catId}"] .btn-icon`);
+  if (btn) {
+    btn.querySelector('.material-symbols-outlined').textContent = open ? 'expand_less' : 'expand_more';
+    btn.title = open ? 'כווץ' : 'הרחב';
+    btn.setAttribute('aria-expanded', String(open));
+  }
+}
+
 /**
- * Render category header + item rows for unified table
+ * Render category summary row + (collapsible) item rows for unified table
  */
 function renderCategoryRows(cat, editMode) {
   const catPlanned = parseFloat(cat.total_planned) || 0;
@@ -179,9 +189,42 @@ function renderCategoryRows(cat, editMode) {
   const catDevPct = catPlanned > 0 ? (catDev / catPlanned * 100) : 0;
   const catStatus = getDeviationStatus(catPlanned, catActual);
 
-  let html = '';
+  const open = expandedCats.has(cat.id);
+  const itemCount = (cat.items || []).length;
 
-  // Item rows (rendered first; category summary appears below them)
+  // Category summary row first (design: the summary sits above the rows it sums up),
+  // with a toggle that reveals the item rows below it.
+  let html = `
+    <tr class="fin-cat bg-gray-50" data-cat-id="${cat.id}">
+      <td class="font-bold text-sm text-primary">
+        <div class="flex items-center gap-1">
+          <button class="btn-icon" onclick="toggleCategory(${cat.id})" title="${open ? 'כווץ' : 'הרחב'}" aria-expanded="${open}" aria-label="${open ? 'כווץ' : 'הרחב'} ${cat.name}">
+            <span class="material-symbols-outlined">${open ? 'expand_less' : 'expand_more'}</span>
+          </button>
+          ${editMode
+            ? `<input type="text" class="form-input text-sm font-bold text-primary" value="${cat.name}"
+                onchange="updateCategoryName(${cat.id}, this.value)">`
+            : `<span>${cat.name}</span><span class="text-xs text-gray-400 mr-1">(${itemCount})</span>`}
+        </div>
+      </td>
+      <td class="font-inter font-bold text-sm ltr" id="cat-planned-${cat.id}">${formatCurrency(catPlanned)}</td>
+      <td class="font-inter font-bold text-sm ltr" id="cat-actual-${cat.id}">${formatCurrency(catActual)}</td>
+      <td class="font-inter font-bold text-sm ltr ${catStatus.color}" id="cat-dev-${cat.id}">${formatCurrency(catDev)}</td>
+      <td class="font-inter text-sm">
+        <span class="badge ${catStatus.class}" id="cat-badge-${cat.id}">${catPlanned > 0 ? catStatus.label + ' ' + formatPercent(catDevPct) : '--'}</span>
+      </td>
+      <td>
+        <div class="flex gap-1 justify-center">
+          <button class="btn-icon" onclick="addCostItem(${cat.id})" title="הוסף פריט"><span class="material-symbols-outlined">add</span></button>
+          ${!cat.is_default ? `
+            <button class="btn-icon danger" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה"><span class="material-symbols-outlined">delete</span></button>
+          ` : ''}
+        </div>
+      </td>
+    </tr>
+  `;
+
+  // Item rows — thin, no field underline, hidden until the category is expanded
   if (cat.items && cat.items.length > 0) {
     for (const item of cat.items) {
       // Renovation-cost item: bind value to renovation_plan.total_cost (read-only here, edited in renovation tab)
@@ -195,7 +238,7 @@ function renderCategoryRows(cat, editMode) {
       const planLocked = isRenovationItem || !editMode;
 
       html += `
-        <tr data-item-id="${item.id}" data-cat-id="${cat.id}">
+        <tr class="fin-item" data-item-id="${item.id}" data-cat-id="${cat.id}" ${open ? '' : 'hidden'}>
           <td class="pr-8">
             <input type="text" class="form-input text-sm ${!editMode ? 'bg-gray-50 pointer-events-none' : ''}" value="${item.name}"
               ${!editMode ? 'readonly tabindex="-1"' : ''}
@@ -217,49 +260,23 @@ function renderCategoryRows(cat, editMode) {
               onfocus="unformatCurrencyInput(this)" onblur="formatCurrencyInput(this)"
               onchange="updateCostItem(${item.id}, 'actual_amount', parseAmount(this.value)); recalcFinancials()">
           </td>
-          <td class="font-inter text-sm text-right ltr ${itemStatus.color}">${itemActual ? formatCurrency(itemDev) : '--'}</td>
-          <td class="font-inter text-sm text-right ${itemStatus.color}">${itemActual ? formatPercent(itemDevPct) : '--'}</td>
+          <td class="font-inter text-sm ltr ${itemStatus.color}">${itemActual ? formatCurrency(itemDev) : '--'}</td>
+          <td class="font-inter text-sm ${itemStatus.color}">${itemActual ? formatPercent(itemDevPct) : '--'}</td>
           <td>
-            <button  class="btn btn-danger btn-sm" onclick="deleteCostItem(${item.id})"><span class="material-symbols-outlined">delete</span></button>
+            <button class="btn-icon danger" onclick="deleteCostItem(${item.id})" title="מחק פריט"><span class="material-symbols-outlined">delete</span></button>
           </td>
         </tr>
       `;
     }
   } else {
     html += `
-      <tr>
-        <td colspan="6" class="text-center text-gray-400 text-sm py-3 pr-8">
+      <tr class="fin-item" data-cat-id="${cat.id}" ${open ? '' : 'hidden'}>
+        <td colspan="6" class="text-gray-400 text-sm pr-8">
           אין פריטים. לחץ + כדי להוסיף.
         </td>
       </tr>
     `;
   }
-
-  // Category summary row (placed BELOW the items it sums up)
-  html += `
-    <tr class="bg-gray-50 border-t border-gray-200" data-cat-id="${cat.id}">
-      <td class="font-bold text-sm text-primary">
-        ${editMode
-          ? `<input type="text" class="form-input text-sm font-bold text-primary" value="${cat.name}"
-              onchange="updateCategoryName(${cat.id}, this.value)">`
-          : cat.name}
-      </td>
-      <td class="font-inter font-bold text-sm text-left ltr" id="cat-planned-${cat.id}">${formatCurrency(catPlanned)}</td>
-      <td class="font-inter font-bold text-sm text-left ltr" id="cat-actual-${cat.id}">${formatCurrency(catActual)}</td>
-      <td class="font-inter font-bold text-sm text-right ltr ${catStatus.color}" id="cat-dev-${cat.id}">${formatCurrency(catDev)}</td>
-      <td class="font-inter text-sm text-right">
-        <span class="badge ${catStatus.class}" id="cat-badge-${cat.id}">${catPlanned > 0 ? catStatus.label + ' ' + formatPercent(catDevPct) : '--'}</span>
-      </td>
-      <td>
-        <div class="flex gap-1">
-          <button  class="btn-icon" onclick="addCostItem(${cat.id})" title="הוסף פריט"><span class="material-symbols-outlined">add</span></button>
-          ${!cat.is_default ? `
-            <button  class="btn-icon danger" onclick="deleteCategory(${cat.id})" title="מחק קטגוריה"><span class="material-symbols-outlined">delete</span></button>
-          ` : ''}
-        </div>
-      </td>
-    </tr>
-  `;
 
   return html;
 }
@@ -328,6 +345,7 @@ async function deleteCategory(catId) {
 async function addCostItem(catId) {
   const name = await showPromptModal('שם הפריט', 'הזן שם פריט...');
   if (!name) return;
+  expandedCats.add(catId);   // reveal the group so the new row is visible after the re-render
   try {
     await API.post(`/deals/${currentDeal.id}/categories/${catId}/items`, { name, planned_amount: 0, actual_amount: 0 });
     showToast('פריט נוסף');

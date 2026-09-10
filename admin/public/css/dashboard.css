@@ -1544,3 +1544,16 @@ label.is-missing .req { color: var(--accent); }
   .main-content .mb-8 { margin-bottom: var(--s5); }
   .main-content .space-y-6 > * + * { margin-top: var(--s4); }
 }
+
+/* ── טבלת פירוט העלויות (טאב פיננסי) ── */
+#financialBreakdownTable th:nth-child(n+2),
+#financialBreakdownTable td:nth-child(n+2) { text-align: center; }
+#financialBreakdownTable td:nth-child(n+2) .form-input { text-align: center; margin-inline: auto; }
+#financialBreakdownTable tbody tr:nth-child(even) td { background: transparent; }   /* הפסים באים מהסיכומים, לא מהזוגיות */
+#financialBreakdownTable tr.fin-cat td, #financialBreakdownTable tr.fin-arv td { background: var(--bone); }
+#financialBreakdownTable tr.fin-item td { padding-top: 0; padding-bottom: 0; line-height: 1.2; }
+#financialBreakdownTable tr.fin-item .form-input { height: 24px; box-shadow: none; }
+#financialBreakdownTable tr.fin-item .form-input:focus { box-shadow: var(--line-focus); }
+#financialBreakdownTable tr.fin-item .btn-icon { width: 24px; height: 24px; }
+#financialBreakdownTable tr.fin-item .btn-icon .material-symbols-outlined { font-size: 16px; }
+#financialBreakdownTable tr.fin-item td:first-child { padding-right: var(--s6); }
